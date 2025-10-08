@@ -1,5 +1,13 @@
 import { Button } from "@/components/ui/button";
-import { Calculator, Play } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { BookOpen, Calculator, Clock, GraduationCap, Play } from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {
@@ -18,10 +26,55 @@ export default function Home() {
           <Button className="flex items-center gap-2" size="lg">
             <Play /> Get Started
           </Button>
-          <Button variant="outline" size="lg">
+          <Button asChild variant="outline" size="lg">
             <Link href="/pricing">Pricing</Link>
           </Button>
         </div>
+        <Card className="max-w-md w-full shadow-lg mt-5">
+          <CardHeader>
+            <div className="flex items-start gap-4">
+              <div className="p-4 rounded-lg border-2 border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950 shrink-0">
+                <GraduationCap className="w-10 h-10 text-blue-600 dark:text-blue-400" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <CardTitle className="text-xl md:text-2xl text-left">
+                  Advanced Mathematics
+                </CardTitle>
+                <CardDescription className="mt-2 text-left">
+                  A course covering all topics in the high school advanced
+                  mathematics curriculum.
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <BookOpen size={20} /> 50+ Chapters
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Clock size={20} /> 16 Hours
+              </div>
+            </div>
+            <Button
+              className="w-full bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700 text-white"
+              size="lg"
+            >
+              See Free Lessons
+            </Button>
+          </CardContent>
+          <CardFooter className="flex justify-between items-center pt-6 border-t dark:border-border">
+            <div className="flex flex-col">
+              <span className="text-xs text-muted-foreground uppercase tracking-wide">
+                Price
+              </span>
+              <span className="text-2xl font-bold">$49</span>
+            </div>
+            <Button size="lg" className="font-bold">
+              Buy Now
+            </Button>
+          </CardFooter>
+        </Card>
       </div>
     </div>
   );
