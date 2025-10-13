@@ -1,9 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Moon, Sun } from "lucide-react";
+import { Monitor, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -13,7 +12,19 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export function ThemeSelect() {
-  const { setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
+
+  type ThemeItem = {
+    key: "light" | "dark" | "system";
+    label: string;
+    icon: React.FC<React.SVGProps<SVGSVGElement>>;
+  };
+
+  const items: ThemeItem[] = [
+    { key: "light", label: "Light", icon: Sun },
+    { key: "dark", label: "Dark", icon: Moon },
+    { key: "system", label: "System", icon: Monitor },
+  ];
 
   return (
     <DropdownMenu>
@@ -25,15 +36,20 @@ export function ThemeSelect() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
-          Light
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
-          Dark
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
-          System
-        </DropdownMenuItem>
+        {items.map(({ key, label, icon: Icon }) => (
+          <DropdownMenuItem
+            key={key}
+            onClick={() => setTheme(key)}
+            className="flex justify-between items-center"
+          >
+            <div className="flex items-center gap-2">
+              <Icon className="h-4 w-4" /> {label}
+            </div>
+            {theme === key && (
+              <span className="w-2 h-2 rounded-full bg-primary" />
+            )}
+          </DropdownMenuItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );

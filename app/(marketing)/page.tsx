@@ -40,7 +40,7 @@ export default function Home() {
                 <CardTitle className="text-xl md:text-2xl text-left">
                   Advanced Mathematics
                 </CardTitle>
-                <CardDescription className="mt-2 text-left">
+                <CardDescription className="mt-1 text-left">
                   A course covering all topics in the high school advanced
                   mathematics curriculum.
                 </CardDescription>
