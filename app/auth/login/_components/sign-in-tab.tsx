@@ -39,7 +39,7 @@ export function SignInTab() {
   const { isSubmitting } = form.formState;
 
   async function handleSignIn(data: SignInForm) {
-    const res = await authClient.signIn.email(
+    await authClient.signIn.email(
       { ...data, callbackURL: "/courses" },
       {
         onError: (error) => {
