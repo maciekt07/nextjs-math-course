@@ -16,7 +16,10 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
           <div className="flex items-center gap-4">
             <ThemeSelect />
             <Button asChild variant="outline">
-              <Link href="/login" className="flex items-center gap-2 px-4 py-2">
+              <Link
+                href="auth/login"
+                className="flex items-center gap-2 px-4 py-2"
+              >
                 <LogIn /> Login
               </Link>
             </Button>
