@@ -1,3 +1,5 @@
+import { BookOpen, Calculator, Clock, GraduationCap, Play } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -7,8 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { BookOpen, Calculator, Clock, GraduationCap, Play } from "lucide-react";
-import Link from "next/link";
 
 export default function Home() {
   return (
@@ -59,8 +59,9 @@ export default function Home() {
             <Button
               className="w-full bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700 text-white"
               size="lg"
+              asChild
             >
-              See Free Lessons
+              <Link href="/courses/advanced-mathematics">See Free Lessons</Link>
             </Button>
           </CardContent>
           <CardFooter className="flex justify-between items-center pt-6 border-t dark:border-border">
