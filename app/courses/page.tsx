@@ -1,38 +1,21 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { BookOpen } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/auth-client";
 
 export default function CoursesPage() {
-  const { data: session, isPending: loading } = authClient.useSession();
-  const router = useRouter();
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-  if (!session) {
-    return <div>Please log in to view courses.</div>;
-  }
   return (
-    <div>
-      <h1>Welcome {session.user.name}</h1>
-      <Button
-        size="lg"
-        variant="destructive"
-        onClick={async () => {
-          await authClient.signOut({
-            fetchOptions: {
-              onSuccess: () => {
-                router.push("/");
-                toast.success("Signed out successfully");
-              },
-            },
-          });
-        }}
-      >
-        Sign Out
+    <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4 space-y-4">
+      <div className="p-6 rounded-full bg-gray-200 dark:bg-gray-800">
+        <BookOpen size={48} className="text-gray-600 dark:text-gray-300" />
+      </div>
+      <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+        No courses yet
+      </h2>
+      <p className="text-gray-600 dark:text-gray-400">
+        Check out our offer and start learning today!
+      </p>
+      <Button asChild size="lg" className="mt-2">
+        <Link href="/">Browse Courses</Link>
       </Button>
     </div>
   );
