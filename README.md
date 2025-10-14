@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js Math Course Platform
 
-## Getting Started
+<p align="center">
+<img src="https://go-skill-icons.vercel.app/api/icons?i=next,ts,react,tailwind,shadcn,betterauth,drizzle,postgres,payload" />
+</p>
 
-First, run the development server:
+<img src="https://github-production-user-asset-6210df.s3.amazonaws.com/85953204/501021606-1fedfd39-0289-4a46-9bd3-bf56b96dde95.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20251014%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251014T152323Z&X-Amz-Expires=300&X-Amz-Signature=00306c2e0d56d94033c1bf98fff4c27d39ab328f125526f01ae43f117342aa10&X-Amz-SignedHeaders=host" />
+
+## Requirements
+
+- **Node.js** (v18 or higher)
+- **npm** package manager
+- **Docker Desktop** (for PostgreSQL database)
+- **Git**
+
+## Installation Steps
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/maciekt07/nextjs-math-course
+cd nextjs-math-course
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Set Up Environment Variables
+
+Create a `.env` file in the root directory. Use `.env.example` as a template.
+
+### 4. Start PostgreSQL Database
+
+Start the PostgreSQL container:
+
+```bash
+docker-compose up -d
+```
+
+To verify the database is running:
+
+```bash
+docker-compose ps
+```
+
+### 6. Start the Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The application should now be running at [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Database Management
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Access PostgreSQL CLI
 
-## Learn More
+```bash
+docker-compose exec db psql -U postgres -d math_course
+```
 
-To learn more about Next.js, take a look at the following resources:
+### View Database with Drizzle Studio
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run db:studio
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This opens a visual database browser at [https://local.drizzle.studio](https://local.drizzle.studio)
 
-## Deploy on Vercel
+### Stop the Database
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+docker-compose down
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Credits
+
+Made with ❤ by [maciekt07](https://github.com/maciekt07), licensed under [MIT](/LICENSE)
