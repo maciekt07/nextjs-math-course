@@ -13,6 +13,7 @@ import { auth } from "@/lib/auth";
 import { SignInTab } from "./_components/sign-in-tab";
 import { SignUpTab } from "./_components/sign-up-tab";
 
+//TODO: add separate routes for sign in and sign up
 export default async function LoginPage() {
   const session = await auth.api.getSession({ headers: await headers() });
 
@@ -25,8 +26,8 @@ export default async function LoginPage() {
       <div className="absolute top-4 right-4">
         <ThemeSelect />
       </div>
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
+      <div className="w-full max-w-md flex flex-col items-center">
+        <div className="text-center mb-8 flex-shrink-0">
           <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-50 mb-2">
             Welcome
           </h1>
@@ -34,10 +35,10 @@ export default async function LoginPage() {
             Sign in to your account or create a new one
           </p>
         </div>
-        <Card className="shadow-lg border-slate-200 dark:border-slate-800">
+        <Card className="shadow-lg border-slate-200 dark:border-slate-800 w-full flex-shrink-0">
           <Tabs defaultValue="signin" className="w-full">
             <CardHeader className="space-y-1 pb-4">
-              <TabsList className="grid w-full grid-cols-2 mb-4">
+              <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="signin" className="text-sm">
                   Sign In
                 </TabsTrigger>
@@ -46,7 +47,7 @@ export default async function LoginPage() {
                 </TabsTrigger>
               </TabsList>
             </CardHeader>
-            <CardContent className="pt-0">
+            <CardContent className="pt-0 min-h-[360px]">
               <TabsContent value="signin" className="space-y-4">
                 <div>
                   <CardTitle className="text-2xl">Sign In</CardTitle>

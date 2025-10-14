@@ -46,7 +46,6 @@ export function SignInTab() {
           toast.error(error.error.message || "Failed to sign in");
         },
         onSuccess: () => {
-          toast.success("Success");
           router.push("/courses");
         },
       },
@@ -89,7 +88,7 @@ export function SignInTab() {
           disabled={isSubmitting}
           className="w-full mt-4"
         >
-          <LoadingSwap isLoading={isSubmitting}>Sign Up</LoadingSwap>
+          <LoadingSwap isLoading={isSubmitting}>Sign In</LoadingSwap>
         </Button>
       </form>
     </Form>

@@ -42,14 +42,16 @@ export function SignUpTab() {
 
   async function handleSignUp(data: SignUpForm) {
     await authClient.signUp.email(
-      { ...data, callbackURL: "/courses" },
+      { ...data, callbackURL: "/auth/login" },
       {
         onError: (error) => {
           toast.error(error.error.message || "Failed to sign up");
         },
         onSuccess: () => {
-          toast.success("Success");
-          router.push("/courses");
+          toast.success(
+            "Check your inbox to verify your email before logging in",
+          );
+          router.push("/auth/verify-email");
         },
       },
     );

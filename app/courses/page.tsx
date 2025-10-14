@@ -21,10 +21,15 @@ export default function CoursesPage() {
       <Button
         size="lg"
         variant="destructive"
-        onClick={() => {
-          authClient.signOut();
-          router.push("/");
-          toast.success("Signed out successfully");
+        onClick={async () => {
+          await authClient.signOut({
+            fetchOptions: {
+              onSuccess: () => {
+                router.push("/");
+                toast.success("Signed out successfully");
+              },
+            },
+          });
         }}
       >
         Sign Out
