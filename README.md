@@ -30,7 +30,7 @@ npm install
 
 ### 3. Set Up Environment Variables
 
-Create a `.env` file in the root directory. Use `.env.example` as a template.
+Create a `.env` file in the root directory. Use [.env.example](.env.example) as a template.
 
 ### 4. Start PostgreSQL Database
 
