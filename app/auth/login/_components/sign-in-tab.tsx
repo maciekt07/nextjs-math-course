@@ -40,13 +40,13 @@ export function SignInTab() {
 
   async function handleSignIn(data: SignInForm) {
     await authClient.signIn.email(
-      { ...data, callbackURL: "/courses" },
+      { ...data, callbackURL: "/" },
       {
         onError: (error) => {
           toast.error(error.error.message || "Failed to sign in");
         },
         onSuccess: () => {
-          router.push("/courses");
+          router.push("/");
         },
       },
     );
