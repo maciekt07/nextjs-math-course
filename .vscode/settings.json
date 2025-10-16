@@ -1,0 +1,16 @@
+{
+  "material-icon-theme.folders.customClones": [
+    {
+      "name": "payload",
+      "base": "content",
+      "color": "gray-700",
+      "folderNames": ["(payload)"]
+    },
+    {
+      "name": "dev-dist",
+      "base": "app",
+      "color": "red-400",
+      "folderNames": ["(app)"]
+    }
+  ]
+}

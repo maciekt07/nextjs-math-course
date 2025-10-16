@@ -1,4 +1,5 @@
 import { BookOpen, Calculator, Clock, GraduationCap, Play } from "lucide-react";
+import { headers } from "next/headers";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,14 +10,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { auth } from "@/lib/auth";
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
   return (
     <div className="w-full flex flex-col">
       <div className="pt-24 px-6 max-w-7xl mx-auto flex flex-col items-center text-center gap-6">
         <Calculator size={80} color="var(--primary)" />
         <h1 className="text-4xl md:text-5xl font-extrabold">
-          Welcome to Math Course Online
+          Welcome {session?.user ? session.user.name : "to Math Course Online"}
         </h1>
         <p className="text-lg max-w-xl">
           Learn math interactively with our easy-to-follow lessons and
