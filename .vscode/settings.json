@@ -7,10 +7,10 @@
       "folderNames": ["(payload)"]
     },
     {
-      "name": "dev-dist",
-      "base": "app",
-      "color": "red-400",
-      "folderNames": ["(app)"]
+      "name": "collections",
+      "base": "class",
+      "color": "red-700",
+      "folderNames": ["collections"]
     }
   ]
 }

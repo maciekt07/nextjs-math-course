@@ -66,7 +66,7 @@ export default async function Home() {
               size="lg"
               asChild
             >
-              <Link href="/courses/advanced-mathematics">See Free Lessons</Link>
+              <Link href="/course/math">See Free Lessons</Link>
             </Button>
           </CardContent>
           <CardFooter className="flex justify-between items-center pt-6 border-t dark:border-border">

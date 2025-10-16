@@ -67,6 +67,8 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    courses: Course;
+    lessons: Lesson;
     users: User;
     "payload-locked-documents": PayloadLockedDocument;
     "payload-preferences": PayloadPreference;
@@ -74,6 +76,8 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    courses: CoursesSelect<false> | CoursesSelect<true>;
+    lessons: LessonsSelect<false> | LessonsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     "payload-locked-documents":
       | PayloadLockedDocumentsSelect<false>
@@ -119,6 +123,33 @@ export interface UserAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "courses".
+ */
+export interface Course {
+  id: string;
+  title: string;
+  slug: string;
+  description?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lessons".
+ */
+export interface Lesson {
+  id: string;
+  title: string;
+  slug: string;
+  course: string | Course;
+  order: number;
+  free?: boolean | null;
+  content: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -147,10 +178,19 @@ export interface User {
  */
 export interface PayloadLockedDocument {
   id: string;
-  document?: {
-    relationTo: "users";
-    value: string | User;
-  } | null;
+  document?:
+    | ({
+        relationTo: "courses";
+        value: string | Course;
+      } | null)
+    | ({
+        relationTo: "lessons";
+        value: string | Lesson;
+      } | null)
+    | ({
+        relationTo: "users";
+        value: string | User;
+      } | null);
   globalSlug?: string | null;
   user: {
     relationTo: "users";
@@ -192,6 +232,31 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "courses_select".
+ */
+export interface CoursesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lessons_select".
+ */
+export interface LessonsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  course?: T;
+  order?: T;
+  free?: T;
+  content?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
