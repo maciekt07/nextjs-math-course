@@ -1,46 +1,69 @@
 import { FileText } from "lucide-react";
+import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
+import { cache } from "react";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { getPayloadClient } from "@/lib/payload-client";
 
-async function getLesson(courseSlug: string, lessonSlug: string) {
+export const revalidate = 3600;
+
+const queryLessonBySlug = cache(
+  async ({
+    courseSlug,
+    lessonSlug,
+    draft,
+  }: {
+    courseSlug: string;
+    lessonSlug: string;
+    draft: boolean;
+  }) => {
+    const payload = await getPayloadClient();
+    const { docs } = await payload.find({
+      collection: "lessons",
+      draft,
+      limit: 1,
+      depth: 1,
+      where: {
+        and: [
+          { "course.slug": { equals: courseSlug } },
+          { slug: { equals: lessonSlug } },
+        ],
+      },
+    });
+    return docs?.[0] || null;
+  },
+);
+
+type Args = {
+  params: Promise<{ courseName: string; lessonName: string }>;
+};
+
+export async function generateStaticParams() {
   const payload = await getPayloadClient();
-
-  const courses = await payload.find({
-    collection: "courses",
-    where: { slug: { equals: courseSlug } },
-    limit: 1,
-  });
-
-  if (courses.docs.length === 0) return null;
-
   const lessons = await payload.find({
     collection: "lessons",
-    where: {
-      and: [
-        { course: { equals: courses.docs[0].id } },
-        { slug: { equals: lessonSlug } },
-      ],
-    },
-    limit: 1,
+    limit: 1000,
+    pagination: false,
+    select: { slug: true, course: true },
   });
 
-  if (lessons.docs.length === 0) return null;
-  return { course: courses.docs[0], lesson: lessons.docs[0] };
+  return lessons.docs.map((lesson) => ({
+    courseName: typeof lesson.course === "string" ? "" : lesson.course.slug,
+    lessonName: lesson.slug,
+  }));
 }
 
-export default async function LessonPage({
-  params,
-}: {
-  params: { courseName: string; lessonName: string };
-}) {
-  const { courseName, lessonName } = await params;
+export default async function LessonPage({ params: paramsPromise }: Args) {
+  const { courseName, lessonName } = await paramsPromise;
+  const { isEnabled: draft } = await draftMode();
 
-  const data = await getLesson(courseName, lessonName);
+  const lesson = await queryLessonBySlug({
+    courseSlug: courseName,
+    lessonSlug: lessonName,
+    draft,
+  });
 
-  if (!data) notFound();
-
-  const { lesson } = data;
+  if (!lesson) notFound();
 
   const dateFormatter = new Intl.DateTimeFormat("en-US", {
     year: "numeric",
@@ -50,11 +73,8 @@ export default async function LessonPage({
     minute: "2-digit",
   });
 
-  const createdAt = dateFormatter.format(new Date(lesson.createdAt));
-  const updatedAt = dateFormatter.format(new Date(lesson.updatedAt));
-
   return (
-    <div className="max-w-4xl mx-auto px-6 py-8">
+    <article className="max-w-4xl mx-auto px-6 py-8">
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-2 text-primary flex items-center gap-3">
           <FileText /> {lesson.title}
@@ -64,10 +84,11 @@ export default async function LessonPage({
       <div className="prose dark:prose-invert max-w-none marker:text-primary">
         <MarkdownRenderer content={lesson.content} />
       </div>
+
       <div className="mt-8 text-sm text-gray-500 dark:text-gray-400 flex flex-col gap-2">
-        <span>Created: {createdAt}</span>
-        <span>Updated: {updatedAt}</span>
+        <span>Created: {dateFormatter.format(new Date(lesson.createdAt))}</span>
+        <span>Updated: {dateFormatter.format(new Date(lesson.updatedAt))}</span>
       </div>
-    </div>
+    </article>
   );
 }

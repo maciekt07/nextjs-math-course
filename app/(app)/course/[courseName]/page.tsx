@@ -1,30 +1,42 @@
 import { BookX } from "lucide-react";
 import { notFound, redirect } from "next/navigation";
+import { cache } from "react";
 import { getPayloadClient } from "@/lib/payload-client";
 
-export default async function CoursePage({
-  params,
-}: {
-  params: { courseName: string };
-}) {
+const getCourse = cache(async (courseSlug: string) => {
   const payload = await getPayloadClient();
-
-  const courses = await payload.find({
+  const { docs } = await payload.find({
     collection: "courses",
-    where: { slug: { equals: params.courseName } },
+    where: { slug: { equals: courseSlug } },
     limit: 1,
   });
+  return docs[0] || null;
+});
 
-  if (courses.docs.length === 0) notFound();
-
-  const lessons = await payload.find({
+const getFirstLesson = cache(async (courseId: string) => {
+  const payload = await getPayloadClient();
+  const { docs } = await payload.find({
     collection: "lessons",
-    where: { course: { equals: courses.docs[0].id } },
+    where: { course: { equals: courseId } },
     sort: "order",
     limit: 1,
   });
+  return docs[0] || null;
+});
 
-  if (lessons.docs.length === 0) {
+type Args = {
+  params: Promise<{ courseName: string }>;
+};
+
+export default async function CoursePage({ params: paramsPromise }: Args) {
+  const { courseName } = await paramsPromise;
+  const course = await getCourse(courseName);
+
+  if (!course) notFound();
+
+  const firstLesson = await getFirstLesson(course.id);
+
+  if (!firstLesson) {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-center">
@@ -40,5 +52,5 @@ export default async function CoursePage({
     );
   }
 
-  redirect(`/course/${params.courseName}/${lessons.docs[0].slug}`);
+  redirect(`/course/${courseName}/${firstLesson.slug}`);
 }

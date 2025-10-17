@@ -103,11 +103,10 @@ const LessonReorderField: NumberFieldClientComponent = (props) => {
 
   const courseId = courseField?.value;
 
-  // Configure sensors for vertical-only dragging
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 8, // Require 8px movement to start drag
+        distance: 8,
       },
     }),
   );
