@@ -1,3 +1,4 @@
+import { FileText } from "lucide-react";
 import { notFound } from "next/navigation";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { getPayloadClient } from "@/lib/payload-client";
@@ -41,14 +42,31 @@ export default async function LessonPage({
 
   const { lesson } = data;
 
+  const dateFormatter = new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  const createdAt = dateFormatter.format(new Date(lesson.createdAt));
+  const updatedAt = dateFormatter.format(new Date(lesson.updatedAt));
+
   return (
     <div className="max-w-4xl mx-auto px-6 py-8">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">{lesson.title}</h1>
+        <h1 className="text-4xl font-bold mb-2 text-primary flex items-center gap-3">
+          <FileText /> {lesson.title}
+        </h1>
       </div>
 
-      <div className="prose prose-slate dark:prose-invert max-w-none">
+      <div className="prose dark:prose-invert max-w-none marker:text-primary">
         <MarkdownRenderer content={lesson.content} />
+      </div>
+      <div className="mt-8 text-sm text-gray-500 dark:text-gray-400 flex flex-col gap-2">
+        <span>Created: {createdAt}</span>
+        <span>Updated: {updatedAt}</span>
       </div>
     </div>
   );

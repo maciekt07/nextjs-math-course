@@ -25,7 +25,11 @@ export const Lessons: CollectionConfig = {
     {
       name: "order",
       type: "number",
-      required: true,
+      admin: {
+        components: {
+          Field: "./fields/lesson-reorder",
+        },
+      },
     },
     {
       name: "free",
@@ -34,7 +38,13 @@ export const Lessons: CollectionConfig = {
     },
     {
       name: "content",
-      type: "textarea",
+      type: "text",
+      label: "Content (Markdown + LaTeX)",
+      admin: {
+        components: {
+          Field: "./fields/markdown-preview",
+        },
+      },
       required: true,
     },
   ],

@@ -1,9 +1,11 @@
 "use client";
 
-import { BookOpen, ChevronLeft } from "lucide-react";
+import { ChevronLeft, Lock, LogIn } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import type { Course, Lesson } from "@/payload-types";
 
@@ -17,18 +19,19 @@ export function CourseSidebar({
   courseName: string;
 }) {
   const pathname = usePathname();
+  const { data: session, isPending } = authClient.useSession();
 
   return (
-    <div className="w-80 border-r bg-background flex flex-col h-full">
+    <div className="w-90 border-r bg-background flex flex-col h-full">
       <div className="p-4 border-b">
-        <Link href="/courses">
-          <Button variant="ghost" size="sm" className="mb-3">
-            <ChevronLeft className="h-4 w-4 mr-2" />
-            Back to Courses
-          </Button>
-        </Link>
+        <Button asChild variant="ghost" size="sm" className="mb-3">
+          <Link href="/">
+            <ChevronLeft />
+            Back to Home
+          </Link>
+        </Button>
         <div className="flex items-start gap-3">
-          <BookOpen className="h-5 w-5 mt-1 text-primary" />
+          {/* <BookOpen className="h-5 w-5 mt-1 text-primary" /> */}
           <div>
             <h2 className="font-semibold text-lg leading-tight">
               {course.title}
@@ -59,7 +62,7 @@ export function CourseSidebar({
                 <Link key={lesson.id} href={lessonPath}>
                   <div
                     className={cn(
-                      "flex items-start gap-3 px-3 py-2.5 rounded-lg transition-colors cursor-pointer",
+                      "flex items-center px-3 py-2.5 rounded-lg transition-colors cursor-pointer",
                       isActive
                         ? "bg-secondary text-secondary-foreground"
                         : "hover:bg-secondary/50 text-muted-foreground hover:text-foreground",
@@ -75,15 +78,19 @@ export function CourseSidebar({
                     >
                       {lesson.order}
                     </span>
-                    <div className="flex-1 min-w-0">
+                    <div className="flex-1 flex items-center justify-between ml-3 min-w-0">
                       <p
                         className={cn(
                           "text-sm font-medium leading-tight truncate",
                           isActive && "text-foreground",
                         )}
                       >
-                        {lesson.title} {lesson.free && "(Free)"}
+                        {lesson.title}
                       </p>
+
+                      {!lesson.free && (
+                        <Lock className="flex-shrink-0 ml-2 text-orange-600 dark:text-orange-500" />
+                      )}
                     </div>
                   </div>
                 </Link>
@@ -91,6 +98,41 @@ export function CourseSidebar({
             })}
           </nav>
         </div>
+      </div>
+
+      <div className="p-4 border-t mt-auto">
+        {isPending ? (
+          <div className="flex items-center justify-center py-2">
+            <div className="h-5 w-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : session?.user ? (
+          <div className="flex items-center gap-2">
+            <Link
+              href="/account"
+              className="flex items-center gap-2 flex-1 min-w-0 rounded-lg hover:bg-secondary/50 transition-colors p-2 -ml-2"
+            >
+              <Avatar className="h-9 w-9">
+                <AvatarFallback className="bg-primary text-primary-foreground font-medium">
+                  {session.user.name?.charAt(0).toUpperCase() ||
+                    session.user.email?.charAt(0).toUpperCase() ||
+                    "U"}
+                </AvatarFallback>
+              </Avatar>
+              <p className="text-sm font-medium leading-tight truncate">
+                {session.user.name || "User"}
+              </p>
+            </Link>
+            <Button asChild size="sm" variant="outline">
+              <Link href="/">Buy Course</Link>
+            </Button>
+          </div>
+        ) : (
+          <Button asChild className="w-full">
+            <Link href="/auth/login">
+              <LogIn /> Log In
+            </Link>
+          </Button>
+        )}
       </div>
     </div>
   );

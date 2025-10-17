@@ -1,21 +1,26 @@
-// biome-ignore-all lint/suspicious/noExplicitAny: required for global Payload cache typing
-import { getPayload } from "payload";
+import { getPayload, type Payload } from "payload";
 import config from "@/payload.config";
 
-let cached = (global as any).payload;
-
-if (!cached) {
-  cached = (global as any).payload = { client: null, promise: null };
+declare global {
+  var payload:
+    | {
+        client: Payload | null;
+        promise: Promise<Payload> | null;
+      }
+    | undefined;
 }
 
-export const getPayloadClient = async () => {
-  if (cached.client) {
-    return cached.client;
-  }
+// Initialize cached object on global
+const cached = global.payload || { client: null, promise: null };
 
-  if (!cached.promise) {
-    cached.promise = getPayload({ config });
-  }
+if (!global.payload) {
+  global.payload = cached;
+}
+
+export const getPayloadClient = async (): Promise<Payload> => {
+  if (cached.client) return cached.client;
+
+  if (!cached.promise) cached.promise = getPayload({ config });
 
   try {
     cached.client = await cached.promise;

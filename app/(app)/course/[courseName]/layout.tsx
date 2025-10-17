@@ -32,7 +32,7 @@ export default async function CourseLayout({
   children: React.ReactNode;
   params: { courseName: string };
 }) {
-  const { courseName } = await params;
+  const { courseName } = params;
   const data = await getCourseWithLessons(courseName);
   if (!data) notFound();
 
