@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
@@ -28,6 +28,7 @@ type SignInForm = z.infer<typeof signInSchema>;
 
 export function SignInTab() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const form = useForm<SignInForm>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -36,17 +37,19 @@ export function SignInTab() {
     },
   });
 
+  const returnTo = searchParams.get("returnTo") || "/";
+
   const { isSubmitting } = form.formState;
 
   async function handleSignIn(data: SignInForm) {
     await authClient.signIn.email(
-      { ...data, callbackURL: "/" },
+      { ...data, callbackURL: returnTo },
       {
         onError: (error) => {
           toast.error(error.error.message || "Failed to sign in");
         },
         onSuccess: () => {
-          router.push("/");
+          router.push(returnTo);
         },
       },
     );

@@ -128,7 +128,7 @@ export function CourseSidebar({
           </div>
         ) : (
           <Button asChild className="w-full">
-            <Link href="/auth/login">
+            <Link href={`/auth/login?returnTo=${encodeURIComponent(pathname)}`}>
               <LogIn /> Log In
             </Link>
           </Button>
