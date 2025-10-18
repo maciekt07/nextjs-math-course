@@ -15,6 +15,18 @@ export const Lessons: CollectionConfig = {
       name: "slug",
       type: "text",
       required: true,
+      unique: true,
+      admin: {
+        components: {
+          Field: "./fields/auto-slug-field",
+        },
+      },
+    },
+    {
+      name: "free",
+      type: "checkbox",
+      defaultValue: false,
+      label: "Free Lesson",
     },
     {
       name: "course",
@@ -30,11 +42,6 @@ export const Lessons: CollectionConfig = {
           Field: "./fields/lesson-reorder",
         },
       },
-    },
-    {
-      name: "free",
-      type: "checkbox",
-      defaultValue: false,
     },
     {
       name: "content",

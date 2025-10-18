@@ -135,9 +135,9 @@ export interface Lesson {
   id: string;
   title: string;
   slug: string;
+  free?: boolean | null;
   course: string | Course;
   order?: number | null;
-  free?: boolean | null;
   content: string;
   updatedAt: string;
   createdAt: string;
@@ -245,9 +245,9 @@ export interface CoursesSelect<T extends boolean = true> {
 export interface LessonsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
+  free?: T;
   course?: T;
   order?: T;
-  free?: T;
   content?: T;
   updatedAt?: T;
   createdAt?: T;

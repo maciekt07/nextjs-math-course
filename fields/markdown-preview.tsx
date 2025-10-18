@@ -17,7 +17,7 @@ export default function MarkdownPreviewField({
 
   return (
     <div className="flex flex-col gap-3">
-      <label>{label || "Markdown + LaTeX"}</label>
+      <label>{label || "Content (Markdown + LaTeX)"}</label>
 
       <textarea
         value={value}

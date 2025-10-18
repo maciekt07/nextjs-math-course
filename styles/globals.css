@@ -114,6 +114,10 @@
   * {
     @apply border-border outline-ring/50;
   }
+  *::selection {
+    background-color: oklch(49.697% 0.20315 281.305);
+    color: var(--color-primary-foreground);
+  }
   body {
     @apply bg-background text-foreground;
   }

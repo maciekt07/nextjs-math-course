@@ -16,6 +16,11 @@ export const Courses: CollectionConfig = {
       type: "text",
       required: true,
       unique: true,
+      admin: {
+        components: {
+          Field: "./fields/auto-slug-field",
+        },
+      },
     },
     {
       name: "description",

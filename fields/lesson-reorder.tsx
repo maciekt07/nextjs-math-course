@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/accordion";
 import type { Lesson } from "@/payload-types";
 
+//TODO: add reset button
 const SortableLesson: React.FC<{
   lesson: Lesson;
   index: number;
@@ -301,7 +302,7 @@ const LessonReorderField: NumberFieldClientComponent = (props) => {
   }
 
   return (
-    <div className="space-y-3 mb-2">
+    <div className="space-y-3 mb-4">
       <label>Order</label>
       <Accordion type="single" collapsible className="w-full bg-transparent">
         <AccordionItem value="lesson-reorder" className="border-none">
