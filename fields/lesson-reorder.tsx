@@ -24,7 +24,7 @@ import { useDocumentInfo, useField, useFormFields } from "@payloadcms/ui";
 import { GripVertical } from "lucide-react";
 import type { NumberFieldClientComponent } from "payload";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -95,13 +95,24 @@ const LessonReorderField: NumberFieldClientComponent = (props) => {
   const { path } = props;
   const { id: currentLessonId } = useDocumentInfo();
   const courseField = useFormFields(([fields]) => fields.course);
+  const titleField = useFormFields(([fields]) => fields.title);
+  const slugField = useFormFields(([fields]) => fields.slug);
   const { setValue } = useField<number>({ path });
 
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [loading, setLoading] = useState(true);
   const [, setActiveId] = useState<string | null>(null);
+  const hasManuallyReorderedRef = useRef(false);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const lessonsRef = useRef<Lesson[]>([]);
 
   const courseId = courseField?.value;
+  const title = titleField?.value;
+  const slug = slugField?.value;
+
+  useEffect(() => {
+    lessonsRef.current = lessons;
+  }, [lessons]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -111,6 +122,28 @@ const LessonReorderField: NumberFieldClientComponent = (props) => {
     }),
   );
 
+  // debounced update for title/slug changes
+  const updateTempLessonInfo = useCallback((title: string, slug: string) => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    debounceTimerRef.current = setTimeout(() => {
+      setLessons((prev) =>
+        prev.map((lesson) =>
+          lesson.id === "temp-new-lesson"
+            ? {
+                ...lesson,
+                title: title || "New Lesson (unsaved)",
+                slug: slug || "",
+              }
+            : lesson,
+        ),
+      );
+    }, 600);
+  }, []);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: title/slug changes are handled by separate debounced effect below to avoid refetching on every keystroke
   useEffect(() => {
     const fetchLessons = async () => {
       if (!courseId) {
@@ -124,7 +157,46 @@ const LessonReorderField: NumberFieldClientComponent = (props) => {
           `/api/lessons?where[course][equals]=${courseId}&limit=100&sort=order`,
         );
         const data = await response.json();
-        setLessons(data.docs || []);
+        const fetchedLessons = data.docs || [];
+
+        // if this is a new lesson
+        if (!currentLessonId) {
+          const lessonTitle =
+            typeof title === "string" ? title : "New Lesson (unsaved)";
+          const lessonSlug = typeof slug === "string" ? slug : "";
+
+          const newLesson: Lesson = {
+            id: "temp-new-lesson",
+            title: lessonTitle,
+            slug: lessonSlug,
+            course: courseId,
+            order: fetchedLessons.length + 1,
+          } as Lesson;
+
+          // if user has manually reordered preserve the temp lesson position
+          if (hasManuallyReorderedRef.current) {
+            const existingTempIndex = lessonsRef.current.findIndex(
+              (l) => l.id === "temp-new-lesson",
+            );
+            if (existingTempIndex !== -1) {
+              // temp lesson exists - insert at same position
+              fetchedLessons.splice(existingTempIndex, 0, newLesson);
+            } else {
+              // fallback to end
+              fetchedLessons.push(newLesson);
+            }
+          } else {
+            // first time
+            fetchedLessons.push(newLesson);
+            setValue(fetchedLessons.length);
+          }
+
+          setLessons(fetchedLessons);
+        } else {
+          // existing lesson
+          setLessons(fetchedLessons);
+          hasManuallyReorderedRef.current = false;
+        }
       } catch (error) {
         console.error("Error fetching lessons:", error);
         setLessons([]);
@@ -134,7 +206,22 @@ const LessonReorderField: NumberFieldClientComponent = (props) => {
     };
 
     fetchLessons();
-  }, [courseId]);
+  }, [courseId, currentLessonId, setValue]);
+
+  // handle title/slug changes with debounce
+  useEffect(() => {
+    if (!currentLessonId && hasManuallyReorderedRef.current) {
+      const lessonTitle = typeof title === "string" ? title : "";
+      const lessonSlug = typeof slug === "string" ? slug : "";
+      updateTempLessonInfo(lessonTitle, lessonSlug);
+    }
+
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [title, slug, currentLessonId, updateTempLessonInfo]);
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);
@@ -152,30 +239,36 @@ const LessonReorderField: NumberFieldClientComponent = (props) => {
     const newLessons = arrayMove(lessons, oldIndex, newIndex);
     setLessons(newLessons);
 
+    if (active.id === "temp-new-lesson" || over.id === "temp-new-lesson") {
+      hasManuallyReorderedRef.current = true;
+    }
+
     const updates = newLessons.map((lesson, index) => ({
       id: lesson.id,
       order: index + 1,
     }));
 
+    const currentLessonNewOrder = updates.find(
+      (u) => u.id === (currentLessonId || "temp-new-lesson"),
+    )?.order;
+    if (currentLessonNewOrder !== undefined) {
+      setValue(currentLessonNewOrder);
+    }
+
     try {
       await Promise.all(
-        updates.map((update) =>
-          fetch(`/api/lessons/${update.id}`, {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ order: update.order }),
-          }),
-        ),
+        updates
+          .filter((update) => update.id !== "temp-new-lesson")
+          .map((update) =>
+            fetch(`/api/lessons/${update.id}`, {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ order: update.order }),
+            }),
+          ),
       );
-
-      const currentLessonNewOrder = updates.find(
-        (u) => u.id === currentLessonId,
-      )?.order;
-      if (currentLessonNewOrder !== undefined) {
-        setValue(currentLessonNewOrder);
-      }
     } catch (error) {
       console.error("Error updating lesson order:", error);
     }
@@ -243,7 +336,10 @@ const LessonReorderField: NumberFieldClientComponent = (props) => {
                         key={lesson.id}
                         lesson={lesson}
                         index={index}
-                        isCurrentLesson={lesson.id === currentLessonId}
+                        isCurrentLesson={
+                          lesson.id === currentLessonId ||
+                          lesson.id === "temp-new-lesson"
+                        }
                       />
                     ))}
                   </SortableContext>
