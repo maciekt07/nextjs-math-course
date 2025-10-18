@@ -1,4 +1,5 @@
 import { mongooseAdapter } from "@payloadcms/db-mongodb";
+import { resendAdapter } from "@payloadcms/email-resend";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { buildConfig } from "payload";
 import sharp from "sharp";
@@ -13,4 +14,9 @@ export default buildConfig({
     url: process.env.MONGO_URL || "",
   }),
   sharp,
+  email: resendAdapter({
+    defaultFromAddress: "hello@resend.dev",
+    defaultFromName: "Math Course Online",
+    apiKey: process.env.RESEND_API_KEY || "",
+  }),
 });
