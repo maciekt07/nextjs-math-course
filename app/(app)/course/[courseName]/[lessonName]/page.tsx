@@ -1,4 +1,3 @@
-import { FileText } from "lucide-react";
 import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
 import { cache } from "react";
@@ -76,9 +75,7 @@ export default async function LessonPage({ params: paramsPromise }: Args) {
   return (
     <article className="max-w-4xl mx-auto px-6 py-8">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2 text-primary flex items-center gap-3">
-          <FileText /> {lesson.title}
-        </h1>
+        <h1 className="text-4xl font-bold mb-2 text-primary">{lesson.title}</h1>
       </div>
 
       <div className="prose dark:prose-invert max-w-none marker:text-primary">

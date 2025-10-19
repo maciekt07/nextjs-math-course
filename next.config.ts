@@ -5,6 +5,12 @@ const nextConfig: NextConfig = {
   experimental: {
     reactCompiler: false,
   },
+  images: {
+    remotePatterns: [
+      //TODO: only for testing purposes remove later
+      { protocol: "https", hostname: "media.discordapp.net", pathname: "/**" },
+    ],
+  },
 };
 
 export default withPayload(nextConfig);
