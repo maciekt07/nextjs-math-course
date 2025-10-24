@@ -1,6 +1,6 @@
 "use client";
 
-import { useField } from "@payloadcms/ui";
+import { TextareaInput, useField } from "@payloadcms/ui";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
@@ -17,14 +17,15 @@ export default function MarkdownPreviewField({
 
   return (
     <div className="flex flex-col gap-3">
-      <label>{label || "Content (Markdown + LaTeX)"}</label>
+      <label>{label || "Content (Markdown + LaTeX)"} </label>
 
-      <textarea
+      <TextareaInput
         value={value}
         onChange={(e) => setValue(e.target.value)}
         rows={10}
-        className="w-full font-mono text-sm border rounded-xl p-3 bg-background border-border focus:outline-none focus:ring-2 focus:ring-primary/50 transition"
+        className="max-h-5"
         placeholder="Write markdown or LaTeX here..."
+        path={path}
       />
 
       <button
@@ -44,8 +45,8 @@ export default function MarkdownPreviewField({
       </button>
 
       {showPreview && (
-        <div className="prose dark:prose-invert max-w-none marker:text-primary border-1 p-2 rounded-2xl">
-          <MarkdownRenderer content={value || "_Nothing to preview yet..._"} />
+        <div className="flex flex-col gap-3 border border-border rounded-xl p-4">
+          <MarkdownRenderer content={value || "_Nothing to preview yet_"} />
         </div>
       )}
     </div>

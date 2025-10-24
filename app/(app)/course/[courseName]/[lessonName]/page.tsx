@@ -78,9 +78,7 @@ export default async function LessonPage({ params: paramsPromise }: Args) {
         <h1 className="text-4xl font-bold mb-2 text-primary">{lesson.title}</h1>
       </div>
 
-      <div className="prose dark:prose-invert max-w-none marker:text-primary">
-        <MarkdownRenderer content={lesson.content} />
-      </div>
+      <MarkdownRenderer content={lesson.content} />
 
       <div className="mt-8 text-sm text-gray-500 dark:text-gray-400 flex flex-col gap-2">
         <span>Created: {dateFormatter.format(new Date(lesson.createdAt))}</span>

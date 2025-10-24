@@ -11,32 +11,35 @@ interface MarkdownRendererProps {
 
 export function MarkdownRenderer({ content }: MarkdownRendererProps) {
   return (
-    <ReactMarkdown
-      components={{
-        a: ({ node, ...props }) => (
-          <a
-            {...props}
-            className="text-primary underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          />
-        ),
-        img: ({ node, ...props }) => {
-          return (
-            <Image
-              src={props.src as string}
-              alt={props.alt || "Image"}
-              width={800}
-              height={500}
-              className="w-full rounded-2xl object-contain"
+    <div className="prose dark:prose-invert max-w-none marker:text-primary">
+      <ReactMarkdown
+        components={{
+          a: ({ node, ...props }) => (
+            <a
+              {...props}
+              className="text-primary underline"
+              target="_blank"
+              rel="noopener noreferrer"
             />
-          );
-        },
-      }}
-      // biome-ignore lint/correctness/noChildrenProp: cannot pass content as JSX children
-      children={content}
-      remarkPlugins={[remarkGfm, remarkMath]}
-      rehypePlugins={[rehypeKatex]}
-    />
+          ),
+          img: ({ node, ...props }) => {
+            return (
+              <Image
+                {...props}
+                src={props.src as string}
+                alt={props.alt || "Image"}
+                width={800}
+                height={500}
+                className="w-full rounded-2xl object-contain"
+              />
+            );
+          },
+        }}
+        // biome-ignore lint/correctness/noChildrenProp: cannot pass content as JSX children
+        children={content}
+        remarkPlugins={[remarkGfm, remarkMath]}
+        rehypePlugins={[rehypeKatex]}
+      />
+    </div>
   );
 }

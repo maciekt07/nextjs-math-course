@@ -12,27 +12,30 @@ export function LogOutButton({ ...props }: ComponentProps<typeof Button>) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const handleLogout = async () => {
+    setIsLoading(true);
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/");
+          toast.success("Signed out successfully");
+          router.refresh();
+        },
+        onError: () => {
+          setIsLoading(false);
+          toast.error("Failed to sign out");
+        },
+      },
+    });
+  };
+
   return (
     <Button
       size="lg"
       variant="destructive"
       disabled={isLoading}
       className="w-full cursor-pointer"
-      onClick={async () => {
-        setIsLoading(true);
-        await authClient.signOut({
-          fetchOptions: {
-            onSuccess: () => {
-              router.push("/");
-              toast.success("Signed out successfully");
-            },
-            onError: () => {
-              setIsLoading(false);
-              toast.error("Failed to sign out");
-            },
-          },
-        });
-      }}
+      onClick={handleLogout}
       {...props}
     >
       <LoadingSwap isLoading={isLoading} className="flex items-center gap-2">
