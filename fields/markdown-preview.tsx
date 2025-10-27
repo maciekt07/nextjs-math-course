@@ -37,7 +37,6 @@ export default function MarkdownPreviewField({
       </button>
       {showPreview && (
         <div className="flex flex-col gap-3 border border-border rounded-xl p-4">
-          XDDD
           <MarkdownRenderer content={value || "_Nothing to preview yet_"} />
         </div>
       )}

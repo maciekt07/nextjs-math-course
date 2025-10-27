@@ -1,10 +1,26 @@
 # Next.js Math Course Platform
 
+Full-stack Next.js platform with CMS and auth - built for managing and selling online math courses.
+
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/maciekt07/nextjs-math-course?color=%234e65ff)
+![GitHub created at ](https://img.shields.io/github/created-at/maciekt07/nextjs-math-course?color=%234e65ff)
+![GitHub last commit](https://img.shields.io/github/last-commit/maciekt07/nextjs-math-course?color=%234e65ff)
+![GitHub License](https://img.shields.io/github/license/maciekt07/nextjs-math-course?color=%234e65ff)
+
 <p align="center">
 <img src="https://go-skill-icons.vercel.app/api/icons?i=next,ts,react,tailwind,shadcn,betterauth,drizzle,postgres,payload" />
 </p>
 
-<img src="https://github-production-user-asset-6210df.s3.amazonaws.com/85953204/501021606-1fedfd39-0289-4a46-9bd3-bf56b96dde95.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20251014%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251014T152323Z&X-Amz-Expires=300&X-Amz-Signature=00306c2e0d56d94033c1bf98fff4c27d39ab328f125526f01ae43f117342aa10&X-Amz-SignedHeaders=host" />
+<img src="screenshots/landing.png" />
+
+<img src="screenshots/lesson.png" />
+
+## Features
+
+- Full authentication system with BetterAuth, including email verification using Resend
+- Admin CMS panel for managing courses and lessons via Payload CMS
+- Drizzle ORM integration for database management
+- Tailwind + Shadcn UI components
 
 ## Requirements
 
@@ -32,9 +48,9 @@ npm install
 
 Create a `.env` file in the root directory. Use [.env.example](.env.example) as a template.
 
-### 4. Start PostgreSQL Database
+### 4. Start Databases
 
-Start the PostgreSQL container:
+Both PostgreSQL (for main app data) and MongoDB (for Payload CMS) run via Docker Compose
 
 ```bash
 docker-compose up -d
@@ -46,13 +62,23 @@ To verify the database is running:
 docker-compose ps
 ```
 
-### 6. Start the Development Server
+### 5. Start the Development Server
 
 ```bash
 npm run dev
 ```
 
 The application should now be running at [http://localhost:3000](http://localhost:3000)
+
+### 6. Access Payload CMS Admin Panel
+
+Once the app is running, you can access the CMS at:
+
+[http://localhost:3000/admin](http://localhost:3000/admin)
+
+- Create your admin account on first visit
+
+- Use the panel to manage courses, lessons, and users
 
 ## Database Management
 
