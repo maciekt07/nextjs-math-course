@@ -16,6 +16,7 @@
     "db:studio": "drizzle-kit studio",
     "db:push": "drizzle-kit push",
     "cms:gen-types": "payload generate:types",
+    "cms:gen-map": "payload generate:importmap",
     "prepare": "husky install"
   },
   "dependencies": {

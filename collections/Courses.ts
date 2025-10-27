@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { createSlugField } from "@/fields/createSlugField";
 
 export const Courses: CollectionConfig = {
   slug: "courses",
@@ -11,17 +12,7 @@ export const Courses: CollectionConfig = {
       type: "text",
       required: true,
     },
-    {
-      name: "slug",
-      type: "text",
-      required: true,
-      unique: true,
-      admin: {
-        components: {
-          Field: "./fields/auto-slug-field",
-        },
-      },
-    },
+    createSlugField("title"),
     {
       name: "description",
       type: "textarea",

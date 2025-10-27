@@ -2,7 +2,7 @@
 
 import { TextInput, useField, useFormFields } from "@payloadcms/ui";
 import slugify from "@sindresorhus/slugify";
-import { useEffect, useState } from "react";
+import type React from "react";
 
 type AutoSlugFieldProps = {
   path: string;
@@ -12,46 +12,29 @@ export default function AutoSlugField({ path }: AutoSlugFieldProps) {
   const { value, setValue } = useField<string>({ path });
   const title = useFormFields(([fields]) => fields.title?.value as string);
 
-  const generateSlug = (text: string) =>
-    slugify(text, {
-      lowercase: true,
-      decamelize: true,
-    });
+  const generatedSlug = title
+    ? slugify(title, { lowercase: true, decamelize: true })
+    : "";
 
-  const [autoGenerate, setAutoGenerate] = useState<boolean>(() => {
-    if (!value || !title) return true;
-    return value === generateSlug(title);
-  });
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: value intentionally omitted to avoid extra re-renders
-  useEffect(() => {
-    if (autoGenerate && title) {
-      const newSlug = generateSlug(title);
-      if (newSlug !== value) setValue(newSlug);
-    }
-  }, [title, autoGenerate, setValue]);
+  // Regex for a valid slug: lowercase letters, numbers, dashes only
+  const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+  const isValid = !value || slugRegex.test(value); // empty value is okay, backend will generate
 
   return (
-    <div className="mb-8 space-y-2">
-      <div className={autoGenerate ? "opacity-60 pointer-events-none" : ""}>
-        <TextInput
-          path={path}
-          value={value || ""}
-          onChange={setValue}
-          label="Slug"
-          required
-        />
-      </div>
-
-      <label className="flex items-center gap-2 text-sm cursor-pointer select-none">
-        <input
-          type="checkbox"
-          checked={autoGenerate}
-          onChange={(e) => setAutoGenerate(e.target.checked)}
-          className="cursor-pointer accent-primary"
-        />
-        <span>Auto-generate from title</span>
-      </label>
-    </div>
+    <TextInput
+      path={path}
+      label="Slug"
+      description="Automatically generated from the title if left empty."
+      value={value || ""}
+      placeholder={!value ? generatedSlug : ""}
+      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+        setValue(e.target.value);
+      }}
+      Error={
+        !isValid
+          ? "Invalid slug: only lowercase letters, numbers, and dashes are allowed."
+          : undefined
+      }
+    />
   );
 }

@@ -122,7 +122,7 @@ export interface UserAuthOperations {
 export interface Course {
   id: string;
   title: string;
-  slug: string;
+  slug?: string | null;
   description?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -134,7 +134,7 @@ export interface Course {
 export interface Lesson {
   id: string;
   title: string;
-  slug: string;
+  slug?: string | null;
   free?: boolean | null;
   course: string | Course;
   order?: number | null;

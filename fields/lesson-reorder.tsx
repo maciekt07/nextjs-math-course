@@ -34,6 +34,7 @@ import {
 import type { Lesson } from "@/payload-types";
 
 //TODO: add reset button
+//TODO: refactor, simplify and use native Payload components
 const SortableLesson: React.FC<{
   lesson: Lesson;
   index: number;

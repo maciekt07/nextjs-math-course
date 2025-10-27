@@ -1,9 +1,9 @@
-import { default as default_962084a586557d7ba1b561a3148ebe83 } from '../../../fields/auto-slug-field'
-import { default as default_040a01abe9ac893d64d214541b6aa1ac } from '../../../fields/lesson-reorder'
-import { default as default_20806a44b0fc27e6884b6a1d5d7618ef } from '../../../fields/markdown-preview'
+import { default as default_e88bad4494d540e6b22cbf3f3f84f1be } from '@fields/auto-slug-field'
+import { default as default_e1b209e8563a463e28f5a024b774a4ae } from '@fields/lesson-reorder'
+import { default as default_d6f3f7b1c845b226a0ce30e53a56c5de } from '@fields/markdown-preview'
 
 export const importMap = {
-  "./fields/auto-slug-field#default": default_962084a586557d7ba1b561a3148ebe83,
-  "./fields/lesson-reorder#default": default_040a01abe9ac893d64d214541b6aa1ac,
-  "./fields/markdown-preview#default": default_20806a44b0fc27e6884b6a1d5d7618ef
+  "@fields/auto-slug-field#default": default_e88bad4494d540e6b22cbf3f3f84f1be,
+  "@fields/lesson-reorder#default": default_e1b209e8563a463e28f5a024b774a4ae,
+  "@fields/markdown-preview#default": default_d6f3f7b1c845b226a0ce30e53a56c5de
 }

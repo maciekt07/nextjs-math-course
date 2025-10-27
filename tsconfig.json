@@ -21,7 +21,8 @@
     "paths": {
       "@/*": ["./*"],
       "@payload-config": ["./payload.config.ts"],
-      "@styles/*": ["./styles/*"]
+      "@styles/*": ["./styles/*"],
+      "@fields/*": ["./fields/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

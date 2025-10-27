@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { createSlugField } from "@/fields/createSlugField";
 
 export const Lessons: CollectionConfig = {
   slug: "lessons",
@@ -11,17 +12,7 @@ export const Lessons: CollectionConfig = {
       type: "text",
       required: true,
     },
-    {
-      name: "slug",
-      type: "text",
-      required: true,
-      unique: true,
-      admin: {
-        components: {
-          Field: "./fields/auto-slug-field",
-        },
-      },
-    },
+    createSlugField("title"),
     {
       name: "free",
       type: "checkbox",
@@ -39,7 +30,7 @@ export const Lessons: CollectionConfig = {
       type: "number",
       admin: {
         components: {
-          Field: "./fields/lesson-reorder",
+          Field: "@fields/lesson-reorder",
         },
       },
     },
@@ -49,7 +40,7 @@ export const Lessons: CollectionConfig = {
       label: "Content (Markdown + LaTeX)",
       admin: {
         components: {
-          Field: "./fields/markdown-preview",
+          Field: "@fields/markdown-preview",
         },
       },
       required: true,

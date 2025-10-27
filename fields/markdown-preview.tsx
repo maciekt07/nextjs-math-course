@@ -5,6 +5,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 
+//TODO: design better UI for preview
 export default function MarkdownPreviewField({
   path,
   label,
@@ -18,15 +19,6 @@ export default function MarkdownPreviewField({
   return (
     <div className="flex flex-col gap-3">
       <label>{label || "Content (Markdown + LaTeX)"} </label>
-
-      <TextareaInput
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        rows={10}
-        className="max-h-5"
-        placeholder="Write markdown or LaTeX here..."
-        path={path}
-      />
 
       <button
         type="button"
@@ -43,12 +35,20 @@ export default function MarkdownPreviewField({
           </>
         )}
       </button>
-
       {showPreview && (
         <div className="flex flex-col gap-3 border border-border rounded-xl p-4">
+          XDDD
           <MarkdownRenderer content={value || "_Nothing to preview yet_"} />
         </div>
       )}
+      <TextareaInput
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        rows={10}
+        className="max-h-5"
+        placeholder="Write markdown or LaTeX here..."
+        path={path}
+      />
     </div>
   );
 }
