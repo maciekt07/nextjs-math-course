@@ -26,7 +26,7 @@ const signInSchema = z.object({
 
 type SignInForm = z.infer<typeof signInSchema>;
 
-export function SignInTab() {
+export function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const form = useForm<SignInForm>({

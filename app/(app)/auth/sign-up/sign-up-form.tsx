@@ -27,7 +27,7 @@ const signUpSchema = z.object({
 
 type SignUpForm = z.infer<typeof signUpSchema>;
 
-export function SignUpTab() {
+export function SignUpForm() {
   const router = useRouter();
   const form = useForm<SignUpForm>({
     resolver: zodResolver(signUpSchema),
@@ -42,7 +42,7 @@ export function SignUpTab() {
 
   async function handleSignUp(data: SignUpForm) {
     await authClient.signUp.email(
-      { ...data, callbackURL: "/auth/login" },
+      { ...data, callbackURL: "/auth/sign-in" },
       {
         onError: (error) => {
           toast.error(error.error.message || "Failed to sign up");

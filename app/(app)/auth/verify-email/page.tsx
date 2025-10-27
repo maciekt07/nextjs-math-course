@@ -41,7 +41,7 @@ export default async function VerifyEmailPage() {
           </p>
 
           <Button asChild variant="outline" size="lg" className="mt-4">
-            <Link href="/auth/login">
+            <Link href="/auth/sign-in">
               <LogIn />
               Go to Login
             </Link>

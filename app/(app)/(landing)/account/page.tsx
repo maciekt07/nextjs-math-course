@@ -45,7 +45,7 @@ export default async function AccountPage() {
   });
 
   if (!session) {
-    redirect("/auth/login");
+    redirect("/auth/sign-in");
   }
 
   return (
