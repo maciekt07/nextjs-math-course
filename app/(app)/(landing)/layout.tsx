@@ -17,13 +17,6 @@ export default async function MarketingLayout({
     headers: await headers(),
   });
 
-  const getInitials = (name: string) =>
-    name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase();
-
   return (
     <div className="flex flex-col min-h-screen">
       <header className="w-full py-6 bg-transparent backdrop-blur-sm">
@@ -43,9 +36,11 @@ export default async function MarketingLayout({
                 </Button>
                 <Button asChild variant="outline">
                   <Link href="/account">
-                    <Avatar className="w-6 h-6 text-primary">
-                      <AvatarFallback>
-                        {getInitials(session.user.name)}
+                    <Avatar className="h-6 w-6">
+                      <AvatarFallback className="bg-primary text-primary-foreground">
+                        {session.user.name?.charAt(0).toUpperCase() ||
+                          session.user.email?.charAt(0).toUpperCase() ||
+                          "U"}
                       </AvatarFallback>
                     </Avatar>
                     {session.user.name}

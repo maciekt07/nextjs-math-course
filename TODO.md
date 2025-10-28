@@ -8,10 +8,10 @@
 
 ## Payments
 
-- [ ] Integrate Stripe one-time payments with Payload CMS
-  - [ ] Configure products, checkout sessions, and webhooks
-  - [ ] Protect paid lesson routes (require auth + payment check)
-  - [ ] Use hybrid SSR + SSG:
+- [ x ] Integrate Stripe one-time payments with Payload CMS
+  - [ x ] Configure products, checkout sessions, and webhooks
+  - [ x ] Protect paid lesson routes (require auth + payment check)
+  - [ x ] Use hybrid SSR + SSG:
     - Free lessons: static pages
     - Paid/protected lessons: SSR
 - [ ] Implement course bundles

@@ -1,6 +1,8 @@
-import { BookOpen, Calculator, GraduationCap } from "lucide-react";
+import { and, eq } from "drizzle-orm";
+import { BookOpen, Calculator, Check, GraduationCap } from "lucide-react";
 import { headers } from "next/headers";
 import Link from "next/link";
+import BuyCourseButton from "@/components/buy-course-button";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,6 +12,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { db } from "@/drizzle/db";
+import { enrollment } from "@/drizzle/schema";
 import { auth } from "@/lib/auth";
 import { getPayloadClient } from "@/lib/payload-client";
 
@@ -41,6 +45,19 @@ export default async function Home() {
     headers: await headers(),
   });
   const courses = await getCourses();
+  let ownedCourseIds = new Set<string>();
+  if (session) {
+    const rows = await db
+      .select()
+      .from(enrollment)
+      .where(
+        and(
+          eq(enrollment.userId, session.user.id),
+          eq(enrollment.status, "completed"),
+        ),
+      );
+    ownedCourseIds = new Set(rows.map((r: { courseId: string }) => r.courseId));
+  }
   return (
     <div className="w-full flex flex-col">
       <div className="pt-24 px-6 max-w-7xl mx-auto flex flex-col items-center text-center gap-6">
@@ -81,25 +98,47 @@ export default async function Home() {
                     <Clock size={20} /> 16 Hours
                   </div> */}
                 </div>
-                <Button
-                  className="w-full bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700 text-white"
-                  size="lg"
-                  asChild
-                >
-                  <Link href={`/course/${course.slug}`}>See Free Lessons</Link>
-                </Button>
+                {ownedCourseIds.has(course.id) ? (
+                  <Button size="lg" asChild>
+                    <Link href={`/course/${course.slug}`}>See All Lessons</Link>
+                  </Button>
+                ) : (
+                  <Button variant="green" size="lg" asChild>
+                    <Link href={`/course/${course.slug}`}>
+                      See Free Lessons
+                    </Link>
+                  </Button>
+                )}
               </CardContent>
+              <CardFooter className="border-t dark:border-border">
+                {ownedCourseIds.has(course.id) ? (
+                  <div className="flex items-center justify-center w-full gap-2">
+                    <Check size={28} className="text-green-600 " />
+                    Owned
+                  </div>
+                ) : (
+                  <div className="flex justify-between w-full items-center">
+                    <div className="flex flex-col">
+                      <span className="text-xs text-muted-foreground uppercase tracking-wide">
+                        Price
+                      </span>
+                      <span className="text-2xl font-bold">
+                        {new Intl.NumberFormat("en-US", {
+                          style: "currency",
+                          currency: "USD",
+                        }).format(course.price ?? 0)}
+                      </span>
+                    </div>
 
-              <CardFooter className="flex justify-between items-center pt-6 border-t dark:border-border">
-                <div className="flex flex-col">
-                  <span className="text-xs text-muted-foreground uppercase tracking-wide">
-                    Price
-                  </span>
-                  <span className="text-2xl font-bold">$49</span>
-                </div>
-                <Button size="lg" className="font-bold">
-                  Buy Now
-                </Button>
+                    <BuyCourseButton
+                      courseId={course.id}
+                      size="lg"
+                      className="font-bold"
+                    >
+                      Buy Now
+                    </BuyCourseButton>
+                  </div>
+                )}
               </CardFooter>
             </Card>
           ))}

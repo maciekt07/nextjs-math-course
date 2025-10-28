@@ -7,6 +7,7 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
+    "test:typecheck": "tsc --noEmit",
     "lint": "biome check",
     "lint:fix": "biome check --write",
     "lint:fix-unsafe": "biome check --write --unsafe",
@@ -15,6 +16,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:push": "drizzle-kit push",
+    "stripe:webhook": "stripe listen --forward-to localhost:3000/api/stripe/webhook",
     "cms:gen-types": "payload generate:types",
     "cms:gen-map": "payload generate:importmap",
     "prepare": "husky install"
@@ -38,6 +40,8 @@
     "@react-email/components": "^0.5.7",
     "@react-email/render": "^1.4.0",
     "@sindresorhus/slugify": "^3.0.0",
+    "@stripe/react-stripe-js": "^5.2.0",
+    "@stripe/stripe-js": "^8.1.0",
     "@tailwindcss/typography": "^0.5.19",
     "better-auth": "^1.3.27",
     "class-variance-authority": "^0.7.1",
@@ -61,6 +65,7 @@
     "resend": "^6.2.0",
     "sharp": "^0.34.4",
     "sonner": "^2.0.7",
+    "stripe": "^19.1.0",
     "tailwind-merge": "^3.3.1",
     "zod": "^4.1.12"
   },

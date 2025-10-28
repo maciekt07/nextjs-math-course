@@ -14,6 +14,12 @@ export const Courses: CollectionConfig = {
     },
     createSlugField("title"),
     {
+      name: "price",
+      label: "Price",
+      type: "number",
+      required: true,
+    },
+    {
       name: "description",
       type: "textarea",
     },

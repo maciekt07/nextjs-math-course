@@ -1,9 +1,11 @@
 "use client";
 
-import { ChevronLeft, Lock, LogIn } from "lucide-react";
+import { BadgeCheck, ChevronLeft, Lock, LogIn } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import BuyCourseButton from "@/components/buy-course-button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
@@ -13,10 +15,12 @@ export function CourseSidebar({
   course,
   lessons,
   courseName,
+  owned,
 }: {
   course: Course;
   lessons: Lesson[];
   courseName: string;
+  owned?: boolean;
 }) {
   const pathname = usePathname();
   const { data: session, isPending } = authClient.useSession();
@@ -31,10 +35,15 @@ export function CourseSidebar({
           </Link>
         </Button>
         <div className="flex items-start gap-3">
-          {/* <BookOpen className="h-5 w-5 mt-1 text-primary" /> */}
           <div>
             <h2 className="font-semibold text-lg leading-tight">
-              {course.title}
+              <span>{course.title}</span>
+              {owned && (
+                <Badge className="ml-2">
+                  <BadgeCheck />
+                  Owned
+                </Badge>
+              )}
             </h2>
             {course.description && (
               <p className="text-sm text-muted-foreground mt-1">
@@ -88,7 +97,7 @@ export function CourseSidebar({
                         {lesson.title}
                       </p>
 
-                      {!lesson.free && (
+                      {!lesson.free && !owned && (
                         <Lock className="flex-shrink-0 ml-2 text-orange-600 dark:text-orange-500" />
                       )}
                     </div>
@@ -122,9 +131,11 @@ export function CourseSidebar({
                 {session.user.name || "User"}
               </p>
             </Link>
-            <Button asChild size="sm" variant="outline">
-              <Link href="/">Buy Course</Link>
-            </Button>
+            {!owned && (
+              <BuyCourseButton courseId={course.id} size="sm" variant="outline">
+                Buy Course
+              </BuyCourseButton>
+            )}
           </div>
         ) : (
           <Button asChild className="w-full">

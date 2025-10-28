@@ -8,7 +8,7 @@ Full-stack Next.js platform with CMS and auth - built for managing and selling o
 ![GitHub License](https://img.shields.io/github/license/maciekt07/nextjs-math-course?color=%234e65ff)
 
 <p align="center">
-<img src="https://go-skill-icons.vercel.app/api/icons?i=next,ts,react,tailwind,shadcn,betterauth,drizzle,postgres,payload" />
+<img src="https://go-skill-icons.vercel.app/api/icons?i=next,ts,react,tailwind,shadcn,betterauth,drizzle,postgres,payload,stripe" />
 </p>
 
 <img src="screenshots/landing.png" />
@@ -19,6 +19,7 @@ Full-stack Next.js platform with CMS and auth - built for managing and selling o
 
 - Full authentication system with BetterAuth, including email verification using Resend
 - Admin CMS panel for managing courses and lessons via Payload CMS
+- Stripe integration for selling courses
 - Drizzle ORM integration for database management
 - Tailwind + Shadcn UI components
 
@@ -62,7 +63,13 @@ To verify the database is running:
 docker-compose ps
 ```
 
-### 5. Start the Development Server
+### 5. Run the Stripe webhook listener
+
+```bash
+npm run stripe:webhook
+```
+
+### 6. Start the Development Server
 
 ```bash
 npm run dev
@@ -70,7 +77,7 @@ npm run dev
 
 The application should now be running at [http://localhost:3000](http://localhost:3000)
 
-### 6. Access Payload CMS Admin Panel
+### 7. Access Payload CMS Admin Panel
 
 Once the app is running, you can access the CMS at:
 

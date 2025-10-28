@@ -123,6 +123,7 @@ export interface Course {
   id: string;
   title: string;
   slug?: string | null;
+  price: number;
   description?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -234,6 +235,7 @@ export interface PayloadMigration {
 export interface CoursesSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
+  price?: T;
   description?: T;
   updatedAt?: T;
   createdAt?: T;

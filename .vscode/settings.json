@@ -9,7 +9,7 @@
     {
       "name": "collections",
       "base": "class",
-      "color": "red-700",
+      "color": "red-800",
       "folderNames": ["collections"]
     }
   ]
