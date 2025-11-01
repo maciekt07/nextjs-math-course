@@ -20,11 +20,13 @@
 
 - [ ] Add different lesson types:
   - [ ] Video lessons
-  - [ ] Quizzes
+  - [ x ] Quizzes
 - [ ] Redesign custom fields
   - [ ] Markdown preview
   - [ ] Reorder
+  - [ ] Quiz type fields
 
 ## UI / UX
 
-- [ ] Make navbar, sidebar, and all components fully responsive
+- [ ] Make navbar and all components fully responsive
+- [ ] Improve sidebar animations

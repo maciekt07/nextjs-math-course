@@ -5,7 +5,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import BuyCourseButton from "@/components/buy-course-button";
-import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { db } from "@/drizzle/db";
@@ -13,6 +12,8 @@ import { enrollment } from "@/drizzle/schema";
 import { auth } from "@/lib/auth";
 import { getPayloadClient } from "@/lib/payload-client";
 import type { Course } from "@/payload-types";
+import { QuizLesson } from "./_components/quiz-lesson";
+import { TextLesson } from "./_components/text-lesson";
 
 export const revalidate = 3600;
 export const dynamic = "force-dynamic";
@@ -126,21 +127,13 @@ export default async function LessonPage({ params: paramsPromise }: Args) {
 
   if (!lesson && allowed) notFound();
 
-  const dateFormatter = new Intl.DateTimeFormat("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-
   if (!allowed) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Card className="max-w-md text-center p-8">
           <CardContent className="space-y-4">
-            <Lock className="mx-auto  w-12 h-12 text-orange-600 dark:text-orange-500" />
-            <h2 className="text-2xl font-semibold ">{lessonMeta.title}</h2>
+            <Lock className="mx-auto w-12 h-12 text-orange-600 dark:text-orange-500" />
+            <h2 className="text-2xl font-semibold">{lessonMeta.title}</h2>
             <p className="text-muted-foreground">
               This is a premium lesson. To access it you need to own the course.
             </p>
@@ -172,23 +165,9 @@ export default async function LessonPage({ params: paramsPromise }: Args) {
   }
 
   return (
-    <article className="max-w-4xl mx-auto px-6 py-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2 text-primary">
-          {lesson!.title}
-        </h1>
-      </div>
-
-      <MarkdownRenderer content={lesson!.content} />
-
-      <div className="mt-8 text-sm text-gray-500 dark:text-gray-400 flex flex-col gap-2">
-        <span>
-          Created: {dateFormatter.format(new Date(lesson!.createdAt))}
-        </span>
-        <span>
-          Updated: {dateFormatter.format(new Date(lesson!.updatedAt))}
-        </span>
-      </div>
+    <article className="max-w-4xl mx-auto px-6 py-8 mt-8">
+      {lesson?.type === "text" && <TextLesson lesson={lesson} />}
+      {lesson?.type === "quiz" && <QuizLesson lesson={lesson} />}
     </article>
   );
 }

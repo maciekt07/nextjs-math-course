@@ -2,7 +2,7 @@ import { and, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { db } from "@/drizzle/db";
-import { enrollment } from "@/drizzle/schema";
+import { enrollment, user } from "@/drizzle/schema";
 import { stripe } from "@/lib/stripe/stripe";
 
 export const runtime = "nodejs";
@@ -73,6 +73,19 @@ export async function POST(req: Request) {
               eq(enrollment.courseId, courseId),
             ),
           );
+        // persist stripe customer id on the user record
+        try {
+          const stripeCustomer = session.customer as string;
+          const uid = found[0].userId;
+          if (uid && stripeCustomer) {
+            await db
+              .update(user)
+              .set({ stripeCustomerId: stripeCustomer })
+              .where(eq(user.id, uid));
+          }
+        } catch (e) {
+          console.error("Failed to update user with stripeCustomerId:", e);
+        }
       }
     } catch (e) {
       console.error("Failed to update enrollment after webhook:", e);

@@ -7,7 +7,7 @@ import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
 import { auth } from "@/lib/auth";
 import { getPayloadClient } from "@/lib/payload-client";
-import { CourseSidebar } from "../_components/course-sidebar";
+import { CourseSidebar } from "./_components/course-sidebar";
 
 const getCourseWithLessons = cache(async (courseSlug: string) => {
   const payload = await getPayloadClient();
@@ -27,7 +27,15 @@ const getCourseWithLessons = cache(async (courseSlug: string) => {
     where: { course: { equals: course.id } },
     sort: "order",
     limit: 100,
-    select: { title: true, slug: true, free: true, id: true, order: true },
+    select: {
+      title: true,
+      slug: true,
+      free: true,
+      id: true,
+      order: true,
+      type: true,
+      quiz: { id: true }, // get number of quizes
+    },
   });
 
   return { course, lessons };
@@ -73,7 +81,6 @@ export default async function CourseLayout({
       <CourseSidebar
         course={data.course}
         lessons={data.lessons}
-        courseName={courseName}
         owned={owned}
       />
 

@@ -139,7 +139,21 @@ export interface Lesson {
   free?: boolean | null;
   course: string | Course;
   order?: number | null;
-  content: string;
+  type: 'text' | 'quiz';
+  content?: string | null;
+  quiz?:
+    | {
+        question: string;
+        options: {
+          text: string;
+          isCorrect: boolean;
+          id?: string | null;
+        }[];
+        hint?: string | null;
+        solution?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -250,7 +264,23 @@ export interface LessonsSelect<T extends boolean = true> {
   free?: T;
   course?: T;
   order?: T;
+  type?: T;
   content?: T;
+  quiz?:
+    | T
+    | {
+        question?: T;
+        options?:
+          | T
+          | {
+              text?: T;
+              isCorrect?: T;
+              id?: T;
+            };
+        hint?: T;
+        solution?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

@@ -122,3 +122,6 @@
     @apply bg-background text-foreground;
   }
 }
+/* .katex .mrel {
+  @apply text-primary;
+} */
