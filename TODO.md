@@ -28,5 +28,5 @@
 
 ## UI / UX
 
-- [ ] Make navbar and all components fully responsive
+- [ x ] Make all components fully responsive
 - [ ] Improve sidebar animations
