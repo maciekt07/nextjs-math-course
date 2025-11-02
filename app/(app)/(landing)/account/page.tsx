@@ -39,6 +39,23 @@ const items = [
   },
 ];
 
+export async function generateMetadata() {
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (!session) {
+    return {
+      title: "Your Account | Math Course Online",
+      robots: { index: false, follow: false },
+    };
+  }
+
+  return {
+    title: `Your Account (${session.user.name}) | Math Course Online`,
+    description: `Manage your account, email, and course settings for ${session.user.name}.`,
+    robots: { index: true, follow: true },
+  };
+}
+
 export default async function AccountPage() {
   const session = await auth.api.getSession({
     headers: await headers(),

@@ -1,6 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import { BookOpen, Calculator, Check, GraduationCap } from "lucide-react";
 import { headers } from "next/headers";
+import Image from "next/image";
 import Link from "next/link";
 import BuyCourseButton from "@/components/buy-course-button";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,7 @@ import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
 import { auth } from "@/lib/auth";
 import { getPayloadClient } from "@/lib/payload-client";
+import type { Media } from "@/payload-types";
 
 const getCourses = async () => {
   const payload = await getPayloadClient();
@@ -72,12 +74,25 @@ export default async function Home() {
 
         <div className="mt-8 flex flex-col gap-6 w-full max-w-5xl">
           {courses.map((course) => (
-            <Card key={course.id} className="shadow-lg w-full">
+            <Card key={course.id} className="w-full">
               <CardHeader>
                 <div className="flex items-start gap-4">
-                  <div className="p-4 rounded-lg border-2 border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950 shrink-0">
-                    <GraduationCap className="w-10 h-10 text-blue-600 dark:text-blue-400" />
-                  </div>
+                  {course.media ? (
+                    <div className="w-32 h-32 rounded-lg overflow-hidden shrink-0 shadow-md">
+                      <Image
+                        src={(course.media as Media).url!}
+                        alt={(course.media as Media).alt ?? course.title}
+                        width={100}
+                        height={100}
+                        className="object-cover w-full h-full"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-20 h-20 p-4 rounded-lg border-2 border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950 shrink-0 flex items-center justify-center">
+                      <GraduationCap className="w-10 h-10 text-blue-600 dark:text-blue-400" />
+                    </div>
+                  )}
+
                   <div className="flex-1 min-w-0">
                     <CardTitle className="text-xl md:text-2xl text-left">
                       {course.title}

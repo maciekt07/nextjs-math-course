@@ -12,6 +12,16 @@ import { auth } from "@/lib/auth";
 import { AuthFooter } from "../_components/auth-footer";
 import { SignInForm } from "./sign-in-form";
 
+export const metadata = {
+  title: "Sign In | Math Course Online",
+  description:
+    "Access your Math Course Online account to continue learning and manage your courses.",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
+
 export default async function SignInPage() {
   const session = await auth.api.getSession({ headers: await headers() });
 

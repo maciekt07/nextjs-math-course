@@ -23,5 +23,10 @@ export const Courses: CollectionConfig = {
       name: "description",
       type: "textarea",
     },
+    {
+      name: "media",
+      type: "upload",
+      relationTo: "media",
+    },
   ],
 };

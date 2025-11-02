@@ -28,5 +28,5 @@
 
 ## UI / UX
 
-- [ x ] Make all components fully responsive
 - [ ] Improve sidebar animations
+- [ ] Add settings dialog with option to disable colored markdown

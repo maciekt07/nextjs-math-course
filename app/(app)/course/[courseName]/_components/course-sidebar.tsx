@@ -11,6 +11,7 @@ import {
   PanelLeft,
   PanelLeftClose,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -20,7 +21,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
-import type { Course, Lesson } from "@/payload-types";
+import type { Course, Lesson, Media } from "@/payload-types";
 
 export function CourseSidebar({
   course,
@@ -38,12 +39,12 @@ export function CourseSidebar({
   return (
     <>
       <Button
-        variant="ghost"
+        variant={open ? "ghost" : "outline"}
         size="icon"
         onClick={() => setOpen(!open)}
         className={cn(
-          "fixed top-4 left-4 z-50 rounded-lg transition-all duration-300 hover:bg-secondary",
-          !open && "bg-background border shadow-sm",
+          "fixed top-4 left-4 z-50 rounded-lg transition-all duration-300 cursor-pointer",
+          !open && "bg-background backdrop-blur-md",
         )}
       >
         {open ? (
@@ -88,11 +89,24 @@ export function CourseSidebar({
                     Back to Home
                   </Link>
                 </Button>
+                {course.media && (
+                  <div className="relative w-full h-40 mb-4 mt-2 overflow-hidden rounded-2xl shadow-md">
+                    <Image
+                      src={(course.media as Media).url!}
+                      alt={(course.media as Media).alt ?? ""}
+                      fill
+                      className="object-cover transition-transform duration-300 hover:scale-105"
+                      priority
+                    />
+                    <div className="absolute inset-0 bg-black/20"></div>
+                  </div>
+                )}
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <h2 className="font-semibold text-lg leading-tight">
                       {course.title}
                     </h2>
+                    {/* TODO: move this */}
                     {owned && (
                       <Badge variant="secondary" className="shrink-0">
                         <BadgeCheck className="w-3 h-3 mr-1" />
@@ -101,7 +115,10 @@ export function CourseSidebar({
                     )}
                   </div>
                   {course.description && (
-                    <p className="text-sm text-muted-foreground line-clamp-2">
+                    <p
+                      className="text-sm text-muted-foreground line-clamp-3"
+                      title={course.description}
+                    >
                       {course.description}
                     </p>
                   )}
@@ -126,6 +143,7 @@ export function CourseSidebar({
                         <Link
                           key={lesson.id}
                           href={lessonPath}
+                          title={lesson.title}
                           onClick={() => {
                             if (window.innerWidth < 768) setOpen(false); // close sidebar on mobile
                           }}

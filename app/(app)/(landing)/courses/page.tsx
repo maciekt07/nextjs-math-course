@@ -1,6 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import { BookOpen } from "lucide-react";
 import { headers } from "next/headers";
+import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,11 @@ import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
 import { auth } from "@/lib/auth";
 import { getPayloadClient } from "@/lib/payload-client";
+import type { Media } from "@/payload-types";
+
+export const metadata = {
+  title: "Your Courses | Math Course Online",
+};
 
 export default async function CoursesPage() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -53,7 +59,13 @@ export default async function CoursesPage() {
     collection: "courses",
     where: { id: { in: courseIds } },
     limit: 100,
-    select: { title: true, description: true, slug: true, id: true },
+    select: {
+      title: true,
+      description: true,
+      slug: true,
+      id: true,
+      media: true,
+    },
   });
   const courses = res.docs || [];
 
@@ -63,8 +75,24 @@ export default async function CoursesPage() {
       {courses.map((c) => (
         <Card
           key={c.id}
-          className="p-6 flex flex-col md:flex-row md:justify-between md:items-center gap-4"
+          className="p-4 flex flex-col md:flex-row md:justify-between md:items-center gap-4"
         >
+          {c.media ? (
+            <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 shadow-md">
+              <Image
+                src={(c.media as Media).url!}
+                alt={(c.media as Media).alt ?? c.title}
+                width={96}
+                height={96}
+                className="object-cover w-full h-full"
+              />
+            </div>
+          ) : (
+            <div className="w-24 h-24 p-4 rounded-lg border-2 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 flex items-center justify-center shrink-0">
+              <BookOpen className="w-10 h-10 text-gray-600 dark:text-gray-300" />
+            </div>
+          )}
+
           <div className="flex-1">
             <CardTitle className="text-xl md:text-2xl">{c.title}</CardTitle>
             <CardDescription className="text-sm text-muted-foreground">

@@ -46,6 +46,17 @@ export const Lessons: CollectionConfig = {
     },
     // TEXT LESSON CONTENT
     {
+      name: "uploadImage",
+      type: "upload",
+      relationTo: "media",
+      admin: {
+        condition: (data) => data.type === "text",
+        components: {
+          Field: "@/fields/upload-with-url",
+        },
+      },
+    },
+    {
       name: "content",
       type: "text",
       label: "Content (Markdown + LaTeX)",

@@ -12,6 +12,15 @@ import { auth } from "@/lib/auth";
 import { AuthFooter } from "../_components/auth-footer";
 import { SignUpForm } from "./sign-up-form";
 
+export const metadata = {
+  title: "Sign Up | Math Course Online",
+  description: "Create your Math Course Online account to start learning.",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
+
 export default async function SignUpPage() {
   const session = await auth.api.getSession({ headers: await headers() });
 

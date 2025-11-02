@@ -17,11 +17,11 @@ Full-stack Next.js platform with CMS and auth - built for managing and selling o
 
 ## Features
 
-- Full authentication system with BetterAuth, including email verification using Resend
-- Admin CMS panel for managing courses and lessons via Payload CMS
-- Stripe integration for selling courses
-- Drizzle ORM integration for database management
-- Tailwind + Shadcn UI components
+- **Full Authentication with BetterAuth** - secure login, registration, and email verification powered by **Resend**.
+- **Admin CMS Dashboard** - manage courses, lessons, and media directly through an integrated **Payload CMS** interface.
+- **Stripe Payments** - sell courses with one-time payments using Stripe Checkout.
+- **Drizzle ORM Integration** - type-safe, lightweight, and modern database management.
+- **Tailwind CSS + Shadcn/UI** - clean, responsive, and consistent design system for the entire platform.
 
 ## Requirements
 
@@ -85,7 +85,7 @@ Once the app is running, you can access the CMS at:
 
 - Create your admin account on first visit
 
-- Use the panel to manage courses, lessons, and users
+- Use the panel to manage courses, lessons, and media
 
 ## Database Management
 

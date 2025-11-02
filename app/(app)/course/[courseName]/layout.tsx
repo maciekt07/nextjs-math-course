@@ -34,6 +34,7 @@ const getCourseWithLessons = cache(async (courseSlug: string) => {
       id: true,
       order: true,
       type: true,
+      media: true,
       quiz: { id: true }, // get number of quizes
     },
   });
@@ -74,7 +75,7 @@ export default async function CourseLayout({
 
   return (
     <div className="flex h-screen overflow-hidden relative">
-      <div className="absolute top-6 right-6 z-10">
+      <div className="absolute top-4 right-4 z-10">
         <ThemeSelect />
       </div>
 

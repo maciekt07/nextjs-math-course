@@ -11,7 +11,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Math course",
+  title: "Math Course",
   description: "Learn math online",
 };
 

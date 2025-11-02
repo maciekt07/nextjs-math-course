@@ -13,7 +13,8 @@
       "!.next",
       "!dist",
       "!build",
-      "!payload-types.ts"
+      "!payload-types.ts",
+      "!importMap.js"
     ]
   },
   "formatter": {

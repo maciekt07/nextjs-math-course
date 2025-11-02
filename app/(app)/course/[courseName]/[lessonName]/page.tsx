@@ -1,5 +1,6 @@
 import { and, eq } from "drizzle-orm";
 import { Lock, LogIn } from "lucide-react";
+import type { Metadata } from "next";
 import { draftMode, headers } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -64,6 +65,41 @@ export async function generateStaticParams() {
       courseName: typeof lesson.course === "string" ? "" : lesson.course.slug,
       lessonName: lesson.slug,
     }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ courseName: string; lessonName: string }>;
+}): Promise<Metadata> {
+  const { courseName, lessonName } = await params;
+  const payload = await getPayloadClient();
+
+  const { docs } = await payload.find({
+    collection: "lessons",
+    limit: 1,
+    where: {
+      and: [
+        { "course.slug": { equals: courseName } },
+        { slug: { equals: lessonName } },
+      ],
+    },
+    select: { title: true, course: true },
+  });
+
+  const lesson = docs?.[0];
+  if (!lesson) {
+    return { title: "Lesson not found | Math Course" };
+  }
+
+  const courseTitle =
+    typeof lesson.course === "string"
+      ? ""
+      : (lesson.course as { title?: string }).title || "";
+
+  return {
+    title: `${lesson.title}${courseTitle ? ` | ${courseTitle}` : ""} | Math Course Online`,
+  };
 }
 
 export default async function LessonPage({ params: paramsPromise }: Args) {
@@ -141,7 +177,15 @@ export default async function LessonPage({ params: paramsPromise }: Args) {
             <div className="flex flex-col sm:flex-row justify-center gap-3 mt-4">
               {showSignIn ? (
                 <Button size="lg" asChild>
-                  <Link href="/auth/sign-in">
+                  <Link
+                    href={`/auth/sign-in?returnTo=${encodeURIComponent(
+                      `/course/${
+                        typeof lessonMeta.course === "string"
+                          ? lessonMeta.course
+                          : lessonMeta.course.slug
+                      }/${lessonMeta.slug}`,
+                    )}`}
+                  >
                     <LogIn /> Sign in to continue
                   </Link>
                 </Button>
@@ -165,7 +209,7 @@ export default async function LessonPage({ params: paramsPromise }: Args) {
   }
 
   return (
-    <article className="max-w-4xl mx-auto px-6 py-8 mt-8">
+    <article className="max-w-4xl mx-auto px-6 py-8 mt-10">
       {lesson?.type === "text" && <TextLesson lesson={lesson} />}
       {lesson?.type === "quiz" && <QuizLesson lesson={lesson} />}
     </article>

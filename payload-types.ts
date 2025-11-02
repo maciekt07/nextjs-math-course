@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     courses: Course;
     lessons: Lesson;
+    media: Media;
     users: User;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,6 +79,7 @@ export interface Config {
   collectionsSelect: {
     courses: CoursesSelect<false> | CoursesSelect<true>;
     lessons: LessonsSelect<false> | LessonsSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -125,8 +127,28 @@ export interface Course {
   slug?: string | null;
   price: number;
   description?: string | null;
+  media?: (string | null) | Media;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: string;
+  alt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -140,6 +162,7 @@ export interface Lesson {
   course: string | Course;
   order?: number | null;
   type: 'text' | 'quiz';
+  uploadImage?: (string | null) | Media;
   content?: string | null;
   quiz?:
     | {
@@ -197,6 +220,10 @@ export interface PayloadLockedDocument {
         value: string | Lesson;
       } | null)
     | ({
+        relationTo: 'media';
+        value: string | Media;
+      } | null)
+    | ({
         relationTo: 'users';
         value: string | User;
       } | null);
@@ -251,6 +278,7 @@ export interface CoursesSelect<T extends boolean = true> {
   slug?: T;
   price?: T;
   description?: T;
+  media?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -265,6 +293,7 @@ export interface LessonsSelect<T extends boolean = true> {
   course?: T;
   order?: T;
   type?: T;
+  uploadImage?: T;
   content?: T;
   quiz?:
     | T
@@ -283,6 +312,24 @@ export interface LessonsSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  alt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

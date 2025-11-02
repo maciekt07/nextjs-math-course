@@ -16,9 +16,8 @@ export default function AutoSlugField({ path }: AutoSlugFieldProps) {
     ? slugify(title, { lowercase: true, decamelize: true })
     : "";
 
-  // Regex for a valid slug: lowercase letters, numbers, dashes only
   const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-  const isValid = !value || slugRegex.test(value); // empty value is okay, backend will generate
+  const isValid = !value || slugRegex.test(value);
 
   return (
     <TextInput
