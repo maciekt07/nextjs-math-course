@@ -8,10 +8,10 @@
 
 ## Payments
 
-- [ x ] Integrate Stripe one-time payments with Payload CMS
-  - [ x ] Configure products, checkout sessions, and webhooks
-  - [ x ] Protect paid lesson routes (require auth + payment check)
-  - [ x ] Use hybrid SSR + SSG:
+- [x] Integrate Stripe one-time payments with Payload CMS
+  - [x] Configure products, checkout sessions, and webhooks
+  - [x] Protect paid lesson routes (require auth + payment check)
+  - [x] Use hybrid SSR + SSG:
     - Free lessons: static pages
     - Paid/protected lessons: SSR
 - [ ] Implement course bundles
@@ -19,12 +19,14 @@
 ## CMS
 
 - [ ] Add different lesson types:
-  - [ ] Video lessons
-  - [ x ] Quizzes
+  - [ ] Video lessons (Mux Video Payload Plugin)
+  - [x] Quizzes
 - [ ] Redesign custom fields
   - [ ] Markdown preview
   - [ ] Reorder
   - [ ] Quiz type fields
+- [ ] Protect media for premium lessons
+- [ ] Add optional Cloudflare R2 support for media uploads
 
 ## UI / UX
 
