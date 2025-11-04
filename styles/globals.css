@@ -144,3 +144,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* scroll wide math expressions */
+.katex-display {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 0.5em 0;
+}
+
+.katex-display > .katex {
+  display: inline-block;
+  min-width: max-content;
+}
