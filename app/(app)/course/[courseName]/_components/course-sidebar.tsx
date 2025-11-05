@@ -38,22 +38,42 @@ export function CourseSidebar({
 
   return (
     <>
-      <Button
-        variant={open ? "ghost" : "outline"}
-        size="icon"
-        onClick={() => setOpen(!open)}
-        className={cn(
-          "fixed top-4 left-4 z-50 rounded-lg transition-all duration-300 cursor-pointer",
-          !open && "bg-background backdrop-blur-md",
-        )}
-      >
-        {open ? (
-          <PanelLeftClose className="w-5 h-5" />
-        ) : (
-          <PanelLeft className="w-5 h-5" />
-        )}
-      </Button>
-
+      <div className="fixed top-4 left-4 z-50 flex items-center gap-3 md:gap-4">
+        <Button
+          variant={open ? "ghost" : "outline"}
+          size="icon"
+          onClick={() => setOpen(!open)}
+          className={cn(
+            "transition-all duration-300 cursor-pointer",
+            !open && "bg-background backdrop-blur-md",
+          )}
+        >
+          {open ? (
+            <PanelLeftClose className="w-5 h-5" />
+          ) : (
+            <PanelLeft className="w-5 h-5" />
+          )}
+        </Button>
+        <AnimatePresence mode="wait">
+          {!open && (
+            <motion.div
+              key="home-button"
+              initial={{ opacity: 0, x: -12 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -12 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+              className="backdrop-blur-md rounded-md"
+            >
+              <Button variant="outline" asChild>
+                <Link href="/">
+                  <ChevronLeft className="w-4 h-4" />
+                  Home
+                </Link>
+              </Button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
       <AnimatePresence mode="wait">
         {open && (
           <>

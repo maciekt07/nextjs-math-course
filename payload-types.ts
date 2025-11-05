@@ -162,7 +162,7 @@ export interface Lesson {
   course: string | Course;
   order?: number | null;
   type: 'text' | 'quiz';
-  uploadImage?: (string | null) | Media;
+  uploadImage?: (string | Media)[] | null;
   content?: string | null;
   quiz?:
     | {
@@ -186,6 +186,7 @@ export interface Lesson {
  */
 export interface User {
   id: string;
+  role: 'admin';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -336,6 +337,7 @@ export interface MediaSelect<T extends boolean = true> {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  role?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

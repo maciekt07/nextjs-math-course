@@ -6,10 +6,11 @@ import sharp from "sharp";
 import { Courses } from "./collections/Courses";
 import { Lessons } from "./collections/Lessons";
 import { Media } from "./collections/Media";
+import { Users } from "./collections/Users";
 
 export default buildConfig({
   editor: lexicalEditor(),
-  collections: [Courses, Lessons, Media],
+  collections: [Courses, Lessons, Media, Users],
   secret: process.env.PAYLOAD_SECRET || "",
   db: mongooseAdapter({
     url: process.env.MONGO_URL || "",

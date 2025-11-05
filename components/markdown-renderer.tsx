@@ -7,9 +7,13 @@ import Image from "next/image";
 
 interface MarkdownRendererProps {
   content: string;
+  unoptimized?: boolean;
 }
 
-export function MarkdownRenderer({ content }: MarkdownRendererProps) {
+export function MarkdownRenderer({
+  content,
+  unoptimized,
+}: MarkdownRendererProps) {
   return (
     <div className="prose dark:prose-invert max-w-none marker:text-primary">
       <ReactMarkdown
@@ -30,6 +34,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
                 alt={props.alt || "Image"}
                 width={800}
                 height={500}
+                unoptimized={unoptimized || true}
                 className="w-full rounded-2xl object-contain"
               />
             );

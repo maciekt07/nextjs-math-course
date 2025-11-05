@@ -9,7 +9,7 @@ interface ReadingTimeConfig {
  *
  * based on research:
  * - average reading (for math): 180 wpm
- * - math: ~8s per expression
+ * - math: ~8s per expression (half that for inline)
  * - imgs ~12s per image
  */
 export function getReadingTime(

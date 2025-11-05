@@ -25,7 +25,8 @@
   - [ ] Markdown preview
   - [ ] Reorder
   - [ ] Quiz type fields
-- [ ] Protect media for premium lessons
+- [x] Protect media for premium lessons
+  - [x] Optimize static images
 - [ ] Add optional Cloudflare R2 support for media uploads
 
 ## UI / UX

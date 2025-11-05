@@ -11,7 +11,8 @@ export default function AccountPageSkeleton() {
       </header>
 
       <div className="space-y-6">
-        {[...Array(3)].map((i) => (
+        {[...Array(3)].map((_, i) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: safe here
           <div key={i} className="flex items-center gap-4">
             <Skeleton className="flex-shrink-0 w-14 h-14 rounded-full" />
             <div className="flex flex-col">

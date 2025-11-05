@@ -49,11 +49,10 @@ export const Lessons: CollectionConfig = {
       name: "uploadImage",
       type: "upload",
       relationTo: "media",
+      label: "Upload images for this lesson (/api/media/file/uuid.filetype)", // TODO: create custom field with md copy and quick delete
+      hasMany: true,
       admin: {
         condition: (data) => data.type === "text",
-        components: {
-          Field: "@/fields/upload-with-url",
-        },
       },
     },
     {
