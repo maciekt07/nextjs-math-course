@@ -4,6 +4,7 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import "katex/dist/katex.min.css";
 import Image from "next/image";
+import { ImageZoom } from "./ui/shadcn-io/image-zoom";
 
 interface MarkdownRendererProps {
   content: string;
@@ -28,15 +29,17 @@ export function MarkdownRenderer({
           ),
           img: ({ node, ...props }) => {
             return (
-              <Image
-                {...props}
-                src={props.src as string}
-                alt={props.alt || "Image"}
-                width={800}
-                height={500}
-                unoptimized={unoptimized || true}
-                className="w-full rounded-2xl object-contain"
-              />
+              <ImageZoom>
+                <Image
+                  {...props}
+                  src={props.src as string}
+                  alt={props.alt || "Image"}
+                  width={800}
+                  height={500}
+                  unoptimized={unoptimized || true}
+                  className="w-full rounded-2xl object-contain"
+                />
+              </ImageZoom>
             );
           },
         }}
