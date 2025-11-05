@@ -85,6 +85,8 @@ export default async function CoursesPage() {
                 width={96}
                 height={96}
                 className="object-cover w-full h-full"
+                placeholder={(c.media as Media).blurhash ? "blur" : "empty"}
+                blurDataURL={(c.media as Media).blurhash || undefined}
               />
             </div>
           ) : (

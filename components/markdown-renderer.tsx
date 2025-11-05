@@ -9,11 +9,18 @@ import { ImageZoom } from "./ui/shadcn-io/image-zoom";
 interface MarkdownRendererProps {
   content: string;
   unoptimized?: boolean;
+  media?: {
+    url?: string | null;
+    blurhash?: string | null;
+    width?: number | null;
+    height?: number | null;
+  }[];
 }
 
 export function MarkdownRenderer({
   content,
   unoptimized,
+  media,
 }: MarkdownRendererProps) {
   return (
     <div className="prose dark:prose-invert max-w-none marker:text-primary">
@@ -28,15 +35,22 @@ export function MarkdownRenderer({
             />
           ),
           img: ({ node, ...props }) => {
+            const matchedMedia = media?.find((m) => m.url === props.src);
+            const blurhash = matchedMedia?.blurhash;
+            const width = matchedMedia?.width ?? 800;
+            const height = matchedMedia?.height ?? 500;
+
             return (
               <ImageZoom>
                 <Image
                   {...props}
                   src={props.src as string}
                   alt={props.alt || "Image"}
-                  width={800}
-                  height={500}
+                  width={width}
+                  height={height}
                   unoptimized={unoptimized || true}
+                  placeholder={blurhash ? "blur" : "empty"}
+                  blurDataURL={blurhash || undefined}
                   className="w-full rounded-2xl object-contain"
                 />
               </ImageZoom>

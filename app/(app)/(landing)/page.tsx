@@ -85,6 +85,12 @@ export default async function Home() {
                         width={100}
                         height={100}
                         className="object-cover w-full h-full"
+                        placeholder={
+                          (course.media as Media).blurhash ? "blur" : "empty"
+                        }
+                        blurDataURL={
+                          (course.media as Media).blurhash || undefined
+                        }
                       />
                     </div>
                   ) : (

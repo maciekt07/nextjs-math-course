@@ -117,6 +117,12 @@ export function CourseSidebar({
                       fill
                       className="object-cover transition-transform duration-300 hover:scale-105"
                       priority
+                      placeholder={
+                        (course.media as Media).blurhash ? "blur" : "empty"
+                      }
+                      blurDataURL={
+                        (course.media as Media).blurhash || undefined
+                      }
                     />
                     <div className="absolute inset-0 bg-black/20"></div>
                   </div>

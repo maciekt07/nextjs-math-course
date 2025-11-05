@@ -138,6 +138,7 @@ export interface Course {
 export interface Media {
   id: string;
   alt?: string | null;
+  blurhash?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -320,6 +321,7 @@ export interface LessonsSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  blurhash?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;

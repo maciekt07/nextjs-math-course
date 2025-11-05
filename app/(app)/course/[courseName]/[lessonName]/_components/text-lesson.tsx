@@ -47,6 +47,20 @@ export function TextLesson({ lesson }: TextLessonProps) {
       <MarkdownRenderer
         content={lesson!.content || "No Content"}
         unoptimized={!lesson.free}
+        media={
+          Array.isArray(lesson.uploadImage)
+            ? lesson.uploadImage.map((img) =>
+                typeof img === "string"
+                  ? { url: img }
+                  : {
+                      url: img.url,
+                      blurhash: img.blurhash,
+                      width: img.width,
+                      height: img.height,
+                    },
+              )
+            : []
+        }
       />
 
       <div className="mt-8 text-sm text-gray-500 dark:text-gray-400 flex flex-col gap-2">

@@ -5,11 +5,13 @@ import { headers } from "next/headers";
 import type { CollectionConfig } from "payload";
 import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
+import { generateBlurhash } from "@/hooks/generateBlurhash";
 import { auth } from "@/lib/auth";
 
 export const Media: CollectionConfig = {
   slug: "media",
   access: {
+    // TODO: move this to cms/access
     read: async ({ req }) => {
       try {
         const url = req.pathname;
@@ -134,11 +136,31 @@ export const Media: CollectionConfig = {
         }
       },
     ],
+    beforeValidate: [generateBlurhash],
   },
   fields: [
     {
       name: "alt",
       type: "text",
+    },
+    // { // TODO: make blur generation optional
+    //   name: "generateBlur",
+    //   type: "checkbox",
+    //   label: "Generate Blur Placeholder",
+    //   defaultValue: true,
+    //   admin: {
+    //     description:
+    //       "Automatically create a blurred placeholder for this image.",
+    //   },
+    // },
+    {
+      name: "blurhash",
+      type: "text",
+      admin: {
+        hidden: true,
+        disableListColumn: true,
+        disableListFilter: true,
+      },
     },
   ],
   upload: {
