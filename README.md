@@ -22,6 +22,9 @@ Full-stack Next.js platform with CMS and auth - built for managing and selling o
 - **Stripe Payments** - sell courses with one-time payments using Stripe Checkout.
 - **Drizzle ORM Integration** - type-safe, lightweight, and modern database management.
 - **Tailwind CSS + Shadcn/UI** - clean, responsive, and consistent design system for the entire platform.
+- **Hybrid Lesson Delivery (SSR + SSG)** - Free lessons are pre-rendered for speed, while paid lessons use server-side rendering for secure, on-demand access.
+- **Math Rendering with LaTeX** - Lessons render beautiful equations and formatted text using Markdown + LaTeX syntax.
+- **Blurred Image Placeholders** – Images load fast with smooth, auto-generated blur previews.
 
 ## Requirements
 
@@ -111,4 +114,6 @@ docker-compose down
 
 ## Credits
 
-Made with ❤ by [maciekt07](https://github.com/maciekt07), licensed under [MIT](/LICENSE)
+Illustrations used in this project are from [Storyset](https://storyset.com/), modified for personal use.
+
+**Made with ❤️ by [maciekt07](https://github.com/maciekt07), licensed under [MIT](/LICENSE)**

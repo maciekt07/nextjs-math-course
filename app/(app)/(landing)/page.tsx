@@ -1,23 +1,18 @@
-import { and, eq } from "drizzle-orm";
-import { BookOpen, Calculator, Check, GraduationCap } from "lucide-react";
+import { and, count, eq } from "drizzle-orm";
+import { ArrowRight } from "lucide-react";
 import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
-import BuyCourseButton from "@/components/buy-course-button";
+import { CourseCard } from "@/components/course-card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { db } from "@/drizzle/db";
-import { enrollment } from "@/drizzle/schema";
+import { enrollment, user } from "@/drizzle/schema";
 import { auth } from "@/lib/auth";
 import { getPayloadClient } from "@/lib/payload-client";
-import type { Media } from "@/payload-types";
+import { FAQ } from "./_components/faq";
+import { HeroImage } from "./_components/hero-image";
+import { WhyChoose } from "./_components/why-choose";
 
 const getCourses = async () => {
   const payload = await getPayloadClient();
@@ -42,11 +37,16 @@ const getCourses = async () => {
   return coursesWithLessons;
 };
 
+const getUserCount = async () => {
+  const result = await db.select({ count: count() }).from(user);
+  return result[0]?.count || 0;
+};
+
 export default async function Home() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await auth.api.getSession({ headers: await headers() });
   const courses = await getCourses();
+  const userCount = getUserCount();
+
   let ownedCourseIds = new Set<string>();
   if (session) {
     const rows = await db
@@ -60,111 +60,119 @@ export default async function Home() {
       );
     ownedCourseIds = new Set(rows.map((r: { courseId: string }) => r.courseId));
   }
+
   return (
     <div className="w-full flex flex-col">
-      <div className="pt-24 px-6 max-w-7xl mx-auto flex flex-col items-center text-center gap-6">
-        <Calculator size={80} color="var(--primary)" />
-        <h1 className="text-4xl md:text-5xl font-extrabold">
-          Welcome {session?.user ? session.user.name : "to Math Course Online"}
-        </h1>
-        <p className="text-lg max-w-xl">
-          Learn math interactively with our easy-to-follow lessons and
-          exercises.
+      <section className="bg-background mt-8 sm:mt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 sm:-mt-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <div className="flex flex-col gap-6 text-left">
+              <Badge
+                variant="secondary"
+                className="flex items-center gap-2 rounded-full px-3 py-1.5 text-[16px] w-fit"
+                asChild
+              >
+                <a
+                  href="https://github.com/maciekt07"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5"
+                >
+                  <Image
+                    src="https://avatars.githubusercontent.com/u/85953204?v=4"
+                    alt="maciekt07 GitHub avatar"
+                    width={32}
+                    height={32}
+                    className="rounded-full border border-border shadow-sm"
+                    unoptimized
+                  />
+
+                  <span className="text-muted-foreground">Made by</span>
+                  <span className="font-semibold text-foreground">
+                    maciekt07
+                  </span>
+                </a>
+              </Badge>
+
+              <h1 className="text-4xl sm:text-5xl font-bold text-foreground leading-tight text-balance">
+                Master <span className="text-primary">Mathematics</span> with
+                Engaging Courses
+              </h1>
+
+              <p className="text-lg text-muted-foreground max-w-xl">
+                Learn from a dedicated math educator with interactive lessons,
+                exercises, and real-life examples. Perfect for all learning
+                styles.
+              </p>
+
+              {/* hero image - shows there on small screens */}
+              <HeroImage className="lg:hidden h-64 sm:h-80 max-w-md mx-auto" />
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button size="xl" asChild>
+                  <a href="#courses">
+                    Explore Courses
+                    <ArrowRight />
+                  </a>
+                </Button>
+                <Button variant="outline" size="xl" asChild>
+                  <Link
+                    href={courses[0].slug ? `/course/${courses[0].slug}` : "#"}
+                  >
+                    Watch Free Demo
+                  </Link>
+                </Button>
+              </div>
+
+              <div className="flex items-center gap-6 pt-4">
+                <div>
+                  <p className="text-2xl font-bold text-foreground">
+                    {Math.max(10, Math.floor((await userCount) / 10) * 10)}+
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Students Learning
+                  </p>
+                </div>
+                <div className="w-px h-12 bg-border"></div>
+                <div>
+                  <p className="text-2xl font-bold text-foreground">
+                    {courses.length}
+                  </p>
+                  <p className="text-sm text-muted-foreground">Courses</p>
+                </div>
+              </div>
+            </div>
+            {/* hero image - shows on right side on large screens */}
+            <HeroImage className="hidden lg:flex h-[600px]" />
+          </div>
+        </div>
+      </section>
+
+      <div className="mt-16 px-4 sm:px-6 max-w-7xl mx-auto text-center">
+        <h2
+          className="text-3xl sm:text-4xl font-bold text-foreground"
+          id="courses"
+        >
+          Courses
+        </h2>
+        <p className="mt-2 text-lg text-muted-foreground max-w-2xl mx-auto">
+          Explore our carefully designed math courses and interactive lessons to
+          help you master concepts efficiently and confidently.
         </p>
-
-        <div className="mt-8 flex flex-col gap-6 w-full max-w-5xl">
+      </div>
+      <div className="mt-8 px-4 sm:px-6 max-w-7xl mx-auto w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
           {courses.map((course) => (
-            <Card key={course.id} className="w-full">
-              <CardHeader>
-                <div className="flex items-start gap-4">
-                  {course.media ? (
-                    <div className="w-32 h-32 rounded-lg overflow-hidden shrink-0 shadow-md">
-                      <Image
-                        src={(course.media as Media).url!}
-                        alt={(course.media as Media).alt ?? course.title}
-                        width={100}
-                        height={100}
-                        className="object-cover w-full h-full"
-                        placeholder={
-                          (course.media as Media).blurhash ? "blur" : "empty"
-                        }
-                        blurDataURL={
-                          (course.media as Media).blurhash || undefined
-                        }
-                      />
-                    </div>
-                  ) : (
-                    <div className="w-20 h-20 p-4 rounded-lg border-2 border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950 shrink-0 flex items-center justify-center">
-                      <GraduationCap className="w-10 h-10 text-blue-600 dark:text-blue-400" />
-                    </div>
-                  )}
-
-                  <div className="flex-1 min-w-0">
-                    <CardTitle className="text-xl md:text-2xl text-left">
-                      {course.title}
-                    </CardTitle>
-                    <CardDescription className="mt-1 text-left">
-                      {course.description}
-                    </CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-
-              <CardContent className="flex flex-col gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <BookOpen size={20} /> {course.lessonCount} Chapters
-                  </div>
-                  {/* <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Clock size={20} /> 16 Hours
-                  </div> */}
-                </div>
-                {ownedCourseIds.has(course.id) ? (
-                  <Button size="lg" asChild>
-                    <Link href={`/course/${course.slug}`}>See All Lessons</Link>
-                  </Button>
-                ) : (
-                  <Button variant="green" size="lg" asChild>
-                    <Link href={`/course/${course.slug}`}>
-                      See Free Lessons
-                    </Link>
-                  </Button>
-                )}
-              </CardContent>
-              <CardFooter className="border-t dark:border-border">
-                {ownedCourseIds.has(course.id) ? (
-                  <div className="flex items-center justify-center w-full gap-2">
-                    <Check size={28} className="text-green-600 " />
-                    Owned
-                  </div>
-                ) : (
-                  <div className="flex justify-between w-full items-center">
-                    <div className="flex flex-col">
-                      <span className="text-xs text-muted-foreground uppercase tracking-wide">
-                        Price
-                      </span>
-                      <span className="text-2xl font-bold">
-                        {new Intl.NumberFormat("en-US", {
-                          style: "currency",
-                          currency: "USD",
-                        }).format(course.price ?? 0)}
-                      </span>
-                    </div>
-
-                    <BuyCourseButton
-                      courseId={course.id}
-                      size="lg"
-                      className="font-bold"
-                    >
-                      Buy Now
-                    </BuyCourseButton>
-                  </div>
-                )}
-              </CardFooter>
-            </Card>
+            <CourseCard
+              key={course.id}
+              course={course}
+              owned={ownedCourseIds.has(course.id)}
+            />
           ))}
         </div>
       </div>
+      <WhyChoose />
+      <FAQ />
     </div>
   );
 }

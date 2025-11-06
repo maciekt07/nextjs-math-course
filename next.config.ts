@@ -7,8 +7,11 @@ const nextConfig: NextConfig = {
   },
   images: {
     remotePatterns: [
-      //TODO: only for testing purposes remove later
-      { protocol: "https", hostname: "media.discordapp.net", pathname: "/**" },
+      {
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
+        pathname: "/**",
+      },
     ],
   },
 };

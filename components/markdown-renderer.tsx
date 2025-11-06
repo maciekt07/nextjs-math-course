@@ -41,6 +41,7 @@ export function MarkdownRenderer({
             const height = matchedMedia?.height ?? 500;
 
             return (
+              // FIXME: hydration error.
               <ImageZoom>
                 <Image
                   {...props}
