@@ -11,9 +11,17 @@ A modern full-stack Next.js 15 platform with CMS, auth, and Stripe integration -
 <img src="https://go-skill-icons.vercel.app/api/icons?i=next,ts,react,tailwind,shadcn,betterauth,drizzle,postgres,payload,stripe" />
 </p>
 
-<img src="screenshots/landing.png" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="screenshots/landing-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="screenshots/landing-light.png">
+  <img alt="Landing" src="screenshots/landing-dark.png">
+</picture>
 
-<img src="screenshots/lesson.png" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="screenshots/lesson-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="screenshots/lesson-light.png">
+  <img alt="Lesson" src="screenshots/lesson-dark.png">
+</picture>
 
 ## Features
 
