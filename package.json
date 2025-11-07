@@ -29,6 +29,7 @@
     "@payloadcms/email-resend": "^3.60.0",
     "@payloadcms/next": "^3.60.0",
     "@payloadcms/richtext-lexical": "^3.60.0",
+    "@payloadcms/storage-s3": "^3.60.0",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-dialog": "^1.1.15",

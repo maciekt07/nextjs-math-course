@@ -42,6 +42,16 @@ const getUserCount = async () => {
   return result[0]?.count || 0;
 };
 
+export const getOwnedCourseIds = async (userId: string) => {
+  const rows = await db
+    .select()
+    .from(enrollment)
+    .where(
+      and(eq(enrollment.userId, userId), eq(enrollment.status, "completed")),
+    );
+  return new Set(rows.map((r: { courseId: string }) => r.courseId));
+};
+
 export default async function Home() {
   const session = await auth.api.getSession({ headers: await headers() });
   const courses = await getCourses();
@@ -49,16 +59,7 @@ export default async function Home() {
 
   let ownedCourseIds = new Set<string>();
   if (session) {
-    const rows = await db
-      .select()
-      .from(enrollment)
-      .where(
-        and(
-          eq(enrollment.userId, session.user.id),
-          eq(enrollment.status, "completed"),
-        ),
-      );
-    ownedCourseIds = new Set(rows.map((r: { courseId: string }) => r.courseId));
+    ownedCourseIds = await getOwnedCourseIds(session.user.id);
   }
 
   return (

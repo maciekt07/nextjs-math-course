@@ -1,6 +1,6 @@
 # Next.js Math Course Platform
 
-Full-stack Next.js platform with CMS and auth - built for managing and selling online math courses.
+A modern full-stack Next.js 15 platform with CMS, auth, and Stripe integration - built for managing and selling online math courses.
 
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/maciekt07/nextjs-math-course?color=%234e65ff)
 ![GitHub created at ](https://img.shields.io/github/created-at/maciekt07/nextjs-math-course?color=%234e65ff)
@@ -22,15 +22,16 @@ Full-stack Next.js platform with CMS and auth - built for managing and selling o
 - **Stripe Payments** - sell courses with one-time payments using Stripe Checkout.
 - **Drizzle ORM Integration** - type-safe, lightweight, and modern database management.
 - **Tailwind CSS + Shadcn/UI** - clean, responsive, and consistent design system for the entire platform.
-- **Hybrid Lesson Delivery (SSR + SSG)** - Free lessons are pre-rendered for speed, while paid lessons use server-side rendering for secure, on-demand access.
-- **Math Rendering with LaTeX** - Lessons render beautiful equations and formatted text using Markdown + LaTeX syntax.
-- **Blurred Image Placeholders** – Images load fast with smooth, auto-generated blur previews.
+- **Hybrid Lesson Delivery (SSR + SSG)** - free lessons are pre-rendered for speed, while paid lessons use server-side rendering for secure, on-demand access.
+- **Protected media** – paid lesson files restricted to enrolled users, with optional AWS S3 / Cloudflare R2 storage
+- **Blurred Image Placeholders** – images load fast with smooth, auto-generated blur previews.
+- **Math Rendering with LaTeX** - lessons render beautiful equations and formatted text using Markdown + LaTeX syntax.
 
 ## Requirements
 
 - **Node.js** (v18 or higher)
 - **npm** package manager
-- **Docker Desktop** (for PostgreSQL database)
+- **Docker Desktop**
 - **Git**
 
 ## Installation Steps
@@ -57,13 +58,13 @@ Create a `.env` file in the root directory. Use [.env.example](.env.example) as 
 Both PostgreSQL (for main app data) and MongoDB (for Payload CMS) run via Docker Compose
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 To verify the database is running:
 
 ```bash
-docker-compose ps
+docker compose ps
 ```
 
 ### 5. Run the Stripe webhook listener
@@ -95,7 +96,7 @@ Once the app is running, you can access the CMS at:
 ### Access PostgreSQL CLI
 
 ```bash
-docker-compose exec db psql -U postgres -d math_course
+docker compose exec db psql -U postgres -d math_course
 ```
 
 ### View Database with Drizzle Studio
@@ -109,7 +110,7 @@ This opens a visual database browser at [https://local.drizzle.studio](https://l
 ### Stop the Database
 
 ```bash
-docker-compose down
+docker compose down
 ```
 
 ## Credits

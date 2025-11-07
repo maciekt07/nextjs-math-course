@@ -27,7 +27,7 @@
   - [ ] Quiz type fields
 - [x] Protect media for premium lessons
   - [x] Optimize static images
-- [ ] Add optional Cloudflare R2 support for media uploads
+- [x] Add optional Cloudflare R2 support for media uploads
 - [x] Generate blur placeholder for media
   - [ ] Make it optional with automatic generation and cleanup
 
