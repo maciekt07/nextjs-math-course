@@ -48,7 +48,7 @@ export default async function CoursesPage() {
           Browse available courses and buy one to see it in this list.
         </p>
         <Button asChild size="lg">
-          <Link href="/">Browse Courses</Link>
+          <Link href="/#courses">Browse Courses</Link>
         </Button>
       </div>
     );
@@ -78,7 +78,7 @@ export default async function CoursesPage() {
           className="p-4 flex flex-col md:flex-row md:justify-between md:items-center gap-4"
         >
           {c.media ? (
-            <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 shadow-md">
+            <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
               <Image
                 src={(c.media as Media).url!}
                 alt={(c.media as Media).alt ?? c.title}

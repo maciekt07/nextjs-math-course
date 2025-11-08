@@ -10,6 +10,7 @@ import { db } from "@/drizzle/db";
 import { enrollment, user } from "@/drizzle/schema";
 import { auth } from "@/lib/auth";
 import { getPayloadClient } from "@/lib/payload-client";
+import { CTASection } from "./_components/cta";
 import { FAQ } from "./_components/faq";
 import { HeroImage } from "./_components/hero-image";
 import { WhyChoose } from "./_components/why-choose";
@@ -62,6 +63,8 @@ export default async function Home() {
     ownedCourseIds = await getOwnedCourseIds(session.user.id);
   }
 
+  const formattedUserCount = `${Math.max(10, Math.floor((await userCount) / 10) * 10)}+`;
+
   return (
     <div className="w-full flex flex-col">
       <section className="bg-background mt-8 sm:mt-16">
@@ -84,7 +87,7 @@ export default async function Home() {
                     alt="maciekt07 GitHub avatar"
                     width={32}
                     height={32}
-                    className="rounded-full border border-border shadow-sm"
+                    className="rounded-full border border-border shadow-md"
                     unoptimized
                   />
 
@@ -128,7 +131,7 @@ export default async function Home() {
               <div className="flex items-center gap-6 pt-4">
                 <div>
                   <p className="text-2xl font-bold text-foreground">
-                    {Math.max(10, Math.floor((await userCount) / 10) * 10)}+
+                    {formattedUserCount}
                   </p>
                   <p className="text-sm text-muted-foreground">
                     Students Learning
@@ -174,6 +177,11 @@ export default async function Home() {
       </div>
       <WhyChoose />
       <FAQ />
+      <CTASection
+        userCount={formattedUserCount}
+        courseCount={courses.length}
+        previewLink={courses[0].slug ? `/course/${courses[0].slug}` : "#"}
+      />
     </div>
   );
 }

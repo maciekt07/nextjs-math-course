@@ -30,7 +30,10 @@ const faqs: { question: string; answer: string }[] = [
 
 export function FAQ() {
   return (
-    <section className="mt-16 mb-8 px-4 sm:px-6 max-w-4xl mx-auto w-full">
+    <section
+      className="mt-16 mb-8 px-4 sm:px-6 max-w-4xl mx-auto w-full"
+      id="faq"
+    >
       <div className="mb-8 text-left">
         <h2 className="text-3xl sm:text-4xl font-bold text-foreground">
           Frequently Asked Questions

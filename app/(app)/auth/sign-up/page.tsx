@@ -40,7 +40,7 @@ export default async function SignUpPage() {
           </p>
         </div>
 
-        <Card className="shadow-lg border-slate-200 dark:border-slate-800 w-full flex-shrink-0">
+        <Card className="border-slate-200 dark:border-slate-800 w-full flex-shrink-0">
           <CardHeader className="space-y-1">
             <div>
               <CardTitle className="text-2xl">Sign Up</CardTitle>

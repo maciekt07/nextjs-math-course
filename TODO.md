@@ -35,3 +35,4 @@
 
 - [ ] Improve sidebar animations
 - [ ] Add settings dialog with option to disable colored markdown
+- [ ] Animate hero svg

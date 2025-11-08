@@ -16,7 +16,7 @@ export default async function MarketingLayout({
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar user={session?.user || null} />
-      <main className="flex-1 w-full py-4">{children}</main>
+      <main className="flex-1 w-full">{children}</main>
       <Footer />
     </div>
   );

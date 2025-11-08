@@ -27,7 +27,7 @@ export function CourseCard({ course, owned, minimal }: CourseCardProps) {
       <CardHeader>
         <div className="flex items-start gap-4">
           {course.media ? (
-            <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-lg overflow-hidden shrink-0 shadow-md">
+            <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-lg overflow-hidden shrink-0">
               <Image
                 src={(course.media as Media).url!}
                 alt={(course.media as Media).alt ?? course.title}

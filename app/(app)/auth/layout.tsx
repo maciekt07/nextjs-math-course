@@ -1,3 +1,4 @@
+import Footer from "@/components/footer";
 import { ThemeSelect } from "@/components/theme-select";
 
 export default function RootLayout({
@@ -11,6 +12,7 @@ export default function RootLayout({
         <ThemeSelect />
       </div>
       {children}
+      <Footer />
     </main>
   );
 }

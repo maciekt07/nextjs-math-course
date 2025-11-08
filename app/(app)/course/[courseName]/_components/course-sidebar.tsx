@@ -231,7 +231,7 @@ export function CourseSidebar({
                       href="/account"
                       className="flex items-center gap-3 rounded-lg hover:bg-secondary/80 transition-all duration-200 p-2 -mx-2"
                     >
-                      <Avatar className="h-9 w-9 ring-2 ring-background">
+                      <Avatar className="h-9 w-9">
                         <AvatarFallback className="bg-primary text-primary-foreground font-semibold text-sm">
                           {session.user.name?.charAt(0).toUpperCase() ||
                             session.user.email?.charAt(0).toUpperCase() ||
