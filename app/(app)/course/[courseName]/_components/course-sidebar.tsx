@@ -10,6 +10,7 @@ import {
   LogIn,
   PanelLeft,
   PanelLeftClose,
+  Video,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,7 +22,32 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
-import type { Course, Lesson, Media } from "@/payload-types";
+import type { Course, Lesson, Media, MuxVideo } from "@/payload-types";
+import { formatDuration } from "@/utils/format";
+
+const lessonTypeConfig = {
+  quiz: {
+    icon: ClipboardList,
+    color: {
+      base: "bg-red-500/10 text-red-600 dark:text-red-500",
+      hover: "group-hover:bg-red-500/20",
+    },
+  },
+  video: {
+    icon: Video,
+    color: {
+      base: "bg-green-500/10 text-green-600 dark:text-green-400",
+      hover: "group-hover:bg-green-500/20",
+    },
+  },
+  default: {
+    icon: FileText,
+    color: {
+      base: "bg-primary/10 text-primary",
+      hover: "group-hover:bg-primary/20",
+    },
+  },
+};
 
 export function CourseSidebar({
   course,
@@ -162,8 +188,18 @@ export function CourseSidebar({
                     {lessons.map((lesson, index) => {
                       const lessonPath = `/course/${course.slug}/${lesson.slug}`;
                       const isActive = pathname === lessonPath;
-                      const isQuiz = lesson.type === "quiz";
-                      const Icon = isQuiz ? ClipboardList : FileText;
+
+                      const typeConfig =
+                        lessonTypeConfig[
+                          lesson.type as keyof typeof lessonTypeConfig
+                        ] || lessonTypeConfig.default;
+
+                      const Icon = typeConfig.icon;
+
+                      const videoDuration =
+                        lesson.type === "video"
+                          ? ((lesson.video as MuxVideo)?.duration ?? null)
+                          : null;
 
                       return (
                         <Link
@@ -171,7 +207,7 @@ export function CourseSidebar({
                           href={lessonPath}
                           title={lesson.title}
                           onClick={() => {
-                            if (window.innerWidth < 768) setOpen(false); // close sidebar on mobile
+                            if (window.innerWidth < 768) setOpen(false);
                           }}
                         >
                           <motion.div
@@ -190,9 +226,7 @@ export function CourseSidebar({
                                 "flex h-8 w-8 items-center justify-center rounded-md shrink-0 transition-colors",
                                 isActive
                                   ? "bg-primary-foreground/20"
-                                  : isQuiz
-                                    ? "bg-red-500/10 text-red-600 dark:text-red-500 group-hover:bg-red-500/20"
-                                    : "bg-primary/10 text-primary group-hover:bg-primary/20",
+                                  : `${typeConfig.color.base} ${typeConfig.color.hover}`,
                               )}
                             >
                               <Icon className="w-4 h-4" />
@@ -202,11 +236,16 @@ export function CourseSidebar({
                               <p className="text-sm font-medium leading-tight truncate">
                                 {lesson.title}
                               </p>
-                              <p className="text-xs truncate">
-                                {isQuiz && (
-                                  <span>{lesson.quiz?.length} tasks</span>
-                                )}
-                              </p>
+                              {lesson.type === "quiz" && (
+                                <p className="text-xs truncate">
+                                  {lesson.quiz?.length} tasks
+                                </p>
+                              )}
+                              {lesson.type === "video" && (
+                                <p className="text-xs truncate">
+                                  {formatDuration(videoDuration || 0)}
+                                </p>
+                              )}
                             </div>
 
                             {!lesson.free && !owned && (

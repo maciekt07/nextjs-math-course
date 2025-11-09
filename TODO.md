@@ -18,8 +18,8 @@
 
 ## CMS
 
-- [ ] Add different lesson types:
-  - [ ] Video lessons (Mux Video Payload Plugin)
+- [x] Add different lesson types:
+  - [x] Video lessons (Mux Video Payload Plugin)
   - [x] Quizzes
 - [ ] Redesign custom fields
   - [ ] Markdown preview

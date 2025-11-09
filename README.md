@@ -3,7 +3,7 @@
 A modern full-stack Next.js 15 platform with CMS, auth, and Stripe integration - built for managing and selling online math courses.
 
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/maciekt07/nextjs-math-course?color=%234e65ff)
-![GitHub created at ](https://img.shields.io/github/created-at/maciekt07/nextjs-math-course?color=%234e65ff)
+![GitHub created at](https://img.shields.io/github/created-at/maciekt07/nextjs-math-course?color=%234e65ff)
 ![GitHub last commit](https://img.shields.io/github/last-commit/maciekt07/nextjs-math-course?color=%234e65ff)
 ![GitHub License](https://img.shields.io/github/license/maciekt07/nextjs-math-course?color=%234e65ff)
 
@@ -37,8 +37,9 @@ A modern full-stack Next.js 15 platform with CMS, auth, and Stripe integration -
 - **Drizzle ORM Integration** - type-safe, lightweight, and modern database management.
 - **Tailwind CSS + Shadcn/UI** - clean, responsive, and consistent design system for the entire platform.
 - **Hybrid Lesson Delivery (SSR + SSG)** - free lessons are pre-rendered for speed, while paid lessons use server-side rendering for secure, on-demand access.
-- **Protected media** – paid lesson files restricted to enrolled users, with optional AWS S3 / Cloudflare R2 storage
+- **Protected media** – paid lesson images restricted to enrolled users, with optional AWS S3 / Cloudflare R2 storage
 - **Blurred Image Placeholders** – images load fast with smooth, auto-generated blur previews.
+- **Mux Video Integration** – video uploads and streaming through CMS, with signed URLs ensuring only enrolled users can access paid video lessons.
 - **Math Rendering with LaTeX** - lessons render beautiful equations and formatted text using Markdown + LaTeX syntax.
 
 ## Requirements

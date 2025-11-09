@@ -40,6 +40,7 @@ export const Lessons: CollectionConfig = {
       options: [
         { label: "Text", value: "text" },
         { label: "Quiz", value: "quiz" },
+        { label: "Video", value: "video" },
       ],
       defaultValue: "text",
       required: true,
@@ -115,6 +116,23 @@ export const Lessons: CollectionConfig = {
           label: "Solution Explanation (Markdown + LaTeX)",
         },
       ],
+    },
+    // VIDEO LESSON CONTENT
+    {
+      name: "video",
+      type: "relationship",
+      relationTo: "mux-video",
+      admin: {
+        condition: (data) => data.type === "video",
+      },
+    },
+    {
+      name: "videoDescription",
+      type: "textarea",
+      label: "Video Description (Markdown + LaTeX)",
+      admin: {
+        condition: (data) => data.type === "video",
+      },
     },
   ],
 };

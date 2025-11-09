@@ -35,9 +35,9 @@ export function QuizLesson({ lesson }: QuizLessonProps) {
 
   if (!currentQuiz) {
     return (
-      <div className="max-w-4xl mx-auto px-6 py-8">
-        <Card>
-          <CardContent className="pt-6">
+      <div className="flex justify-center items-center min-h-[200px] px-4">
+        <Card className="w-full max-w-md">
+          <CardContent className="py-8 flex justify-center">
             <p className="text-muted-foreground text-center">
               No quiz questions available.
             </p>
@@ -90,7 +90,6 @@ export function QuizLesson({ lesson }: QuizLessonProps) {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-4xl font-bold mb-2 text-primary">{lesson.title}</h1>
         {lesson.content && (
           <div className="mt-4 text-muted-foreground">
             <MarkdownRenderer content={lesson.content} />

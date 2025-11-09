@@ -65,6 +65,11 @@ export default async function Home() {
 
   const formattedUserCount = `${Math.max(10, Math.floor((await userCount) / 10) * 10)}+`;
 
+  // const totalLessons = courses.reduce(
+  //   (sum, c) => sum + (c.lessonCount || 0),
+  //   0,
+  // );
+
   return (
     <div className="w-full flex flex-col">
       <section className="bg-background mt-8 sm:mt-16">
@@ -144,8 +149,16 @@ export default async function Home() {
                   </p>
                   <p className="text-sm text-muted-foreground">Courses</p>
                 </div>
+                {/* <div className="w-px h-12 bg-border"></div>
+                <div>
+                  <p className="text-2xl font-bold text-foreground">
+                    {totalLessons}
+                  </p>
+                  <p className="text-sm text-muted-foreground">Total Lessons</p>
+                </div> */}
               </div>
             </div>
+
             {/* hero image - shows on right side on large screens */}
             <HeroImage className="hidden lg:flex h-[600px]" />
           </div>
