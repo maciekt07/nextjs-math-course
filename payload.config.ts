@@ -1,3 +1,7 @@
+import { Courses } from "@cms/collections/Courses";
+import { Lessons } from "@cms/collections/Lessons";
+import { Media } from "@cms/collections/Media";
+import { Users } from "@cms/collections/Users";
 import { muxVideoPlugin } from "@oversightstudio/mux-video";
 import { mongooseAdapter } from "@payloadcms/db-mongodb";
 import { resendAdapter } from "@payloadcms/email-resend";
@@ -5,10 +9,6 @@ import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { s3Storage } from "@payloadcms/storage-s3";
 import { buildConfig } from "payload";
 import sharp from "sharp";
-import { Courses } from "./collections/Courses";
-import { Lessons } from "./collections/Lessons";
-import { Media } from "./collections/Media";
-import { Users } from "./collections/Users";
 
 // Use ENABLE_S3=true in .env to enable S3/R2 storage
 const useS3 = process.env.ENABLE_S3 === "true";

@@ -1,6 +1,6 @@
-import { default as default_e88bad4494d540e6b22cbf3f3f84f1be } from "@fields/auto-slug-field";
-import { default as default_e1b209e8563a463e28f5a024b774a4ae } from "@fields/lesson-reorder";
-import { default as default_d6f3f7b1c845b226a0ce30e53a56c5de } from "@fields/markdown-preview";
+import { default as default_e88bad4494d540e6b22cbf3f3f84f1be } from "@/cms/fields/auto-slug-field";
+import { default as default_e1b209e8563a463e28f5a024b774a4ae } from "@/cms/fields/lesson-reorder";
+import { default as default_d6f3f7b1c845b226a0ce30e53a56c5de } from "@/cms/fields/markdown-preview";
 import {
   MuxUploaderField as MuxUploaderField_c369a797e256de625eba826a6acb8608,
   MuxVideoGifCell as MuxVideoGifCell_c369a797e256de625eba826a6acb8608,

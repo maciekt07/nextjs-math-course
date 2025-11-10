@@ -22,8 +22,9 @@
       "@/*": ["./*"],
       "@payload-config": ["./payload.config.ts"],
       "@styles/*": ["./styles/*"],
-      "@fields/*": ["./fields/*"],
-      "@hooks/*": ["./hooks/*"]
+      "@cms/*": ["./cms/*"],
+      "@fields/*": ["./cms/fields/*"],
+      "@email/*": ["./email/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

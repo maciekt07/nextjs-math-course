@@ -36,3 +36,4 @@
 - [ ] Improve sidebar animations
 - [ ] Add settings dialog with option to disable colored markdown
 - [ ] Animate hero svg
+- [ ] Add ambient light effect for video [demo](https://codesandbox.io/p/sandbox/ambient-mode-vv63e9)

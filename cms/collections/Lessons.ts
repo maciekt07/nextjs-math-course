@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload";
-import { createSlugField } from "@/fields/createSlugField";
+import { createSlugField } from "@/cms/fields/createSlugField";
 
 export const Lessons: CollectionConfig = {
   slug: "lessons",

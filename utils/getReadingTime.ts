@@ -16,7 +16,7 @@ export function getReadingTime(
   markdown: string,
   config?: ReadingTimeConfig,
 ): string {
-  const wordsPerMinute = config?.wordsPerMinute ?? 238;
+  const wordsPerMinute = config?.wordsPerMinute ?? 180;
   const mathTimePerExpression = config?.mathTimePerExpression ?? 8;
   const imageTimePerImage = config?.imageTimePerImage ?? 12;
 
