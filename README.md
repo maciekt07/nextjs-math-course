@@ -34,13 +34,11 @@ A modern full-stack Next.js 15 platform with CMS, auth, and Stripe integration -
 - **Full Authentication with BetterAuth** - secure login, registration, and email verification powered by **Resend**.
 - **Admin CMS Dashboard** - manage courses, lessons, and media directly through an integrated **Payload CMS** interface.
 - **Stripe Payments** - sell courses with one-time payments using Stripe Checkout.
-- **Drizzle ORM Integration** - type-safe, lightweight, and modern database management.
-- **Tailwind CSS + Shadcn/UI** - clean, responsive, and consistent design system for the entire platform.
 - **Hybrid Lesson Delivery (SSR + SSG)** - free lessons are pre-rendered for speed, while paid lessons use server-side rendering for secure, on-demand access.
 - **Protected media** – paid lesson images restricted to enrolled users, with optional AWS S3 / Cloudflare R2 storage
 - **Blurred Image Placeholders** – images load fast with smooth, auto-generated blur previews.
 - **Mux Video Integration** – video uploads and streaming through CMS, with signed URLs ensuring only enrolled users can access paid video lessons.
-- **Math Rendering with LaTeX** - lessons render beautiful equations and formatted text using Markdown + LaTeX syntax.
+- **LaTeX and Interactive Desmos Graphs** – Lessons feature fully interactive graphs and beautifully formatted equations rendered with Markdown and LaTeX.
 
 ## Requirements
 
@@ -105,6 +103,34 @@ Once the app is running, you can access the CMS at:
 - Create your admin account on first visit
 
 - Use the panel to manage courses, lessons, and media
+
+## Usage
+
+### Using Desmos Graphs
+
+You can add interactive Desmos graphs directly in markdown lessons:
+
+```markdown
+::desmos{url="https://www.desmos.com/calculator/your-graph-id"}
+::desmos{url="https://www.desmos.com/calculator/your-graph-id" noEmbed=true}
+```
+
+By default, the embedded version displays only the graph.
+If you set `noEmbed=true`, it will open the full Desmos calculator with all its tools and controls.
+
+### Using LaTeX in Markdown
+
+You can include math expressions in your lessons using standard Markdown + LaTeX syntax:
+
+```markdown
+Inline math: $E = mc^2$
+
+Block math:
+
+$$
+f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}
+$$
+```
 
 ## Database Management
 
