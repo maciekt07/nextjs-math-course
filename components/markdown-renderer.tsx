@@ -1,9 +1,12 @@
 import ReactMarkdown from "react-markdown";
 import rehypeKatex from "rehype-katex";
+import remarkDirective from "remark-directive";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import "katex/dist/katex.min.css";
 import Image from "next/image";
+import { type DesmosDivProps, desmos } from "../lib/desmos";
+import { DesmosGraph } from "./desmos-graph";
 import { ImageZoom } from "./ui/shadcn-io/image-zoom";
 
 interface MarkdownRendererProps {
@@ -57,10 +60,24 @@ export function MarkdownRenderer({
               </ImageZoom>
             );
           },
+          // handle desmos graphs
+          div: ({ node, className, ...props }) => {
+            const desmosProps = props as DesmosDivProps;
+
+            if (className?.includes("desmos-graph")) {
+              const graphUrl = desmosProps["data-graph-url"];
+              const noEmbed = desmosProps["data-no-embed"] === "true";
+
+              if (!graphUrl) return null;
+
+              return <DesmosGraph graphUrl={graphUrl} noEmbed={noEmbed} />;
+            }
+            return <div className={className} {...props} />;
+          },
         }}
         // biome-ignore lint/correctness/noChildrenProp: cannot pass content as JSX children
         children={content}
-        remarkPlugins={[remarkGfm, remarkMath]}
+        remarkPlugins={[remarkGfm, remarkMath, remarkDirective, desmos]}
         rehypePlugins={[rehypeKatex]}
       />
     </div>

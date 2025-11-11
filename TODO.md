@@ -25,6 +25,7 @@
   - [ ] Markdown preview
   - [ ] Reorder
   - [ ] Quiz type fields
+- [x] Integrate Desmos graphs support
 - [x] Protect media for premium lessons
   - [x] Optimize static images
 - [x] Add optional Cloudflare R2 support for media uploads
@@ -35,5 +36,5 @@
 
 - [ ] Improve sidebar animations
 - [ ] Add settings dialog with option to disable colored markdown
-- [ ] Animate hero svg
+- [ ] Animate hero svg [video](https://www.youtube.com/watch?v=SrmTDrN1lkU)
 - [ ] Add ambient light effect for video [demo](https://codesandbox.io/p/sandbox/ambient-mode-vv63e9)
