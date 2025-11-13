@@ -1,6 +1,6 @@
 # Next.js Math Course Platform
 
-A modern full-stack Next.js 15 platform with CMS, auth, and Stripe integration - built for managing and selling online math courses.
+A modern full-stack Next.js 15 platform with CMS, auth, and Stripe integration - built to manage and sell online math courses with videos, quizzes, LaTeX, and interactive graphs.
 
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/maciekt07/nextjs-math-course?color=%234e65ff)
 ![GitHub created at](https://img.shields.io/github/created-at/maciekt07/nextjs-math-course?color=%234e65ff)
@@ -108,15 +108,24 @@ Once the app is running, you can access the CMS at:
 
 ### Using Desmos Graphs
 
-You can add interactive Desmos graphs directly in markdown lessons:
+You can add interactive [Desmos](https://www.desmos.com/calculator) graphs directly in markdown lessons:
 
 ```markdown
 ::desmos{url="https://www.desmos.com/calculator/your-graph-id"}
-::desmos{url="https://www.desmos.com/calculator/your-graph-id" noEmbed=true}
 ```
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="screenshots/desmos-graph-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="screenshots/desmos-graph-light.png">
+  <img alt="Desmos Graph" src="screenshots/desmos-graph-dark.png">
+</picture>
 
 By default, the embedded version displays only the graph.
 If you set `noEmbed=true`, it will open the full Desmos calculator with all its tools and controls.
+
+```markdown
+::desmos{url="https://www.desmos.com/calculator/your-graph-id" noEmbed=true}
+```
 
 ### Using LaTeX in Markdown
 
@@ -131,6 +140,8 @@ $$
 f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}
 $$
 ```
+
+For more details, see the [Markdown + LaTeX documentation](https://ashki23.github.io/markdown-latex.html#mathematical-formula)
 
 ## Database Management
 
