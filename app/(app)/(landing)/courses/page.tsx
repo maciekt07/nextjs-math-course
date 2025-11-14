@@ -48,7 +48,7 @@ export default async function CoursesPage() {
           Browse available courses and buy one to see it in this list.
         </p>
         <Button asChild size="lg">
-          <Link href="/#courses">Browse Courses</Link>
+          <a href="/#courses">Browse Courses</a>
         </Button>
       </div>
     );

@@ -28,18 +28,18 @@ export default async function Footer() {
             <div className="flex flex-col gap-3">
               <h3 className="font-medium text-sm text-foreground">Explore</h3>
               <nav className="flex flex-col gap-2 text-sm">
-                <Link
+                <a
                   href="/#courses"
                   className="text-foreground/70 hover:text-primary transition-colors"
                 >
                   Courses
-                </Link>
-                <Link
+                </a>
+                <a
                   href="/#faq"
                   className="text-foreground/70 hover:text-primary transition-colors"
                 >
                   FAQ
-                </Link>
+                </a>
               </nav>
             </div>
 

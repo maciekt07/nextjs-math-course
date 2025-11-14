@@ -1,8 +1,17 @@
-import type { CollectionConfig } from "payload";
+import type { Access, CollectionConfig } from "payload";
 import { createSlugField } from "@/cms/fields/createSlugField";
+
+const isAdmin: Access = ({ req: { user } }) => user?.role === "admin";
 
 export const Courses: CollectionConfig = {
   slug: "courses",
+  // only admin can manage courses
+  access: {
+    read: () => true,
+    create: isAdmin,
+    update: isAdmin,
+    delete: isAdmin,
+  },
   admin: {
     useAsTitle: "title",
   },

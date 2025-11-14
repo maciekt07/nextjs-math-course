@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import path from "node:path";
-import { APIError, type CollectionBeforeOperationHook } from "payload";
+import type { CollectionBeforeOperationHook } from "payload";
+import CustomAPIError from "../CustomAPIError";
 
 export const renameFile: CollectionBeforeOperationHook = async ({ args }) => {
   try {
@@ -12,6 +13,6 @@ export const renameFile: CollectionBeforeOperationHook = async ({ args }) => {
     }
   } catch (error) {
     console.error(error);
-    throw new APIError("Failed to rename file");
+    throw new CustomAPIError("Failed to rename file");
   }
 };

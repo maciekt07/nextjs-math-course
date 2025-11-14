@@ -185,7 +185,7 @@ export function CourseSidebar({
                     </p>
                   </div>
                   <nav className="space-y-1">
-                    {lessons.map((lesson, index) => {
+                    {lessons.map((lesson) => {
                       const lessonPath = `/course/${course.slug}/${lesson.slug}`;
                       const isActive = pathname === lessonPath;
 
@@ -206,14 +206,12 @@ export function CourseSidebar({
                           key={lesson.id}
                           href={lessonPath}
                           title={lesson.title}
+                          prefetch={true}
                           onClick={() => {
                             if (window.innerWidth < 768) setOpen(false);
                           }}
                         >
-                          <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: index * 0.03 }}
+                          <div
                             className={cn(
                               "group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200",
                               isActive
@@ -251,7 +249,7 @@ export function CourseSidebar({
                             {!lesson.free && !owned && (
                               <Lock className="w-4 h-4 shrink-0 text-orange-600 dark:text-orange-500" />
                             )}
-                          </motion.div>
+                          </div>
                         </Link>
                       );
                     })}

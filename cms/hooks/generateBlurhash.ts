@@ -1,5 +1,6 @@
-import { APIError, type CollectionBeforeValidateHook } from "payload";
+import type { CollectionBeforeValidateHook } from "payload";
 import { getPlaiceholder } from "plaiceholder";
+import CustomAPIError from "../CustomAPIError";
 
 export const generateBlurhash: CollectionBeforeValidateHook = async ({
   data,
@@ -18,7 +19,7 @@ export const generateBlurhash: CollectionBeforeValidateHook = async ({
       }
     } catch (error) {
       console.error(error);
-      throw new APIError("Failed to generate blur data url");
+      throw new CustomAPIError("Failed to generate blur data url.");
     }
   }
 };

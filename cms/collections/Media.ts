@@ -39,5 +39,6 @@ export const Media: CollectionConfig = {
   ],
   upload: {
     mimeTypes: ["image/*"],
+    staticDir: "media",
   },
 };
