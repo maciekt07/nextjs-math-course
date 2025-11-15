@@ -9,17 +9,12 @@ import BuyCourseButton from "@/components/buy-course-button";
 import Footer from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
 import { auth } from "@/lib/auth";
 import { getPayloadClient } from "@/lib/payload-client";
-import { cn } from "@/lib/utils";
 import type { Course } from "@/payload-types";
-import { LessonTitle } from "./_components/lesson-title";
-import { QuizLesson } from "./_components/lessons/quiz-lesson";
-import { TextLesson } from "./_components/lessons/text-lesson";
-import { VideoLesson } from "./_components/lessons/video-lesson";
+import { LessonContentWrapper } from "./_components/lesson-content-wrapper";
 
 export const revalidate = 3600;
 export const dynamic = "force-dynamic";
@@ -221,20 +216,8 @@ export default async function LessonPage({ params: paramsPromise }: Args) {
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex-grow">
-        <article
-          className={cn(
-            "mx-auto py-8 mt-10 px-6",
-            lesson?.type === "video" ? "max-w-6xl" : "max-w-4xl",
-          )}
-        >
-          <LessonTitle lesson={lesson} />
-          <Separator className="mb-8" />
-          {lesson?.type === "text" && <TextLesson lesson={lesson} />}
-          {lesson?.type === "quiz" && <QuizLesson lesson={lesson} />}
-          {lesson?.type === "video" && <VideoLesson lesson={lesson} />}
-        </article>
+        <LessonContentWrapper lesson={lesson} />
       </div>
-
       <Footer />
     </div>
   );

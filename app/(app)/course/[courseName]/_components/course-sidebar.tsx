@@ -10,16 +10,20 @@ import {
   LogIn,
   PanelLeft,
   PanelLeftClose,
+  Settings,
   Video,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { SettingsDialogContent } from "@/app/(app)/course/[courseName]/_components/settings-dialog";
 import BuyCourseButton from "@/components/buy-course-button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import type { Course, Lesson, Media, MuxVideo } from "@/payload-types";
@@ -88,9 +92,21 @@ export function CourseSidebar({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -12 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="backdrop-blur-md rounded-md"
+              className="rounded-md"
             >
-              <Button variant="outline" asChild>
+              {/* <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="cursor-pointer backdrop-blur-md mr-3 md:mr-4"
+                  >
+                    <Settings className="w-4 h-4" />
+                  </Button>
+                </DialogTrigger>
+                <SettingsDialogContent />
+              </Dialog> */}
+              <Button variant="outline" asChild className="backdrop-blur-md">
                 <Link href="/">
                   <ChevronLeft className="w-4 h-4" />
                   Home
@@ -135,6 +151,7 @@ export function CourseSidebar({
                     Back to Home
                   </Link>
                 </Button>
+
                 {course.media && (
                   <div className="relative w-full h-40 mb-4 mt-2 overflow-hidden rounded-2xl shadow-md">
                     <Image
@@ -173,6 +190,16 @@ export function CourseSidebar({
                     >
                       {course.description}
                     </p>
+                  )}
+                  {!owned && (
+                    <BuyCourseButton
+                      courseId={course.id}
+                      variant="outline"
+                      className="w-full mt-3 font-bold"
+                      size="lg"
+                    >
+                      Buy Course
+                    </BuyCourseButton>
                   )}
                 </div>
               </div>
@@ -258,9 +285,26 @@ export function CourseSidebar({
               </div>
 
               <div className="p-4 border-t mt-auto bg-background">
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="w-full mb-3 cursor-pointer"
+                    >
+                      <Settings className="w-4 h-4" /> Settings
+                    </Button>
+                  </DialogTrigger>
+                  <SettingsDialogContent />
+                </Dialog>
                 {isPending ? (
-                  <div className="flex items-center justify-center py-3">
-                    <div className="h-5 w-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3 rounded-lg p-2 -mx-2">
+                      <Skeleton className="h-9 w-9 rounded-full" />
+                      <div className="flex-1 min-w-0 space-y-1.5">
+                        <Skeleton className="h-4 w-20" />
+                        <Skeleton className="h-3 w-32" />
+                      </div>
+                    </div>
                   </div>
                 ) : session?.user ? (
                   <div className="space-y-2">
@@ -284,17 +328,6 @@ export function CourseSidebar({
                         </p>
                       </div>
                     </Link>
-
-                    {!owned && (
-                      <BuyCourseButton
-                        courseId={course.id}
-                        variant="outline"
-                        className="w-full"
-                        size="sm"
-                      >
-                        Buy Course
-                      </BuyCourseButton>
-                    )}
                   </div>
                 ) : (
                   <Button asChild className="w-full" size="sm">

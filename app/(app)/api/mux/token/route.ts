@@ -8,6 +8,7 @@ import { enrollment } from "@/drizzle/schema";
 import { auth } from "@/lib/auth";
 import { getPayloadClient } from "@/lib/payload-client";
 
+//TODO: protect from token sharing
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -111,7 +112,7 @@ export async function POST(request: NextRequest) {
       jwtPrivateKey: process.env.MUX_JWT_KEY || "",
     });
 
-    const expiration = process.env.MUX_SIGNED_URL_EXPIRATION || "1d";
+    const expiration = process.env.MUX_SIGNED_URL_EXPIRATION || "30min";
     const token = await mux.jwt.signPlaybackId(playbackId, {
       expiration,
       type: "video",

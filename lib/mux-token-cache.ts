@@ -39,7 +39,7 @@ export async function fetchMuxToken(playbackId: string): Promise<string> {
   if (!res.ok) throw new Error("Failed to fetch mux token");
   const data = await res.json();
 
-  const expirationMs = 24 * 60 * 60 * 1000; // 1 day
+  const expirationMs = 30 * 60 * 1000; // 30min
   const cache: Record<string, CachedMuxToken> = JSON.parse(
     localStorage.getItem(LOCAL_STORAGE_KEY) || "{}",
   );

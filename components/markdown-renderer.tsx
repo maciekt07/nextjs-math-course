@@ -5,6 +5,8 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import "katex/dist/katex.min.css";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
+import { useSettingsStore } from "@/stores/settingsStore";
 import { type DesmosDivProps, desmos } from "../lib/desmos";
 import { DesmosGraph } from "./desmos-graph";
 import { ImageZoom } from "./ui/shadcn-io/image-zoom";
@@ -25,8 +27,16 @@ export function MarkdownRenderer({
   unoptimized,
   media,
 }: MarkdownRendererProps) {
+  const { coloredMarkdown, largeMath } = useSettingsStore();
+
   return (
-    <div className="prose dark:prose-invert max-w-none marker:text-primary">
+    <div
+      className={cn(
+        "markdown-wrapper prose dark:prose-invert max-w-none",
+        coloredMarkdown && "colored-markdown marker:text-primary",
+        largeMath && "large-math",
+      )}
+    >
       <ReactMarkdown
         components={{
           a: ({ node, ...props }) => (
