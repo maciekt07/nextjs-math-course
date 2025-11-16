@@ -38,7 +38,7 @@ A modern full-stack Next.js 15 platform with CMS, auth, and Stripe integration -
 - **Protected media** – paid lesson images restricted to enrolled users, with optional AWS S3 / Cloudflare R2 storage
 - **Blurred Image Placeholders** – images load fast with smooth, auto-generated blur previews.
 - **Mux Video Integration** – video uploads and streaming through CMS, with signed URLs ensuring only enrolled users can access paid video lessons.
-- **LaTeX and Interactive Desmos Graphs** – Lessons feature fully interactive graphs and beautifully formatted equations rendered with Markdown and LaTeX.
+- **LaTeX and Interactive Desmos Graphs** – Lessons feature interactive graphs and clean LaTeX formatting, with settings like larger math font or colored symbols
 
 ## Requirements
 
