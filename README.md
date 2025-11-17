@@ -8,13 +8,11 @@ A modern full-stack Next.js 15 platform with CMS, auth, and Stripe integration -
 ![GitHub License](https://img.shields.io/github/license/maciekt07/nextjs-math-course?color=%234e65ff)
 
 <p align="center">
-<a>
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="screenshots/tech-stack-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="screenshots/tech-stack-light.svg">
   <img alt="Tech Stack" src="screenshots/tech-stack-dark.svg">
 </picture>
-</a>
 </p>
 
 <picture>

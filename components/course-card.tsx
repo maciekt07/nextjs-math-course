@@ -1,5 +1,3 @@
-"use client";
-
 import { BookOpen, Check, GraduationCap } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -23,6 +21,10 @@ interface CourseCardProps {
 
 export function CourseCard({ course, owned, minimal }: CourseCardProps) {
   return (
+    //  className="text-muted-foreground"
+    // initial={{ opacity: 0, y: 50, filter: "blur(16px)" }}
+    // animate={{ opacity: 1, y: 0, filter: "none" }}
+    // transition={{ duration: 0.5 }}
     <Card key={course.id} className="flex flex-col">
       <CardHeader>
         <div className="flex items-start gap-4">

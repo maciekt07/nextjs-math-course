@@ -33,7 +33,8 @@
         "noNonNullAssertion": "off"
       },
       "a11y": {
-        "noLabelWithoutControl": "off"
+        "noLabelWithoutControl": "off",
+        "noSvgWithoutTitle": "off"
       }
     },
     "domains": {

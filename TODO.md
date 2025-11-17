@@ -36,5 +36,5 @@
 
 - [ ] Improve sidebar animations
 - [x] Add settings dialog for course view
-- [ ] Animate hero svg [video](https://www.youtube.com/watch?v=SrmTDrN1lkU)
+- [x] Animate hero svg [video](https://www.youtube.com/watch?v=SrmTDrN1lkU)
 - [ ] Add ambient light effect for video [demo](https://codesandbox.io/p/sandbox/ambient-mode-vv63e9)

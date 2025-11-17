@@ -29,6 +29,10 @@ export function LessonContentWrapper({ lesson }: LessonContentWrapperProps) {
         fontClass,
       )}
     >
+      {/* key={lesson.id}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, ease: "easeIn" }} */}
       <LessonTitle lesson={lesson} />
       <Separator className="mb-8" />
       {lesson?.type === "text" && <TextLesson lesson={lesson} />}

@@ -20,6 +20,8 @@ interface QuizLessonProps {
   lesson: Lesson;
 }
 
+//TODO: store completed in local storage
+
 export function QuizLesson({ lesson }: QuizLessonProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [selectedAnswers, setSelectedAnswers] = useState<

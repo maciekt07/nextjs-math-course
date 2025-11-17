@@ -1,3 +1,7 @@
+"use client";
+
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -29,10 +33,14 @@ const faqs: { question: string; answer: string }[] = [
 ];
 
 export function FAQ() {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
   return (
     <section
       className="mt-16 mb-8 px-4 sm:px-6 max-w-4xl mx-auto w-full"
       id="faq"
+      ref={ref}
     >
       <div className="mb-8 text-left">
         <h2 className="text-3xl sm:text-4xl font-bold text-foreground">
@@ -45,19 +53,25 @@ export function FAQ() {
 
       <Accordion type="single" collapsible className="space-y-3 w-full">
         {faqs.map((faq, i) => (
-          <AccordionItem
-            // biome-ignore lint/suspicious/noArrayIndexKey: safe here
+          <motion.div
+            // biome-ignore lint/suspicious/noArrayIndexKey: safe
             key={i}
-            value={`item-${i}`}
-            className="border border-border rounded-xl bg-muted/40 px-4"
+            initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
+            animate={isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+            transition={{ duration: 0.5, delay: i * 0.15, ease: "easeOut" }}
           >
-            <AccordionTrigger className="text-left py-4 hover:no-underline [&>svg]:text-muted-foreground">
-              <span className="font-medium">{faq.question}</span>
-            </AccordionTrigger>
-            <AccordionContent className="pb-4 text-muted-foreground">
-              {faq.answer}
-            </AccordionContent>
-          </AccordionItem>
+            <AccordionItem
+              value={`item-${i}`}
+              className="border border-border rounded-xl bg-muted/40 px-4 shadow-md"
+            >
+              <AccordionTrigger className="text-left py-4 hover:no-underline [&>svg]:text-muted-foreground cursor-pointer">
+                <span className="font-medium">{faq.question}</span>
+              </AccordionTrigger>
+              <AccordionContent className="pb-4 text-muted-foreground">
+                {faq.answer}
+              </AccordionContent>
+            </AccordionItem>
+          </motion.div>
         ))}
       </Accordion>
     </section>

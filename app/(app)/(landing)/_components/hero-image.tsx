@@ -1,12 +1,11 @@
-import Image, { type ImageProps } from "next/image";
+import HeroSvgComponent from "@/components/hero-svg/hero-svg";
 import { cn } from "@/lib/utils";
 
 interface HeroImageProps {
   className?: string;
-  imageProps?: Omit<ImageProps, "src" | "alt" | "fill">;
 }
 
-export function HeroImage({ className, imageProps }: HeroImageProps) {
+export function HeroImage({ className }: HeroImageProps) {
   return (
     <div
       className={cn(
@@ -15,15 +14,12 @@ export function HeroImage({ className, imageProps }: HeroImageProps) {
       )}
     >
       <div className="relative w-full h-full">
-        <Image
-          src="/hero-illustration.svg"
-          alt="Hero"
-          fill
-          className="object-contain"
-          unoptimized
-          {...imageProps}
-        />
+        <HeroSvgComponent className="absolute top-0 left-0 w-full h-full object-contain" />
       </div>
+      {/* <motion.a
+        initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
+        animate={{ opacity: 1, y: 0, filter: "none" }}
+        transition={{ duration: 0.6, delay: 4.5 }} */}
       <a
         href="https://storyset.com/people"
         target="_blank"
