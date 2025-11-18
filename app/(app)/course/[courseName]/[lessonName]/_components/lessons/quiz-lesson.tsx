@@ -1,12 +1,16 @@
 "use client";
 
+import { motion } from "framer-motion";
 import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
   Info,
   Lightbulb,
-  XCircle,
+  X,
 } from "lucide-react";
 import { useState } from "react";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
@@ -20,22 +24,18 @@ interface QuizLessonProps {
   lesson: Lesson;
 }
 
-//TODO: store completed in local storage
-
 export function QuizLesson({ lesson }: QuizLessonProps) {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
-  const [selectedAnswers, setSelectedAnswers] = useState<
+  const [activeQuestionIdx, setActiveQuestionIdx] = useState<number>(0);
+  const [submittedAnswers, setSubmittedAnswers] = useState<
     Record<number, number>
   >({});
-  const [showHints, setShowHints] = useState<Record<number, boolean>>({});
-  const [showSolutions, setShowSolutions] = useState<Record<number, boolean>>(
-    {},
-  );
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  const [hintsVisible, setHintsVisible] = useState<Record<number, boolean>>({});
 
-  const quizzes = lesson.quiz || [];
-  const currentQuiz = quizzes[currentQuestionIndex];
+  const questions = lesson.quiz || [];
+  const activeQuestion = questions[activeQuestionIdx];
 
-  if (!currentQuiz) {
+  if (!activeQuestion) {
     return (
       <div className="flex justify-center items-center min-h-[200px] px-4">
         <Card className="w-full max-w-md">
@@ -49,82 +49,67 @@ export function QuizLesson({ lesson }: QuizLessonProps) {
     );
   }
 
-  const handleSelectAnswer = (questionIndex: number, optionIndex: number) => {
-    setSelectedAnswers((prev) => ({
-      ...prev,
-      [questionIndex]: optionIndex,
-    }));
+  const isSubmitted = submittedAnswers[activeQuestionIdx] !== undefined;
+  const submittedOptionIdx = submittedAnswers[activeQuestionIdx];
+  const isCorrect =
+    isSubmitted && activeQuestion.options[submittedOptionIdx]?.isCorrect;
+  const isHintVisible = hintsVisible[activeQuestionIdx];
 
-    setShowSolutions((prev) => ({
-      ...prev,
-      [questionIndex]: true,
-    }));
-  };
-
-  const toggleHint = (questionIndex: number) => {
-    setShowHints((prev) => ({
-      ...prev,
-      [questionIndex]: !prev[questionIndex],
-    }));
-  };
-
-  const selectedOptionIndex = selectedAnswers[currentQuestionIndex];
-  const hasSelected = selectedOptionIndex !== undefined;
-  const selectedOption = hasSelected
-    ? currentQuiz.options[selectedOptionIndex]
-    : null;
-
-  const showSolution = showSolutions[currentQuestionIndex];
-  const showHint = showHints[currentQuestionIndex];
-
-  const goToPrevious = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
+  const handleOptionSelect = (optionIdx: number) => {
+    if (!isSubmitted) {
+      setSelectedOption(optionIdx);
     }
   };
 
-  const goToNext = () => {
-    if (currentQuestionIndex < quizzes.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
+  const handleSubmit = () => {
+    if (selectedOption !== null && !isSubmitted) {
+      setSubmittedAnswers((prev) => ({
+        ...prev,
+        [activeQuestionIdx]: selectedOption,
+      }));
+    }
+  };
+
+  const navigateToPrevious = () => {
+    if (activeQuestionIdx > 0) {
+      setActiveQuestionIdx(activeQuestionIdx - 1);
+      setSelectedOption(submittedAnswers[activeQuestionIdx - 1] ?? null);
+    }
+  };
+
+  const navigateToNext = () => {
+    if (activeQuestionIdx < questions.length - 1) {
+      setActiveQuestionIdx(activeQuestionIdx + 1);
+      setSelectedOption(submittedAnswers[activeQuestionIdx + 1] ?? null);
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="mb-6">
-        {lesson.content && (
-          <div className="mt-4 text-muted-foreground">
-            <MarkdownRenderer content={lesson.content} />
-          </div>
-        )}
-      </div>
-      {quizzes.length > 1 && (
-        <div className="mb-6 flex items-center justify-between">
+    <div className="max-w-4xl mx-auto space-y-6">
+      {lesson.content && (
+        <div className="text-muted-foreground">
+          <MarkdownRenderer content={lesson.content} />
+        </div>
+      )}
+
+      {questions.length > 1 && (
+        <div className="flex items-center justify-between gap-4 flex-wrap">
           <div className="flex gap-2 flex-wrap">
-            {quizzes.map((q, index) => {
-              // const isAnswered = selectedAnswers[index] !== undefined;
-              const isCurrent = index === currentQuestionIndex;
-              // const isCorrect =
-              //   isAnswered &&
-              //   quizzes[index].options[selectedAnswers[index]]?.isCorrect;
+            {questions.map((question, idx) => {
+              const isCurrent = idx === activeQuestionIdx;
 
               return (
                 <Button
-                  key={`answer-btn-${q.id || index}`}
+                  key={question.id}
                   variant={isCurrent ? "default" : "outline"}
                   size="sm"
-                  onClick={() => setCurrentQuestionIndex(index)}
-                  // className={cn(
-                  //   "min-w-10",
-                  //   isAnswered &&
-                  //     !isCurrent &&
-                  //     (isCorrect
-                  //       ? "border-green-500 text-green-600 dark:text-green-500"
-                  //       : "border-red-500 text-red-600 dark:text-red-500"),
-                  // )}
+                  onClick={() => {
+                    setActiveQuestionIdx(idx);
+                    setSelectedOption(submittedAnswers[idx] ?? null);
+                  }}
                   className="w-10 h-10 cursor-pointer"
                 >
-                  {index + 1}
+                  {idx + 1}
                 </Button>
               );
             })}
@@ -134,8 +119,9 @@ export function QuizLesson({ lesson }: QuizLessonProps) {
             <Button
               variant="outline"
               size="sm"
-              onClick={goToPrevious}
-              disabled={currentQuestionIndex === 0}
+              onClick={navigateToPrevious}
+              disabled={activeQuestionIdx === 0}
+              className="cursor-pointer"
             >
               <ChevronLeft className="w-4 h-4" />
               Previous
@@ -143,8 +129,9 @@ export function QuizLesson({ lesson }: QuizLessonProps) {
             <Button
               variant="outline"
               size="sm"
-              onClick={goToNext}
-              disabled={currentQuestionIndex === quizzes.length - 1}
+              onClick={navigateToNext}
+              disabled={activeQuestionIdx === questions.length - 1}
+              className="cursor-pointer"
             >
               Next
               <ChevronRight className="w-4 h-4" />
@@ -152,98 +139,159 @@ export function QuizLesson({ lesson }: QuizLessonProps) {
           </div>
         </div>
       )}
-      <Card className="mb-6">
+
+      <Card>
         <CardHeader>
           <div className="space-y-3">
-            <div className="flex items-center justify-between gap-4">
-              <Badge variant="secondary">
-                Question {currentQuestionIndex + 1} of {quizzes.length}
-              </Badge>
-              {currentQuiz.hint && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => toggleHint(currentQuestionIndex)}
-                  className="shrink-0"
-                >
-                  <Lightbulb className="w-4 h-4 mr-2" />
-                  {showHint ? "Hide" : "Show"} Hint
-                </Button>
-              )}
-            </div>
+            <Badge variant="secondary">
+              Question {activeQuestionIdx + 1} of {questions.length}
+            </Badge>
             <CardTitle className="text-2xl">
-              <MarkdownRenderer content={currentQuiz.question} />
+              <MarkdownRenderer content={activeQuestion.question} />
             </CardTitle>
           </div>
         </CardHeader>
 
-        <CardContent className="space-y-4">
-          {showHint && currentQuiz.hint && (
-            <Card className="bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900">
-              <CardContent>
-                <div className="flex gap-2">
-                  <Lightbulb className="w-5 h-5 text-amber-600 dark:text-amber-500 shrink-0 mt-0.5" />
-                  <div className="flex-1">
-                    <MarkdownRenderer content={currentQuiz.hint} />
+        <CardContent className="space-y-6">
+          {activeQuestion.hint && !hintsVisible[activeQuestionIdx] && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setHintsVisible((prev) => ({
+                  ...prev,
+                  [activeQuestionIdx]: true,
+                }));
+              }}
+              className="shrink-0 cursor-pointer"
+            >
+              <Lightbulb className="w-4 h-4 mr-2" />
+              {isHintVisible ? "Hide" : "Show"} Hint
+            </Button>
+          )}
+          {isHintVisible && activeQuestion.hint && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, filter: "blur(10px)" }}
+              animate={{ opacity: 1, scale: 1, filter: "none" }}
+              transition={{ duration: 0.2 }}
+            >
+              <Card className="bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900">
+                <CardContent>
+                  <div className="flex gap-3">
+                    <Lightbulb className="w-5 h-5 text-amber-600 dark:text-amber-500 shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <MarkdownRenderer content={activeQuestion.hint} />
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </motion.div>
           )}
 
           <div className="space-y-3">
-            {currentQuiz.options.map((option, optionIndex) => {
-              const isSelected = selectedOptionIndex === optionIndex;
-              const isCorrectOption = option.isCorrect;
-              const showCorrect = hasSelected && isCorrectOption;
-              const showIncorrect =
-                isSelected && !isCorrectOption && hasSelected;
+            {activeQuestion.options.map((option, optionIdx) => {
+              const isSelected = selectedOption === optionIdx;
+              const isThisCorrect = option.isCorrect;
+              const showAsCorrect = isSubmitted && isThisCorrect;
+              const showAsIncorrect =
+                isSubmitted && isSelected && !isThisCorrect;
 
               return (
                 <button
+                  key={option.id || optionIdx}
                   type="button"
-                  key={option.id || optionIndex}
-                  onClick={() =>
-                    handleSelectAnswer(currentQuestionIndex, optionIndex)
-                  }
-                  disabled={hasSelected}
+                  onClick={() => handleOptionSelect(optionIdx)}
+                  disabled={isSubmitted}
                   className={cn(
-                    "w-full text-left p-4 rounded-lg border-2 transition-all duration-200",
-                    "hover:border-primary disabled:cursor-not-allowed",
-                    !hasSelected && "hover:bg-secondary/50",
-                    isSelected && !hasSelected && "border-primary bg-primary/5",
-                    showCorrect &&
+                    "w-full text-left p-4 rounded-lg border-2 transition-colors",
+                    !isSubmitted &&
+                      "hover:bg-accent hover:border-accent-foreground/20 cursor-pointer",
+                    !isSubmitted && isSelected && "border-primary bg-primary/5",
+                    !isSubmitted && !isSelected && "border-border",
+                    isSubmitted && "cursor-default",
+                    showAsCorrect &&
                       "border-green-500 bg-green-50 dark:bg-green-950/20",
-                    showIncorrect &&
+                    showAsIncorrect &&
                       "border-red-500 bg-red-50 dark:bg-red-950/20",
-                    !isSelected && !showCorrect && hasSelected && "opacity-50",
+                    isSubmitted &&
+                      !showAsCorrect &&
+                      !showAsIncorrect &&
+                      "border-border opacity-60",
                   )}
                 >
                   <div className="flex items-start gap-3">
                     <div
                       className={cn(
-                        "flex h-6 w-6 items-center justify-center rounded-full border-2 shrink-0 mt-0.5",
-                        showCorrect && "border-green-500 bg-green-500",
-                        showIncorrect && "border-red-500 bg-red-500",
-                        !hasSelected &&
-                          isSelected &&
-                          "border-primary bg-primary",
-                        !hasSelected &&
+                        "flex h-6 w-6 items-center justify-center rounded-full shrink-0 mt-0.5 transition-colors",
+                        !isSubmitted &&
                           !isSelected &&
-                          "border-muted-foreground",
+                          "border-2 border-muted-foreground/50",
+                        !isSubmitted && isSelected && "bg-primary",
+                        showAsCorrect && "bg-green-500",
+                        showAsIncorrect && "bg-red-500",
+                        isSubmitted &&
+                          !showAsCorrect &&
+                          !showAsIncorrect &&
+                          "border-2 border-muted-foreground/50",
                       )}
                     >
-                      {showCorrect && (
-                        <CheckCircle2 className="w-4 h-4 text-white" />
+                      {!isSubmitted && !isSelected && (
+                        <motion.div
+                          className="w-2 h-2 rounded-full bg-transparent"
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 300,
+                            damping: 20,
+                          }}
+                        />
                       )}
-                      {showIncorrect && (
-                        <XCircle className="w-4 h-4 text-white" />
+                      {!isSubmitted && isSelected && (
+                        <motion.div
+                          className="w-2 h-2 rounded-full bg-white"
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 300,
+                            damping: 20,
+                          }}
+                        />
                       )}
-                      {!hasSelected && isSelected && (
-                        <div className="w-2 h-2 rounded-full bg-white" />
+
+                      {showAsCorrect && (
+                        <motion.div
+                          initial={{ scale: 0, rotate: -45, opacity: 0 }}
+                          animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 300,
+                            damping: 20,
+                          }}
+                        >
+                          <Check
+                            className="w-4 h-4 text-white"
+                            strokeWidth={3}
+                          />
+                        </motion.div>
+                      )}
+                      {showAsIncorrect && (
+                        <motion.div
+                          initial={{ scale: 0, rotate: 45, opacity: 0 }}
+                          animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 300,
+                            damping: 20,
+                          }}
+                        >
+                          <X className="w-4 h-4 text-white" strokeWidth={3} />
+                        </motion.div>
                       )}
                     </div>
-                    <div className="flex-1">
+
+                    <div className="flex-1 min-w-0">
                       <MarkdownRenderer content={option.text} />
                     </div>
                   </div>
@@ -252,27 +300,71 @@ export function QuizLesson({ lesson }: QuizLessonProps) {
             })}
           </div>
 
-          {showSolution && currentQuiz.solution && (
+          {!isSubmitted && (
+            <Button
+              onClick={handleSubmit}
+              disabled={selectedOption === null}
+              className="w-full cursor-pointer"
+              size="lg"
+            >
+              Submit Answer
+            </Button>
+          )}
+          {isSubmitted && activeQuestionIdx !== questions.length - 1 && (
+            <Button
+              onClick={navigateToNext}
+              className="w-full cursor-pointer"
+              size="lg"
+              variant="green"
+            >
+              Next Question <ArrowRight />
+            </Button>
+          )}
+          {isSubmitted && activeQuestionIdx === questions.length - 1 && (
+            <div className="text-center text-sm text-muted-foreground">
+              This was the last question in the quiz.
+            </div>
+          )}
+          {activeQuestionIdx !== 0 && (
+            <Button
+              onClick={navigateToPrevious}
+              className="w-full cursor-pointer"
+              size="lg"
+              variant="outline"
+            >
+              <ArrowLeft /> Previous Question
+            </Button>
+          )}
+          {/* 
+          {isSubmitted && !isCorrect && (
+            <div className="text-center text-red-500 font-bold">
+              Not quite right
+            </div>
+          )} */}
+
+          {isSubmitted && activeQuestion.solution && (
             <Card
               className={cn(
                 "border-2",
-                selectedOption?.isCorrect
-                  ? "bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-900"
-                  : "bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900",
+                isCorrect
+                  ? "bg-green-50 dark:bg-green-950/20 border-green-500"
+                  : "bg-blue-50 dark:bg-blue-950/20 border-blue-500",
               )}
             >
               <CardContent>
-                <div className="flex gap-2">
-                  {selectedOption?.isCorrect ? (
-                    <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-500 shrink-0 mt-0.5" />
+                <div className="flex gap-3 items-start">
+                  {isCorrect ? (
+                    <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
                   ) : (
-                    <Info className="w-5 h-5 text-blue-600 dark:text-blue-500 shrink-0 mt-0.5" />
+                    <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
                   )}
-                  <div className="flex-1">
-                    <p className="font-semibold mb-2">
-                      {selectedOption?.isCorrect ? "Correct!" : "Solution"}
+                  <div className="flex-1 min-w-0 space-y-2">
+                    <p className="font-semibold text-lg">
+                      {isCorrect ? "Correct!" : "Solution"}
                     </p>
-                    <MarkdownRenderer content={currentQuiz.solution} />
+                    <div className="text-sm break-words">
+                      <MarkdownRenderer content={activeQuestion.solution} />
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -280,29 +372,6 @@ export function QuizLesson({ lesson }: QuizLessonProps) {
           )}
         </CardContent>
       </Card>
-      {quizzes.length > 1 && (
-        <div className="flex justify-between items-center">
-          <Button
-            variant="outline"
-            onClick={goToPrevious}
-            disabled={currentQuestionIndex === 0}
-          >
-            <ChevronLeft className="w-4 h-4 mr-2" />
-            Previous Question
-          </Button>
-          <span className="text-sm text-muted-foreground">
-            {Object.keys(selectedAnswers).length} of {quizzes.length} answered
-          </span>
-          <Button
-            variant="outline"
-            onClick={goToNext}
-            disabled={currentQuestionIndex === quizzes.length - 1}
-          >
-            Next Question
-            <ChevronRight className="w-4 h-4 ml-2" />
-          </Button>
-        </div>
-      )}
     </div>
   );
 }

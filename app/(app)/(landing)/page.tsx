@@ -84,7 +84,7 @@ export default async function Home() {
                 Master <span className="text-primary">Mathematics</span> with
                 Engaging Courses
               </h1>
-              <p className="text-lg text-muted-foreground max-w-xl">
+              <p className="text-md sm:text-lg text-muted-foreground max-w-xl">
                 Learn from a <b>dedicated math educator</b> with interactive
                 lessons, exercises, and real-life examples. Perfect for all
                 learning styles.
@@ -150,7 +150,7 @@ export default async function Home() {
         >
           Courses
         </h2>
-        <p className="mt-2 text-lg text-muted-foreground max-w-2xl mx-auto">
+        <p className="mt-2 text-md sm:text-lg text-muted-foreground max-w-2xl mx-auto">
           Explore our carefully designed math courses and interactive lessons to
           help you master concepts efficiently and confidently.
         </p>
