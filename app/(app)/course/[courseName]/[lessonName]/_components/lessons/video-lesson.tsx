@@ -19,7 +19,7 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
     video && typeof video !== "string" ? video : null
   ) as MuxVideo | null;
   const playerRef = useRef<HTMLDivElement>(null);
-  const [localToken, setLocalToken] = useState<string | undefined>(undefined);
+  const [token, setToken] = useState<string | undefined>();
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: safe
   useEffect(() => {
@@ -45,26 +45,25 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
   }, []);
 
   useEffect(() => {
-    const playback = muxVideo?.playbackOptions?.[0];
-    const playbackId = playback?.playbackId || "";
-    const isSigned = playback?.playbackPolicy === "signed";
+    if (!muxVideo?.playbackOptions?.length) return;
+
+    const playback = muxVideo.playbackOptions[0];
+    const playbackId = playback.playbackId;
+    const isSigned = playback.playbackPolicy === "signed";
+    const isFree = lesson.free || false;
+
     if (!playbackId || !isSigned) return;
 
     let mounted = true;
 
-    // fetch a signed playback token when required (playback policy = signed)
-    fetchMuxToken(playbackId)
-      .then((token) => {
-        if (mounted) setLocalToken(token);
-      })
-      .catch((err) => {
-        console.error("Error fetching mux token:", err);
-      });
+    fetchMuxToken(playbackId, isFree)
+      .then((t) => mounted && setToken(t))
+      .catch((err) => console.error("Error fetching mux token:", err));
 
     return () => {
       mounted = false;
     };
-  }, [muxVideo]);
+  }, [muxVideo, lesson.free]);
 
   if (!muxVideo || !muxVideo.playbackOptions?.length) {
     return (
@@ -84,7 +83,7 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
   const playbackId = playback.playbackId || "";
   const poster = playback.posterUrl || undefined;
 
-  const tokenToUse = localToken;
+  const tokenToUse = token;
 
   const shouldUseSigned = playback.playbackPolicy === "signed";
   const src = shouldUseSigned
@@ -141,7 +140,7 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
         autoPlay={false}
         style={{
           width: "100%",
-          aspectRatio: "16/9",
+          aspectRatio: 16 / 9,
           borderRadius: "1rem",
           overflow: "hidden",
         }}

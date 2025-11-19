@@ -40,7 +40,7 @@ export default buildConfig({
         cors_origin:
           process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000",
         new_asset_settings: {
-          playback_policy: ["signed"],
+          playback_policies: ["signed"],
         },
       },
     }),

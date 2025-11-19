@@ -8,7 +8,20 @@ import { enrollment } from "@/drizzle/schema";
 import { auth } from "@/lib/auth";
 import { getPayloadClient } from "@/lib/payload-client";
 
-//TODO: protect from token sharing
+const mux = new Mux({
+  tokenId: process.env.MUX_TOKEN_ID || "",
+  tokenSecret: process.env.MUX_TOKEN_SECRET || "",
+  jwtSigningKey: process.env.MUX_JWT_KEY_ID || "",
+  jwtPrivateKey: process.env.MUX_JWT_KEY || "",
+});
+
+/**
+ * returns a Mux playback token:
+ * - free lessons: long-lived token (MUX_PUBLIC_EXPIRATION)
+ * - paid lessons: short-lived token after verifying user (MUX_SIGNED_URL_EXPIRATION)
+ *
+ * TODO: implement public (unsigned) playback for free lessons if possible
+ */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -36,9 +49,7 @@ export async function POST(request: NextRequest) {
     // find the mux-video that contains this playbackId
     const found = await payload.find({
       collection: "mux-video",
-      where: {
-        "playbackOptions.playbackId": { equals: playbackId },
-      },
+      where: { "playbackOptions.playbackId": { equals: playbackId } },
       limit: 1,
     });
 
@@ -50,9 +61,7 @@ export async function POST(request: NextRequest) {
     // find lesson that references this video
     const lessons = await payload.find({
       collection: "lessons",
-      where: {
-        video: { equals: video.id },
-      },
+      where: { video: { equals: video.id } },
       limit: 1,
       select: { free: true, course: true },
     });
@@ -65,27 +74,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    let tokenExpiration = "";
     let allow = false;
 
     // free lessons: allow anonymous token issuance
     if (lesson.free) {
+      tokenExpiration = process.env.MUX_PUBLIC_EXPIRATION || "7d";
       allow = true;
     } else {
       // paid lessons: require session + enrollment
-      const session = await auth.api.getSession({
-        headers: await headers(),
-      });
+      const session = await auth.api.getSession({ headers: await headers() });
       if (!session?.user) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
       }
 
       const courseId =
         typeof lesson.course === "string" ? lesson.course : lesson.course?.id;
-      if (!courseId)
+      if (!courseId) {
         return NextResponse.json(
           { error: "Lesson course missing" },
           { status: 400 },
         );
+      }
 
       const rows = await db
         .select()
@@ -102,19 +112,13 @@ export async function POST(request: NextRequest) {
       allow = rows.length > 0;
       if (!allow)
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+      tokenExpiration = process.env.MUX_SIGNED_URL_EXPIRATION || "60s";
     }
 
-    // sign token using Mux SDK
-    const mux = new Mux({
-      tokenId: process.env.MUX_TOKEN_ID || "",
-      tokenSecret: process.env.MUX_TOKEN_SECRET || "",
-      jwtSigningKey: process.env.MUX_JWT_KEY_ID || "",
-      jwtPrivateKey: process.env.MUX_JWT_KEY || "",
-    });
-
-    const expiration = process.env.MUX_SIGNED_URL_EXPIRATION || "30min";
+    // sign token for both free and paid lessons
     const token = await mux.jwt.signPlaybackId(playbackId, {
-      expiration,
+      expiration: tokenExpiration,
       type: "video",
     });
 

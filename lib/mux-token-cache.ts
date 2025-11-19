@@ -1,13 +1,13 @@
-// client-side cache for Mux signed playback tokens with automatic expiration
+// client-side cache for Mux public tokens with automatic expiration
 
 type CachedMuxToken = {
   token: string;
   expiresAt: number;
 };
 
-const LOCAL_STORAGE_KEY = "mux_tokens";
+const LOCAL_STORAGE_KEY = "mux_public_tokens";
 
-function getLocalMuxToken(playbackId: string): string | null {
+function getPublicMuxToken(playbackId: string): string | null {
   if (typeof window === "undefined") return null;
 
   const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -26,9 +26,34 @@ function getLocalMuxToken(playbackId: string): string | null {
   return cached.token;
 }
 
-export async function fetchMuxToken(playbackId: string): Promise<string> {
-  const cached = getLocalMuxToken(playbackId);
-  if (cached) return cached;
+function setPublicMuxToken(
+  playbackId: string,
+  token: string,
+  expiresMs: number,
+) {
+  if (typeof window === "undefined") return;
+
+  const cache: Record<string, CachedMuxToken> = JSON.parse(
+    localStorage.getItem(LOCAL_STORAGE_KEY) || "{}",
+  );
+
+  cache[playbackId] = {
+    token,
+    expiresAt: Date.now() + expiresMs,
+  };
+
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(cache));
+}
+
+// fetch Mux token: use cache for free lessons, always fetch for paid
+export async function fetchMuxToken(
+  playbackId: string,
+  isFree: boolean,
+): Promise<string> {
+  if (isFree) {
+    const cached = getPublicMuxToken(playbackId);
+    if (cached) return cached;
+  }
 
   const res = await fetch("/api/mux/token", {
     method: "POST",
@@ -37,17 +62,18 @@ export async function fetchMuxToken(playbackId: string): Promise<string> {
   });
 
   if (!res.ok) throw new Error("Failed to fetch mux token");
-  const data = await res.json();
+  const { token } = await res.json();
 
-  const expirationMs = 30 * 60 * 1000; // 30min
-  const cache: Record<string, CachedMuxToken> = JSON.parse(
-    localStorage.getItem(LOCAL_STORAGE_KEY) || "{}",
-  );
-  cache[playbackId] = {
-    token: data.token,
-    expiresAt: Date.now() + expirationMs - 60_000,
-  };
-  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(cache));
+  if (isFree) {
+    const expiresMs =
+      parseInt(process.env.NEXT_PUBLIC_MUX_PUBLIC_EXPIRATION_DAYS || "7", 10) *
+        24 *
+        60 *
+        60 *
+        1000 -
+      5 * 60 * 1000;
+    setPublicMuxToken(playbackId, token, expiresMs);
+  }
 
-  return data.token;
+  return token;
 }
