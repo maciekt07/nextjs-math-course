@@ -20,7 +20,7 @@ export function Navbar({ user }: { user: User | null }) {
 
   return (
     <div className="mb-24">
-      <header className="w-full py-5 bg-transparend fixed backdrop-blur-3xl z-10 border-b">
+      <header className="w-full py-5 bg-transparent fixed backdrop-blur-3xl z-10 border-b">
         <div className="max-w-7xl mx-auto flex items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2">
             <Calculator className="w-6 h-6 text-primary" />

@@ -41,5 +41,5 @@
 - [x] Animate hero svg [video](https://www.youtube.com/watch?v=SrmTDrN1lkU)
 - [ ] Add ambient light effect for video [demo](https://codesandbox.io/p/sandbox/ambient-mode-vv63e9)
 - [ ] Track lesson completion and quiz progress per user in DB
-- [ ] Add top loader
+- [x] Add top loading bar
 - [ ] Add TOC to markdown

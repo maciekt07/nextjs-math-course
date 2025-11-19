@@ -161,6 +161,14 @@
   font-family: var(--font-system);
 }
 
+/* fix: ensure loader stays above navbar to prevent visual artifacts from blur during fade-out
+https://github.com/TheSGJ/nextjs-toploader/issues/131
+*/
+#nprogress {
+  position: relative;
+  z-index: 10000;
+}
+
 /* Inline math */
 .large-math .katex {
   font-size: 1.4em;
