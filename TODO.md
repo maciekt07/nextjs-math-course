@@ -32,6 +32,7 @@
 - [x] Generate blur placeholder for media
   - [ ] Make it optional with automatic generation and cleanup
 - [ ] Improve caching and add on-demand revalidation
+- [x] Add video chapters
 
 ## UI / UX
 
@@ -40,3 +41,5 @@
 - [x] Animate hero svg [video](https://www.youtube.com/watch?v=SrmTDrN1lkU)
 - [ ] Add ambient light effect for video [demo](https://codesandbox.io/p/sandbox/ambient-mode-vv63e9)
 - [ ] Track lesson completion and quiz progress per user in DB
+- [ ] Add top loader
+- [ ] Add TOC to markdown

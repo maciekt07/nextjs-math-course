@@ -134,5 +134,39 @@ export const Lessons: CollectionConfig = {
         condition: (data) => data.type === "video",
       },
     },
+    {
+      name: "chapters",
+      type: "array",
+      label: "Video Chapters",
+      admin: {
+        description:
+          "Define chapters for the video. Each chapter has a start time, optional end time, and title.",
+        condition: (data) => data.type === "video",
+      },
+      fields: [
+        {
+          name: "startTime",
+          type: "number",
+          label: "Start Time (seconds)",
+          required: true,
+        },
+        {
+          name: "endTime",
+          type: "number",
+          label: "End Time (seconds)",
+          required: false,
+          admin: {
+            description:
+              "Optional. If left empty, the chapter ends when the next chapter begins.",
+          },
+        },
+        {
+          name: "title",
+          type: "text",
+          label: "Chapter Title",
+          required: true,
+        },
+      ],
+    },
   ],
 };

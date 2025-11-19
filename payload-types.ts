@@ -182,6 +182,20 @@ export interface Lesson {
     | null;
   video?: (string | null) | MuxVideo;
   videoDescription?: string | null;
+  /**
+   * Define chapters for the video. Each chapter has a start time, optional end time, and title.
+   */
+  chapters?:
+    | {
+        startTime: number;
+        /**
+         * Optional. If left empty, the chapter ends when the next chapter begins.
+         */
+        endTime?: number | null;
+        title: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -354,6 +368,14 @@ export interface LessonsSelect<T extends boolean = true> {
       };
   video?: T;
   videoDescription?: T;
+  chapters?:
+    | T
+    | {
+        startTime?: T;
+        endTime?: T;
+        title?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

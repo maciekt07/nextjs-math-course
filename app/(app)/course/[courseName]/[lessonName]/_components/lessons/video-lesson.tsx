@@ -1,17 +1,21 @@
 "use client";
 
-import MuxPlayer from "@mux/mux-player-react";
+import MuxPlayer, { type MuxPlayerRefAttributes } from "@mux/mux-player-react";
 import { Video } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchMuxToken } from "@/lib/mux-token-cache";
 import type { Lesson, MuxVideo } from "@/payload-types";
+import { formatDuration } from "@/utils/format";
 
 interface VideoLessonProps {
   lesson: Lesson;
 }
+//TODO: add blur placeholder
+// https://www.mux.com/docs/guides/player-customize-look-and-feel#provide-a-placeholder-while-the-poster-image-loads
 
 export function VideoLesson({ lesson }: VideoLessonProps) {
   const video = lesson.video;
@@ -19,9 +23,43 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
     video && typeof video !== "string" ? video : null
   ) as MuxVideo | null;
   const playerRef = useRef<HTMLDivElement>(null);
+  const playerElementRef = useRef<MuxPlayerRefAttributes | null>(null);
   const [token, setToken] = useState<string | undefined>();
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: safe
+  const muxPlayerCallback = useCallback(
+    (node: MuxPlayerRefAttributes | null) => {
+      playerElementRef.current = node;
+      if (!node || !lesson.chapters || lesson.chapters.length === 0) return;
+
+      const addChaptersToPlayer = () => {
+        if (!lesson.chapters) return;
+
+        const chapters = lesson.chapters.map((chapter) => ({
+          startTime: chapter.startTime,
+          ...(chapter.endTime && { endTime: chapter.endTime }),
+          value: chapter.title,
+        }));
+
+        if ("addChapters" in node && typeof node.addChapters === "function") {
+          node.addChapters(chapters);
+        }
+      };
+
+      if (
+        "readyState" in node &&
+        typeof node.readyState === "number" &&
+        node.readyState >= 1
+      ) {
+        addChaptersToPlayer();
+      } else {
+        node.addEventListener("loadedmetadata", addChaptersToPlayer, {
+          once: true,
+        });
+      }
+    },
+    [lesson.chapters],
+  );
+
   useEffect(() => {
     if ("mediaSession" in navigator && muxVideo) {
       // initialize Media Session API for OS-level media controls
@@ -42,7 +80,7 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
         ],
       });
     }
-  }, []);
+  }, [muxVideo, lesson.title, lesson.course]);
 
   useEffect(() => {
     if (!muxVideo?.playbackOptions?.length) return;
@@ -64,6 +102,19 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
       mounted = false;
     };
   }, [muxVideo, lesson.free]);
+
+  const handleTimestampClick = (startTime: number) => {
+    const player = playerElementRef.current;
+    if (player && "currentTime" in player) {
+      player.currentTime = startTime;
+      player.play();
+      player.scrollIntoView({
+        //FIXME: chapter scroll to top of area
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
 
   if (!muxVideo || !muxVideo.playbackOptions?.length) {
     return (
@@ -124,6 +175,7 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
   return (
     <div className="flex flex-col gap-4" ref={playerRef}>
       <MuxPlayer
+        ref={muxPlayerCallback}
         playbackId={playbackId || undefined}
         src={src}
         tokens={shouldUseSigned ? { playback: tokenToUse } : undefined}
@@ -146,9 +198,9 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
         }}
       />
 
-      <Card className="mt-4">
+      <Card className="-mb-2 mt-2">
         <CardHeader className="border-b">
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 -mb-2">
             <Video className="w-5 h-5 text-primary" />
             Video Details
           </CardTitle>
@@ -158,6 +210,33 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
             content={lesson.videoDescription || "No Description"}
             unoptimized={!lesson.free}
           />
+          {lesson.chapters && lesson.chapters.length > 0 && (
+            <>
+              <Separator className="mt-4" />
+              <div className="mt-4">
+                <h3 className="text-xl font-semibold mb-4 text-primary">
+                  Chapters
+                </h3>
+                <ul className="space-y-2">
+                  {lesson.chapters.map((chapter, index) => (
+                    <li
+                      key={chapter.id || index}
+                      className="flex items-center gap-3"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => handleTimestampClick(chapter.startTime)}
+                        className="text-primary font-medium shrink-0 hover:underline cursor-pointer"
+                      >
+                        {formatDuration(chapter.startTime)}
+                      </button>
+                      <span className="truncate">{chapter.title}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
     </div>
