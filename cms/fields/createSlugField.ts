@@ -1,5 +1,5 @@
-import slugify from "@sindresorhus/slugify";
 import type { Field } from "payload";
+import { slug } from "@/lib/slugify";
 
 export const createSlugField = (titleField: string): Field => ({
   name: "slug",
@@ -14,7 +14,7 @@ export const createSlugField = (titleField: string): Field => ({
     beforeValidate: [
       ({ value, data }) => {
         if (!value && data?.[titleField]) {
-          return slugify(data[titleField]);
+          return slug(data[titleField]);
         }
         return value;
       },

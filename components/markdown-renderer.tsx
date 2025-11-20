@@ -5,9 +5,10 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import "katex/dist/katex.min.css";
 import Image from "next/image";
+import { slug } from "@/lib/slugify";
 import { cn } from "@/lib/utils";
 import { useSettingsStore } from "@/stores/settingsStore";
-import { type DesmosDivProps, desmos } from "../lib/desmos";
+import { type DesmosDivProps, desmos } from "../lib/markdown/desmos";
 import { DesmosGraph } from "./desmos-graph";
 import { ImageZoom } from "./ui/shadcn-io/image-zoom";
 
@@ -83,6 +84,27 @@ export function MarkdownRenderer({
               return <DesmosGraph graphUrl={graphUrl} noEmbed={noEmbed} />;
             }
             return <div className={className} {...props} />;
+          },
+          h2: ({ node, ...props }) => {
+            const id = slug(props.children?.toString() ?? "");
+            return (
+              <h2
+                id={id}
+                {...props}
+                className="scroll-mt-6 max-[1200px]:scroll-mt-14"
+              />
+            );
+          },
+          h3: ({ node, ...props }) => {
+            const id = slug(props.children?.toString() ?? "");
+            return (
+              // TODO: handle duplicate headings with the same text properly
+              <h3
+                id={id}
+                {...props}
+                className="scroll-mt-6 max-[1200px]:scroll-mt-14"
+              />
+            );
           },
         }}
         // biome-ignore lint/correctness/noChildrenProp: cannot pass content as JSX children

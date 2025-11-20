@@ -34,7 +34,6 @@ const getCourseWithLessons = cache(async (courseSlug: string) => {
       id: true,
       order: true,
       type: true,
-      media: true,
       quiz: { id: true }, // get number of quizes
       video: true, // can't select just the duration
     },

@@ -1,8 +1,8 @@
 "use client";
 
 import { TextInput, useField, useFormFields } from "@payloadcms/ui";
-import slugify from "@sindresorhus/slugify";
 import type React from "react";
+import { slug } from "@/lib/slugify";
 
 type AutoSlugFieldProps = {
   path: string;
@@ -12,9 +12,7 @@ export default function AutoSlugField({ path }: AutoSlugFieldProps) {
   const { value, setValue } = useField<string>({ path });
   const title = useFormFields(([fields]) => fields.title?.value as string);
 
-  const generatedSlug = title
-    ? slugify(title, { lowercase: true, decamelize: true })
-    : "";
+  const generatedSlug = title ? slug(title) : "";
 
   const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
   const isValid = !value || slugRegex.test(value);

@@ -42,4 +42,6 @@
 - [ ] Add ambient light effect for video [demo](https://codesandbox.io/p/sandbox/ambient-mode-vv63e9)
 - [ ] Track lesson completion and quiz progress per user in DB
 - [x] Add top loading bar
-- [ ] Add TOC to markdown
+- [x] Add TOC to markdown
+- [ ] Add feedback form
+- [ ] Add OpenDyslexic font for lessons
