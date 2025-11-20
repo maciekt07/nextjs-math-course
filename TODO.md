@@ -44,4 +44,4 @@
 - [x] Add top loading bar
 - [x] Add TOC to markdown
 - [ ] Add feedback form
-- [ ] Add OpenDyslexic font for lessons
+- [x] Add OpenDyslexic font for lessons

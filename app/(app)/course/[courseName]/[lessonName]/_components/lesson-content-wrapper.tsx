@@ -1,6 +1,7 @@
 "use client";
 
 import { Separator } from "@/components/ui/separator";
+import { openDyslexic } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 import type { Lesson } from "@/payload-types";
 import { useSettingsStore } from "@/stores/settingsStore";
@@ -19,14 +20,16 @@ export function LessonContentWrapper({ lesson }: LessonContentWrapperProps) {
   const fontClass = {
     default: "font-inter",
     system: "font-system",
+    dyslexic: "font-dyslexic",
   }[fontStyle];
 
   return (
     <article
       className={cn(
-        "mx-auto py-8 mt-10 px-6",
+        "mx-auto pt-8 pb-24 mt-10 px-6",
         lesson?.type === "video" ? "max-w-6xl" : "max-w-4xl",
         fontClass,
+        fontStyle === "dyslexic" && openDyslexic.variable,
       )}
     >
       {/* key={lesson.id}

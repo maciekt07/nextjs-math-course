@@ -161,6 +161,10 @@
   font-family: var(--font-system);
 }
 
+.font-dyslexic {
+  font-family: var(--font-dyslexic);
+}
+
 /* fix: ensure loader stays above navbar to prevent visual artifacts from blur during fade-out
 https://github.com/TheSGJ/nextjs-toploader/issues/131
 */

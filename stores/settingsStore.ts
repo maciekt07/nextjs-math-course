@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-type FontStyle = "default" | "system"; //TODO: add OpenDyslexic font
+export type FontStyle = "default" | "system" | "dyslexic";
 
 export type BooleanSettingKey = {
   [K in keyof SettingsStore]: SettingsStore[K] extends boolean ? K : never;

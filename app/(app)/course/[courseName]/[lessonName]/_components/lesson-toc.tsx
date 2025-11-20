@@ -63,7 +63,7 @@ export function LessonTOC({
 
   return (
     <>
-      <div className="hidden max-[1690px]:block mb-6">
+      <div className="hidden max-[1704px]:block mb-6">
         <Accordion
           type="single"
           collapsible
@@ -80,11 +80,12 @@ export function LessonTOC({
                     key={h.id}
                     href={`#${h.id}`}
                     className={cn(
-                      "block text-[16px] text-muted-foreground transition-colors leading-tight hover:text-foreground",
+                      "group flex items-start gap-2 text-[16px] text-muted-foreground transition-colors leading-tight hover:text-foreground",
                       h.level === 3 && "pl-4",
                     )}
                   >
-                    {h.text}
+                    <span className="mt-1 h-2 w-2 rounded-full transition-all bg-muted-foreground/40 group-hover:bg-muted-foreground/70" />
+                    <span className="line-clamp-3">{h.text}</span>
                   </a>
                 ))}
               </div>
@@ -93,7 +94,7 @@ export function LessonTOC({
         </Accordion>
       </div>
 
-      <div className="hidden min-[1690px]:block fixed right-0 top-20 w-64 max-h-[70vh] overflow-auto border-l pl-6">
+      <div className="hidden min-[1704px]:block fixed right-4 top-20 w-64 max-h-[70vh] overflow-auto border-l pl-6">
         <h4 className="text-xs font-medium mb-4 uppercase tracking-wide text-muted-foreground/80">
           In this lesson
         </h4>
@@ -124,7 +125,7 @@ export function LessonTOC({
                     : "bg-muted-foreground/40 group-hover:bg-muted-foreground/70",
                 )}
               />
-              <span>{h.text}</span>
+              <span className="line-clamp-3">{h.text}</span>
             </a>
           ))}
         </div>

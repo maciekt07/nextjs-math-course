@@ -18,6 +18,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import {
   type BooleanSettingKey,
+  type FontStyle,
   useSettingsStore,
 } from "@/stores/settingsStore";
 
@@ -107,7 +108,7 @@ export function SettingsDialogContent() {
 
             <Select
               value={fontStyle}
-              onValueChange={(v: "default" | "system") => setFontStyle(v)}
+              onValueChange={(v: FontStyle) => setFontStyle(v)}
             >
               <SelectTrigger id="fontStyle" className="w-[180px]">
                 <SelectValue placeholder="Select a font" />
@@ -115,6 +116,7 @@ export function SettingsDialogContent() {
               <SelectContent>
                 <SelectItem value="default">Default</SelectItem>
                 <SelectItem value="system">System Font</SelectItem>
+                <SelectItem value="dyslexic">Dyslexic Friendly</SelectItem>
               </SelectContent>
             </Select>
           </div>
