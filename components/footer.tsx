@@ -11,6 +11,7 @@ export default async function Footer() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 mb-6">
           <div className="md:col-span-4 flex flex-col gap-3">
+            {/* FIXME: <Link> doesnt work in prod for (landing) */}
             <Link
               href="/"
               className="flex items-center gap-2 font-semibold text-base hover:text-primary transition-colors"
