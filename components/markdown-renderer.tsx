@@ -5,6 +5,8 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import "katex/dist/katex.min.css";
 import Image from "next/image";
+import React from "react";
+import { stripMarkdown } from "@/lib/markdown/strip";
 import { slug } from "@/lib/slugify";
 import { cn } from "@/lib/utils";
 import { useSettingsStore } from "@/stores/settingsStore";
@@ -22,6 +24,8 @@ interface MarkdownRendererProps {
     height?: number | null;
   }[];
 }
+
+let currentH2Text = "";
 
 export function MarkdownRenderer({
   content,
@@ -86,7 +90,10 @@ export function MarkdownRenderer({
             return <div className={className} {...props} />;
           },
           h2: ({ node, ...props }) => {
-            const id = slug(props.children?.toString() ?? "");
+            const text = stripMarkdown(getText(props.children));
+            currentH2Text = text;
+            const id = slug(text);
+
             return (
               <h2
                 id={id}
@@ -95,10 +102,13 @@ export function MarkdownRenderer({
               />
             );
           },
+
           h3: ({ node, ...props }) => {
-            const id = slug(props.children?.toString() ?? "");
+            const text = stripMarkdown(getText(props.children));
+            const parent = currentH2Text || "section";
+            const id = slug(`${parent}-${text}`);
+
             return (
-              // TODO: handle duplicate headings with the same text properly
               <h3
                 id={id}
                 {...props}
@@ -114,4 +124,23 @@ export function MarkdownRenderer({
       />
     </div>
   );
+}
+
+// extract readable text from ReactMarkdown AST children
+export function getText(children: React.ReactNode): string {
+  if (!children) return "";
+
+  if (typeof children === "string") return children;
+  if (typeof children === "number") return String(children);
+
+  if (Array.isArray(children)) return children.map(getText).join("");
+
+  if (React.isValidElement(children)) {
+    const element = children as React.ReactElement<{
+      children?: React.ReactNode;
+    }>;
+    return getText(element.props.children);
+  }
+
+  return "";
 }
