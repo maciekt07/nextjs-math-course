@@ -183,13 +183,16 @@ export default async function LessonPage({ params: paramsPromise }: Args) {
               {showSignIn ? (
                 <Button size="lg" asChild>
                   <Link
-                    href={`/auth/sign-in?returnTo=${encodeURIComponent(
-                      `/course/${
-                        typeof lessonMeta.course === "string"
-                          ? lessonMeta.course
-                          : lessonMeta.course.slug
-                      }/${lessonMeta.slug}`,
-                    )}`}
+                    href={{
+                      pathname: "/auth/sign-in",
+                      query: {
+                        returnTo: `/course/${
+                          typeof lessonMeta.course === "string"
+                            ? lessonMeta.course
+                            : lessonMeta.course.slug
+                        }/${lessonMeta.slug}`,
+                      },
+                    }}
                   >
                     <LogIn /> Sign in to continue
                   </Link>

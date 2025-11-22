@@ -332,7 +332,10 @@ export function CourseSidebar({
                 ) : (
                   <Button asChild className="w-full" size="sm">
                     <Link
-                      href={`/auth/sign-in?returnTo=${encodeURIComponent(pathname)}`}
+                      href={{
+                        pathname: "/auth/sign-in",
+                        query: { returnTo: pathname },
+                      }}
                     >
                       <LogIn className="w-4 h-4" />
                       Log In
