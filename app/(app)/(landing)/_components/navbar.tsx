@@ -3,7 +3,7 @@
 import type { User } from "better-auth";
 import { BookOpen, Calculator, LogIn, Menu, X } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ThemeSelect } from "@/components/theme-select";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -14,13 +14,26 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
 
 export function Navbar({ user }: { user: User | null }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
+  const [atTop, setAtTop] = useState<boolean>(true);
+
+  useEffect(() => {
+    const handleScroll = () => setAtTop(window.scrollY < 10);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <div className="mb-24">
-      <header className="w-full py-5 bg-transparent fixed backdrop-blur-3xl z-10 border-b">
+      <header
+        className={cn(
+          "w-full py-5 bg-transparent fixed backdrop-blur-3xl z-10 transition-all duration-300",
+          atTop ? "border-b border-transparent" : "border-b",
+        )}
+      >
         <div className="max-w-7xl mx-auto flex items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2">
             <Calculator className="w-6 h-6 text-primary" />
