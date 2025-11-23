@@ -25,8 +25,8 @@ export const heroAnimation: HeroAnimationConfig = {
   videoBar: { delay: 0.9 },
   characterDetails: { delay: 1.2 },
   characterGlasses: { delay: 1.3 },
-  characterEyebrows: { delay: 1.4 },
-  characterRightEye: { delay: 1.4 },
-  speechBubble: { delay: 1.6 },
+  characterEyebrows: { delay: 1.5 },
+  characterRightEye: { delay: 1.5 },
+  speechBubble: { delay: 1.7 },
   graduationCap: { delay: 2 },
 };

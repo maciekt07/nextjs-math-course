@@ -31,6 +31,7 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
       playerElementRef.current = node;
       if (!node || !lesson.chapters || lesson.chapters.length === 0) return;
 
+      // https://www.mux.com/docs/guides/player-advanced-usage#chapters-example
       const addChaptersToPlayer = () => {
         if (!lesson.chapters) return;
 

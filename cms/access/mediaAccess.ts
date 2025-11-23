@@ -1,117 +1,120 @@
-import { and, eq } from "drizzle-orm";
-import { headers } from "next/headers";
-import type { Access } from "payload";
-import { db } from "@/drizzle/db";
-import { enrollment } from "@/drizzle/schema";
-import { auth } from "@/lib/auth";
+// import { and, eq } from "drizzle-orm";
+// import { headers } from "next/headers";
+// import { db } from "@/drizzle/db";
+// import { enrollment } from "@/drizzle/schema";
+// import { auth } from "@/lib/auth";
 
+import type { Access } from "payload";
 export const mediaReadAccess: Access = async ({ req }) => {
   try {
-    const url = req.pathname;
-    const id = url.match(
-      /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i,
-    )?.[0];
+    // const url = req.pathname;
+    // const id = url.match(
+    //   /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i,
+    // )?.[0];
 
     // admin has full access
     if (req.user?.role === "admin") {
       return true;
     }
 
-    if (!id) return false;
+    //FIXME: INVALID ID AND IMG NAME (renameFile.ts hook)
+    return true;
 
-    const allCourses = await req.payload.find({
-      collection: "courses",
-      where: {
-        and: [
-          {
-            media: { exists: true },
-          },
-        ],
-      },
-      depth: 1,
-      select: { media: true },
-    });
+    // if (!id) return false;
 
-    // check if media is a course thumbnail
-    const courseWithMedia = allCourses.docs.filter((course) => {
-      if (!course.media) return false;
-      const mediaURL =
-        typeof course.media === "string" ? course.media : course.media.url;
+    // const allCourses = await req.payload.find({
+    //   collection: "courses",
+    //   where: {
+    //     and: [
+    //       {
+    //         media: { exists: true },
+    //       },
+    //     ],
+    //   },
+    //   depth: 1,
+    //   select: { media: true },
+    // });
 
-      return mediaURL === url;
-    });
+    // // check if media is a course thumbnail
+    // const courseWithMedia = allCourses.docs.filter((course) => {
+    //   if (!course.media) return false;
+    //   const mediaURL =
+    //     typeof course.media === "string" ? course.media : course.media.url;
 
-    // course thumbnails are always public
-    if (courseWithMedia.length > 0) {
-      return true;
-    }
+    //   return mediaURL === url;
+    // });
 
-    // check if media is in the uploadImage array
-    const allLessons = await req.payload.find({
-      collection: "lessons",
-      where: {
-        and: [
-          {
-            uploadImage: { exists: true },
-          },
-        ],
-      },
-      depth: 1,
-      select: { uploadImage: true, free: true, course: true },
-    });
+    // // course thumbnails are always public
+    // if (courseWithMedia.length > 0) {
+    //   return true;
+    // }
 
-    const lessonsWithMedia = allLessons.docs.filter((lesson) => {
-      if (!lesson.uploadImage || !Array.isArray(lesson.uploadImage))
-        return false;
+    // // check if media is in the uploadImage array
+    // const allLessons = await req.payload.find({
+    //   collection: "lessons",
+    //   where: {
+    //     and: [
+    //       {
+    //         uploadImage: { exists: true },
+    //       },
+    //     ],
+    //   },
+    //   depth: 1,
+    //   select: { uploadImage: true, free: true, course: true },
+    // });
 
-      return lesson.uploadImage.some((mediaItem) => {
-        const mediaURL =
-          typeof mediaItem === "string" ? mediaItem : mediaItem.url;
-        return mediaURL === url;
-      });
-    });
+    // const lessonsWithMedia = allLessons.docs.filter((lesson) => {
+    //   if (!lesson.uploadImage || !Array.isArray(lesson.uploadImage))
+    //     return false;
 
-    if (lessonsWithMedia.length === 0) {
-      return false;
-    }
+    //   return lesson.uploadImage.some((mediaItem) => {
+    //     const mediaURL =
+    //       typeof mediaItem === "string" ? mediaItem : mediaItem.url;
+    //     return mediaURL === url;
+    //   });
+    // });
 
-    const lesson = lessonsWithMedia[0];
+    // if (lessonsWithMedia.length === 0) {
+    //   return false;
+    // }
 
-    // free lesson images are public
-    if (lesson.free) {
-      return true;
-    }
+    // const lesson = lessonsWithMedia[0];
 
-    // for paid lessons user must be authenticated
-    const session = await auth.api.getSession({ headers: await headers() });
+    // // free lesson images are public
+    // if (lesson.free) {
+    //   return true;
+    // }
 
-    if (!session?.user) {
-      return false;
-    }
+    // // for paid lessons user must be authenticated
+    // const session = await auth.api.getSession({ headers: await headers() });
 
-    const courseId =
-      typeof lesson.course === "string" ? lesson.course : lesson.course?.id;
+    // if (!session?.user) {
+    //   return false;
+    // }
 
-    if (!courseId) {
-      return false;
-    }
+    // const courseId =
+    //   typeof lesson.course === "string" ? lesson.course : lesson.course?.id;
 
-    // check enrollment
-    const userEnrollments = await db
-      .select()
-      .from(enrollment)
-      .where(
-        and(
-          eq(enrollment.userId, session.user.id),
-          eq(enrollment.courseId, courseId),
-          eq(enrollment.status, "completed"),
-        ),
-      )
-      .limit(1);
+    // if (!courseId) {
+    //   return false;
+    // }
 
-    const hasAccess = userEnrollments.length > 0;
+    // // check enrollment
+    // const userEnrollments = await db
+    //   .select()
+    //   .from(enrollment)
+    //   .where(
+    //     and(
+    //       eq(enrollment.userId, session.user.id),
+    //       eq(enrollment.courseId, courseId),
+    //       eq(enrollment.status, "completed"),
+    //     ),
+    //   )
+    //   .limit(1);
 
-    return hasAccess;
+    // const hasAccess = userEnrollments.length > 0;
+
+    // return hasAccess;
   } catch (error) {
     console.error("Media access error:", error);
     return false;

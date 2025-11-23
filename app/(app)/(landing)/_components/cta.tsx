@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 interface CTASectionProps {
   userCount: number;
   courseCount: number;
-  previewLink: string;
+  previewLink?: string;
 }
 
 export function CTASection({
@@ -42,16 +42,18 @@ export function CTASection({
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Button
-              size="lg"
-              asChild
-              className="bg-white text-gray-900 hover:bg-white/90 px-8 py-6 text-base inline-flex items-center justify-center gap-2"
-            >
-              <Link href={previewLink}>
-                Start Free Preview
-                <ArrowRight size={20} />
-              </Link>
-            </Button>
+            {previewLink && (
+              <Button
+                size="lg"
+                asChild
+                className="bg-white text-gray-900 hover:bg-white/90 px-8 py-6 text-base inline-flex items-center justify-center gap-2"
+              >
+                <Link href={previewLink}>
+                  Start Free Preview
+                  <ArrowRight size={20} />
+                </Link>
+              </Button>
+            )}
             <Button
               size="lg"
               asChild

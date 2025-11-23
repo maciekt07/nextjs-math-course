@@ -40,7 +40,8 @@ export default buildConfig({
         cors_origin:
           process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000",
         new_asset_settings: {
-          playback_policies: ["signed"],
+          // ignore deprecation warning this works fine and the other thing doesn't
+          playback_policy: ["signed"],
         },
       },
     }),

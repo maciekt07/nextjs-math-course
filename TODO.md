@@ -32,7 +32,7 @@
 - [x] Generate blur placeholder for media
   - [ ] Make it optional with automatic generation and cleanup
 - [ ] Improve caching and add on-demand revalidation
-- [x] Add video chapters
+- [x] Add video chapters [docs](https://www.mux.com/docs/guides/player-advanced-usage#chapters-example)
 
 ## UI / UX
 

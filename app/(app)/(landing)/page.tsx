@@ -96,13 +96,17 @@ export default async function Home() {
                 <Button size="xl" asChild>
                   <a href="#courses">Explore Courses</a>
                 </Button>
-                <Button variant="outline" size="xl" asChild>
-                  <Link
-                    href={courses[0].slug ? `/course/${courses[0].slug}` : "#"}
-                  >
-                    <BookOpen /> Watch Free Demo
-                  </Link>
-                </Button>
+                {courses.length > 0 && (
+                  <Button variant="outline" size="xl" asChild>
+                    <Link
+                      href={
+                        courses[0].slug ? `/course/${courses[0].slug}` : "#"
+                      }
+                    >
+                      <BookOpen /> Watch Free Demo
+                    </Link>
+                  </Button>
+                )}
               </div>
               <div className="flex items-center gap-6 pt-4">
                 <div>
@@ -142,36 +146,52 @@ export default async function Home() {
           </div>
         </div>
       </section>
+      {courses.length > 0 ? (
+        <>
+          <div className="mt-16 px-4 sm:px-6 max-w-7xl mx-auto text-center">
+            <h2
+              className="text-3xl sm:text-4xl font-bold text-foreground"
+              id="courses"
+            >
+              Courses
+            </h2>
+            <p className="mt-2 text-md sm:text-lg text-muted-foreground max-w-2xl mx-auto">
+              Explore our carefully designed math courses and interactive
+              lessons to help you master concepts efficiently and confidently.
+            </p>
+          </div>
 
-      <div className="mt-16 px-4 sm:px-6 max-w-7xl mx-auto text-center">
-        <h2
-          className="text-3xl sm:text-4xl font-bold text-foreground"
-          id="courses"
-        >
-          Courses
-        </h2>
-        <p className="mt-2 text-md sm:text-lg text-muted-foreground max-w-2xl mx-auto">
-          Explore our carefully designed math courses and interactive lessons to
-          help you master concepts efficiently and confidently.
-        </p>
-      </div>
-      <div className="mt-8 px-4 sm:px-6 max-w-7xl mx-auto w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-          {courses.map((course) => (
-            <CourseCard
-              key={course.id}
-              course={course}
-              owned={ownedCourseIds.has(course.id)}
-            />
-          ))}
+          <div className="mt-8 px-4 sm:px-6 max-w-7xl mx-auto w-full">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+              {courses.map((course) => (
+                <CourseCard
+                  key={course.id}
+                  course={course}
+                  owned={ownedCourseIds.has(course.id)}
+                />
+              ))}
+            </div>
+          </div>
+        </>
+      ) : (
+        <div className="mt-16 px-4 sm:px-6 max-w-7xl mx-auto text-center text-muted-foreground">
+          <h2 className="text-2xl sm:text-3xl font-semibold">
+            No Courses Available
+          </h2>
+          <p className="mt-2 text-md sm:text-lg">
+            No courses are available at the moment. Please check back later!
+          </p>
         </div>
-      </div>
+      )}
+
       <WhyChoose />
       <FAQ />
       <CTASection
         userCount={formattedUserCount}
         courseCount={courses.length}
-        previewLink={courses[0].slug ? `/course/${courses[0].slug}` : "#"}
+        previewLink={
+          courses.length > 0 ? `/course/${courses[0].slug}` : undefined
+        }
       />
     </div>
   );
