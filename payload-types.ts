@@ -237,7 +237,7 @@ export interface MuxVideo {
  */
 export interface User {
   id: string;
-  role: 'admin' | 'editor';
+  role?: ('admin' | 'editor') | null;
   updatedAt: string;
   createdAt: string;
   email: string;

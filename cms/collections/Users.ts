@@ -35,6 +35,10 @@ export const Users: CollectionConfig = {
       ],
       required: true,
       defaultValue: "admin",
+      // hide on initial account setup
+      admin: {
+        condition: ({ userCount }) => userCount > 0,
+      },
       access: {
         update: ({ req }) => req.user?.role === "admin",
       },
