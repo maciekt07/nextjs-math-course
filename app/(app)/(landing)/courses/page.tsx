@@ -38,17 +38,21 @@ export default async function CoursesPage() {
   if (courseIds.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4 space-y-4">
-        <div className="p-6 rounded-full bg-gray-200 dark:bg-gray-800">
-          <BookOpen size={48} className="text-gray-600 dark:text-gray-300" />
+        <div className="bg-primary/10 p-6 rounded-full">
+          <BookOpen size={48} className="text-primary" />
         </div>
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+        <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
           No courses yet
         </h2>
-        <p className="text-gray-600 dark:text-gray-400">
-          Browse available courses and buy one to see it in this list.
+        <p className="max-w-md text-gray-600 dark:text-gray-400">
+          Start learning by exploring available courses. Once you purchase one,
+          it will appear here in your library.
         </p>
-        <Button asChild size="lg">
-          <a href="/#courses">Browse Courses</a>
+        <Button asChild size="xl" className="flex items-center gap-2 my-1">
+          <a href="/#courses">
+            <BookOpen />
+            Browse Courses
+          </a>
         </Button>
       </div>
     );
