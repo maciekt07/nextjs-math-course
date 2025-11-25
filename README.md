@@ -78,13 +78,27 @@ To verify the database is running:
 docker compose ps
 ```
 
-### 5. Run the Stripe webhook listener
+### 5. Apply Database Migrations
+
+```bash
+npm run db:push
+```
+
+### 6. Run the Stripe webhook listener
 
 ```bash
 npm run stripe:webhook
 ```
 
-### 6. Start the Development Server
+#### Testing Payments
+
+Use these Stripe test card details to simulate a successful payment:
+
+- Card Number: `4242 4242 4242 4242`
+- Expiration Date: Any future date
+- CVC: Any 3-digit code
+
+### 7. Start the Development Server
 
 ```bash
 npm run dev
@@ -92,7 +106,7 @@ npm run dev
 
 The application should now be running at [http://localhost:3000](http://localhost:3000)
 
-### 7. Access Payload CMS Admin Panel
+### 8. Access Payload CMS Admin Panel
 
 Once the app is running, you can access the CMS at:
 
