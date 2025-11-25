@@ -32,7 +32,7 @@ export async function createPaymentIntent(course: Course, user: User) {
           currency: "usd",
           product_data: {
             name: course.title,
-            description: course.description || "",
+            description: course.description || undefined,
           },
           unit_amount: price,
         },
