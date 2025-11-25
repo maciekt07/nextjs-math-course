@@ -21,10 +21,6 @@ interface CourseCardProps {
 
 export function CourseCard({ course, owned, minimal }: CourseCardProps) {
   return (
-    //  className="text-muted-foreground"
-    // initial={{ opacity: 0, y: 50, filter: "blur(16px)" }}
-    // animate={{ opacity: 1, y: 0, filter: "none" }}
-    // transition={{ duration: 0.5 }}
     <Card key={course.id} className="flex flex-col">
       <CardHeader>
         <div className="flex items-start gap-4">
@@ -43,8 +39,8 @@ export function CourseCard({ course, owned, minimal }: CourseCardProps) {
               />
             </div>
           ) : (
-            <div className="w-20 h-20 p-4 rounded-lg border-2 border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950 shrink-0 flex items-center justify-center">
-              <GraduationCap className="w-10 h-10 text-blue-600 dark:text-blue-400" />
+            <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-lg border-3 border-primary/30 bg-primary/10 shrink-0 flex items-center justify-center">
+              <GraduationCap className="w-16 h-16 text-primary" />
             </div>
           )}
 
