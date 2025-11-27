@@ -8,8 +8,8 @@ export function HeroBadge() {
   return (
     <motion.div
       className="w-fit"
-      initial={{ opacity: 0, y: -20, scale: 0.9 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{
         duration: 0.6,
         ease: [0.34, 1.56, 0.64, 1],
@@ -46,7 +46,7 @@ export function HeroBadge() {
             className="relative"
             initial={{ opacity: 0, x: -10, filter: "blur(8px)" }}
             animate={{ opacity: 1, x: 0, filter: "none" }}
-            transition={{ duration: 0.4, delay: 0.3 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
           >
             <Image
               src="/pfp.png"
@@ -62,7 +62,7 @@ export function HeroBadge() {
             className="text-muted-foreground"
             initial={{ opacity: 0, x: -10, filter: "blur(8px)" }}
             animate={{ opacity: 1, x: 0, filter: "none" }}
-            transition={{ duration: 0.4, delay: 0.4 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
           >
             Made by
           </motion.span>
@@ -71,7 +71,7 @@ export function HeroBadge() {
             className="font-semibold text-foreground relative"
             initial={{ opacity: 0, x: -10, filter: "blur(8px)" }}
             animate={{ opacity: 1, x: 0, filter: "none" }}
-            transition={{ duration: 0.4, delay: 0.5 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
           >
             maciekt07
           </motion.span>
