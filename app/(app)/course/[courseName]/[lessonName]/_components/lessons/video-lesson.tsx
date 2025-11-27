@@ -1,7 +1,7 @@
 "use client";
 
 import MuxPlayer, { type MuxPlayerRefAttributes } from "@mux/mux-player-react";
-import { Video } from "lucide-react";
+import { List, Video } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -181,7 +181,8 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
         src={src}
         tokens={shouldUseSigned ? { playback: tokenToUse } : undefined}
         poster={poster}
-        title={muxVideo.title}
+        title=""
+        videoTitle={muxVideo.title || lesson.title}
         accentColor="#4E65FF"
         proudlyDisplayMuxBadge
         metadata={{
@@ -215,7 +216,8 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
             <>
               <Separator className="mt-4" />
               <div className="mt-4">
-                <h3 className="text-xl font-semibold mb-4 text-primary">
+                <h3 className="text-xl font-semibold mb-4 text-primary flex items-center gap-2">
+                  <List className="h-5 w-5" />
                   Chapters
                 </h3>
                 <ul className="space-y-2">
