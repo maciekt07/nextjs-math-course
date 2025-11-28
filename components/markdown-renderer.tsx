@@ -89,32 +89,21 @@ export function MarkdownRenderer({
             }
             return <div className={className} {...props} />;
           },
+          // generate stable IDs for h2/h3 for TOC
+          // h3 IDs are namespaced under the last h2 to avoid collisions
           h2: ({ node, ...props }) => {
             const text = stripMarkdown(getText(props.children));
             currentH2Text = text;
             const id = slug(text);
 
-            return (
-              <h2
-                id={id}
-                {...props}
-                className="scroll-mt-6 max-[1200px]:scroll-mt-14"
-              />
-            );
+            return <h2 id={id} {...props} />;
           },
-
           h3: ({ node, ...props }) => {
             const text = stripMarkdown(getText(props.children));
             const parent = currentH2Text || "section";
             const id = slug(`${parent}-${text}`);
 
-            return (
-              <h3
-                id={id}
-                {...props}
-                className="scroll-mt-6 max-[1200px]:scroll-mt-14"
-              />
-            );
+            return <h3 id={id} {...props} />;
           },
         }}
         // biome-ignore lint/correctness/noChildrenProp: cannot pass content as JSX children

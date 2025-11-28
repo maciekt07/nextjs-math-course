@@ -16,6 +16,51 @@ export function LessonTOC({
 }) {
   const [activeId, setActiveId] = useState<string | null>(null);
 
+  function scrollToHeader(id: string) {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    const container = document.querySelector("main");
+    if (!container) return;
+
+    const elRect = el.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+
+    const offsetTop = elRect.top - containerRect.top + container.scrollTop;
+
+    const margin = window.innerWidth < 1220 ? 64 : 12;
+
+    container.scrollTo({
+      top: offsetTop - margin,
+    });
+
+    history.replaceState(null, "", `#${id}`);
+
+    //FIXME:
+    setTimeout(() => {
+      setActiveId(id);
+    }, 10);
+  }
+
+  // hash routing
+  // biome-ignore lint/correctness/useExhaustiveDependencies: scrollToHeader changes on every re-render
+  useEffect(() => {
+    function handleHash() {
+      const hash = window.location.hash.replace("#", "");
+      if (!hash) return;
+      requestAnimationFrame(() => {
+        scrollToHeader(hash);
+        setActiveId(hash);
+      });
+    }
+    handleHash();
+
+    window.addEventListener("hashchange", handleHash);
+    return () => {
+      window.removeEventListener("hashchange", handleHash);
+    };
+  }, []);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -79,6 +124,10 @@ export function LessonTOC({
                   <a
                     key={h.id}
                     href={`#${h.id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToHeader(h.id);
+                    }}
                     className={cn(
                       "group flex items-start gap-2 text-[16px] text-muted-foreground transition-colors leading-tight hover:text-foreground",
                       h.level === 3 && "pl-4",
@@ -104,11 +153,10 @@ export function LessonTOC({
             <a
               key={h.id}
               href={`#${h.id}`}
-              onClick={() =>
-                setTimeout(() => {
-                  setActiveId(h.id);
-                }, 10)
-              }
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToHeader(h.id);
+              }}
               className={cn(
                 "group flex items-start gap-2 text-sm transition-colors leading-tight",
                 h.level === 3 && "pl-4",
