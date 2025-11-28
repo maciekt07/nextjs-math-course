@@ -65,15 +65,31 @@ export async function fetchMuxToken(
   const { token } = await res.json();
 
   if (isFree) {
-    const expiresMs =
-      parseInt(process.env.NEXT_PUBLIC_MUX_PUBLIC_EXPIRATION_DAYS || "7", 10) *
-        24 *
-        60 *
-        60 *
-        1000 -
-      5 * 60 * 1000;
+    const raw = process.env.NEXT_PUBLIC_MUX_PUBLIC_EXPIRATION_DAYS || "7d";
+    const expiresMs = parseDuration(raw) - 5 * 60 * 1000; // -5 minutes
     setPublicMuxToken(playbackId, token, expiresMs);
   }
 
   return token;
+}
+
+function parseDuration(str: string): number {
+  const match = str.match(/^(\d+)(s|m|h|d)$/);
+  if (!match) throw new Error(`Invalid duration format: ${str}`);
+
+  const value = Number(match[1]);
+  const unit = match[2];
+
+  switch (unit) {
+    case "s":
+      return value * 1000;
+    case "m":
+      return value * 60 * 1000;
+    case "h":
+      return value * 60 * 60 * 1000;
+    case "d":
+      return value * 24 * 60 * 60 * 1000;
+    default:
+      throw new Error(`Unknown unit: ${unit}`);
+  }
 }
