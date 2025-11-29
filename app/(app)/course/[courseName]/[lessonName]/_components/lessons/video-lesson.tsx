@@ -3,6 +3,7 @@
 import MuxPlayer, { type MuxPlayerRefAttributes } from "@mux/mux-player-react";
 import { List, Video } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -97,7 +98,10 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
 
     fetchMuxToken(playbackId, isFree)
       .then((t) => mounted && setToken(t))
-      .catch((err) => console.error("Error fetching mux token:", err));
+      .catch((err) => {
+        toast.error(`Failed to fetch token ${err}`); //TODO: display error screen in ui if 429
+        console.error("Error fetching mux token:", err);
+      });
 
     return () => {
       mounted = false;
@@ -148,11 +152,10 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
   if (shouldUseSigned && !tokenToUse) {
     return (
       <div className="flex flex-col gap-4 animate-pulse" ref={playerRef}>
-        <Skeleton className="h-12 w-3/4 rounded-lg" />
         <div className="w-full aspect-video rounded-xl overflow-hidden bg-muted">
           <Skeleton className="h-full w-full" />
         </div>
-        <Card>
+        <Card className="mt-2">
           <CardHeader className="border-b">
             <CardTitle>
               <Skeleton className="h-6 w-1/3 rounded-lg" />
@@ -200,7 +203,7 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
         }}
       />
 
-      <Card className="-mb-2 mt-2">
+      <Card className="mt-2">
         <CardHeader className="border-b">
           <CardTitle className="flex items-center gap-2 -mb-2">
             <Video className="w-5 h-5 text-primary" />

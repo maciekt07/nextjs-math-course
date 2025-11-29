@@ -11,8 +11,7 @@ export const mediaReadAccess: Access = async ({ req }) => {
       /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i,
     )?.[0];
 
-    // admin has full access
-    if (req.user?.role === "admin") {
+    if (req.user?.role === "admin" || req.user?.role === "editor") {
       return true;
     }
 

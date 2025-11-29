@@ -18,11 +18,15 @@ import { Input } from "@/components/ui/input";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 import { PasswordInput } from "@/components/ui/password-input";
 import { authClient } from "@/lib/auth-client";
+import { AUTH_LIMITS } from "@/lib/constants/limits";
 
 const signUpSchema = z.object({
-  name: z.string().min(1),
-  email: z.email().min(1),
-  password: z.string().min(6),
+  name: z.string().min(1).max(AUTH_LIMITS.name),
+  email: z.email().min(1).max(AUTH_LIMITS.email),
+  password: z
+    .string()
+    .min(AUTH_LIMITS.passwordMin)
+    .max(AUTH_LIMITS.passwordMax),
 });
 
 type SignUpForm = z.infer<typeof signUpSchema>;

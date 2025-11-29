@@ -9,13 +9,14 @@ import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { s3Storage } from "@payloadcms/storage-s3";
 import { buildConfig } from "payload";
 import sharp from "sharp";
+import { Feedbacks } from "./cms/collections/Feedbacks";
 
 // Use ENABLE_S3=true in .env to enable S3/R2 storage
 const useS3 = process.env.ENABLE_S3 === "true";
 
 export default buildConfig({
   editor: lexicalEditor(),
-  collections: [Courses, Lessons, Media, Users],
+  collections: [Courses, Lessons, Media, Users, Feedbacks],
   secret: process.env.PAYLOAD_SECRET || "",
   db: mongooseAdapter({
     url: process.env.MONGO_URL || "",

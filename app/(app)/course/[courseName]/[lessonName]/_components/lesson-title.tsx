@@ -40,7 +40,7 @@ export function LessonTitle({ lesson }: LessonTitleProps) {
   }).format(updatedAt);
 
   return (
-    <div className="mb-8">
+    <div className="mb-8 font-inter">
       <h1 className="text-4xl font-bold mb-4 text-primary">{lesson.title}</h1>
 
       <div className="flex items-center text-sm text-muted-foreground">

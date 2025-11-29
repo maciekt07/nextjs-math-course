@@ -7,6 +7,7 @@ import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
 import { auth } from "@/lib/auth";
 import { getPayloadClient } from "@/lib/payload-client";
+import { rateLimit } from "@/lib/rate-limit";
 
 const mux = new Mux({
   tokenId: process.env.MUX_TOKEN_ID || "",
@@ -14,6 +15,8 @@ const mux = new Mux({
   jwtSigningKey: process.env.MUX_JWT_KEY_ID || "",
   jwtPrivateKey: process.env.MUX_JWT_KEY || "",
 });
+
+const limiter = rateLimit({ max: 6, windowMs: 60_000 });
 
 /**
  * returns a Mux playback token:
@@ -24,6 +27,23 @@ const mux = new Mux({
  */
 export async function POST(request: NextRequest) {
   try {
+    // limit per ip
+    const ip = request.headers.get("x-forwarded-for") || "unknown";
+    const { allowed, retryAfter } = limiter(ip);
+    if (!allowed) {
+      return NextResponse.json(
+        {
+          error: "Too many requests, try again later",
+        },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": Math.ceil(retryAfter ?? 1 / 1000).toString(),
+          },
+        },
+      );
+    }
+
     const body = await request.json();
     const playbackId = body?.playbackId;
     if (!playbackId) {

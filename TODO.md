@@ -33,6 +33,8 @@
   - [ ] Make it optional with automatic generation and cleanup
 - [ ] Improve caching and add on-demand revalidation
 - [x] Add video chapters [docs](https://www.mux.com/docs/guides/player-advanced-usage#chapters-example)
+- [x] Add lesson feedback form
+- [ ] Add course-release email notifications
 
 ## UI / UX
 
@@ -43,5 +45,8 @@
 - [ ] Track lesson completion and quiz progress per user in DB
 - [x] Add top loading bar
 - [x] Add TOC to markdown
-- [ ] Add feedback form
 - [x] Add OpenDyslexic font for lessons
+
+## Backend
+
+- [x] Add in-memory rate limiting

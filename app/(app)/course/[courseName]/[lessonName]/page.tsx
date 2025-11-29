@@ -14,6 +14,7 @@ import { enrollment } from "@/drizzle/schema";
 import { auth } from "@/lib/auth";
 import { getPayloadClient } from "@/lib/payload-client";
 import type { Course } from "@/payload-types";
+import FeedbackWidget from "./_components/feedback-widget";
 import { LessonContentWrapper } from "./_components/lesson-content-wrapper";
 
 export const revalidate = 3600;
@@ -106,6 +107,7 @@ export default async function LessonPage({ params: paramsPromise }: Args) {
   const { courseName, lessonName } = await paramsPromise;
   const { isEnabled: draft } = await draftMode();
   const payload = await getPayloadClient();
+  const session = await auth.api.getSession({ headers: await headers() });
 
   const lessons = await payload.find({
     collection: "lessons",
@@ -220,6 +222,15 @@ export default async function LessonPage({ params: paramsPromise }: Args) {
     <div className="min-h-screen flex flex-col">
       <div className="flex-grow">
         <LessonContentWrapper lesson={lesson} />
+        {session && (
+          <FeedbackWidget
+            lessonId={lesson?.id!}
+            userName={session.user.name}
+            userId={session.user.id}
+            userEmail={session.user.email}
+            type={lesson?.type!}
+          />
+        )}
       </div>
       <Footer />
     </div>

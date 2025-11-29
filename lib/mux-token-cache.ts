@@ -61,7 +61,16 @@ export async function fetchMuxToken(
     body: JSON.stringify({ playbackId }),
   });
 
-  if (!res.ok) throw new Error("Failed to fetch mux token");
+  if (res.status === 429) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || "Too many requests. Please try again later.");
+  }
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || "Failed to fetch mux token");
+  }
+
   const { token } = await res.json();
 
   if (isFree) {

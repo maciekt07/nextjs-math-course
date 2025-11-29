@@ -26,7 +26,7 @@ export function LessonContentWrapper({ lesson }: LessonContentWrapperProps) {
   return (
     <article
       className={cn(
-        "mx-auto pt-8 pb-24 mt-10 px-6",
+        "mx-auto pt-8 pb-8 mt-10 px-6",
         lesson?.type === "video" ? "max-w-6xl" : "max-w-4xl",
         fontClass,
         fontStyle === "dyslexic" && openDyslexic.variable,

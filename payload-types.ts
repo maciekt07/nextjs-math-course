@@ -71,6 +71,7 @@ export interface Config {
     lessons: Lesson;
     media: Media;
     users: User;
+    feedback: Feedback;
     'mux-video': MuxVideo;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -82,6 +83,7 @@ export interface Config {
     lessons: LessonsSelect<false> | LessonsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    feedback: FeedbackSelect<false> | FeedbackSelect<true>;
     'mux-video': MuxVideoSelect<false> | MuxVideoSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -257,6 +259,30 @@ export interface User {
   password?: string | null;
 }
 /**
+ * User feedback for lessons
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "feedback".
+ */
+export interface Feedback {
+  id: string;
+  lesson: string | Lesson;
+  userName: string;
+  userId: string;
+  userEmail: string;
+  /**
+   * 1 = Poor, 2 = Fair, 3 = Good, 4 = Excellent
+   */
+  reaction: number;
+  comment?: string | null;
+  /**
+   * Mark this feedback as seen. Seen feedbacks will appear at the end.
+   */
+  seen?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
@@ -278,6 +304,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: string | User;
+      } | null)
+    | ({
+        relationTo: 'feedback';
+        value: string | Feedback;
       } | null)
     | ({
         relationTo: 'mux-video';
@@ -420,6 +450,21 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "feedback_select".
+ */
+export interface FeedbackSelect<T extends boolean = true> {
+  lesson?: T;
+  userName?: T;
+  userId?: T;
+  userEmail?: T;
+  reaction?: T;
+  comment?: T;
+  seen?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
