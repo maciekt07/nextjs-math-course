@@ -2,7 +2,7 @@ import { and, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { db } from "@/drizzle/db";
-import { enrollment, user } from "@/drizzle/schema";
+import { enrollment } from "@/drizzle/schema";
 import { stripe } from "@/lib/stripe/stripe";
 
 export const runtime = "nodejs";
@@ -38,19 +38,18 @@ export async function POST(req: Request) {
   // handle checkout.session.completed
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
-
     const paymentIntentId = String(session.payment_intent || session.id);
     const courseId = session.metadata?.courseId;
     const userId = session.metadata?.userId;
 
     try {
-      // find by payment intent id first
-      const found = await db
+      const existing = await db
         .select()
         .from(enrollment)
         .where(eq(enrollment.stripePaymentIntentId, paymentIntentId));
 
-      if (found && found.length > 0) {
+      if (existing && existing.length > 0) {
+        // already exists update status
         await db
           .update(enrollment)
           .set({
@@ -59,32 +58,35 @@ export async function POST(req: Request) {
           })
           .where(eq(enrollment.stripePaymentIntentId, paymentIntentId));
       } else if (userId && courseId) {
-        // fallback: match by userId + courseId
-        await db
-          .update(enrollment)
-          .set({
-            status: "completed",
-            stripePaymentIntentId: paymentIntentId,
-            stripeCustomerId: session.customer as string,
-          })
+        // fallback by userId + courseId
+        const fallback = await db
+          .select()
+          .from(enrollment)
           .where(
             and(
               eq(enrollment.userId, userId),
               eq(enrollment.courseId, courseId),
             ),
           );
-        // persist stripe customer id on the user record
-        try {
-          const stripeCustomer = session.customer as string;
-          const uid = found[0].userId;
-          if (uid && stripeCustomer) {
-            await db
-              .update(user)
-              .set({ stripeCustomerId: stripeCustomer })
-              .where(eq(user.id, uid));
-          }
-        } catch (e) {
-          console.error("Failed to update user with stripeCustomerId:", e);
+
+        if (fallback && fallback.length > 0) {
+          await db
+            .update(enrollment)
+            .set({
+              status: "completed",
+              stripeCustomerId: session.customer as string,
+            })
+            .where(
+              and(
+                eq(enrollment.userId, userId),
+                eq(enrollment.courseId, courseId),
+              ),
+            );
+        } else {
+          console.warn("No enrollment found for webhook fallback", {
+            userId,
+            courseId,
+          });
         }
       }
     } catch (e) {
