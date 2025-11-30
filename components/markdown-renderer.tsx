@@ -6,6 +6,7 @@ import remarkMath from "remark-math";
 import "katex/dist/katex.min.css";
 import Image from "next/image";
 import React from "react";
+import rehypeUnwrapImages from "rehype-unwrap-images";
 import { stripMarkdown } from "@/lib/markdown/strip";
 import { slug } from "@/lib/slugify";
 import { cn } from "@/lib/utils";
@@ -59,7 +60,6 @@ export function MarkdownRenderer({
             const height = matchedMedia?.height ?? 500;
 
             return (
-              // FIXME: hydration error.
               <ImageZoom>
                 <Image
                   {...props}
@@ -68,6 +68,7 @@ export function MarkdownRenderer({
                   width={width}
                   height={height}
                   unoptimized={unoptimized || true}
+                  loading="lazy"
                   placeholder={blurhash ? "blur" : "empty"}
                   blurDataURL={blurhash || undefined}
                   className="w-full rounded-2xl object-contain"
@@ -109,7 +110,7 @@ export function MarkdownRenderer({
         // biome-ignore lint/correctness/noChildrenProp: cannot pass content as JSX children
         children={content}
         remarkPlugins={[remarkGfm, remarkMath, remarkDirective, desmos]}
-        rehypePlugins={[rehypeKatex]}
+        rehypePlugins={[rehypeKatex, rehypeUnwrapImages]}
       />
     </div>
   );

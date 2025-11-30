@@ -71,6 +71,7 @@
     "react-markdown": "^10.1.0",
     "react-medium-image-zoom": "^5.4.0",
     "rehype-katex": "^7.0.1",
+    "rehype-unwrap-images": "^1.0.0",
     "remark-directive": "^4.0.0",
     "remark-gfm": "^4.0.1",
     "remark-math": "^6.0.0",
