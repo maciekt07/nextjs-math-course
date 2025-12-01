@@ -248,7 +248,7 @@ export function CourseSidebar({
                           >
                             <div
                               className={cn(
-                                "flex h-8 w-8 items-center justify-center rounded-md shrink-0 transition-colors",
+                                "flex h-8 w-8 items-center justify-center rounded-sm shrink-0 transition-colors border-1",
                                 isActive
                                   ? "bg-primary-foreground/20"
                                   : `${typeConfig.color.base} ${typeConfig.color.hover}`,

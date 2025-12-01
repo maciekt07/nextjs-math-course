@@ -5,6 +5,23 @@ type CachedMuxToken = {
   expiresAt: number;
 };
 
+export class MuxTokenError extends Error {
+  constructor(
+    message: string,
+    public statusCode?: number,
+  ) {
+    super(message);
+    this.name = "MuxTokenError";
+  }
+}
+
+export class RateLimitError extends MuxTokenError {
+  constructor(message: string = "Too many requests. Please try again later.") {
+    super(message, 429);
+    this.name = "RateLimitError";
+  }
+}
+
 const LOCAL_STORAGE_KEY = "mux_public_tokens";
 
 function getPublicMuxToken(playbackId: string): string | null {
@@ -63,12 +80,17 @@ export async function fetchMuxToken(
 
   if (res.status === 429) {
     const data = await res.json().catch(() => ({}));
-    throw new Error(data.error || "Too many requests. Please try again later.");
+    throw new RateLimitError(
+      data.error || "Too many requests. Please try again later.",
+    );
   }
 
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
-    throw new Error(data.error || "Failed to fetch mux token");
+    throw new MuxTokenError(
+      data.error || "Failed to fetch mux token",
+      res.status,
+    );
   }
 
   const { token } = await res.json();

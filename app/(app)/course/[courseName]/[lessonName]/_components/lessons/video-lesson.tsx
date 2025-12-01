@@ -1,14 +1,21 @@
 "use client";
-
 import MuxPlayer, { type MuxPlayerRefAttributes } from "@mux/mux-player-react";
-import { List, Video } from "lucide-react";
+import {
+  AlertCircle,
+  List,
+  type LucideIcon,
+  Video,
+  VideoOff,
+} from "lucide-react";
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { fetchMuxToken } from "@/lib/mux-token-cache";
+import { fetchMuxToken, RateLimitError } from "@/lib/mux-token-cache";
+import { cn } from "@/lib/utils";
 import type { Lesson, MuxVideo } from "@/payload-types";
 import { formatDuration } from "@/utils/format";
 
@@ -26,6 +33,9 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
   const playerRef = useRef<HTMLDivElement>(null);
   const playerElementRef = useRef<MuxPlayerRefAttributes | null>(null);
   const [token, setToken] = useState<string | undefined>();
+  const [isRateLimited, setIsRateLimited] = useState(false);
+
+  const hasVideo = muxVideo?.playbackOptions?.length;
 
   const muxPlayerCallback = useCallback(
     (node: MuxPlayerRefAttributes | null) => {
@@ -97,9 +107,21 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
     let mounted = true;
 
     fetchMuxToken(playbackId, isFree)
-      .then((t) => mounted && setToken(t))
+      .then((t) => {
+        if (mounted) {
+          setToken(t);
+          setIsRateLimited(false);
+        }
+      })
       .catch((err) => {
-        toast.error(`Failed to fetch token ${err}`); //TODO: display error screen in ui if 429
+        if (!mounted) return;
+
+        if (err instanceof RateLimitError) {
+          setIsRateLimited(true);
+          toast.error("Rate limit exceeded. Please try again later.");
+        } else {
+          toast.error(`Failed to fetch token: ${err.message}`);
+        }
         console.error("Error fetching mux token:", err);
       });
 
@@ -121,69 +143,100 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
     }
   };
 
-  if (!muxVideo || !muxVideo.playbackOptions?.length) {
-    return (
-      <div className="flex justify-center items-center min-h-[200px] px-4">
-        <Card className="w-full max-w-md">
-          <CardContent className="py-8 flex justify-center">
-            <p className="text-muted-foreground text-center">
-              No video available.
-            </p>
-          </CardContent>
-        </Card>
+  const renderVideoArea = () => {
+    const playback = muxVideo?.playbackOptions?.[0];
+
+    const EmptyState = ({
+      icon: Icon,
+      title,
+      description,
+      variant = "muted",
+    }: {
+      icon: LucideIcon;
+      title: string;
+      description?: string;
+      variant?: "muted" | "destructive";
+    }) => (
+      <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-muted dark:bg-card/80 flex items-center justify-center">
+        {playback?.posterUrl && (
+          <Image
+            src={playback.posterUrl}
+            alt={lesson.title}
+            fill
+            className="object-cover blur-lg scale-110 opacity-40"
+          />
+        )}
+        <div className="absolute inset-0 bg-muted/60 dark:bg-card/60" />
+        <div className="relative z-10 flex flex-col items-center justify-center gap-4 p-8 text-center max-w-md">
+          <div
+            className={cn(
+              "p-6 rounded-full",
+              variant === "destructive"
+                ? "bg-destructive/10"
+                : "bg-muted-foreground/10",
+            )}
+          >
+            <Icon
+              className={cn(
+                "w-12 h-12",
+                variant === "destructive"
+                  ? "text-destructive"
+                  : "text-muted-foreground",
+              )}
+            />
+          </div>
+          <h3
+            className={cn(
+              "text-lg font-semibold",
+              variant === "destructive" && "text-destructive",
+            )}
+          >
+            {title}
+          </h3>
+          {description && (
+            <p className="text-sm text-muted-foreground">{description}</p>
+          )}
+        </div>
       </div>
     );
-  }
 
-  const playback = muxVideo.playbackOptions[0];
-  const playbackId = playback.playbackId || "";
-  const poster = playback.posterUrl || undefined;
+    if (!hasVideo || !playback) {
+      return <EmptyState icon={VideoOff} title="No video available" />;
+    }
 
-  const tokenToUse = token;
+    if (isRateLimited) {
+      return (
+        <EmptyState
+          icon={AlertCircle}
+          title="Rate Limited"
+          description="Too many requests. Please wait a minute and try again."
+          variant="destructive"
+        />
+      );
+    }
 
-  const shouldUseSigned = playback.playbackPolicy === "signed";
-  const src = shouldUseSigned
-    ? undefined
-    : playbackId
-      ? `https://stream.mux.com/${playbackId}.m3u8`
-      : undefined;
+    const { playbackId = "", playbackPolicy } = playback;
+    const shouldUseSigned = playbackPolicy === "signed";
 
-  // skeleton for token loading
-  if (shouldUseSigned && !tokenToUse) {
-    return (
-      <div className="flex flex-col gap-4 animate-pulse" ref={playerRef}>
+    if (shouldUseSigned && !token) {
+      return (
         <div className="w-full aspect-video rounded-xl overflow-hidden bg-muted">
           <Skeleton className="h-full w-full" />
         </div>
-        <Card className="mt-2">
-          <CardHeader className="border-b">
-            <CardTitle>
-              <Skeleton className="h-6 w-1/3 rounded-lg" />
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-2">
-            <Skeleton className="h-4 w-full rounded-lg" />
-            <Skeleton className="h-4 w-full rounded-lg" />
-            <Skeleton className="h-4 w-5/6 rounded-lg" />
-            <Skeleton className="h-4 w-4/5 rounded-lg" />
-            <Skeleton className="h-4 w-11/12 rounded-lg" />
-            <Skeleton className="h-4 w-3/4 rounded-lg" />
-            <Skeleton className="h-4 w-5/6 rounded-lg" />
-            <Skeleton className="h-4 w-full rounded-lg" />
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+      );
+    }
 
-  return (
-    <div className="flex flex-col gap-4" ref={playerRef}>
+    return (
       <MuxPlayer
         ref={muxPlayerCallback}
         playbackId={playbackId || undefined}
-        src={src}
-        tokens={shouldUseSigned ? { playback: tokenToUse } : undefined}
-        poster={poster}
+        src={
+          !shouldUseSigned && playbackId
+            ? `https://stream.mux.com/${playbackId}.m3u8`
+            : undefined
+        }
+        tokens={shouldUseSigned ? { playback: token } : undefined}
+        poster={playback.posterUrl || undefined}
         title=""
         videoTitle={muxVideo.title || lesson.title}
         accentColor="#4E65FF"
@@ -202,6 +255,12 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
           overflow: "hidden",
         }}
       />
+    );
+  };
+
+  return (
+    <div className="flex flex-col gap-4" ref={playerRef}>
+      {renderVideoArea()}
 
       <Card className="mt-2">
         <CardHeader className="border-b">
@@ -211,10 +270,14 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <MarkdownRenderer
-            content={lesson.videoDescription || "No Description"}
-            unoptimized={!lesson.free}
-          />
+          {lesson.videoDescription ? (
+            <MarkdownRenderer
+              content={lesson.videoDescription}
+              unoptimized={!lesson.free}
+            />
+          ) : (
+            <p className="italic">No Description</p>
+          )}
           {lesson.chapters && lesson.chapters.length > 0 && (
             <>
               <Separator className="mt-4" />
@@ -232,7 +295,8 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
                       <button
                         type="button"
                         onClick={() => handleTimestampClick(chapter.startTime)}
-                        className="text-primary font-medium shrink-0 hover:underline cursor-pointer"
+                        className="text-primary font-medium shrink-0 hover:underline cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:no-underline"
+                        disabled={!hasVideo || isRateLimited}
                       >
                         {formatDuration(chapter.startTime)}
                       </button>
