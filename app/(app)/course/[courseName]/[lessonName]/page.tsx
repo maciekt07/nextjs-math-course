@@ -223,13 +223,7 @@ export default async function LessonPage({ params: paramsPromise }: Args) {
       <div className="flex-grow">
         <LessonContentWrapper lesson={lesson} />
         {session && (
-          <FeedbackWidget
-            lessonId={lesson?.id!}
-            userName={session.user.name}
-            userId={session.user.id}
-            userEmail={session.user.email}
-            type={lesson?.type!}
-          />
+          <FeedbackWidget lessonId={lesson?.id!} type={lesson?.type!} />
         )}
       </div>
       <Footer />

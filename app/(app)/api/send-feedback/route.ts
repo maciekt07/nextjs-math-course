@@ -1,5 +1,6 @@
 import { headers } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
+import sanitizeHtml from "sanitize-html";
 import { auth } from "@/lib/auth";
 import { FEEDBACK_LIMITS } from "@/lib/constants/limits";
 import { getPayloadClient } from "@/lib/payload-client";
@@ -7,10 +8,16 @@ import { rateLimit } from "@/lib/rate-limit";
 
 const limiter = rateLimit({ windowMs: 180_000, max: 2 });
 
+const sanitize = (text: string) =>
+  sanitizeHtml(text, {
+    allowedTags: [],
+    allowedAttributes: {},
+  });
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { lessonId, userName, userId, reaction, comment, userEmail } = body;
+    const { lessonId, reaction, comment = "" } = body;
 
     const session = await auth.api.getSession({ headers: await headers() });
 
@@ -18,19 +25,26 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (userId !== session.user.id || userEmail !== session.user.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const userName = session.user.name;
+    const userId = session.user.id;
+    const userEmail = session.user.email;
 
-    // limit per user
-    const { allowed, retryAfter } = limiter(session.user.id);
+    // rate limit by ip + user id
+    const ip =
+      req.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
+      req.headers.get("x-real-ip") ||
+      "unknown";
+
+    const key = `${userId}:${ip}`;
+
+    const { allowed, retryAfter } = limiter(key);
     if (!allowed) {
       return NextResponse.json(
         { error: "Too many requests, try again later" },
         {
           status: 429,
           headers: {
-            "Retry-After": Math.ceil(retryAfter ?? 1 / 1000).toString(),
+            "Retry-After": Math.ceil((retryAfter ?? 1) / 1000).toString(),
           },
         },
       );
@@ -51,6 +65,13 @@ export async function POST(req: NextRequest) {
         { status: 400 },
       );
     }
+
+    // if (comment && !sanitize((comment || "").trim()).trim()) {
+    //   return NextResponse.json(
+    //     { error: "Comment contains invalid or disallowed content" },
+    //     { status: 400 },
+    //   );
+    // }
 
     if (reaction < 1 || reaction > 4) {
       return NextResponse.json(
@@ -83,7 +104,7 @@ export async function POST(req: NextRequest) {
         userEmail,
         userId,
         reaction,
-        comment: comment || "",
+        comment: sanitize(comment),
       },
       overrideAccess: true,
     });

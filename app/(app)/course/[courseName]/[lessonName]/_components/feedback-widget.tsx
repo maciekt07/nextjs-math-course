@@ -19,15 +19,9 @@ const reactions = [
 
 export default function FeedbackWidget({
   lessonId,
-  userId,
-  userName,
-  userEmail,
   type,
 }: {
   lessonId: string;
-  userId: string;
-  userName: string;
-  userEmail: string;
   type: Lesson["type"];
 }) {
   const [selectedReaction, setSelectedReaction] = useState<number | null>(null);
@@ -49,9 +43,6 @@ export default function FeedbackWidget({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           lessonId,
-          userName,
-          userId,
-          userEmail,
           reaction: selectedReaction,
           comment: comment.trim(),
         }),
