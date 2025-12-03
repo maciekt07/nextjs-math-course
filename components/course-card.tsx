@@ -28,7 +28,7 @@ export function CourseCard({ course, owned, minimal }: CourseCardProps) {
             <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-lg overflow-hidden shrink-0">
               <Image
                 src={(course.media as Media).url!}
-                alt={(course.media as Media).alt ?? course.title}
+                alt={(course.media as Media).alt ?? course.title ?? "Preview"}
                 width={128}
                 height={128}
                 className="object-cover w-full h-full"

@@ -10,6 +10,7 @@ import rehypeUnwrapImages from "rehype-unwrap-images";
 import { stripMarkdown } from "@/lib/markdown/strip";
 import { slug } from "@/lib/slugify";
 import { cn } from "@/lib/utils";
+import type { Media } from "@/payload-types";
 import { useSettingsStore } from "@/stores/settingsStore";
 import { type DesmosDivProps, desmos } from "../lib/markdown/desmos";
 import { DesmosGraph } from "./desmos-graph";
@@ -17,22 +18,12 @@ import { ImageZoom } from "./ui/shadcn-io/image-zoom";
 
 interface MarkdownRendererProps {
   content: string;
-  unoptimized?: boolean;
-  media?: {
-    url?: string | null;
-    blurhash?: string | null;
-    width?: number | null;
-    height?: number | null;
-  }[];
+  media?: Media[];
 }
 
 let currentH2Text = "";
 
-export function MarkdownRenderer({
-  content,
-  unoptimized,
-  media,
-}: MarkdownRendererProps) {
+export function MarkdownRenderer({ content, media }: MarkdownRendererProps) {
   const { coloredMarkdown, largeMath } = useSettingsStore();
 
   return (
@@ -67,7 +58,6 @@ export function MarkdownRenderer({
                   alt={props.alt || "Image"}
                   width={width}
                   height={height}
-                  unoptimized={unoptimized || true}
                   loading="lazy"
                   placeholder={blurhash ? "blur" : "empty"}
                   blurDataURL={blurhash || undefined}

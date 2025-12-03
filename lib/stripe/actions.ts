@@ -11,7 +11,10 @@ import { stripe } from "./stripe";
  * Create a Stripe checkout session and a pending enrollment row in Postgres.
  * returns the checkout URL for the client to redirect to.
  */
-export async function createPaymentIntent(course: Course, user: User) {
+export async function createPaymentIntent(
+  course: Pick<Course, "title" | "description" | "id" | "price" | "slug">,
+  user: User,
+) {
   const price = Math.round((course.price || 0) * 100); // cents
 
   const successBase =

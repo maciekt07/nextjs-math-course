@@ -1,4 +1,5 @@
 import { getPayload, type Payload } from "payload";
+import { cache } from "react";
 import config from "@/payload.config";
 
 declare global {
@@ -17,7 +18,7 @@ if (!global.payload) {
   global.payload = cached;
 }
 
-export const getPayloadClient = async (): Promise<Payload> => {
+export const getPayloadClient = cache(async (): Promise<Payload> => {
   if (cached.client) return cached.client;
 
   if (!cached.promise) cached.promise = getPayload({ config });
@@ -30,4 +31,4 @@ export const getPayloadClient = async (): Promise<Payload> => {
   }
 
   return cached.client;
-};
+});

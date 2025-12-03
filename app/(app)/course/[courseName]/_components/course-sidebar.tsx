@@ -15,8 +15,8 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
 import { SettingsDialogContent } from "@/app/(app)/course/[courseName]/_components/settings-dialog";
 import BuyCourseButton from "@/components/buy-course-button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -63,8 +63,29 @@ export function CourseSidebar({
   owned?: boolean;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState<boolean>(true);
+  const [optimisticPath, setOptimisticPath] = useState<string | null>(null);
+  const [_isTransitionLoading, startTransition] = useTransition();
+
+  const handleLessonClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    lessonPath: string,
+  ) => {
+    e.preventDefault();
+
+    setOptimisticPath(lessonPath);
+
+    if (window.innerWidth < 768) {
+      setOpen(false);
+    }
+
+    // navigate with transition for smoother experience
+    startTransition(() => {
+      router.push(lessonPath);
+    });
+  };
 
   return (
     <>
@@ -133,10 +154,7 @@ export function CourseSidebar({
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -320, opacity: 0 }}
               transition={{
-                type: "spring",
-                stiffness: 300,
-                damping: 30,
-                opacity: { duration: 0.2 },
+                duration: 0.2,
               }}
               className="fixed md:relative flex flex-col h-full w-80 border-r bg-background z-40 md:z-auto shadow-2xl md:shadow-none"
             >
@@ -156,7 +174,7 @@ export function CourseSidebar({
                   <div className="relative w-full h-40 mb-4 mt-2 overflow-hidden rounded-2xl shadow-md">
                     <Image
                       src={(course.media as Media).url!}
-                      alt={(course.media as Media).alt ?? ""}
+                      alt={(course.media as Media).alt ?? course.title!}
                       fill
                       className="object-cover transition-transform duration-300 hover:scale-105"
                       priority
@@ -214,7 +232,9 @@ export function CourseSidebar({
                   <nav className="space-y-1">
                     {lessons.map((lesson) => {
                       const lessonPath = `/course/${course.slug}/${lesson.slug}`;
-                      const isActive = pathname === lessonPath;
+                      const isActive =
+                        optimisticPath === lessonPath ||
+                        (optimisticPath === null && pathname === lessonPath);
 
                       const typeConfig =
                         lessonTypeConfig[
@@ -234,21 +254,19 @@ export function CourseSidebar({
                           href={lessonPath}
                           title={lesson.title}
                           prefetch={true}
-                          onClick={() => {
-                            if (window.innerWidth < 768) setOpen(false);
-                          }}
+                          onClick={(e) => handleLessonClick(e, lessonPath)}
                         >
                           <div
                             className={cn(
-                              "group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200",
+                              "group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150",
                               isActive
-                                ? "bg-primary text-primary-foreground shadow-sm"
+                                ? "bg-primary text-primary-foreground"
                                 : "hover:bg-secondary/80 text-muted-foreground hover:text-foreground",
                             )}
                           >
                             <div
                               className={cn(
-                                "flex h-8 w-8 items-center justify-center rounded-sm shrink-0 transition-colors border-1",
+                                "flex h-8 w-8 items-center justify-center rounded-sm shrink-0 transition-colors",
                                 isActive
                                   ? "bg-primary-foreground/20"
                                   : `${typeConfig.color.base} ${typeConfig.color.hover}`,
@@ -263,19 +281,29 @@ export function CourseSidebar({
                               </p>
                               {lesson.type === "quiz" && (
                                 <p className="text-xs truncate">
-                                  {lesson.quiz?.length} tasks
+                                  {lesson.quiz?.length
+                                    ? `${lesson.quiz.length} task${lesson.quiz.length > 1 ? "s" : ""}`
+                                    : "no tasks"}
                                 </p>
                               )}
-                              {lesson.type === "video" && (
+
+                              {lesson.type === "video" && videoDuration && (
                                 <p className="text-xs truncate">
                                   {formatDuration(videoDuration || 0)}
                                 </p>
                               )}
                             </div>
-
                             {!lesson.free && !owned && (
                               <Lock className="w-4 h-4 shrink-0 text-orange-600 dark:text-orange-500" />
                             )}
+                            {/* {!lesson.free && !owned ? (
+                              <Lock className="w-4 h-4 shrink-0 text-orange-600 dark:text-orange-500" />
+                            ) : (
+                              loading &&
+                              isActive && (
+                                <div className="w-4 h-4 border-2 border-foreground border-t-transparent rounded-full animate-spin"></div>
+                              )
+                            )} */}
                           </div>
                         </Link>
                       );
@@ -313,7 +341,7 @@ export function CourseSidebar({
                       className="flex items-center gap-3 rounded-lg hover:bg-secondary/80 transition-all duration-200 p-2 -mx-2"
                     >
                       <Avatar className="h-9 w-9">
-                        <AvatarFallback className="bg-primary text-primary-foreground font-semibold text-sm">
+                        <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
                           {session.user.name?.charAt(0).toUpperCase() ||
                             session.user.email?.charAt(0).toUpperCase() ||
                             "U"}

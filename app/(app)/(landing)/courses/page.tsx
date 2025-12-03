@@ -1,5 +1,5 @@
 import { and, eq } from "drizzle-orm";
-import { BookOpen } from "lucide-react";
+import { BookOpen, GraduationCap } from "lucide-react";
 import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
@@ -94,8 +94,8 @@ export default async function CoursesPage() {
               />
             </div>
           ) : (
-            <div className="w-24 h-24 p-4 rounded-lg border-2 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 flex items-center justify-center shrink-0">
-              <BookOpen className="w-10 h-10 text-gray-600 dark:text-gray-300" />
+            <div className="w-24 h-24 rounded-lg border-3 border-primary/30 bg-primary/10 shrink-0 flex items-center justify-center">
+              <GraduationCap className="w-10 h-10 text-primary" />
             </div>
           )}
 

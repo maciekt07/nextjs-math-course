@@ -4,7 +4,7 @@ interface ReadingTimeConfig {
   imageTimePerImage?: number;
   desmosTimePerGraph?: number;
 }
-
+//TODO: use it as payload cms hook on server
 /**
  * Calculate reading time for markdown document with LaTeX math and graphs
  *

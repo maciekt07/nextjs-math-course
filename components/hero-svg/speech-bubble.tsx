@@ -19,7 +19,6 @@ export default function SpeechBubble() {
           animate={{ scale: [1, 1.08, 1], rotate: [0, 2, -2, 0] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         >
-          {/* TODO: add changing symbols */}
           <path
             id="freepik--speech-bubble--inject-14_4"
             d="M262.639 94.6919L277.789 86.7719C277.789 86.7719 287.399 89.2319 303.459 88.2819C327.209 86.8719 341.069 76.8419 337.539 62.7619C333.919 48.3319 318.039 42.6619 289.729 43.7619C254.319 45.1419 245.729 69.1519 266.869 83.3419L262.639 94.6919Z"

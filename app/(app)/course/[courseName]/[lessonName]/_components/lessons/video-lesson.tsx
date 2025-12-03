@@ -271,10 +271,7 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
         </CardHeader>
         <CardContent>
           {lesson.videoDescription ? (
-            <MarkdownRenderer
-              content={lesson.videoDescription}
-              unoptimized={!lesson.free}
-            />
+            <MarkdownRenderer content={lesson.videoDescription} />
           ) : (
             <p className="italic">No Description</p>
           )}

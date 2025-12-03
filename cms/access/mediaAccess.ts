@@ -4,7 +4,8 @@ import type { Access } from "payload";
 import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
 import { auth } from "@/lib/auth";
-export const mediaReadAccess: Access = async ({ req }) => {
+
+export const mediaReadAccess: Access = async ({ req }): Promise<boolean> => {
   try {
     const url = req.pathname;
     const id = url.match(

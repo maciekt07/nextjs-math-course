@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { Separator } from "@/components/ui/separator";
 import { openDyslexic } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
@@ -17,11 +18,13 @@ interface LessonContentWrapperProps {
 export function LessonContentWrapper({ lesson }: LessonContentWrapperProps) {
   const { fontStyle } = useSettingsStore();
 
-  const fontClass = {
-    default: "font-inter",
-    system: "font-system",
-    dyslexic: "font-dyslexic",
-  }[fontStyle];
+  const fontClass = useMemo(() => {
+    return {
+      default: "font-inter",
+      system: "font-system",
+      dyslexic: "font-dyslexic",
+    }[fontStyle];
+  }, [fontStyle]);
 
   return (
     <article

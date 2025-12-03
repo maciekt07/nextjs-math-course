@@ -3,25 +3,30 @@ import { notFound, redirect } from "next/navigation";
 import { cache } from "react";
 import { getPayloadClient } from "@/lib/payload-client";
 
-const getCourse = cache(async (courseSlug: string) => {
+const getCourseWithFirstLesson = cache(async (courseSlug: string) => {
   const payload = await getPayloadClient();
-  const { docs } = await payload.find({
+
+  const { docs: courses } = await payload.find({
     collection: "courses",
     where: { slug: { equals: courseSlug } },
+    select: { slug: true },
     limit: 1,
   });
-  return docs[0] || null;
-});
 
-const getFirstLesson = cache(async (courseId: string) => {
-  const payload = await getPayloadClient();
-  const { docs } = await payload.find({
+  const course = courses[0];
+  if (!course) return null;
+
+  const { docs: lessons } = await payload.find({
     collection: "lessons",
-    where: { course: { equals: courseId } },
+    where: { course: { equals: course.id } },
     sort: "order",
     limit: 1,
+    select: {
+      slug: true,
+    },
   });
-  return docs[0] || null;
+
+  return { course, firstLesson: lessons[0] || null };
 });
 
 type Args = {
@@ -30,20 +35,18 @@ type Args = {
 
 export default async function CoursePage({ params: paramsPromise }: Args) {
   const { courseName } = await paramsPromise;
-  const course = await getCourse(courseName);
+  const data = await getCourseWithFirstLesson(courseName);
 
-  if (!course) notFound();
+  if (!data) notFound();
 
-  const firstLesson = await getFirstLesson(course.id);
-
-  if (!firstLesson) {
+  if (!data.firstLesson) {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-center">
-          <div className="flex items-center gap-4 flex-col">
-            <BookX size={64} className="text-primary" />
-            <h1 className="text-2xl font-bold mb-2">No Lessons Available</h1>
+          <div className="mx-auto mb-4 w-24 h-24 flex items-center justify-center bg-primary/10 rounded-full">
+            <BookX size={48} className="text-primary" />
           </div>
+          <h1 className="text-3xl font-bold mb-2">No Lessons Available</h1>
           <p className="text-muted-foreground">
             This course doesn't have any lessons yet.
           </p>
@@ -52,5 +55,5 @@ export default async function CoursePage({ params: paramsPromise }: Args) {
     );
   }
 
-  redirect(`/course/${courseName}/${firstLesson.slug}`);
+  redirect(`/course/${courseName}/${data.firstLesson.slug}`);
 }
