@@ -14,10 +14,10 @@ import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatDuration } from "@/lib/format";
 import { fetchMuxToken, RateLimitError } from "@/lib/mux-token-cache";
 import { cn } from "@/lib/utils";
 import type { Lesson, MuxVideo } from "@/payload-types";
-import { formatDuration } from "@/utils/format";
 
 interface VideoLessonProps {
   lesson: Lesson;

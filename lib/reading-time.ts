@@ -4,7 +4,7 @@ interface ReadingTimeConfig {
   imageTimePerImage?: number;
   desmosTimePerGraph?: number;
 }
-//TODO: use it as payload cms hook on server
+
 /**
  * Calculate reading time for markdown document with LaTeX math and graphs
  *
@@ -14,12 +14,12 @@ interface ReadingTimeConfig {
  * - images ~12s per image
  * - graphs ~12s per graph
  *
- *  @returns {string} Estimated reading time as a rounded string, e.g., "3 min read".
+ *  @returns {number} Estimated reading time in seconds.
  */
 export function getReadingTime(
   markdown: string,
   config?: ReadingTimeConfig,
-): string {
+): number {
   const wordsPerMinute = config?.wordsPerMinute ?? 180;
   const mathTimePerExpression = config?.mathTimePerExpression ?? 8;
   const imageTimePerImage = config?.imageTimePerImage ?? 12;
@@ -71,8 +71,5 @@ export function getReadingTime(
     .filter((w) => w.length > 0 && /[a-zA-Z0-9]/.test(w));
   totalSeconds += (words.length / wordsPerMinute) * 60;
 
-  // round up to nearest minute
-  const minutes = Math.ceil(totalSeconds / 60);
-
-  return `${minutes} min read`;
+  return Math.round(totalSeconds);
 }

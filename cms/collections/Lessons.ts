@@ -6,6 +6,17 @@ export const Lessons: CollectionConfig = {
   admin: {
     useAsTitle: "title",
   },
+  hooks: {
+    beforeChange: [
+      async ({ data }) => {
+        if (data.content) {
+          const { getReadingTime } = await import("@lib/reading-time");
+          data.readingTimeSeconds = getReadingTime(data.content);
+        }
+        return data;
+      },
+    ],
+  },
   fields: [
     {
       name: "title",
@@ -57,6 +68,16 @@ export const Lessons: CollectionConfig = {
       },
     },
     {
+      name: "readingTimeSeconds",
+      type: "number",
+      label: "Estimated Reading Time (seconds)",
+      admin: {
+        readOnly: true,
+        description: "Calculated automatically from content",
+        condition: (data) => data.type === "text",
+      },
+    },
+    {
       name: "content",
       type: "text",
       label: "Content (Markdown + LaTeX)",
@@ -68,6 +89,7 @@ export const Lessons: CollectionConfig = {
       },
       required: true,
     },
+
     // QUIZ LESSON CONTENT
     {
       name: "quiz",

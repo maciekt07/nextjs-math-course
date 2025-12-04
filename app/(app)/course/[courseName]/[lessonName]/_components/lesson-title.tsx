@@ -6,10 +6,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { formatDuration, formatReadingTime } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { Lesson, MuxVideo } from "@/payload-types";
-import { formatDuration } from "@/utils/format";
-import { getReadingTime } from "@/utils/getReadingTime";
 
 interface LessonTitleProps {
   lesson: Lesson | null;
@@ -92,7 +91,7 @@ export function LessonTitle({ lesson }: LessonTitleProps) {
 function getLessonMetadata(lesson: Lesson) {
   switch (lesson.type) {
     case "text": {
-      const readingTime = getReadingTime(lesson.content || "");
+      const readingTime = formatReadingTime(lesson.readingTimeSeconds || 0);
       return readingTime ? { icon: Clock, text: readingTime } : null;
     }
     case "video": {

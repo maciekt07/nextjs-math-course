@@ -168,6 +168,10 @@ export interface Lesson {
   order?: number | null;
   type: 'text' | 'quiz' | 'video';
   uploadImage?: (string | Media)[] | null;
+  /**
+   * Calculated automatically from content
+   */
+  readingTimeSeconds?: number | null;
   content?: string | null;
   quiz?:
     | {
@@ -380,6 +384,7 @@ export interface LessonsSelect<T extends boolean = true> {
   order?: T;
   type?: T;
   uploadImage?: T;
+  readingTimeSeconds?: T;
   content?: T;
   quiz?:
     | T

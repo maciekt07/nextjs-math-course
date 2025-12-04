@@ -24,7 +24,8 @@
       "@styles/*": ["./styles/*"],
       "@cms/*": ["./cms/*"],
       "@fields/*": ["./cms/fields/*"],
-      "@email/*": ["./email/*"]
+      "@email/*": ["./email/*"],
+      "@lib/*": ["./lib/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

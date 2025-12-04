@@ -25,9 +25,9 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { authClient } from "@/lib/auth-client";
+import { formatDuration, formatReadingTime } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { Course, Lesson, Media, MuxVideo } from "@/payload-types";
-import { formatDuration } from "@/utils/format";
 
 const lessonTypeConfig = {
   quiz: {
@@ -68,6 +68,7 @@ export function CourseSidebar({
   const [open, setOpen] = useState<boolean>(true);
   const [optimisticPath, setOptimisticPath] = useState<string | null>(null);
   const [_isTransitionLoading, startTransition] = useTransition();
+  const [shouldAnimate, setShouldAnimate] = useState<boolean>(false);
 
   const handleLessonClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
@@ -79,6 +80,7 @@ export function CourseSidebar({
 
     if (window.innerWidth < 768) {
       setOpen(false);
+      setShouldAnimate(true);
     }
 
     // navigate with transition for smoother experience
@@ -87,13 +89,18 @@ export function CourseSidebar({
     });
   };
 
+  const handleToggle = () => {
+    setShouldAnimate(true);
+    setOpen(!open);
+  };
+
   return (
     <>
       <div className="fixed top-4 left-4 z-50 flex items-center gap-3 md:gap-4">
         <Button
           variant={open ? "ghost" : "outline"}
           size="icon"
-          onClick={() => setOpen(!open)}
+          onClick={handleToggle}
           className={cn(
             "transition-all duration-300 cursor-pointer",
             !open && "bg-background backdrop-blur-md",
@@ -115,18 +122,6 @@ export function CourseSidebar({
               transition={{ duration: 0.2, ease: "easeInOut" }}
               className="rounded-md"
             >
-              {/* <Dialog>
-                <DialogTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="cursor-pointer backdrop-blur-md mr-3 md:mr-4"
-                  >
-                    <Settings className="w-4 h-4" />
-                  </Button>
-                </DialogTrigger>
-                <SettingsDialogContent />
-              </Dialog> */}
               <Button variant="outline" asChild className="backdrop-blur-md">
                 <Link href="/">
                   <ChevronLeft className="w-4 h-4" />
@@ -141,16 +136,19 @@ export function CourseSidebar({
         {open && (
           <>
             <motion.div
-              initial={{ opacity: 0 }}
+              initial={shouldAnimate ? { opacity: 0 } : false}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              onClick={() => setOpen(false)}
+              onClick={() => {
+                setShouldAnimate(true);
+                setOpen(false);
+              }}
               className="fixed inset-0 bg-black/50 z-40 md:hidden"
             />
 
             <motion.aside
-              initial={{ x: -320, opacity: 0 }}
+              initial={shouldAnimate ? { x: -320, opacity: 0 } : false}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -320, opacity: 0 }}
               transition={{
@@ -193,7 +191,6 @@ export function CourseSidebar({
                     <h2 className="font-semibold text-lg leading-tight">
                       {course.title}
                     </h2>
-                    {/* TODO: move this */}
                     {owned && (
                       <Badge variant="secondary" className="shrink-0">
                         <BadgeCheck className="w-3 h-3 mr-1" />
@@ -292,18 +289,19 @@ export function CourseSidebar({
                                   {formatDuration(videoDuration || 0)}
                                 </p>
                               )}
+
+                              {lesson.type === "text" &&
+                                lesson.readingTimeSeconds && (
+                                  <p className="text-xs truncate">
+                                    {formatReadingTime(
+                                      lesson.readingTimeSeconds,
+                                    )}
+                                  </p>
+                                )}
                             </div>
                             {!lesson.free && !owned && (
                               <Lock className="w-4 h-4 shrink-0 text-orange-600 dark:text-orange-500" />
                             )}
-                            {/* {!lesson.free && !owned ? (
-                              <Lock className="w-4 h-4 shrink-0 text-orange-600 dark:text-orange-500" />
-                            ) : (
-                              loading &&
-                              isActive && (
-                                <div className="w-4 h-4 border-2 border-foreground border-t-transparent rounded-full animate-spin"></div>
-                              )
-                            )} */}
                           </div>
                         </Link>
                       );
