@@ -102,8 +102,8 @@ export function CourseSidebar({
           size="icon"
           onClick={handleToggle}
           className={cn(
-            "transition-all duration-300 cursor-pointer",
-            !open && "bg-background backdrop-blur-md",
+            "transition-all duration-300 cursor-pointer bg-background",
+            !open && "backdrop-blur-md",
           )}
         >
           {open ? (
@@ -154,7 +154,7 @@ export function CourseSidebar({
               transition={{
                 duration: 0.2,
               }}
-              className="fixed md:relative flex flex-col h-full w-80 border-r bg-background z-40 md:z-auto shadow-2xl md:shadow-none"
+              className="fixed md:relative flex flex-col h-full w-80 border-r bg-background z-40 md:z-auto shadow-2xl md:shadow-none overflow-y-auto"
             >
               <div className="pt-16 px-4 pb-4 border-b">
                 <Button
@@ -219,7 +219,7 @@ export function CourseSidebar({
                 </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto">
+              <div className="flex-1 overflow-y-auto min-h-[128px]">
                 <div className="p-4">
                   <div className="mb-3">
                     <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
