@@ -1,3 +1,6 @@
+/** biome-ignore-all lint/suspicious/noArrayIndexKey: safe here */
+
+import { Image as ImageIcon } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -7,12 +10,11 @@ export default function CoursesPageSkeleton() {
       <h1 className="text-3xl font-bold">Your Courses</h1>
       {[...Array(3)].map((_, i) => (
         <Card
-          // biome-ignore lint/suspicious/noArrayIndexKey: safe here
           key={i}
           className="p-4 flex flex-col md:flex-row md:justify-between md:items-center gap-4"
         >
-          <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
-            <Skeleton className="w-full h-full rounded-md" />
+          <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center border-1">
+            <ImageIcon className="w-10 h-10 text-muted" />
           </div>
 
           <div className="flex-1 min-w-0 space-y-2">
@@ -21,7 +23,7 @@ export default function CoursesPageSkeleton() {
             <Skeleton className="h-4 w-5/6 rounded" />
           </div>
 
-          <div className="flex-shrink-0 w-full md:w-36">
+          <div className="flex-shrink-0 w-full md:w-22">
             <Skeleton className="h-12 rounded-md w-full" />
           </div>
         </Card>
