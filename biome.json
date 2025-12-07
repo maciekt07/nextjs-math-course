@@ -35,6 +35,9 @@
       "a11y": {
         "noLabelWithoutControl": "off",
         "noSvgWithoutTitle": "off"
+      },
+      "complexity": {
+        "noImportantStyles": "off"
       }
     },
     "domains": {

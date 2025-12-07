@@ -144,12 +144,19 @@
     color: var(--color-primary-foreground);
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground !min-w-full;
   }
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 6rem;
     font-family: var(--font-inter);
+  }
+
+  /* fix layout shift when Radix locks scroll */
+  body[data-scroll-locked] {
+    overflow: visible !important;
+    overscroll-behavior: contain;
+    position: relative !important;
   }
 }
 
