@@ -46,23 +46,20 @@ export default buildConfig({
         },
       },
     }),
-    ...(useS3
-      ? [
-          s3Storage({
-            collections: {
-              media: true,
-            },
-            bucket: process.env.S3_BUCKET || "",
-            config: {
-              credentials: {
-                accessKeyId: process.env.S3_ACCESS_KEY_ID || "",
-                secretAccessKey: process.env.S3_SECRET || "",
-              },
-              region: "auto", // Cloudflare R2 uses 'auto' as the region
-              endpoint: process.env.S3_ENDPOINT || "",
-            },
-          }),
-        ]
-      : []),
+    s3Storage({
+      enabled: useS3,
+      collections: {
+        media: true,
+      },
+      bucket: process.env.S3_BUCKET || "",
+      config: {
+        credentials: {
+          accessKeyId: process.env.S3_ACCESS_KEY_ID || "",
+          secretAccessKey: process.env.S3_SECRET || "",
+        },
+        region: "auto", // Cloudflare R2 uses 'auto' as the region
+        endpoint: process.env.S3_ENDPOINT || "",
+      },
+    }),
   ],
 });
