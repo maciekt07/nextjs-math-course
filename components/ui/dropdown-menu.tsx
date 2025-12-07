@@ -26,6 +26,7 @@ function DropdownMenuTrigger({
   return (
     <DropdownMenuPrimitive.Trigger
       data-slot="dropdown-menu-trigger"
+      className="focus-visible:ring-0 focus-visible:border-inherit"
       {...props}
     />
   );
