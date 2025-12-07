@@ -17,17 +17,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { SettingsDialogContent } from "@/app/(app)/course/[courseName]/_components/settings-dialog";
+import { SettingsDialogContent } from "@/app/(app)/course/[courseName]/_components/settings-dialog-content";
 import BuyCourseButton from "@/components/buy-course-button";
+import { ThemeSelect } from "@/components/theme-select";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { authClient } from "@/lib/auth-client";
 import { formatDuration, formatReadingTime } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { Course, Lesson, Media, MuxVideo } from "@/payload-types";
+import { useSidebarStore } from "@/stores/sidebar-store";
 
 const lessonTypeConfig = {
   quiz: {
@@ -64,11 +66,12 @@ export function CourseSidebar({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { open, setOpen, toggle } = useSidebarStore();
   const { data: session, isPending } = authClient.useSession();
-  const [open, setOpen] = useState<boolean>(true);
   const [optimisticPath, setOptimisticPath] = useState<string | null>(null);
   const [_isTransitionLoading, startTransition] = useTransition();
   const [shouldAnimate, setShouldAnimate] = useState<boolean>(false);
+  const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
 
   const handleLessonClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
@@ -81,6 +84,7 @@ export function CourseSidebar({
     if (window.innerWidth < 768) {
       setOpen(false);
       setShouldAnimate(true);
+      setOpen(false);
     }
 
     // navigate with transition for smoother experience
@@ -91,12 +95,37 @@ export function CourseSidebar({
 
   const handleToggle = () => {
     setShouldAnimate(true);
-    setOpen(!open);
+    toggle();
   };
 
   return (
     <>
-      <div className="fixed top-4 left-4 z-50 flex items-center gap-3 md:gap-4">
+      <div className="flex items-center flex-row-reverse fixed top-4 right-4 z-50 gap-3">
+        <ThemeSelect />
+        <AnimatePresence>
+          {!open && (
+            <motion.div
+              key="settings"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+            >
+              <Button
+                variant="outline"
+                size="icon"
+                className="cursor-pointer"
+                onClick={() => setSettingsOpen(true)}
+              >
+                <Settings />
+              </Button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* top-left controls */}
+      <div className="fixed top-4 left-4 z-50 flex items-center gap-3">
         <Button
           variant={open ? "ghost" : "outline"}
           size="icon"
@@ -112,6 +141,7 @@ export function CourseSidebar({
             <PanelLeft className="w-5 h-5" />
           )}
         </Button>
+
         <AnimatePresence mode="wait">
           {!open && (
             <motion.div
@@ -132,6 +162,29 @@ export function CourseSidebar({
           )}
         </AnimatePresence>
       </div>
+
+      {/* top bar */}
+      <AnimatePresence>
+        {!open && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="fixed top-0 left-0 z-40 h-17 backdrop-blur-lg bg-background/60 border-b flex items-center px-4 mb-4 gap-3 pointer-events-none"
+            style={{
+              right: "16px",
+              paddingLeft: "max(1rem, env(safe-area-inset-left))",
+            }}
+          ></motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* settings dialog */}
+      <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
+        <SettingsDialogContent />
+      </Dialog>
+
       <AnimatePresence mode="wait">
         {open && (
           <>
@@ -139,12 +192,12 @@ export function CourseSidebar({
               initial={shouldAnimate ? { opacity: 0 } : false}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
               onClick={() => {
                 setShouldAnimate(true);
                 setOpen(false);
               }}
-              className="fixed inset-0 bg-black/50 z-40 md:hidden"
+              className="fixed inset-0 bg-black/50 backdrop-blur-xs z-40 md:hidden"
             />
 
             <motion.aside
@@ -152,9 +205,10 @@ export function CourseSidebar({
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -320, opacity: 0 }}
               transition={{
-                duration: 0.2,
+                duration: 0.3,
+                ease: "easeInOut",
               }}
-              className="fixed md:relative flex flex-col h-full w-80 border-r bg-background z-40 md:z-auto shadow-2xl md:shadow-none overflow-y-auto"
+              className="fixed flex flex-col h-full w-80 border-r bg-background z-40 shadow-2xl md:shadow-none overflow-y-auto"
             >
               <div className="pt-16 px-4 pb-4 border-b">
                 <Button
@@ -311,17 +365,14 @@ export function CourseSidebar({
               </div>
 
               <div className="p-4 border-t mt-auto bg-background">
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="w-full mb-3 cursor-pointer"
-                    >
-                      <Settings className="w-4 h-4" /> Settings
-                    </Button>
-                  </DialogTrigger>
-                  <SettingsDialogContent />
-                </Dialog>
+                <Button
+                  variant="outline"
+                  className="w-full mb-3 cursor-pointer"
+                  onClick={() => setSettingsOpen(true)}
+                >
+                  <Settings className="w-4 h-4" /> Settings
+                </Button>
+
                 {isPending ? (
                   <div className="space-y-2">
                     <div className="flex items-center gap-3 rounded-lg p-2 -mx-2">

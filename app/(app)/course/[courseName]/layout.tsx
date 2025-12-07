@@ -2,12 +2,11 @@ import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { cache } from "react";
-import { ThemeSelect } from "@/components/theme-select";
 import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
 import { auth } from "@/lib/auth";
 import { getPayloadClient } from "@/lib/payload-client";
-import { CourseSidebar } from "./_components/course-sidebar";
+import { CourseLayoutWrapper } from "./_components/course-layout-wrapper";
 
 const getCourseWithLessons = cache(async (courseSlug: string) => {
   const payload = await getPayloadClient();
@@ -75,18 +74,12 @@ export default async function CourseLayout({
   }
 
   return (
-    <div className="flex h-screen overflow-hidden relative">
-      <div className="absolute top-4 right-4 z-10">
-        <ThemeSelect />
-      </div>
-
-      <CourseSidebar
-        course={data.course}
-        lessons={data.lessons}
-        owned={owned}
-      />
-
-      <main className="flex-1 overflow-y-auto">{children}</main>
-    </div>
+    <CourseLayoutWrapper
+      course={data.course}
+      lessons={data.lessons}
+      owned={owned}
+    >
+      {children}
+    </CourseLayoutWrapper>
   );
 }

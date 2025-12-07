@@ -8,7 +8,7 @@ import type React from "react";
 
 import { importMap } from "./admin/importMap.js";
 import "./custom.scss";
-import "@styles/payloadStyles.css";
+import "@styles/payload-styles.css";
 
 type Args = {
   children: React.ReactNode;

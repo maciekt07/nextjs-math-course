@@ -20,7 +20,7 @@ import {
   type BooleanSettingKey,
   type FontStyle,
   useSettingsStore,
-} from "@/stores/settingsStore";
+} from "@/stores/settings-store";
 
 const switchSettings: ReadonlyArray<{
   key: BooleanSettingKey;

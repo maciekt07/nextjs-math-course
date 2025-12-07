@@ -273,7 +273,7 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
           {lesson.videoDescription ? (
             <MarkdownRenderer content={lesson.videoDescription} />
           ) : (
-            <p className="italic">No Description</p>
+            <p className="italic text-muted-foreground">No Description</p>
           )}
           {lesson.chapters && lesson.chapters.length > 0 && (
             <>

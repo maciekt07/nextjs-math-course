@@ -20,7 +20,7 @@ export const useSettingsStore = create<SettingsStore>()(
   persist(
     (set) => ({
       desmosForceDarkMode: true,
-      coloredMarkdown: false,
+      coloredMarkdown: true,
       largeMath: false,
       fontStyle: "default",
       toggle: (key) => set((state) => ({ [key]: !state[key] as boolean })),

@@ -11,7 +11,7 @@ import { stripMarkdown } from "@/lib/markdown/strip";
 import { slug } from "@/lib/slugify";
 import { cn } from "@/lib/utils";
 import type { Media } from "@/payload-types";
-import { useSettingsStore } from "@/stores/settingsStore";
+import { useSettingsStore } from "@/stores/settings-store";
 import { type DesmosDivProps, desmos } from "../lib/markdown/desmos";
 import { DesmosGraph } from "./desmos-graph";
 import { ImageZoom } from "./ui/shadcn-io/image-zoom";

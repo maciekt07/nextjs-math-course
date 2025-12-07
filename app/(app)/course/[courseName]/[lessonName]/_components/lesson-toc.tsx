@@ -8,6 +8,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
+import { useSidebarStore } from "@/stores/sidebar-store";
 
 export function LessonTOC({
   headings,
@@ -15,6 +16,8 @@ export function LessonTOC({
   headings: { id: string; text: string; level: number }[];
 }) {
   const [activeId, setActiveId] = useState<string | null>(null);
+
+  const sidebarOpen = useSidebarStore((s) => s.open);
 
   function scrollToHeader(id: string) {
     const el = document.getElementById(id);
@@ -28,7 +31,7 @@ export function LessonTOC({
 
     const offsetTop = elRect.top - containerRect.top + container.scrollTop;
 
-    const margin = window.innerWidth < 1220 ? 64 : 12;
+    const margin = 16 + (!sidebarOpen ? 64 : 0);
 
     container.scrollTo({
       top: offsetTop - margin,
@@ -143,7 +146,7 @@ export function LessonTOC({
         </Accordion>
       </div>
 
-      <div className="hidden min-[1704px]:block fixed right-4 top-20 w-64 max-h-[70vh] overflow-auto border-l pl-6">
+      <div className="hidden min-[1704px]:block fixed right-4 top-24 w-64 max-h-[70vh] overflow-auto border-l pl-6">
         <h4 className="text-xs font-medium mb-4 uppercase tracking-wide text-muted-foreground/80">
           In this lesson
         </h4>

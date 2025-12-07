@@ -5,7 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { openDyslexic } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 import type { Lesson } from "@/payload-types";
-import { useSettingsStore } from "@/stores/settingsStore";
+import { useSettingsStore } from "@/stores/settings-store";
 import { LessonTitle } from "./lesson-title";
 import { QuizLesson } from "./lessons/quiz-lesson";
 import { TextLesson } from "./lessons/text-lesson";
