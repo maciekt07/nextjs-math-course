@@ -1,4 +1,13 @@
 {
+  // always prefer path aliases for imports instead of relative paths
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "javascript.preferences.importModuleSpecifier": "non-relative",
+  // automatically organize imports and apply Biome fixes when saving a file
+  "editor.codeActionsOnSave": {
+    "source.organizeImports.biome": "explicit",
+    "source.fixAll.biome": "explicit"
+  },
+  // custom icons
   "material-icon-theme.folders.customClones": [
     {
       "name": "payload",
@@ -11,6 +20,36 @@
       "base": "class",
       "color": "red-800",
       "folderNames": ["collections"]
+    },
+    {
+      "name": "cms",
+      "base": "class",
+      "color": "gray-700",
+      "folderNames": ["cms"]
+    },
+    {
+      "name": "access",
+      "base": "admin",
+      "color": "red-400",
+      "folderNames": ["cms/access"]
+    },
+    {
+      "name": "fields",
+      "base": "include",
+      "color": "blue-400",
+      "folderNames": ["cms/fields"]
+    },
+    {
+      "name": "stripe",
+      "base": "folder",
+      "color": "#5167FC",
+      "folderNames": ["stripe"]
+    },
+    {
+      "name": "mux",
+      "base": "video",
+      "color": "#F84EB4",
+      "folderNames": ["mux"]
     }
   ]
 }
