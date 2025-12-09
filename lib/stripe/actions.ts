@@ -4,6 +4,7 @@ import type { InferSelectModel } from "drizzle-orm";
 import { eq } from "drizzle-orm";
 import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
+import { clientEnv } from "@/env/client";
 import type { Course } from "@/payload-types";
 import { stripe } from "./stripe";
 
@@ -17,8 +18,7 @@ export async function createPaymentIntent(
 ) {
   const price = Math.round((course.price || 0) * 100); // cents
 
-  const successBase =
-    process.env.NEXT_PUBLIC_APP_URL || `http://localhost:3000`;
+  const successBase = clientEnv.NEXT_PUBLIC_APP_URL;
 
   const customer = await stripe.customers.create({
     email: user.email,

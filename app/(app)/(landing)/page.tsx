@@ -43,7 +43,7 @@ const getUserCount = async () => {
   return result[0]?.count || 0;
 };
 
-export const getOwnedCourseIds = async (userId: string) => {
+const getOwnedCourseIds = async (userId: string) => {
   const rows = await db
     .select()
     .from(enrollment)

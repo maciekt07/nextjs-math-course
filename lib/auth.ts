@@ -3,6 +3,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { db } from "@/drizzle/db";
 import { sendEmail } from "@/email/send-email";
+
 export const auth = betterAuth({
   emailVerification: {
     sendVerificationEmail: async ({ url, user }) => {

@@ -3,12 +3,13 @@ import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
+import { serverEnv } from "@/env/server";
 import { stripe } from "@/lib/stripe/stripe";
 
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  const webhookSecret = serverEnv.STRIPE_WEBHOOK_SECRET;
   if (!webhookSecret) {
     return NextResponse.json(
       { error: "Missing webhook secret" },

@@ -1,3 +1,5 @@
+import { clientEnv } from "@/env/client";
+
 // client-side cache for Mux public tokens with automatic expiration
 
 type CachedMuxToken = {
@@ -96,7 +98,7 @@ export async function fetchMuxToken(
   const { token } = await res.json();
 
   if (isFree) {
-    const raw = process.env.NEXT_PUBLIC_MUX_PUBLIC_EXPIRATION_DAYS || "7d";
+    const raw = clientEnv.NEXT_PUBLIC_MUX_PUBLIC_EXPIRATION;
     const expiresMs = parseDuration(raw) - 5 * 60 * 1000; // -5 minutes
     setPublicMuxToken(playbackId, token, expiresMs);
   }

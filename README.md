@@ -63,6 +63,7 @@ npm install
 ### 3. Set Up Environment Variables
 
 Create a `.env` file in the root directory. Use [.env.example](.env.example) as a template.
+Environment variables are fully typed and validated for both dev and build.
 
 ### 4. Start Databases
 
@@ -98,10 +99,18 @@ Use these Stripe test card details to simulate a successful payment:
 - Expiration Date: Any future date
 - CVC: Any 3-digit code
 
-### 7. Start the Development Server
+### 7. Run the App
+
+Development mode:
 
 ```bash
 npm run dev
+```
+
+Production preview:
+
+```bash
+npm run preview
 ```
 
 The application should now be running at [http://localhost:3000](http://localhost:3000)
