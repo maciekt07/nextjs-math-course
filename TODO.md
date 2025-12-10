@@ -36,6 +36,7 @@
 - [x] Add video chapters [docs](https://www.mux.com/docs/guides/player-advanced-usage#chapters-example)
 - [x] Add lesson feedback form
 - [ ] Add course-release email notifications
+- [ ] Add custom Markdown blocks (Note, Deep Dive)
 
 ## UI / UX
 
@@ -47,7 +48,7 @@
 - [x] Add top loading bar
 - [x] Add TOC to markdown
 - [x] Add OpenDyslexic font for lessons
-- [ ] Add next/previous lesson navigation
+- [x] Add next/previous lesson navigation
 
 ## Backend
 

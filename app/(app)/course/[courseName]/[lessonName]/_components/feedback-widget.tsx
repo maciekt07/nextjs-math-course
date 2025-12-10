@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 import { Textarea } from "@/components/ui/textarea";
 import { FEEDBACK_LIMITS } from "@/lib/constants/limits";
+import { cn } from "@/lib/utils";
 import type { Lesson } from "@/payload-types";
 
 const reactions = [
@@ -68,8 +69,8 @@ export default function FeedbackWidget({
   };
 
   return (
-    <div className="w-full max-w-sm mx-auto mb-8">
-      <div className="flex flex-col items-center rounded-xl border p-4 shadow-sm bg-background">
+    <div className="w-full max-w-sm mx-auto my-8">
+      <div className="flex flex-col items-center rounded-xl border p-4 bg-background">
         <h3 className="text-md font-medium text-foreground mb-3">
           How was this {type === "quiz" || type === "video" ? type : "lesson"}?
         </h3>
@@ -84,12 +85,12 @@ export default function FeedbackWidget({
                 key={reaction.value}
                 onClick={() => toggleReaction(reaction.value)}
                 disabled={isSubmitted}
-                className={`flex items-center gap-1 px-2 py-1 rounded-full border text-sm transition-colors cursor-pointer
-                  ${
-                    selected
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-secondary text-foreground border-border hover:bg-secondary/80"
-                  }`}
+                className={cn(
+                  "flex items-center gap-1 px-2 py-1 rounded-full border text-sm transition-colors cursor-pointer",
+                  selected
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-secondary text-foreground border-border hover:bg-secondary/80",
+                )}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >

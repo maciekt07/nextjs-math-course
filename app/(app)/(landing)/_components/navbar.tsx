@@ -75,7 +75,7 @@ export function Navbar({ user }: { user: User | null }) {
             <ThemeSelect />
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
-                <Button variant="outline" size="icon">
+                <Button variant="outline" size="icon" aria-label="Menu">
                   {open ? <X /> : <Menu />}
                 </Button>
               </SheetTrigger>

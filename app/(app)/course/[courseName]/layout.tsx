@@ -21,6 +21,7 @@ const getCourseWithLessons = cache(async (courseSlug: string) => {
 
   const course = courseDocs[0];
 
+  //FIXME: use partial type
   const { docs: lessons } = await payload.find({
     collection: "lessons",
     where: { course: { equals: course.id } },

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { type ReactNode, useMemo } from "react";
 import { Separator } from "@/components/ui/separator";
 import { openDyslexic } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
@@ -13,9 +13,13 @@ import { VideoLesson } from "./lessons/video-lesson";
 
 interface LessonContentWrapperProps {
   lesson: Lesson | null;
+  children?: ReactNode;
 }
 
-export function LessonContentWrapper({ lesson }: LessonContentWrapperProps) {
+export function LessonContentWrapper({
+  lesson,
+  children,
+}: LessonContentWrapperProps) {
   const { fontStyle } = useSettingsStore();
 
   const fontClass = useMemo(() => {
@@ -44,6 +48,7 @@ export function LessonContentWrapper({ lesson }: LessonContentWrapperProps) {
       {lesson?.type === "text" && <TextLesson lesson={lesson} />}
       {lesson?.type === "quiz" && <QuizLesson lesson={lesson} />}
       {lesson?.type === "video" && <VideoLesson lesson={lesson} />}
+      {children}
     </article>
   );
 }

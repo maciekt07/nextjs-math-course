@@ -16,6 +16,7 @@ import { getPayloadClient } from "@/lib/payload-client";
 import type { Course } from "@/payload-types";
 import FeedbackWidget from "./_components/feedback-widget";
 import { LessonContentWrapper } from "./_components/lesson-content-wrapper";
+import { LessonNavigation } from "./_components/lesson-navigation";
 
 export const revalidate = 3600;
 export const dynamic = "force-dynamic";
@@ -221,10 +222,12 @@ export default async function LessonPage({ params: paramsPromise }: Args) {
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex-grow">
-        <LessonContentWrapper lesson={lesson} />
-        {session && (
-          <FeedbackWidget lessonId={lesson?.id!} type={lesson?.type!} />
-        )}
+        <LessonContentWrapper lesson={lesson}>
+          {session && (
+            <FeedbackWidget lessonId={lesson?.id!} type={lesson?.type!} />
+          )}
+          {lesson && <LessonNavigation currentSlug={lesson?.slug} />}
+        </LessonContentWrapper>
       </div>
       <Footer />
     </div>
