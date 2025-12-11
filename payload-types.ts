@@ -127,6 +127,7 @@ export interface UserAuthOperations {
  */
 export interface Course {
   id: string;
+  _order?: string | null;
   title: string;
   slug?: string | null;
   price: number;
@@ -161,11 +162,11 @@ export interface Media {
  */
 export interface Lesson {
   id: string;
+  _order?: string | null;
   title: string;
   slug?: string | null;
   free?: boolean | null;
   course: string | Course;
-  order?: number | null;
   type: 'text' | 'quiz' | 'video';
   uploadImage?: (string | Media)[] | null;
   /**
@@ -364,6 +365,7 @@ export interface PayloadMigration {
  * via the `definition` "courses_select".
  */
 export interface CoursesSelect<T extends boolean = true> {
+  _order?: T;
   title?: T;
   slug?: T;
   price?: T;
@@ -377,11 +379,11 @@ export interface CoursesSelect<T extends boolean = true> {
  * via the `definition` "lessons_select".
  */
 export interface LessonsSelect<T extends boolean = true> {
+  _order?: T;
   title?: T;
   slug?: T;
   free?: T;
   course?: T;
-  order?: T;
   type?: T;
   uploadImage?: T;
   readingTimeSeconds?: T;

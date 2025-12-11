@@ -6,6 +6,7 @@ export const Lessons: CollectionConfig = {
   admin: {
     useAsTitle: "title",
   },
+  orderable: true,
   hooks: {
     beforeChange: [
       async ({ data }) => {
@@ -35,15 +36,6 @@ export const Lessons: CollectionConfig = {
       type: "relationship",
       relationTo: "courses",
       required: true,
-    },
-    {
-      name: "order",
-      type: "number",
-      admin: {
-        components: {
-          Field: "@fields/lesson-reorder",
-        },
-      },
     },
     {
       name: "type",

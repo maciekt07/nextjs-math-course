@@ -19,7 +19,6 @@ const getCourseWithFirstLesson = cache(async (courseSlug: string) => {
   const { docs: lessons } = await payload.find({
     collection: "lessons",
     where: { course: { equals: course.id } },
-    sort: "order",
     limit: 1,
     select: {
       slug: true,

@@ -5,6 +5,7 @@ const isAdmin: Access = ({ req: { user } }) => user?.role === "admin";
 
 export const Courses: CollectionConfig = {
   slug: "courses",
+  orderable: true,
   // only admin can manage courses
   access: {
     read: () => true,

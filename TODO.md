@@ -23,8 +23,6 @@
   - [x] Quizzes
 - [ ] Redesign custom fields
   - [ ] Markdown preview
-  - [ ] Reorder
-  - [ ] Quiz type fields
   - [ ] Lesson image upload
 - [x] Integrate Desmos graphs support
 - [x] Protect media for premium lessons

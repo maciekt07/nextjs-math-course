@@ -25,14 +25,12 @@ const getCourseWithLessons = cache(async (courseSlug: string) => {
   const { docs: lessons } = await payload.find({
     collection: "lessons",
     where: { course: { equals: course.id } },
-    sort: "order",
     limit: 100,
     select: {
       title: true,
       slug: true,
       free: true,
       id: true,
-      order: true,
       type: true,
       quiz: { id: true }, // get number of quizes
       video: true, // can't select just the duration

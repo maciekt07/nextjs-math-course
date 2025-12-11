@@ -164,6 +164,13 @@ $$
 
 For more details, see the [Markdown + LaTeX documentation](https://ashki23.github.io/markdown-latex.html#mathematical-formula)
 
+### Reordering Lessons
+
+1. Go to the **Lessons** collection in the CMS.
+2. In the top-right, open **Filters → Add Filter**.
+3. Select **course → equals → your course**.
+4. Use drag-and-drop to reorder the filtered lessons.
+
 ## Database Management
 
 ### Access PostgreSQL CLI

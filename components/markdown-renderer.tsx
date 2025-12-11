@@ -29,7 +29,7 @@ export function MarkdownRenderer({ content, media }: MarkdownRendererProps) {
   return (
     <div
       className={cn(
-        "markdown-wrapper prose dark:prose-invert max-w-none",
+        "markdown-wrapper prose dark:prose-invert max-w-none break-words",
         coloredMarkdown && "colored-markdown marker:text-primary",
         largeMath && "large-math",
       )}
