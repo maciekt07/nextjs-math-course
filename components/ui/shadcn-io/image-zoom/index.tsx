@@ -18,7 +18,7 @@ export const ImageZoom = ({
   backdropClassName,
   ...props
 }: ImageZoomProps) => (
-  <div
+  <span
     className={cn(
       "relative",
       "[&_[data-rmiz-ghost]]:pointer-events-none [&_[data-rmiz-ghost]]:absolute",
@@ -35,6 +35,7 @@ export const ImageZoom = ({
     )}
   >
     <Zoom
+      wrapElement="span"
       classDialog={cn(
         "[&::backdrop]:hidden",
         "[&[open]]:fixed [&[open]]:m-0 [&[open]]:h-dvh [&[open]]:max-h-none [&[open]]:w-dvw [&[open]]:max-w-none [&[open]]:overflow-hidden [&[open]]:border-0 [&[open]]:bg-transparent [&[open]]:p-0",
@@ -48,5 +49,5 @@ export const ImageZoom = ({
       )}
       {...props}
     />
-  </div>
+  </span>
 );
