@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { auth } from "@/lib/auth/auth";
 import { getPayloadClient } from "@/lib/payload-client";
 import { createPaymentIntent } from "@/lib/stripe/actions";
 

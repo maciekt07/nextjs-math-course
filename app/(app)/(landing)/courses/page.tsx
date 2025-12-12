@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
-import { auth } from "@/lib/auth";
+import { auth } from "@/lib/auth/auth";
 import { getPayloadClient } from "@/lib/payload-client";
 import type { Media } from "@/payload-types";
 

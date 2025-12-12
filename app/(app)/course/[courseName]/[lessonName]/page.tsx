@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
-import { auth } from "@/lib/auth";
+import { auth } from "@/lib/auth/auth";
 import { getPayloadClient } from "@/lib/payload-client";
 import type { Course } from "@/payload-types";
 import FeedbackWidget from "./_components/feedback-widget";
@@ -174,7 +174,7 @@ export default async function LessonPage({ params: paramsPromise }: Args) {
   if (!allowed) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Card className="max-w-md text-center p-8">
+        <Card className="max-w-[400px] text-center p-8">
           <CardContent className="space-y-4">
             <Lock className="mx-auto w-12 h-12 text-orange-600 dark:text-orange-500" />
             <h2 className="text-2xl font-semibold">{lessonMeta.title}</h2>

@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import z from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,23 +16,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 import { PasswordInput } from "@/components/ui/password-input";
-import { authClient } from "@/lib/auth-client";
-import { AUTH_LIMITS } from "@/lib/constants/limits";
-
-const signInSchema = z.object({
-  email: z.email().min(1).max(AUTH_LIMITS.email),
-  password: z
-    .string()
-    .min(AUTH_LIMITS.passwordMin)
-    .max(AUTH_LIMITS.passwordMax),
-});
-
-type SignInForm = z.infer<typeof signInSchema>;
+import { authClient } from "@/lib/auth/auth-client";
+import { type SignInSchema, signInSchema } from "@/lib/auth/auth-validation";
 
 export function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const form = useForm<SignInForm>({
+  const form = useForm<SignInSchema>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
       email: "",
@@ -45,7 +34,7 @@ export function SignInForm() {
 
   const { isSubmitting } = form.formState;
 
-  async function handleSignIn(data: SignInForm) {
+  async function handleSignIn(data: SignInSchema) {
     await authClient.signIn.email(
       { ...data, callbackURL: returnTo },
       {
@@ -69,7 +58,12 @@ export function SignInForm() {
             <FormItem>
               <FormLabel>E-mail</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="Your E-mail" {...field} />
+                <Input
+                  required
+                  type="email"
+                  placeholder="Your E-mail"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -83,7 +77,11 @@ export function SignInForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <PasswordInput placeholder="Your Password" {...field} />
+                <PasswordInput
+                  required
+                  placeholder="Your Password"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -93,7 +91,7 @@ export function SignInForm() {
           type="submit"
           size="lg"
           disabled={isSubmitting}
-          className="w-full mt-4"
+          className="w-full my-2 cursor-pointer"
         >
           <LoadingSwap isLoading={isSubmitting}>Sign In</LoadingSwap>
         </Button>

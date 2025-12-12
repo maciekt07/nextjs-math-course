@@ -1,8 +1,8 @@
 import { Calendar, Mail, User } from "lucide-react";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
-import type { Session } from "@/lib/auth-client";
+import { auth } from "@/lib/auth/auth";
+import type { Session } from "@/lib/auth/auth-client";
 import { LogOutButton } from "./_components/logout-button";
 
 function formatDate(date: string | Date) {

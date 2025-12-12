@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { auth } from "@/lib/auth";
+import { auth } from "@/lib/auth/auth";
 import { AuthFooter } from "../_components/auth-footer";
 import { SignInForm } from "./sign-in-form";
 
@@ -30,18 +30,14 @@ export default async function SignInPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-slate-100 dark:to-slate-950 p-4">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="w-full max-w-md flex flex-col items-center">
         <div className="text-center mb-8 flex-shrink-0">
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-50 mb-2">
-            Welcome back
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400">
-            Sign in to your account
-          </p>
+          <h1 className="text-3xl font-bold mb-2">Welcome back</h1>
+          <p className="text-muted-foreground">Sign in to your account</p>
         </div>
 
-        <Card className="border-slate-200 dark:border-slate-800 w-full flex-shrink-0">
+        <Card className="w-full flex-shrink-0">
           <CardHeader className="space-y-1">
             <div>
               <CardTitle className="text-2xl">Sign In</CardTitle>

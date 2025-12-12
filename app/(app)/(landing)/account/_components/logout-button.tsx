@@ -6,7 +6,7 @@ import { type ComponentProps, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { LoadingSwap } from "@/components/ui/loading-swap";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth/auth-client";
 
 export function LogOutButton({ ...props }: ComponentProps<typeof Button>) {
   const router = useRouter();

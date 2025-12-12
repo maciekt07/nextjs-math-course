@@ -28,8 +28,8 @@ CREATE TABLE "session" (
 --> statement-breakpoint
 CREATE TABLE "user" (
 	"id" text PRIMARY KEY NOT NULL,
-	"name" text NOT NULL,
-	"email" text NOT NULL,
+	"name" varchar(50) NOT NULL,
+	"email" varchar(254) NOT NULL,
 	"email_verified" boolean DEFAULT false NOT NULL,
 	"image" text,
 	"stripe_customer_id" text,

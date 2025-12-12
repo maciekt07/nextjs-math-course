@@ -1,4 +1,3 @@
-//TODO: move this folder
 import {
   Body,
   Container,

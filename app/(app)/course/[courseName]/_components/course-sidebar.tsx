@@ -25,7 +25,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth/auth-client";
 import { formatDuration, formatReadingTime } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { Course, Lesson, Media, MuxVideo } from "@/payload-types";

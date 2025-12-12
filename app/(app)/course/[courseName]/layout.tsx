@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
-import { auth } from "@/lib/auth";
+import { auth } from "@/lib/auth/auth";
 import { getPayloadClient } from "@/lib/payload-client";
 import { CourseLayoutWrapper } from "./_components/course-layout-wrapper";
 

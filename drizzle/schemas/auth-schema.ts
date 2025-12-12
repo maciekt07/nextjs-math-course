@@ -1,9 +1,16 @@
-import { boolean, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  pgTable,
+  text,
+  timestamp,
+  varchar,
+} from "drizzle-orm/pg-core";
+import { AUTH_LIMITS } from "@/lib/constants/limits";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  email: text("email").notNull().unique(),
+  name: varchar("name", { length: AUTH_LIMITS.name }).notNull(),
+  email: varchar("email", { length: AUTH_LIMITS.email }).notNull().unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),
   image: text("image"),
   stripeCustomerId: text("stripe_customer_id"),

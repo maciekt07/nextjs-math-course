@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
 import sanitizeHtml from "sanitize-html";
-import { auth } from "@/lib/auth";
+import { auth } from "@/lib/auth/auth";
 import { FEEDBACK_LIMITS } from "@/lib/constants/limits";
 import { getPayloadClient } from "@/lib/payload-client";
 import { rateLimit } from "@/lib/rate-limit";

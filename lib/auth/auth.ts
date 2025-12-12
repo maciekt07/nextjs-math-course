@@ -3,6 +3,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { db } from "@/drizzle/db";
 import { sendEmail } from "@/email/send-email";
+import { AUTH_LIMITS } from "@/lib/constants/limits";
 
 export const auth = betterAuth({
   emailVerification: {
@@ -14,6 +15,8 @@ export const auth = betterAuth({
     enabled: true,
     autoSignIn: false,
     requireEmailVerification: true,
+    minPasswordLength: AUTH_LIMITS.passwordMin,
+    maxPasswordLength: AUTH_LIMITS.passwordMax,
   },
   session: {
     cookieCache: {

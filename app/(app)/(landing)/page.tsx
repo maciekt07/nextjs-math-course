@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { CountingNumber } from "@/components/ui/shadcn-io/counting-number";
 import { db } from "@/drizzle/db";
 import { enrollment, user } from "@/drizzle/schema";
-import { auth } from "@/lib/auth";
+import { auth } from "@/lib/auth/auth";
 import { getPayloadClient } from "@/lib/payload-client";
 import { CTASection } from "./_components/cta";
 import { FAQ } from "./_components/faq";
@@ -75,8 +75,8 @@ export default async function Home() {
 
   return (
     <div className="w-full flex flex-col">
-      <section className="bg-background mt-8 sm:mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 sm:-mt-12">
+      <section className="mt-6 sm:mt-2">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div className="flex flex-col gap-6 text-left">
               <HeroBadge />

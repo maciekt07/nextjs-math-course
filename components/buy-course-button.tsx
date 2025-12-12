@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth/auth-client";
 import { useBuyCourse } from "@/lib/stripe/useBuyCourse";
 import { LoadingSwap } from "./ui/loading-swap";
 

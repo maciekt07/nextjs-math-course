@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import type { ReactNode } from "react";
 import Footer from "@/components/footer";
-import { auth } from "@/lib/auth";
+import { auth } from "@/lib/auth/auth";
 import { Navbar } from "./_components/navbar";
 
 export default async function MarketingLayout({

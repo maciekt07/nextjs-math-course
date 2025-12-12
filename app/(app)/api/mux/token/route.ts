@@ -7,7 +7,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
 import { clientEnv } from "@/env/client";
-import { auth } from "@/lib/auth";
+import { auth } from "@/lib/auth/auth";
 import { getPayloadClient } from "@/lib/payload-client";
 import { rateLimit } from "@/lib/rate-limit";
 
