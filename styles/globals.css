@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "./markdown.css";
 @plugin '@tailwindcss/typography';
 
 @custom-variant dark (&:is(.dark *));
@@ -179,71 +180,4 @@ https://github.com/TheSGJ/nextjs-toploader/issues/131
 #nprogress {
   position: relative;
   z-index: 10000;
-}
-
-/* Inline math */
-.large-math .katex {
-  font-size: 1.4em;
-}
-
-/* Block math */
-.large-math .katex-display .katex {
-  font-size: 1.4em;
-  @apply my-2;
-}
-
-/* scroll wide math expressions */
-.katex-display {
-  display: block;
-  overflow-x: auto;
-  white-space: nowrap;
-  padding: 0.5em 0;
-}
-
-.katex-display > .katex {
-  display: inline-block;
-  min-width: max-content;
-}
-
-/* katex colors */
-
-.colored-markdown .katex {
-  transition: color 0.2s ease;
-}
-
-.katex .mathdefault,
-.katex .mord {
-  @apply text-foreground;
-}
-
-.colored-markdown .katex * {
-  border-color: #a0c2ff;
-}
-
-/* operators (+, -, *, /) */
-.colored-markdown .katex .mbin {
-  color: #7147f0ff;
-  font-weight: bold;
-}
-
-/* relations (=, <, >) */
-.colored-markdown .katex .mrel {
-  color: #3b99f6;
-  font-weight: bold;
-}
-
-/* fractions, roots, etc. */
-.colored-markdown .katex .mopen,
-.colored-markdown .katex .mclose {
-  color: #2563eb;
-}
-
-/* commas, semicolons */
-.colored-markdown .katex .mpunct {
-  color: #0284c7;
-}
-
-/* lim, cos, etc. */
-.colored-markdown .katex .mop {
-  color: #7acffc;
 }

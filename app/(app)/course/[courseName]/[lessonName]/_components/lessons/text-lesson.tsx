@@ -1,4 +1,4 @@
-import { MarkdownRenderer } from "@/components/markdown-renderer";
+import { MarkdownRenderer } from "@/components/markdown";
 import { extractHeadings } from "@/lib/markdown/extract-headings";
 import type { Lesson, Media } from "@/payload-types";
 import { LessonTOC } from "../lesson-toc";

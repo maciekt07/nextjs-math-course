@@ -1,0 +1,88 @@
+/* TODO: adjust colors */
+:root {
+  --fraction: #85a3dbff;
+  --operator-color: #7147f0ff;
+  --relation-color: #3b99f6ff;
+  --bracket-color: #2563ebff;
+  --punctuation-color: #0284c7ff;
+  --function-color: #1fb1ffff;
+  --math-foreground: #000000ff;
+}
+
+.dark {
+  --fraction: #2974ffff;
+  --operator-color: #7147f0ff;
+  --relation-color: #3b99f6ff;
+  --bracket-color: #3b82f6ff;
+  --punctuation-color: #0284c7ff;
+  --function-color: #1fb1ffff;
+  --math-foreground: #ffffffff;
+}
+
+/* inline math */
+.large-math .katex {
+  font-size: 1.4em;
+}
+
+/* block math */
+.large-math .katex-display .katex {
+  font-size: 1.4em;
+  margin: 0.5rem 0;
+}
+
+/* scroll wide math expressions */
+.katex-display {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 0.5em 0;
+}
+
+.katex-display > .katex {
+  display: inline-block;
+  min-width: max-content;
+}
+
+/* colored markdown KaTeX */
+
+.colored-markdown .katex {
+  transition: color 0.2s ease;
+}
+
+.katex .mathdefault,
+.katex .mord {
+  color: var(--math-foreground);
+}
+
+.colored-markdown .katex * {
+  border-color: var(--fraction);
+  border-bottom: 3px var(--fraction);
+}
+
+/* operators (+, -, *, /) */
+.colored-markdown .katex .mbin {
+  color: var(--operator-color);
+  font-weight: bold;
+}
+
+/* relations (=, <, >) */
+.colored-markdown .katex .mrel {
+  color: var(--relation-color);
+  font-weight: bold;
+}
+
+/* fractions, roots, parentheses, etc. */
+.colored-markdown .katex .mopen,
+.colored-markdown .katex .mclose {
+  color: var(--bracket-color);
+}
+
+/* commas, semicolons */
+.colored-markdown .katex .mpunct {
+  color: var(--punctuation-color);
+}
+
+/* functions like lim, cos, etc. */
+.colored-markdown .katex .mop {
+  color: var(--function-color);
+}

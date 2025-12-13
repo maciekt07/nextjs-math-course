@@ -1,5 +1,5 @@
+import { stripMarkdown } from "@/components/markdown/utils";
 import { slug } from "../slugify";
-import { stripMarkdown } from "./strip";
 
 export interface Heading {
   id: string;

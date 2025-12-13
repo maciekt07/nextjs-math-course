@@ -3,7 +3,7 @@
 import { TextareaInput, useField } from "@payloadcms/ui";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
-import { MarkdownRenderer } from "@/components/markdown-renderer";
+import { MarkdownRenderer } from "@/components/markdown";
 
 //TODO: design better UI for preview
 export default function MarkdownPreviewField({

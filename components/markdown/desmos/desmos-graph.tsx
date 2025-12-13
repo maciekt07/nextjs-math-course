@@ -1,7 +1,7 @@
 import { ExternalLink } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useSettingsStore } from "@/stores/settings-store";
-import { Button } from "./ui/button";
 
 interface DesmosGraphProps {
   graphUrl: string;
