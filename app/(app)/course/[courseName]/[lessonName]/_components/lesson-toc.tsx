@@ -111,7 +111,7 @@ export function LessonTOC({
 
   return (
     <>
-      <div className="hidden max-[1704px]:block mb-6">
+      <div className="hidden max-[1704px]:block mb-6 font-inter">
         <Accordion
           type="single"
           collapsible
@@ -146,7 +146,7 @@ export function LessonTOC({
         </Accordion>
       </div>
 
-      <div className="hidden min-[1704px]:block fixed right-4 top-24 w-64 max-h-[70vh] overflow-auto border-l pl-6">
+      <div className="hidden min-[1704px]:block fixed right-4 top-24 w-64 max-h-[70vh] overflow-auto border-l pl-6 font-inter">
         <h4 className="text-xs font-medium mb-4 uppercase tracking-wide text-muted-foreground/80">
           In this lesson
         </h4>

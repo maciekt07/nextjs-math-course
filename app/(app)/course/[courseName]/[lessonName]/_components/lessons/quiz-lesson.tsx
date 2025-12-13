@@ -143,7 +143,7 @@ export function QuizLesson({ lesson }: QuizLessonProps) {
       <Card>
         <CardHeader>
           <div className="space-y-3">
-            <Badge variant="secondary">
+            <Badge variant="secondary" className="font-inter">
               Question {activeQuestionIdx + 1} of {questions.length}
             </Badge>
             <CardTitle className="text-2xl">

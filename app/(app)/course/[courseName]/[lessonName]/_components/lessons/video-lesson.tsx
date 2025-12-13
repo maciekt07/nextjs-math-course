@@ -263,7 +263,7 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
       {renderVideoArea()}
 
       <Card className="mt-2">
-        <CardHeader className="border-b">
+        <CardHeader className="border-b font-inter">
           <CardTitle className="flex items-center gap-2 -mb-2">
             <Video className="w-5 h-5 text-primary" />
             Video Details
@@ -278,7 +278,7 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
           {lesson.chapters && lesson.chapters.length > 0 && (
             <>
               <Separator className="mt-4" />
-              <div className="mt-4">
+              <div className="mt-4 font-inter">
                 <h3 className="text-xl font-semibold mb-4 text-primary flex items-center gap-2">
                   <List className="h-5 w-5" />
                   Chapters
