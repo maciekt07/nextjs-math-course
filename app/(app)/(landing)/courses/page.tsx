@@ -13,7 +13,7 @@ import { getPayloadClient } from "@/lib/payload-client";
 import type { Media } from "@/payload-types";
 
 export const metadata = {
-  title: "Your Courses | Math Course Online",
+  title: "Your Courses",
 };
 
 export default async function CoursesPage() {

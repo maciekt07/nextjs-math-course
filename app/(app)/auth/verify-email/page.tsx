@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth/auth";
 
 export const metadata: Metadata = {
-  title: "Verify your email | Math Course Online",
+  title: "Verify your email",
   description: "Check your inbox to verify your email before logging in.",
   robots: { index: false, follow: false },
 };

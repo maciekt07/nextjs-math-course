@@ -91,16 +91,14 @@ export async function generateMetadata({
 
   const lesson = docs?.[0];
   if (!lesson) {
-    return { title: "Lesson not found | Math Course" };
+    return { title: "Lesson not found" };
   }
 
   const courseTitle =
-    typeof lesson.course === "string"
-      ? ""
-      : (lesson.course as { title?: string }).title || "";
+    typeof lesson.course === "string" ? "" : lesson.course.title;
 
   return {
-    title: `${lesson.title}${courseTitle ? ` | ${courseTitle}` : ""} | Math Course Online`,
+    title: `${lesson.title}${courseTitle ? ` | ${courseTitle}` : ""}`,
   };
 }
 

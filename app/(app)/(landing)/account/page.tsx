@@ -44,13 +44,13 @@ export async function generateMetadata() {
 
   if (!session) {
     return {
-      title: "Your Account | Math Course Online",
+      title: "Your Account",
       robots: { index: false, follow: false },
     };
   }
 
   return {
-    title: `Your Account (${session.user.name}) | Math Course Online`,
+    title: `Your Account (${session.user.name})`,
     description: `Manage your account, email, and course settings for ${session.user.name}.`,
     robots: { index: true, follow: true },
   };

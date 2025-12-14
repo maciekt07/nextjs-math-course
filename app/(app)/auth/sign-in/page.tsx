@@ -13,7 +13,7 @@ import { AuthFooter } from "../_components/auth-footer";
 import { SignInForm } from "./sign-in-form";
 
 export const metadata = {
-  title: "Sign In | Math Course Online",
+  title: "Sign In",
   description:
     "Access your Math Course Online account to continue learning and manage your courses.",
   robots: {

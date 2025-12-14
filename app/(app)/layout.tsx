@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "@styles/globals.css";
 import NextTopLoader from "nextjs-toploader";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -6,8 +6,21 @@ import { Toaster } from "@/components/ui/sonner";
 import { inter } from "@/lib/fonts";
 
 export const metadata: Metadata = {
-  title: "Math Course",
+  title: {
+    template: "%s | Math Course Online",
+    default: "Math Course Online",
+  },
   description: "Learn math online",
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: {
+    color: "#4e65ff",
+  },
 };
 
 export default function RootLayout({
