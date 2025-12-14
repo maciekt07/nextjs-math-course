@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, Frown, Meh, Send, Smile, Star } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { LoadingSwap } from "@/components/ui/loading-swap";
@@ -26,9 +26,10 @@ export default function FeedbackWidget({
   type: Lesson["type"];
 }) {
   const [selectedReaction, setSelectedReaction] = useState<number | null>(null);
-  const [comment, setComment] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [comment, setComment] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const commentRef = useRef(comment);
 
   const toggleReaction = (value: number) => {
     setSelectedReaction((prev) => (prev === value ? null : value));
@@ -68,6 +69,22 @@ export default function FeedbackWidget({
     }
   };
 
+  useEffect(() => {
+    commentRef.current = comment;
+  }, [comment]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (commentRef.current.trim() !== "") {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, []);
+
   return (
     <div className="w-full max-w-sm mx-auto my-8 font-inter">
       <div className="flex flex-col items-center rounded-xl border p-4 bg-background">
@@ -94,7 +111,7 @@ export default function FeedbackWidget({
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Icon strokeWidth={2.5} className="w-4 h-4" />
+                <Icon strokeWidth={2.4} size={18} />
                 <span>{reaction.label}</span>
               </motion.button>
             );
