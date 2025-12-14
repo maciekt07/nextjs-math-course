@@ -8,6 +8,8 @@ export const metadata = {
   robots: "noindex",
 };
 
+// catch-all page as a workaround for route groups because not-found.tsx inside a route group doesn't trigger
+
 export default function NotFoundPage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-6 text-center">
