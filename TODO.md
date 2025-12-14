@@ -2,7 +2,7 @@
 
 ## Auth
 
-- [ ] Integrate OAuth login with GitHub and Google
+- [ ] Integrate OAuth login with Google
 - [ ] Implement forgot password and reset password functionality
 - [ ] Limit simultaneous logins per account
 
@@ -42,12 +42,14 @@
 - [x] Add settings dialog for course view
 - [x] Animate hero svg [video](https://www.youtube.com/watch?v=SrmTDrN1lkU)
 - [ ] Add ambient light effect for video [demo](https://codesandbox.io/p/sandbox/ambient-mode-vv63e9)
-- [ ] Track lesson completion and quiz progress per user in DB
 - [x] Add top loading bar
 - [x] Add TOC to markdown
 - [x] Add OpenDyslexic font for lessons
 - [x] Add next/previous lesson navigation
+- [x] Add heading anchor links on hover to markdown
+- [ ] Use responsive pagination for quiz [shadcn](https://ui.shadcn.com/docs/components/pagination)
 
 ## Backend
 
 - [x] Add in-memory rate limiting
+- [ ] Track lesson completion and quiz progress per user in DB

@@ -46,7 +46,7 @@ export function CourseLayoutWrapper({
         className="flex-1 overflow-y-auto"
         initial={{ paddingTop: 0 }}
         animate={{
-          paddingTop: open ? 0 : 20,
+          paddingTop: open ? 0 : 68,
         }}
         transition={{
           duration: 0.3,

@@ -18,30 +18,36 @@ export function DesmosGraph({ graphUrl, noEmbed = false }: DesmosGraphProps) {
   const forceDarkMode = !noEmbed && desmosForceDarkMode;
 
   return (
-    <div className="flex flex-col items-start gap-2">
-      <iframe
-        title={`Desmos Graph: ${graphId}`}
-        src={iframeUrl}
-        width="100%"
-        height="500"
-        className={cn(
-          "rounded-2xl transition-all duration-300",
-          !noEmbed && "border border-gray-300",
-          forceDarkMode &&
-            "dark:[filter:invert(1)_hue-rotate(180deg)_brightness(0.9)_contrast(1.1)]",
-        )}
-        loading="lazy"
-      />
-      <Button asChild className="mt-1 w-full" variant="outline">
-        <a
-          href={editUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="no-underline"
-        >
-          Edit Graph on Desmos <ExternalLink />
-        </a>
-      </Button>
+    <div
+      className={cn(
+        "w-full rounded-2xl border-2 border-border bg-background",
+        "flex flex-col overflow-hidden",
+      )}
+    >
+      <div className="relative">
+        <iframe
+          title={`Desmos Graph: ${graphId}`}
+          src={iframeUrl}
+          loading="lazy"
+          className={cn(
+            "block h-[500px] w-full transition-all duration-300",
+            forceDarkMode &&
+              "dark:[filter:invert(1)_hue-rotate(180deg)_brightness(0.9)_contrast(1.1)]",
+          )}
+        />
+      </div>
+      <div className="border-t-2 border-border p-3">
+        <Button asChild className="w-full" variant="outline">
+          <a
+            href={editUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="no-underline"
+          >
+            Edit Graph on Desmos <ExternalLink />
+          </a>
+        </Button>
+      </div>
     </div>
   );
 }

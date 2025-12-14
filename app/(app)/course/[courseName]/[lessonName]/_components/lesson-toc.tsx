@@ -7,37 +7,20 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import type { Heading } from "@/lib/markdown/extract-headings";
+import { scrollToHeader } from "@/lib/markdown/scroll-to-header";
 import { cn } from "@/lib/utils";
 import { useSidebarStore } from "@/stores/sidebar-store";
 
-export function LessonTOC({
-  headings,
-}: {
-  headings: { id: string; text: string; level: number }[];
-}) {
+export function LessonTOC({ headings }: { headings: Heading[] }) {
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const sidebarOpen = useSidebarStore((s) => s.open);
 
-  function scrollToHeader(id: string) {
-    const el = document.getElementById(id);
-    if (!el) return;
-
-    const container = document.querySelector("main");
-    if (!container) return;
-
-    const elRect = el.getBoundingClientRect();
-    const containerRect = container.getBoundingClientRect();
-
-    const offsetTop = elRect.top - containerRect.top + container.scrollTop;
-
-    const margin = 16 + (!sidebarOpen ? 64 : 0);
-
-    container.scrollTo({
-      top: offsetTop - margin,
+  function handleHeaderClick(id: string) {
+    scrollToHeader(id, {
+      sidebarOpen,
     });
-
-    history.replaceState(null, "", `#${id}`);
 
     //FIXME:
     setTimeout(() => {
@@ -45,17 +28,18 @@ export function LessonTOC({
     }, 10);
   }
 
-  // hash routing
-  // biome-ignore lint/correctness/useExhaustiveDependencies: scrollToHeader changes on every re-render
   useEffect(() => {
     function handleHash() {
-      const hash = window.location.hash.replace("#", "");
+      const hash = decodeURIComponent(location.hash.slice(1));
       if (!hash) return;
+      // ensures correct offset if user has closed sidebar to see content on mobile
       requestAnimationFrame(() => {
-        scrollToHeader(hash);
-        setActiveId(hash);
+        scrollToHeader(hash, {
+          sidebarOffset: 0,
+        });
       });
     }
+
     handleHash();
 
     window.addEventListener("hashchange", handleHash);
@@ -91,8 +75,8 @@ export function LessonTOC({
         }
       },
       {
-        // when element enters top 30% of viewport
-        rootMargin: "0px 0px -70% 0px",
+        // when element enters top 20% of viewport
+        rootMargin: "0px 0px -80% 0px",
         threshold: 0,
       },
     );
@@ -129,7 +113,7 @@ export function LessonTOC({
                     href={`#${h.id}`}
                     onClick={(e) => {
                       e.preventDefault();
-                      scrollToHeader(h.id);
+                      handleHeaderClick(h.id);
                     }}
                     className={cn(
                       "group flex items-start gap-2 text-[16px] text-muted-foreground transition-colors leading-tight hover:text-foreground",
@@ -158,7 +142,7 @@ export function LessonTOC({
               href={`#${h.id}`}
               onClick={(e) => {
                 e.preventDefault();
-                scrollToHeader(h.id);
+                handleHeaderClick(h.id);
               }}
               className={cn(
                 "group flex items-start gap-2 text-sm transition-colors leading-tight",

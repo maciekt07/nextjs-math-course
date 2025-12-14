@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { Components } from "react-markdown";
+import { Heading } from "@/components/markdown/heading";
 import { getText, stripMarkdown } from "@/components/markdown/utils";
 import { slug } from "@/lib/slugify";
 import type { Media } from "@/payload-types";
@@ -36,7 +37,7 @@ export function createMarkdownComponents(media?: Media[]): Components {
             loading="lazy"
             placeholder={blurhash ? "blur" : "empty"}
             blurDataURL={blurhash || undefined}
-            className="w-full rounded-2xl object-contain"
+            className="w-full rounded-2xl object-contain border-2 border-border"
           />
         </ImageZoom>
       );
@@ -62,14 +63,22 @@ export function createMarkdownComponents(media?: Media[]): Components {
       currentH2Text = text;
       const id = slug(text);
 
-      return <h2 id={id} {...props} />;
+      return (
+        <Heading as="h2" id={id}>
+          {props.children}
+        </Heading>
+      );
     },
     h3: ({ node, ...props }) => {
       const text = stripMarkdown(getText(props.children));
       const parent = currentH2Text || "section";
       const id = slug(`${parent}-${text}`);
 
-      return <h3 id={id} {...props} />;
+      return (
+        <Heading as="h3" id={id}>
+          {props.children}
+        </Heading>
+      );
     },
   };
 }
