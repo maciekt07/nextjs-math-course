@@ -19,6 +19,48 @@
   --math-foreground: #ffffffff;
 }
 
+article {
+  hr {
+    @apply border-border;
+  }
+
+  blockquote {
+    @apply border-l-4 border-border pl-4;
+  }
+
+  table {
+    @apply w-full border-collapse m-0;
+
+    thead {
+      tr {
+        @apply bg-card/50 border-b border-border;
+
+        th {
+          @apply px-4 py-3 text-left text-sm font-semibold;
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        @apply border-b border-border;
+
+        td {
+          @apply px-4 py-3 text-sm;
+        }
+
+        &:last-child {
+          @apply border-b-0;
+
+          td {
+            @apply first:rounded-bl-lg last:rounded-br-lg;
+          }
+        }
+      }
+    }
+  }
+}
+
 /* inline math */
 .large-math .katex {
   font-size: 1.4em;

@@ -80,5 +80,10 @@ export function createMarkdownComponents(media?: Media[]): Components {
         </Heading>
       );
     },
+    table: ({ node, ...props }) => (
+      <div className="w-full overflow-x-auto rounded-lg my-6 border-2 border-border relative">
+        <table {...props} />
+      </div>
+    ),
   };
 }
