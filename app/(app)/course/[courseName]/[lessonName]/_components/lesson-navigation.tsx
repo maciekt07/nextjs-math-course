@@ -1,8 +1,8 @@
 "use client";
 import {
+  Calculator,
   ChevronLeft,
   ChevronRight,
-  ClipboardList,
   FileText,
   Video,
 } from "lucide-react";
@@ -38,7 +38,7 @@ export function LessonNavigation({
       case "video":
         return Video;
       case "quiz":
-        return ClipboardList;
+        return Calculator;
       default:
         return FileText;
     }

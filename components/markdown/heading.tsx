@@ -1,3 +1,4 @@
+"use client";
 import { Link } from "lucide-react";
 import { scrollToHeader } from "@/lib/markdown/scroll-to-header";
 import { useSidebarStore } from "@/stores/sidebar-store";
@@ -9,8 +10,7 @@ type Heading = {
 };
 
 export function Heading({ as: Tag, id, children }: Heading) {
-  const { open: sidebarOpen } = useSidebarStore();
-
+  const sidebarOpen = useSidebarStore((state) => state.open);
   const iconSize = Tag === "h2" ? 20 : 16;
 
   return (
@@ -25,11 +25,7 @@ export function Heading({ as: Tag, id, children }: Heading) {
           e.preventDefault();
           scrollToHeader(id, { sidebarOpen });
         }}
-        className="
-          opacity-0 group-hover:opacity-100
-          transition-opacity
-          text-muted-foreground hover:text-foreground
-        "
+        className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-foreground"
       >
         <Link size={iconSize} />
       </a>

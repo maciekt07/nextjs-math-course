@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -14,6 +14,7 @@ import { useSidebarStore } from "@/stores/sidebar-store";
 
 export function LessonTOC({ headings }: { headings: Heading[] }) {
   const [activeId, setActiveId] = useState<string | null>(null);
+  const headingsRef = useRef(headings);
 
   const sidebarOpen = useSidebarStore((s) => s.open);
 
@@ -42,11 +43,15 @@ export function LessonTOC({ headings }: { headings: Heading[] }) {
 
     handleHash();
 
-    window.addEventListener("hashchange", handleHash);
+    window.addEventListener("hashchange", handleHash, { passive: true });
     return () => {
       window.removeEventListener("hashchange", handleHash);
     };
   }, []);
+
+  useEffect(() => {
+    headingsRef.current = headings;
+  }, [headings]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -81,13 +86,14 @@ export function LessonTOC({ headings }: { headings: Heading[] }) {
       },
     );
 
-    headings.forEach((h) => {
+    const currentHeadings = headingsRef.current;
+    currentHeadings.forEach((h) => {
       const el = document.getElementById(h.id);
       if (el) observer.observe(el);
     });
 
     return () => observer.disconnect();
-  }, [headings]);
+  }, []);
 
   if (headings.length <= 1) {
     return null;

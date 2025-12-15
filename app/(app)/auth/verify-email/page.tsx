@@ -28,7 +28,7 @@ export default async function VerifyEmailPage() {
               <Mail className="h-12 w-12 text-primary" />
             </div>
             <h1 className="text-2xl font-semibold tracking-tight">
-              Verify your email {session?.user.email}
+              Verify your email
             </h1>
             <p className="text-sm text-muted-foreground max-w-xs">
               We've sent a verification link to your email address. Please check

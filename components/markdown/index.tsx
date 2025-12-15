@@ -6,9 +6,8 @@ import remarkMath from "remark-math";
 import "katex/dist/katex.min.css";
 import rehypeUnwrapImages from "rehype-unwrap-images";
 import { createMarkdownComponents } from "@/components/markdown/components";
-import { cn } from "@/lib/utils";
+import { MarkdownWrapper } from "@/components/markdown/wrapper";
 import type { Media } from "@/payload-types";
-import { useSettingsStore } from "@/stores/settings-store";
 import { desmos } from "./desmos/desmos-plugin";
 
 interface MarkdownRendererProps {
@@ -17,16 +16,8 @@ interface MarkdownRendererProps {
 }
 
 export function MarkdownRenderer({ content, media }: MarkdownRendererProps) {
-  const { coloredMarkdown, largeMath } = useSettingsStore();
-
   return (
-    <div
-      className={cn(
-        "markdown-wrapper prose dark:prose-invert max-w-none break-words",
-        coloredMarkdown && "colored-markdown marker:text-primary",
-        largeMath && "large-math",
-      )}
-    >
+    <MarkdownWrapper>
       <ReactMarkdown
         // biome-ignore lint/correctness/noChildrenProp: cannot pass content as JSX children
         children={content}
@@ -34,6 +25,6 @@ export function MarkdownRenderer({ content, media }: MarkdownRendererProps) {
         remarkPlugins={[remarkGfm, remarkMath, remarkDirective, desmos]}
         rehypePlugins={[rehypeKatex, rehypeUnwrapImages]}
       />
-    </div>
+    </MarkdownWrapper>
   );
 }

@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import type { Course, Lesson } from "@/payload-types";
 import { useCourseStore } from "@/stores/course-store";
 import { useSidebarStore } from "@/stores/sidebar-store";
-import { CourseSidebar } from "./course-sidebar";
+import { CourseSidebar } from "./sidebar";
 
 export function CourseLayoutWrapper({
   course,
@@ -18,7 +18,8 @@ export function CourseLayoutWrapper({
   owned?: boolean;
   children: React.ReactNode;
 }) {
-  const { open, setOpen } = useSidebarStore();
+  const open = useSidebarStore((state) => state.open);
+  const setOpen = useSidebarStore((state) => state.setOpen);
   const initialize = useCourseStore((state) => state.initialize);
 
   useEffect(() => {
@@ -35,8 +36,7 @@ export function CourseLayoutWrapper({
           width: open ? 320 : 0,
         }}
         transition={{
-          duration: 0.3,
-          ease: "easeInOut",
+          duration: 0.2,
         }}
       />
 
@@ -49,8 +49,7 @@ export function CourseLayoutWrapper({
           paddingTop: open ? 0 : 68,
         }}
         transition={{
-          duration: 0.3,
-          ease: "easeInOut",
+          duration: 0.2,
         }}
       >
         {children}

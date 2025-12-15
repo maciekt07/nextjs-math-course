@@ -81,16 +81,18 @@ export default function FeedbackWidget({
       }
     };
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
+    window.addEventListener("beforeunload", handleBeforeUnload, {
+      passive: true,
+    });
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, []);
 
   return (
     <div className="w-full max-w-sm mx-auto my-8 font-inter">
       <div className="flex flex-col items-center rounded-xl border p-4 bg-background">
-        <h3 className="text-md font-medium text-foreground mb-3">
+        <p className="text-md font-medium text-foreground mb-3">
           How was this {type === "quiz" || type === "video" ? type : "lesson"}?
-        </h3>
+        </p>
 
         {/* reaction Buttons */}
         <div className="flex gap-2 flex-wrap justify-center">

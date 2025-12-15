@@ -30,6 +30,7 @@ article {
 
   table {
     @apply w-full border-collapse m-0;
+    contain: layout;
 
     thead {
       tr {
@@ -78,6 +79,7 @@ article {
   overflow-x: auto;
   white-space: nowrap;
   padding: 0.5em 0;
+  contain: layout style paint;
 }
 
 .katex-display > .katex {
@@ -86,10 +88,6 @@ article {
 }
 
 /* colored markdown KaTeX */
-
-.colored-markdown .katex {
-  transition: color 0.2s ease;
-}
 
 .katex .mathdefault,
 .katex .mord {

@@ -25,7 +25,7 @@ const nextConfig: NextConfig = {
   // typedRoutes: true,
 
   experimental: {
-    reactCompiler: false,
+    reactCompiler: true,
   },
 };
 
