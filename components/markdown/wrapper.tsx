@@ -1,3 +1,5 @@
+"use client";
+
 import type React from "react";
 import { cn } from "@/lib/utils";
 import { useSettingsStore } from "@/stores/settings-store";
@@ -13,6 +15,7 @@ export function MarkdownWrapper({ children }: { children: React.ReactNode }) {
         coloredMarkdown && "colored-markdown marker:text-primary",
         largeMath && "large-math",
       )}
+      style={{ contentVisibility: "auto", containIntrinsicSize: "1000px" }}
     >
       {children}
     </div>

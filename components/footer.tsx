@@ -26,7 +26,7 @@ export default async function Footer() {
 
           <div className="md:col-span-8 grid grid-cols-3 gap-6">
             <div className="flex flex-col gap-3">
-              <h3 className="font-medium text-sm text-foreground">Explore</h3>
+              <p className="font-medium text-sm text-foreground">Explore</p>
               <nav className="flex flex-col gap-2 text-sm">
                 <a
                   href="/#courses"
@@ -44,7 +44,7 @@ export default async function Footer() {
             </div>
 
             <div className="flex flex-col gap-3">
-              <h3 className="font-medium text-sm text-foreground">Account</h3>
+              <p className="font-medium text-sm text-foreground">Account</p>
               <nav className="flex flex-col gap-2 text-sm">
                 {session?.user ? (
                   <>
@@ -81,7 +81,7 @@ export default async function Footer() {
             </div>
 
             <div className="flex flex-col gap-3">
-              <h3 className="font-medium text-sm text-foreground">Connect</h3>
+              <p className="font-medium text-sm text-foreground">Connect</p>
               <Link
                 href="https://github.com/maciekt07/nextjs-math-course"
                 target="_blank"

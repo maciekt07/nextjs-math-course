@@ -54,7 +54,7 @@ export const SidebarAccount = memo(
             </Link>
           </div>
         ) : (
-          <Button asChild className="w-full" size="sm">
+          <Button asChild className="w-full h-9 my-2" size="lg">
             <Link
               href={{
                 pathname: "/auth/sign-in",

@@ -1,0 +1,80 @@
+import katex from "katex";
+import { memo, useEffect, useRef } from "react";
+
+interface KatexRendererProps {
+  content: string;
+  block?: boolean;
+}
+
+// html string + cloned dom node
+const katexCache = new Map<string, string>();
+
+export const KatexRenderer = memo(
+  ({ content, block = false }: KatexRendererProps) => {
+    const divRef = useRef<HTMLDivElement>(null);
+    const spanRef = useRef<HTMLSpanElement>(null);
+
+    useEffect(() => {
+      const el = block ? divRef.current : spanRef.current;
+      if (!el) return;
+
+      if (el.dataset.value === content) return;
+
+      const renderFormula = () => {
+        try {
+          if (katexCache.has(content)) {
+            el.innerHTML = katexCache.get(content)!;
+          } else {
+            katex.render(content, el, {
+              displayMode: block,
+              throwOnError: false,
+              strict: false,
+            });
+            katexCache.set(content, el.innerHTML);
+          }
+        } catch {
+          el.textContent = content;
+        }
+
+        el.dataset.value = content;
+      };
+
+      // lazy render only when visible
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (!entries[0].isIntersecting) return;
+
+          if ("requestIdleCallback" in window) {
+            const id = window.requestIdleCallback(renderFormula);
+            return () => window.cancelIdleCallback(id);
+          } else {
+            const id = setTimeout(renderFormula, 0);
+            return () => clearTimeout(id);
+          }
+        },
+        { rootMargin: "500px" },
+      );
+
+      observer.observe(el);
+      return () => observer.disconnect();
+    }, [content, block]);
+
+    return block ? (
+      <div
+        ref={divRef}
+        style={{
+          minHeight: "5em", // prevent CLS for block
+          width: "100%",
+        }}
+      />
+    ) : (
+      <span
+        ref={spanRef}
+        style={{ minHeight: "1em", display: "inline-block" }}
+      />
+    );
+  },
+  (prev, next) => prev.content === next.content && prev.block === next.block,
+);
+
+KatexRenderer.displayName = "KatexRenderer";

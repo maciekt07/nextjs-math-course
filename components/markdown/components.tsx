@@ -1,16 +1,21 @@
 import Image from "next/image";
 import type { Components } from "react-markdown";
 import { Heading } from "@/components/markdown/heading";
+import type { MathElementProps } from "@/components/markdown/types";
 import { getText, stripMarkdown } from "@/components/markdown/utils";
 import { slug } from "@/lib/slugify";
 import type { Media } from "@/payload-types";
 import { ImageZoom } from "../ui/shadcn-io/image-zoom";
 import { DesmosGraph } from "./desmos/desmos-graph";
 import type { DesmosDivProps } from "./desmos/desmos-plugin";
+import { KatexRenderer } from "./katex/katex-renderer";
 
 let currentH2Text = "";
 
-export function createMarkdownComponents(media?: Media[]): Components {
+export function createMarkdownComponents(
+  media?: Media[],
+  optimizeMath?: boolean,
+): Components {
   return {
     a: ({ node, ...props }) => (
       <a
@@ -42,20 +47,44 @@ export function createMarkdownComponents(media?: Media[]): Components {
         </ImageZoom>
       );
     },
-    // handle desmos graphs
-    div: ({ node, className, ...props }) => {
-      const desmosProps = props as DesmosDivProps;
 
+    div({ className, children, ...props }: MathElementProps & DesmosDivProps) {
+      // handle Desmos graphs
       if (className?.includes("desmos-graph")) {
-        const graphUrl = desmosProps["data-graph-url"];
-        const noEmbed = desmosProps["data-no-embed"] === "true";
-
+        const graphUrl = props["data-graph-url"];
+        const noEmbed = props["data-no-embed"] === "true";
         if (!graphUrl) return null;
-
         return <DesmosGraph graphUrl={graphUrl} noEmbed={noEmbed} />;
       }
-      return <div className={className} {...props} />;
+
+      // KaTeX block math
+      if (
+        optimizeMath &&
+        className === "math-display" &&
+        typeof props["data-content"] === "string"
+      ) {
+        return <KatexRenderer content={props["data-content"]} block />;
+      }
+
+      // default
+      return <div className={className}>{children}</div>;
     },
+    // KaTeX inline math
+    ...(optimizeMath
+      ? {
+          span: ({ className, children, ...props }: MathElementProps) => {
+            if (
+              className === "math-inline" &&
+              typeof props["data-content"] === "string"
+            ) {
+              return (
+                <KatexRenderer content={props["data-content"]} block={false} />
+              );
+            }
+            return <span className={className}>{children}</span>;
+          },
+        }
+      : {}),
     // generate stable IDs for h2/h3 for TOC
     // h3 IDs are namespaced under the last h2 to avoid collisions
     h2: ({ node, ...props }) => {

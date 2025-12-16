@@ -7,6 +7,7 @@ import {
   PanelLeftClose,
   Settings,
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -21,8 +22,17 @@ import { cn } from "@/lib/utils";
 import type { Course, Lesson, Media } from "@/payload-types";
 import { useSidebarStore } from "@/stores/sidebar-store";
 import { LessonItem } from "./lesson-item";
-import { SettingsDialogContent } from "./settings-dialog-content";
 import { SidebarAccount } from "./sidebar-account";
+
+const SettingsDialogContent = dynamic(
+  () =>
+    import("./settings-dialog-content").then(
+      (mod) => mod.SettingsDialogContent,
+    ),
+  {
+    ssr: false,
+  },
+);
 
 export function CourseSidebar({
   course,
@@ -47,19 +57,13 @@ export function CourseSidebar({
   const handleLessonClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>, lessonPath: string) => {
       e.preventDefault();
-
       setOptimisticPath(lessonPath);
-
-      if (window.innerWidth < 768) {
-        setOpen(false);
-      }
-
       // navigate with transition for smoother experience
       startTransition(() => {
         router.push(lessonPath);
       });
     },
-    [setOptimisticPath, setOpen, router],
+    [setOptimisticPath, router],
   );
 
   const handleToggle = () => {
@@ -70,8 +74,11 @@ export function CourseSidebar({
     const lessonRegex = /^\/course\/[^/]+\/[^/]+$/;
     if (lessonRegex.test(pathname)) {
       setOptimisticPath(pathname);
+      if (window.innerWidth < 768) {
+        setOpen(false);
+      }
     }
-  }, [pathname, setOptimisticPath]);
+  }, [pathname, setOptimisticPath, setOpen]);
 
   return (
     <>
@@ -195,6 +202,7 @@ export function CourseSidebar({
                 fill
                 className="object-cover"
                 priority
+                fetchPriority="high"
                 placeholder={
                   (course.media as Media).blurhash ? "blur" : "empty"
                 }

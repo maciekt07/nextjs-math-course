@@ -23,7 +23,7 @@ import type { Lesson } from "@/payload-types";
 interface QuizLessonProps {
   lesson: Lesson;
 }
-
+//FIXME: CLS
 export function QuizLesson({ lesson }: QuizLessonProps) {
   const [activeQuestionIdx, setActiveQuestionIdx] = useState<number>(0);
   const [submittedAnswers, setSubmittedAnswers] = useState<

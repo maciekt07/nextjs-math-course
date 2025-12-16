@@ -154,6 +154,7 @@ You can include math expressions in your lessons using standard Markdown + LaTeX
 
 ```markdown
 Inline math: $E = mc^2$
+Half of a cake is $ \frac{1}{2} $ of the cake.
 
 Block math:
 
@@ -192,6 +193,14 @@ This opens a visual database browser at [https://local.drizzle.studio](https://l
 ```bash
 docker compose down
 ```
+
+## Performance
+
+![lighthouse](screenshots/lighthouse.png)
+
+### Math rendering
+
+Math for text lessons is lazily rendered on the client as it scrolls into view which prevents blocking the main thread and FPS drops on long pages with lots of formulas
 
 ## Credits
 
