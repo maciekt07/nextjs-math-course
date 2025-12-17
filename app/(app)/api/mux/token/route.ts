@@ -24,8 +24,6 @@ const limiter = rateLimit({ max: 6, windowMs: 60_000 });
  * returns a Mux playback token:
  * - free lessons: long-lived token (MUX_PUBLIC_EXPIRATION)
  * - paid lessons: short-lived token after verifying user (MUX_SIGNED_URL_EXPIRATION)
- *
- * TODO: implement public (unsigned) playback for free lessons if possible
  */
 export async function POST(request: NextRequest) {
   try {

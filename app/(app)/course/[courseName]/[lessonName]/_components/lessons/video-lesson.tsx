@@ -236,7 +236,11 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
             : undefined
         }
         tokens={shouldUseSigned ? { playback: token } : undefined}
-        poster={playback.posterUrl || undefined}
+        poster={
+          playback.posterUrl
+            ? `/api/mux/poster?url=${encodeURIComponent(playback.posterUrl)}`
+            : undefined
+        }
         title=""
         videoTitle={muxVideo.title || lesson.title}
         accentColor="#4E65FF"
