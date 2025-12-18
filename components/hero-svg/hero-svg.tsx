@@ -1,18 +1,14 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import type { SVGProps } from "react";
+import CharacterLaptop from "./character-laptop";
 import Floor from "./floor";
-
-const GradCapBooks = dynamic(() => import("./grad-cap-books"), { ssr: false });
-const GraduationCap = dynamic(() => import("./graduation-cap"), { ssr: false });
-const LaptopBooks = dynamic(() => import("./laptop-books"), { ssr: false });
-const Pen = dynamic(() => import("./pen"), { ssr: false });
-const Pencil = dynamic(() => import("./pencil"), { ssr: false });
-const SpeechBubble = dynamic(() => import("./speech-bubble"), { ssr: false });
-const CharacterLaptop = dynamic(() => import("./character-laptop"), {
-  ssr: false,
-});
+import GradCapBooks from "./grad-cap-books";
+import GraduationCap from "./graduation-cap";
+import LaptopBooks from "./laptop-books";
+import Pen from "./pen";
+import Pencil from "./pencil";
+import SpeechBubble from "./speech-bubble";
 
 const HeroSvgComponent = (props: SVGProps<SVGSVGElement>) => (
   <svg

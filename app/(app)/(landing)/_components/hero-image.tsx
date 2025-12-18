@@ -1,5 +1,9 @@
-import HeroSvgComponent from "@/components/hero-svg/hero-svg";
+import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
+
+const HeroSvgComponent = dynamic(
+  () => import("@/components/hero-svg/hero-svg"),
+);
 
 interface HeroImageProps {
   className?: string;
