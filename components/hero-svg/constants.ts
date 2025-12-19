@@ -1,22 +1,4 @@
-export type HeroAnimationKey =
-  | "gradCapBooks"
-  | "pen"
-  | "laptopBooks"
-  | "pencil"
-  | "laptop"
-  | "videoBar"
-  | "characterDetails"
-  | "characterGlasses"
-  | "characterEyebrows"
-  | "characterRightEye"
-  | "speechBubble"
-  | "graduationCap";
-
-export type HeroAnimationConfig = {
-  [key in HeroAnimationKey]: { delay: number };
-};
-
-export const heroAnimation: HeroAnimationConfig = {
+export const heroAnimation = {
   gradCapBooks: { delay: 0 },
   pen: { delay: 0.2 },
   laptopBooks: { delay: 0.35 },
@@ -29,4 +11,4 @@ export const heroAnimation: HeroAnimationConfig = {
   characterRightEye: { delay: 1.5 },
   speechBubble: { delay: 1.7 },
   graduationCap: { delay: 2 },
-};
+} as const satisfies Record<string, { delay: number }>;
