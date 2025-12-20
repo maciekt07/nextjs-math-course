@@ -30,20 +30,13 @@ A modern full-stack Next.js 15 platform with CMS, auth, and Stripe integration -
 ## Features
 
 - **Full Authentication with BetterAuth** - secure login, registration, and email verification powered by **Resend**.
-- **Admin CMS Dashboard** - manage courses, lessons, and media directly through an integrated **Payload CMS** interface.
+- **Admin CMS Dashboard** - manage courses, lessons, and media directly through an integrated headless **Payload CMS** interface.
 - **Stripe Payments** - sell courses with one-time payments using Stripe Checkout.
-- **Hybrid Lesson Delivery (SSR + SSG)** - free lessons are pre-rendered for speed, while paid lessons use server-side rendering for secure, on-demand access.
-- **Protected media** – paid lesson images restricted to enrolled users, with optional AWS S3 / Cloudflare R2 storage
-- **Blurred Image Placeholders** – images load fast with smooth, auto-generated blur previews.
-- **Mux Video Integration** – video uploads and streaming through CMS, with signed URLs ensuring only enrolled users can access paid video lessons.
+- **Hybrid Lesson Delivery (SSR + SSG)** - free lessons are pre-rendered for speed and SEO, while paid lessons use server-side rendering for secure, on-demand access.
+  **Caching & Revalidation** – lesson and enrollment data are cached for performance and automatically refreshed via Payload CMS hooks or Stripe webhook when content or access changes.
+- **Protected media** – paid lesson images restricted to enrolled users, with auto-generated blur placeholders and optional AWS S3 / Cloudflare R2 storage
+- **Mux Video Integration** – video uploads through CMS and streaming, with signed URLs ensuring only enrolled users can access paid video lessons.
 - **LaTeX and Interactive Desmos Graphs** – Lessons feature interactive graphs and clean LaTeX formatting, with settings like larger math font or colored symbols
-
-## Requirements
-
-- **Node.js** (v18 or higher)
-- **npm** package manager
-- **Docker Desktop**
-- **Git**
 
 ## Installation Steps
 
@@ -73,11 +66,12 @@ Both PostgreSQL (for main app data) and MongoDB (for Payload CMS) run via Docker
 docker compose up -d
 ```
 
-To verify the database is running:
-
-```bash
-docker compose ps
-```
+> [!TIP]
+> View Database with Drizzle Studio
+>
+> ```bash
+> npm run db:studio
+> ```
 
 ### 5. Apply Database Migrations
 
@@ -141,12 +135,13 @@ You can add interactive [Desmos](https://www.desmos.com/calculator) graphs direc
   <img alt="Desmos Graph" src="screenshots/desmos-graph-dark.png">
 </picture>
 
-By default, the embedded version displays only the graph.
-If you set `noEmbed=true`, it will open the full Desmos calculator with all its tools and controls.
-
-```markdown
-::desmos{url="https://www.desmos.com/calculator/your-graph-id" noEmbed=true}
-```
+> [!NOTE]
+> By default, the embedded version displays only the graph.
+> If you set `noEmbed=true`, it will open the full Desmos calculator with all its tools and controls.
+>
+> ```markdown
+> ::desmos{url="https://www.desmos.com/calculator/your-graph-id" noEmbed=true}
+> ```
 
 ### Using LaTeX in Markdown
 
@@ -154,7 +149,6 @@ You can include math expressions in your lessons using standard Markdown + LaTeX
 
 ```markdown
 Inline math: $E = mc^2$
-Half of a cake is $ \frac{1}{2} $ of the cake.
 
 Block math:
 
@@ -172,35 +166,13 @@ For more details, see the [Markdown + LaTeX documentation](https://ashki23.githu
 3. Select **course → equals → your course**.
 4. Use drag-and-drop to reorder the filtered lessons.
 
-## Database Management
-
-### Access PostgreSQL CLI
-
-```bash
-docker compose exec db psql -U postgres -d math_course
-```
-
-### View Database with Drizzle Studio
-
-```bash
-npm run db:studio
-```
-
-This opens a visual database browser at [https://local.drizzle.studio](https://local.drizzle.studio)
-
-### Stop the Database
-
-```bash
-docker compose down
-```
-
 ## Performance
 
 ![lighthouse](screenshots/lighthouse.png)
 
 ### Math rendering
 
-Math for text lessons is lazily rendered on the client as it scrolls into view which prevents blocking the main thread and FPS drops on long pages with lots of formulas
+In paid lessons, math formulas are rendered lazily on the client as it scrolls into view, preventing main-thread blocking and avoiding FPS drops on long pages with many formulas. Free lessons are fully SSGed, which requires no special optimization and also benefits SEO.
 
 ## Credits
 

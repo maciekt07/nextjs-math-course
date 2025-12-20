@@ -69,7 +69,7 @@ export default async function AccountPage() {
     <div className="max-w-xl mx-auto mt-16 px-6 space-y-8">
       <header className="space-y-2 text-center">
         <h1 className="text-4xl font-bold">Your Account</h1>
-        <p className="text-gray-500 text-lg dark:text-gray-400">
+        <p className="text-lg text-muted-foreground">
           Manage your personal information and settings
         </p>
       </header>
@@ -82,9 +82,7 @@ export default async function AccountPage() {
               <Icon className={text} size={28} />
             </div>
             <div className="flex flex-col">
-              <span className="text-sm text-gray-400 dark:text-gray-500">
-                {label}
-              </span>
+              <span className="text-sm text-muted-foreground">{label}</span>
               <span className="text-lg font-medium">
                 {getValue(session.user)}
               </span>

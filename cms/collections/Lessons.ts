@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { createSlugField } from "@/cms/fields/createSlugField";
+import { revalidateLesson } from "@/cms/hooks/revalidateLesson";
 
 export const Lessons: CollectionConfig = {
   slug: "lessons",
@@ -17,6 +18,7 @@ export const Lessons: CollectionConfig = {
         return data;
       },
     ],
+    afterChange: [revalidateLesson],
   },
   fields: [
     {

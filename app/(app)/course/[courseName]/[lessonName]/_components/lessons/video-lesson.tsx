@@ -11,6 +11,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { MarkdownRenderer } from "@/components/markdown";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -85,7 +86,7 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
         album: "Course Video",
         artwork: [
           {
-            src: muxVideo.playbackOptions?.[0]?.posterUrl || "",
+            src: `/api/mux/poster?url=${encodeURIComponent(muxVideo.playbackOptions?.[0]?.posterUrl || "")}`,
             sizes: "512x512",
             type: "image/png",
           },
@@ -135,11 +136,18 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
     if (player && "currentTime" in player) {
       player.currentTime = startTime;
       player.play();
-      player.scrollIntoView({
-        //FIXME: chapter scroll to top of area
-        behavior: "smooth",
-        block: "start",
-      });
+
+      const container = document.getElementById("course-scroll-area");
+      if (container) {
+        // const playerRect = player.getBoundingClientRect();
+        // const containerRect = container.getBoundingClientRect();
+        // const scrollTop =
+        //   container.scrollTop + (playerRect.top - containerRect.top);
+
+        // const offset = 48;
+        // scrollTop - offset
+        container.scrollTo({ top: 0, behavior: "smooth" });
+      }
     }
   };
 
@@ -160,7 +168,7 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
       <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-muted dark:bg-card/80 flex items-center justify-center">
         {playback?.posterUrl && (
           <Image
-            src={playback.posterUrl}
+            src={`/api/mux/poster?url=${encodeURIComponent(playback.posterUrl)}`}
             alt={lesson.title}
             fill
             className="object-cover blur-lg scale-110 opacity-40"
@@ -242,6 +250,7 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
             : undefined
         }
         title=""
+        thumbnailTime={2}
         videoTitle={muxVideo.title || lesson.title}
         accentColor="#4E65FF"
         proudlyDisplayMuxBadge
@@ -250,14 +259,10 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
           video_id: muxVideo.id,
           lesson_id: lesson.id,
         }}
+        onError={(e) => console.log(e)}
         streamType="on-demand"
         autoPlay={false}
-        style={{
-          width: "100%",
-          aspectRatio: 16 / 9,
-          borderRadius: "1rem",
-          overflow: "hidden",
-        }}
+        className="rounded-xl w-full overflow-hidden bg-background aspect-video"
       />
     );
   };
@@ -277,7 +282,9 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
           {lesson.videoDescription ? (
             <MarkdownRenderer
               content={lesson.videoDescription}
-              optimizeMath={!lesson.free}
+              optimizeMath={
+                !lesson.free || process.env.NODE_ENV === "development"
+              }
             />
           ) : (
             <p className="italic text-muted-foreground">No Description</p>
@@ -290,21 +297,25 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
                   <List className="h-5 w-5" />
                   Chapters
                 </h3>
-                <ul className="space-y-2">
+                <ul className=" space-y-2 sm:space-y-1">
                   {lesson.chapters.map((chapter, index) => (
                     <li
                       key={chapter.id || index}
-                      className="flex items-center gap-3"
+                      className="flex items-center gap-2"
                     >
-                      <button
-                        type="button"
+                      <Button
+                        variant="link"
+                        size="sm"
                         onClick={() => handleTimestampClick(chapter.startTime)}
-                        className="text-primary font-medium shrink-0 hover:underline cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:no-underline"
+                        className="text-primary text-md p-0 shrink-0 hover:underline disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed disabled:no-underline"
                         disabled={!hasVideo || isRateLimited}
                       >
                         {formatDuration(chapter.startTime)}
-                      </button>
-                      <span className="truncate">{chapter.title}</span>
+                      </Button>
+                      <span>&ndash;</span>
+                      <span className="truncate font-semibold">
+                        {chapter.title}
+                      </span>
                     </li>
                   ))}
                 </ul>

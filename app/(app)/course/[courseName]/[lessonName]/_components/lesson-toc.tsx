@@ -112,7 +112,7 @@ export function LessonTOC({ headings }: { headings: Heading[] }) {
               Table of contents
             </AccordionTrigger>
             <AccordionContent>
-              <div className="space-y-3 mt-3">
+              <div className="mt-2">
                 {headings.map((h) => (
                   <a
                     key={h.id}
@@ -122,7 +122,7 @@ export function LessonTOC({ headings }: { headings: Heading[] }) {
                       handleHeaderClick(h.id);
                     }}
                     className={cn(
-                      "group flex items-start gap-2 text-[16px] text-muted-foreground transition-colors leading-tight hover:text-foreground",
+                      "group flex items-start gap-2 py-3 sm:py-2  text-[16px] text-muted-foreground transition-colors leading-tight hover:text-foreground",
                       h.level === 3 && "pl-4",
                     )}
                   >

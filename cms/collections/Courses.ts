@@ -1,5 +1,6 @@
 import type { Access, CollectionConfig } from "payload";
 import { createSlugField } from "@/cms/fields/createSlugField";
+import { revalidateCourse } from "@/cms/hooks/revalidateCourse";
 
 const isAdmin: Access = ({ req: { user } }) => user?.role === "admin";
 
@@ -12,6 +13,9 @@ export const Courses: CollectionConfig = {
     create: isAdmin,
     update: isAdmin,
     delete: isAdmin,
+  },
+  hooks: {
+    afterChange: [revalidateCourse],
   },
   admin: {
     useAsTitle: "title",

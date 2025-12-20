@@ -15,9 +15,9 @@ export function TextLesson({ lesson }: TextLessonProps) {
       <MarkdownRenderer
         content={lesson.content || "No Content"}
         media={lesson.uploadImage as Media[]}
-        // optimize only paid lessons for better SEO
-        // optimizeMath={!lesson.free}
-        optimizeMath
+        // don't optimize free lessons for better SEO
+        // there are no performance issues since they are SSGed
+        optimizeMath={!lesson.free || process.env.NODE_ENV === "development"}
       />
     </div>
   );

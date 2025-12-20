@@ -24,7 +24,6 @@ const nextConfig: NextConfig = {
   experimental: {
     reactCompiler: true,
     serverMinification: true,
-    inlineCss: true,
   },
 
   compiler: {

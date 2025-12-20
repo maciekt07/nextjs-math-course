@@ -1,4 +1,5 @@
 import { and, eq } from "drizzle-orm";
+import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { db } from "@/drizzle/db";
@@ -44,13 +45,14 @@ export async function POST(req: Request) {
     const userId = session.metadata?.userId;
 
     try {
+      let updated = false;
+
       const existing = await db
         .select()
         .from(enrollment)
         .where(eq(enrollment.stripePaymentIntentId, paymentIntentId));
 
-      if (existing && existing.length > 0) {
-        // already exists update status
+      if (existing.length > 0) {
         await db
           .update(enrollment)
           .set({
@@ -58,6 +60,8 @@ export async function POST(req: Request) {
             stripeCustomerId: session.customer as string,
           })
           .where(eq(enrollment.stripePaymentIntentId, paymentIntentId));
+
+        updated = true;
       } else if (userId && courseId) {
         // fallback by userId + courseId
         const fallback = await db
@@ -70,7 +74,7 @@ export async function POST(req: Request) {
             ),
           );
 
-        if (fallback && fallback.length > 0) {
+        if (fallback.length > 0) {
           await db
             .update(enrollment)
             .set({
@@ -83,15 +87,17 @@ export async function POST(req: Request) {
                 eq(enrollment.courseId, courseId),
               ),
             );
-        } else {
-          console.warn("No enrollment found for webhook fallback", {
-            userId,
-            courseId,
-          });
+
+          updated = true;
         }
       }
-    } catch (e) {
-      console.error("Failed to update enrollment after webhook:", e);
+
+      if (updated && userId && courseId) {
+        revalidateTag(`enrollment:${userId}:${courseId}`);
+        revalidateTag(`enrollments:${userId}`);
+      }
+    } catch (error) {
+      console.error("Failed to update enrollment after webhook:", error);
     }
   }
 

@@ -1,5 +1,6 @@
 import { and, count, eq } from "drizzle-orm";
 import { BookOpen } from "lucide-react";
+import { unstable_cache } from "next/cache";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { CourseCard } from "@/components/course-card";
@@ -15,63 +16,76 @@ import { HeroBadge } from "./_components/hero-badge";
 import { HeroImage } from "./_components/hero-image";
 import { WhyChoose } from "./_components/why-choose";
 
-const getCourses = async () => {
-  const payload = await getPayloadClient();
-  const { docs } = await payload.find({
-    collection: "courses",
-    limit: 10,
-  });
+const getCourses = unstable_cache(
+  async () => {
+    const payload = await getPayloadClient();
+    const { docs } = await payload.find({
+      collection: "courses",
+      limit: 10,
+    });
 
-  const coursesWithLessons = await Promise.all(
-    (docs || []).map(async (course) => {
-      const { totalDocs: lessonCount } = await payload.find({
-        collection: "lessons",
-        where: {
-          course: { equals: course.id },
-        },
-        limit: 0,
-      });
-      return { ...course, lessonCount };
-    }),
-  );
-
-  return coursesWithLessons;
-};
-
-const getUserCount = async () => {
-  const result = await db.select({ count: count() }).from(user);
-  return result[0]?.count || 0;
-};
-
-const getOwnedCourseIds = async (userId: string) => {
-  const rows = await db
-    .select()
-    .from(enrollment)
-    .where(
-      and(eq(enrollment.userId, userId), eq(enrollment.status, "completed")),
+    const coursesWithLessons = await Promise.all(
+      (docs || []).map(async (course) => {
+        const { totalDocs: lessonCount } = await payload.find({
+          collection: "lessons",
+          where: {
+            course: { equals: course.id },
+          },
+          limit: 0,
+        });
+        return { ...course, lessonCount };
+      }),
     );
-  return new Set(rows.map((r: { courseId: string }) => r.courseId));
-};
+
+    return coursesWithLessons;
+  },
+  ["courses-list"],
+  { revalidate: 3600, tags: ["courses-list"] },
+);
+
+const getUserCount = unstable_cache(
+  async () => {
+    const result = await db.select({ count: count() }).from(user);
+    return result[0]?.count || 0;
+  },
+  ["user-count"],
+  { revalidate: 3600 },
+);
+
+const getOwnedCourseIds = (userId: string) =>
+  unstable_cache(
+    async () => {
+      const rows = await db
+        .select({ courseId: enrollment.courseId })
+        .from(enrollment)
+        .where(
+          and(
+            eq(enrollment.userId, userId),
+            eq(enrollment.status, "completed"),
+          ),
+        );
+      return rows.map((r) => r.courseId);
+    },
+    ["enrollments", userId],
+    { revalidate: 300, tags: [`enrollments:${userId}`] },
+  );
 
 export default async function Home() {
   const session = await auth.api.getSession({ headers: await headers() });
   const courses = await getCourses();
   const userCount = getUserCount();
 
-  let ownedCourseIds = new Set<string>();
-  if (session) {
-    ownedCourseIds = await getOwnedCourseIds(session.user.id);
+  let ownedCourseIds: string[] = [];
+
+  if (session?.user?.id) {
+    const getOwnedCoursesFunc = getOwnedCourseIds(session.user.id);
+    ownedCourseIds = await getOwnedCoursesFunc();
   }
 
   const formattedUserCount = Math.max(
     10,
     Math.floor((await userCount) / 10) * 10,
   );
-
-  // const totalLessons = courses.reduce(
-  //   (sum, c) => sum + (c.lessonCount || 0),
-  //   0,
-  // );
 
   return (
     <div className="w-full flex flex-col">
@@ -167,7 +181,7 @@ export default async function Home() {
                 <CourseCard
                   key={course.id}
                   course={course}
-                  owned={ownedCourseIds.has(course.id)}
+                  owned={ownedCourseIds.includes(course.id)}
                 />
               ))}
             </div>

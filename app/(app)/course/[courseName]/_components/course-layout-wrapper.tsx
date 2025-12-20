@@ -43,6 +43,7 @@ export function CourseLayoutWrapper({
       <CourseSidebar course={course} lessons={lessons} owned={owned} />
 
       <motion.main
+        id="course-scroll-area"
         className="flex-1 overflow-y-auto"
         initial={{ paddingTop: 0 }}
         animate={{

@@ -1,7 +1,7 @@
 "use client";
 
 import { LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import { type ComponentProps, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";

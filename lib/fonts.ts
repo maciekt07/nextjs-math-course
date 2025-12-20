@@ -4,7 +4,6 @@ import localFont from "next/font/local";
 export const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
-  display: "swap",
 });
 
 export const openDyslexic = localFont({

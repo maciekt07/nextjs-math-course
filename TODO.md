@@ -30,11 +30,12 @@
 - [x] Add optional Cloudflare R2 support for media uploads
 - [x] Generate blur placeholder for media
   - [ ] Make it optional with automatic generation and cleanup
-- [ ] Improve caching and add on-demand revalidation
+- [x] Improve caching and add on-demand revalidation
 - [x] Add video chapters [docs](https://www.mux.com/docs/guides/player-advanced-usage#chapters-example)
 - [x] Add lesson feedback form
 - [ ] Add course-release email notifications
 - [ ] Add custom Markdown blocks (Note, Deep Dive)
+- [ ] Add drafts [docs](https://payloadcms.com/docs/versions/drafts)
 
 ## UI / UX
 

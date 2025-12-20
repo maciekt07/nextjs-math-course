@@ -3,17 +3,25 @@ import path from "node:path";
 import type { CollectionBeforeOperationHook } from "payload";
 import CustomAPIError from "../CustomAPIError";
 
-export const renameFile: CollectionBeforeOperationHook = async (req) => {
-  try {
-    if (req.operation !== "create") return;
+export const renameFile: CollectionBeforeOperationHook = async ({
+  operation,
+  req: { payload, file },
+}) => {
+  if (operation !== "create") return;
 
-    const file = req.req?.file;
-    if (!file) return;
+  try {
+    if (!file) {
+      payload.logger.warn("No file found to rename, skipping.");
+      return;
+    }
 
     const ext = path.extname(file.name);
+    const oldName = file.name;
     file.name = `${randomUUID()}${ext}`;
+
+    payload.logger.info(`File renamed from "${oldName}" to "${file.name}"`);
   } catch (error) {
-    console.error(error);
+    payload.logger.error("Error renaming file:", error);
     throw new CustomAPIError("Failed to rename file");
   }
 };

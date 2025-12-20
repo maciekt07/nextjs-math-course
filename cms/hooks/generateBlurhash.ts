@@ -5,20 +5,22 @@ import CustomAPIError from "../CustomAPIError";
 export const generateBlurhash: CollectionBeforeValidateHook = async ({
   data,
   operation,
-  req,
+  req: { payload, file },
 }) => {
   if (operation === "create" || operation === "update") {
     try {
-      const buffer = req.file?.data;
+      payload.logger.info(`Generating blurhash for operation: ${operation}`);
+      const buffer = file?.data;
       if (buffer) {
         const { base64 } = await getPlaiceholder(buffer, { size: 32 });
+        payload.logger.info("Blurhash generated successfully.");
         return {
           ...data,
           blurhash: base64,
         };
       }
     } catch (error) {
-      console.error(error);
+      payload.logger.error("Error generating blurhash:", error);
       throw new CustomAPIError("Failed to generate blur data url.");
     }
   }

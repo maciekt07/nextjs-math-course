@@ -151,7 +151,6 @@
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 6rem;
-    font-family: var(--font-inter);
   }
 
   /* fix layout shift when Radix locks scroll */

@@ -10,7 +10,8 @@ import {
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import { useCallback, useEffect, useState, useTransition } from "react";
 import BuyCourseButton from "@/components/buy-course-button";
 import { ThemeSelect } from "@/components/theme-select";
@@ -24,14 +25,8 @@ import { useSidebarStore } from "@/stores/sidebar-store";
 import { LessonItem } from "./lesson-item";
 import { SidebarAccount } from "./sidebar-account";
 
-const SettingsDialogContent = dynamic(
-  () =>
-    import("./settings-dialog-content").then(
-      (mod) => mod.SettingsDialogContent,
-    ),
-  {
-    ssr: false,
-  },
+const SettingsDialogContent = dynamic(() =>
+  import("./settings-dialog-content").then((mod) => mod.SettingsDialogContent),
 );
 
 export function CourseSidebar({
@@ -74,8 +69,13 @@ export function CourseSidebar({
     const lessonRegex = /^\/course\/[^/]+\/[^/]+$/;
     if (lessonRegex.test(pathname)) {
       setOptimisticPath(pathname);
+      //FIXME: first entry should stay open on mobile
       if (window.innerWidth < 768) {
-        setOpen(false);
+        setOpen(false); // close on mobile after router push completes
+      }
+      const container = document.getElementById("course-scroll-area");
+      if (container) {
+        container.scrollTo({ top: 0 });
       }
     }
   }, [pathname, setOptimisticPath, setOpen]);

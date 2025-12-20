@@ -29,14 +29,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         <script
           crossOrigin="anonymous"
           src="//unpkg.com/react-scan/dist/auto.global.js"
         />
       </head>
-      <body className={`${inter.variable} font-main antialiased`}>
+      <body
+        className={`${inter.className} ${inter.variable} font-main antialiased`}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

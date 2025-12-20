@@ -1,5 +1,6 @@
 import { and, eq } from "drizzle-orm";
 import { BookOpen, GraduationCap } from "lucide-react";
+import { unstable_cache } from "next/cache";
 import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
@@ -16,6 +17,48 @@ export const metadata = {
   title: "Your Courses",
 };
 
+function getUserEnrollments(userId: string) {
+  return unstable_cache(
+    async () => {
+      const rows = await db
+        .select()
+        .from(enrollment)
+        .where(
+          and(
+            eq(enrollment.userId, userId),
+            eq(enrollment.status, "completed"),
+          ),
+        );
+
+      return rows.map((r) => r.courseId);
+    },
+    ["enrollments", userId],
+    { revalidate: 300, tags: [`enrollments:${userId}`] },
+  )();
+}
+
+const getCoursesByIds = unstable_cache(
+  async (ids: string[]) => {
+    if (ids.length === 0) return [];
+    const payload = await getPayloadClient();
+    const res = await payload.find({
+      collection: "courses",
+      where: { id: { in: ids } },
+      limit: 100,
+      select: {
+        title: true,
+        description: true,
+        slug: true,
+        id: true,
+        media: true,
+      },
+    });
+    return res.docs || [];
+  },
+  ["courses-by-ids"],
+  { revalidate: 3600, tags: ["courses-list"] },
+);
+
 export default async function CoursesPage() {
   const session = await auth.api.getSession({ headers: await headers() });
 
@@ -23,17 +66,7 @@ export default async function CoursesPage() {
     redirect("/auth/sign-in?returnTo=/courses");
   }
 
-  const rows = await db
-    .select()
-    .from(enrollment)
-    .where(
-      and(
-        eq(enrollment.userId, session.user.id),
-        eq(enrollment.status, "completed"),
-      ),
-    );
-
-  const courseIds = rows.map((r: { courseId: string }) => r.courseId);
+  const courseIds = await getUserEnrollments(session.user.id);
 
   if (courseIds.length === 0) {
     return (
@@ -41,10 +74,8 @@ export default async function CoursesPage() {
         <div className="bg-primary/10 p-6 rounded-full">
           <BookOpen size={48} className="text-primary" />
         </div>
-        <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
-          No courses yet
-        </h2>
-        <p className="max-w-md text-gray-600 dark:text-gray-400">
+        <h2 className="text-3xl font-bold tracking-tight">No courses yet</h2>
+        <p className="max-w-md text-muted-foreground">
           Start learning by exploring available courses. Once you purchase one,
           it will appear here in your library.
         </p>
@@ -58,20 +89,7 @@ export default async function CoursesPage() {
     );
   }
 
-  const payload = await getPayloadClient();
-  const res = await payload.find({
-    collection: "courses",
-    where: { id: { in: courseIds } },
-    limit: 100,
-    select: {
-      title: true,
-      description: true,
-      slug: true,
-      id: true,
-      media: true,
-    },
-  });
-  const courses = res.docs || [];
+  const courses = await getCoursesByIds(courseIds);
 
   return (
     <div className="max-w-4xl mx-auto p-6 flex flex-col gap-6">

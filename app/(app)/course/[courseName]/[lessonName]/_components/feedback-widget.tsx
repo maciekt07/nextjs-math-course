@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 import { Textarea } from "@/components/ui/textarea";
+import { authClient } from "@/lib/auth/auth-client";
 import { FEEDBACK_LIMITS } from "@/lib/constants/limits";
 import { cn } from "@/lib/utils";
 import type { Lesson } from "@/payload-types";
@@ -25,11 +26,17 @@ export default function FeedbackWidget({
   lessonId: string;
   type: Lesson["type"];
 }) {
+  const { data: session, isPending } = authClient.useSession();
   const [selectedReaction, setSelectedReaction] = useState<number | null>(null);
   const [comment, setComment] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [isMounted, setIsMounted] = useState(false);
   const commentRef = useRef(comment);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const toggleReaction = (value: number) => {
     setSelectedReaction((prev) => (prev === value ? null : value));
@@ -86,6 +93,31 @@ export default function FeedbackWidget({
     });
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, []);
+
+  // if (isPending) {
+  //   return (
+  //     <div className="w-full max-w-sm mx-auto my-8 font-inter">
+  //       <div className="flex flex-col items-center rounded-xl border p-4 bg-background">
+  //         <Skeleton className="h-5 w-3/4 mb-3 rounded" />
+  //         <div className="flex gap-2 flex-wrap justify-center">
+  //           {Array(4)
+  //             .fill(0)
+  //             .map((_, i) => (
+  //               <Skeleton
+  //                 // biome-ignore lint/suspicious/noArrayIndexKey: safe
+  //                 key={i}
+  //                 className="h-7 w-20 rounded-full"
+  //               />
+  //             ))}
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
+
+  if (!session || !isMounted || isPending) {
+    return null;
+  }
 
   return (
     <div className="w-full max-w-sm mx-auto my-8 font-inter">
