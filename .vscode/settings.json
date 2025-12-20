@@ -1,19 +1,16 @@
 {
-  // always prefer path aliases for imports instead of relative paths
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "javascript.preferences.importModuleSpecifier": "non-relative",
-  // automatically organize imports and apply Biome fixes when saving a file
   "editor.codeActionsOnSave": {
     "source.organizeImports.biome": "explicit",
     "source.fixAll.biome": "explicit"
   },
-  // custom icons
   "material-icon-theme.folders.customClones": [
     {
-      "name": "payload",
+      "name": "cms",
       "base": "content",
       "color": "gray-700",
-      "folderNames": ["(payload)"]
+      "folderNames": ["cms"]
     },
     {
       "name": "collections",
@@ -22,15 +19,9 @@
       "folderNames": ["collections"]
     },
     {
-      "name": "cms",
-      "base": "class",
-      "color": "gray-700",
-      "folderNames": ["cms"]
-    },
-    {
       "name": "access",
       "base": "admin",
-      "color": "red-400",
+      "color": "red-600",
       "folderNames": ["cms/access"]
     },
     {
@@ -50,6 +41,18 @@
       "base": "video",
       "color": "#F84EB4",
       "folderNames": ["mux"]
+    },
+    {
+      "name": "katex",
+      "base": "functions",
+      "color": "#329894",
+      "folderNames": ["katex"]
+    },
+    {
+      "name": "desmos",
+      "base": "views",
+      "color": "#1E7840",
+      "folderNames": ["desmos"]
     }
   ]
 }

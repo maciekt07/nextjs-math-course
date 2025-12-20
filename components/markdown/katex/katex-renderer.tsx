@@ -1,3 +1,5 @@
+"use client";
+
 import katex from "katex";
 import { memo, useEffect, useRef } from "react";
 
@@ -6,14 +8,13 @@ interface KatexRendererProps {
   block?: boolean;
 }
 
-// html string + cloned dom node
 const katexCache = new Map<string, string>();
 
 export const KatexRenderer = memo(
   ({ content, block = false }: KatexRendererProps) => {
     const divRef = useRef<HTMLDivElement>(null);
     const spanRef = useRef<HTMLSpanElement>(null);
-
+    const cacheKey = `${block ? "block" : "inline"}:${content}`;
     useEffect(() => {
       const el = block ? divRef.current : spanRef.current;
       if (!el) return;
@@ -22,15 +23,15 @@ export const KatexRenderer = memo(
 
       const renderFormula = () => {
         try {
-          if (katexCache.has(content)) {
-            el.innerHTML = katexCache.get(content)!;
+          if (katexCache.has(cacheKey)) {
+            el.innerHTML = katexCache.get(cacheKey)!;
           } else {
             katex.render(content, el, {
               displayMode: block,
               throwOnError: false,
               strict: false,
             });
-            katexCache.set(content, el.innerHTML);
+            katexCache.set(cacheKey, el.innerHTML);
           }
         } catch {
           el.textContent = content;
@@ -57,21 +58,18 @@ export const KatexRenderer = memo(
 
       observer.observe(el);
       return () => observer.disconnect();
-    }, [content, block]);
+    }, [content, block, cacheKey]);
 
     return block ? (
       <div
         ref={divRef}
         style={{
-          minHeight: "5em", // prevent CLS for block
+          minHeight: "64px", // prevent CLS for block
           width: "100%",
         }}
       />
     ) : (
-      <span
-        ref={spanRef}
-        style={{ minHeight: "1em", display: "inline-block" }}
-      />
+      <span ref={spanRef} style={{ minHeight: "1em" }} />
     );
   },
   (prev, next) => prev.content === next.content && prev.block === next.block,

@@ -1,3 +1,4 @@
+"use client";
 import { ExternalLink } from "lucide-react";
 import { useInView } from "react-intersection-observer";
 import { Button } from "@/components/ui/button";
@@ -14,9 +15,11 @@ export function DesmosGraph({ graphUrl, noEmbed = false }: DesmosGraphProps) {
     (state) => state.desmosForceDarkMode,
   );
 
-  const graphId = graphUrl.split("/").pop() || graphUrl;
-  const iframeUrl = noEmbed ? graphUrl : `${graphUrl}?embed`;
-  const editUrl = graphUrl.includes("?") ? graphUrl.split("?")[0] : graphUrl;
+  const [baseUrl] = graphUrl.split("?");
+
+  const graphId = baseUrl.split("/").pop() ?? graphUrl;
+  const iframeUrl = noEmbed ? graphUrl : `${baseUrl}?embed`;
+  const editUrl = baseUrl;
   const forceDarkMode = !noEmbed && desmosForceDarkMode;
 
   const { ref, inView } = useInView({

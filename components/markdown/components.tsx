@@ -66,7 +66,6 @@ export function createMarkdownComponents(
         return <KatexRenderer content={props["data-content"]} block />;
       }
 
-      // default
       return <div className={className}>{children}</div>;
     },
     // KaTeX inline math
@@ -110,7 +109,7 @@ export function createMarkdownComponents(
       );
     },
     table: ({ node, ...props }) => (
-      <div className="w-full overflow-x-auto rounded-lg my-6 border-2 border-border relative">
+      <div className="table-container">
         <table {...props} />
       </div>
     ),
