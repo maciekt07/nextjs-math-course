@@ -15,7 +15,6 @@ export function MarkdownWrapper({ children }: { children: React.ReactNode }) {
         coloredMarkdown && "colored-markdown marker:text-primary",
         largeMath && "large-math",
       )}
-      style={{ contentVisibility: "auto", containIntrinsicSize: "1000px" }}
     >
       {children}
     </div>

@@ -1,14 +1,17 @@
 import Image from "next/image";
 import type { Components } from "react-markdown";
-import { Heading } from "@/components/markdown/heading";
-import type { MathElementProps } from "@/components/markdown/types";
-import { getText, stripMarkdown } from "@/components/markdown/utils";
+import { CalloutBlock } from "@/components/markdown/blocks/callout-block";
+import type { BlockType } from "@/components/markdown/blocks/callout-config";
 import { slug } from "@/lib/slugify";
 import type { Media } from "@/payload-types";
 import { ImageZoom } from "../ui/shadcn-io/image-zoom";
+import type { CalloutDivProps } from "./blocks/blocks-plugin";
 import { DesmosGraph } from "./desmos/desmos-graph";
 import type { DesmosDivProps } from "./desmos/desmos-plugin";
+import { Heading } from "./heading";
 import { KatexRenderer } from "./katex/katex-renderer";
+import type { MathElementProps } from "./types";
+import { getText, stripMarkdown } from "./utils";
 
 let currentH2Text = "";
 
@@ -48,7 +51,24 @@ export function createMarkdownComponents(
       );
     },
 
-    div({ className, children, ...props }: MathElementProps & DesmosDivProps) {
+    div({
+      className,
+      children,
+      ...props
+    }: MathElementProps & DesmosDivProps & CalloutDivProps) {
+      // handle callout blocks
+      if (className?.includes("callout-block")) {
+        const blockType = props["data-block-type"] as BlockType;
+        const blockTitle = props["data-block-title"];
+        // const blockDescription = props["data-block-description"];
+
+        return (
+          <CalloutBlock type={blockType} title={blockTitle}>
+            {children}
+          </CalloutBlock>
+        );
+      }
+
       // handle Desmos graphs
       if (className?.includes("desmos-graph")) {
         const graphUrl = props["data-graph-url"];

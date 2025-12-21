@@ -13,7 +13,12 @@ export interface DesmosDivProps extends React.HTMLAttributes<HTMLDivElement> {
   "data-no-embed"?: string;
 }
 
-// plugin to handle ::desmos{url="https://www.desmos.com/calculator/id" noEmbed=true} syntax in markdown
+/**
+ * plugin to handle Desmos graph syntax in markdown
+ * @example
+ * ::desmos{url="https://www.desmos.com/calculator/id"}
+ * ::desmos{url="https://www.desmos.com/calculator/id" noEmbed=true}
+ */
 export function desmos() {
   return (tree: Root) => {
     visit(tree, (node) => {

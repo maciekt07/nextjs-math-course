@@ -159,6 +159,26 @@ $$
 
 For more details, see the [Markdown + LaTeX documentation](https://ashki23.github.io/markdown-latex.html#mathematical-formula)
 
+### Using Callout Blocks
+
+You can highlight important content or tips using custom callout blocks like `note`, `tip`, `important`, `warning`, etc.
+
+```markdown
+:::note
+This is a note
+:::
+
+:::tip{title="Remember"}
+This is a tip with a custom title
+:::
+```
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="screenshots/callout-block-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="screenshots/callout-block-light.png">
+  <img alt="Callout block" src="screenshots/callout-block-dark.png">
+</picture>
+
 ### Reordering Lessons
 
 1. Go to the **Lessons** collection in the CMS.

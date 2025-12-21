@@ -6,6 +6,7 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import type { Pluggable } from "unified";
 import type { Media } from "@/payload-types";
+import { blocks } from "./blocks/blocks-plugin";
 import { createMarkdownComponents } from "./components";
 import { desmos } from "./desmos/desmos-plugin";
 import { KATEX_REHYPE_OPTIONS } from "./katex/katex-rehype-options";
@@ -17,6 +18,7 @@ const REMARK_PLUGINS: Pluggable[] = [
   remarkMath,
   remarkDirective,
   desmos,
+  blocks,
 ];
 const REHYPE_PLUGINS: Pluggable[] = [rehypeUnwrapImages, rehypeKatex];
 
