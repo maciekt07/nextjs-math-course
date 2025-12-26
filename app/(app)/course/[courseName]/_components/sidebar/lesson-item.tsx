@@ -4,7 +4,7 @@ import { Calculator, FileText, Lock, Video } from "lucide-react";
 import Link from "next/link";
 import { memo } from "react";
 import { formatDuration, formatReadingTime } from "@/lib/format";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/ui";
 import type { Lesson, MuxVideo } from "@/payload-types";
 
 const lessonTypeConfig = {

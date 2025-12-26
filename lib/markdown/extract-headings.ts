@@ -7,7 +7,10 @@ export interface Heading {
   level: number;
 }
 
-export function extractHeadings(markdown: string): Heading[] {
+export function extractHeadings(
+  markdown: string | undefined | null,
+): Heading[] {
+  if (!markdown) return [];
   const regex = /^(#{2,3})\s+(.*)$/gm;
   const headings: Heading[] = [];
   let match = regex.exec(markdown);

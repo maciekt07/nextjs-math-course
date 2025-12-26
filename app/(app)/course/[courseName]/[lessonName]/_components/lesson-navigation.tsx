@@ -78,6 +78,7 @@ export function LessonNavigation({
     return (
       <Link
         href={getLessonPath(lesson)}
+        aria-label={`${isPrevious ? "Previous" : "Next"} lesson - ${lesson.title}`}
         onClick={() => sidebarOpen && setOptimisticPath(getLessonPath(lesson))}
         className="group flex-1 min-h-[5rem] p-4 rounded-lg border border-border transition-all duration-200 flex items-center justify-between"
       >
@@ -105,7 +106,7 @@ export function LessonNavigation({
   };
 
   return (
-    <nav className="mt-8 mb-8 w-full px-4 sm:px-6 font-inter">
+    <nav className="mt-8 mb-8 w-full font-inter">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 max-w-6xl mx-auto">
         {renderLessonCard(previousLesson, true)}
         {renderLessonCard(nextLesson)}

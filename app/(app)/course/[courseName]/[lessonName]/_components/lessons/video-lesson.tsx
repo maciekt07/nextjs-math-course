@@ -17,7 +17,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDuration } from "@/lib/format";
 import { fetchMuxToken, RateLimitError } from "@/lib/mux-token-cache";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/ui";
 import type { Lesson, MuxVideo } from "@/payload-types";
 
 interface VideoLessonProps {
@@ -35,7 +35,6 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
   const playerElementRef = useRef<MuxPlayerRefAttributes | null>(null);
   const [token, setToken] = useState<string | undefined>();
   const [isRateLimited, setIsRateLimited] = useState(false);
-
   const hasVideo = muxVideo?.playbackOptions?.length;
 
   const muxPlayerCallback = useCallback(
@@ -136,18 +135,9 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
     if (player && "currentTime" in player) {
       player.currentTime = startTime;
       player.play();
-
-      const container = document.getElementById("course-scroll-area");
-      if (container) {
-        // const playerRect = player.getBoundingClientRect();
-        // const containerRect = container.getBoundingClientRect();
-        // const scrollTop =
-        //   container.scrollTop + (playerRect.top - containerRect.top);
-
-        // const offset = 48;
-        // scrollTop - offset
-        container.scrollTo({ top: 0, behavior: "smooth" });
-      }
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: 0, behavior: "instant" });
+      });
     }
   };
 
@@ -271,7 +261,7 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
     <div className="flex flex-col gap-4" ref={playerRef}>
       {renderVideoArea()}
 
-      <Card className="mt-2">
+      <Card className="mt-2 bg-card/40 shadow-none">
         <CardHeader className="border-b font-inter">
           <CardTitle className="flex items-center gap-2 -mb-2">
             <Video className="w-5 h-5 text-primary" />

@@ -26,35 +26,26 @@ export function CourseLayoutWrapper({
     setOpen(true);
     initialize(course, lessons);
   }, [setOpen, initialize, course, lessons]);
-
   return (
-    <div className="flex h-screen overflow-hidden relative">
+    <div className="flex flex-col md:flex-row min-h-screen relative overflow-x-hidden">
       <motion.div
         className="hidden md:block shrink-0"
         initial={{ width: 320 }}
-        animate={{
-          width: open ? 320 : 0,
-        }}
-        transition={{
-          duration: 0.2,
-        }}
+        animate={{ width: open ? 320 : 0 }}
+        transition={{ duration: 0.2 }}
       />
-
       <CourseSidebar course={course} lessons={lessons} owned={owned} />
-
-      <motion.main
-        id="course-scroll-area"
-        className="flex-1 overflow-y-auto"
-        initial={{ paddingTop: 0 }}
-        animate={{
-          paddingTop: open ? 0 : 68,
-        }}
-        transition={{
-          duration: 0.2,
-        }}
-      >
-        {children}
-      </motion.main>
+      <div className="flex-1 flex flex-col min-w-0">
+        <motion.main
+          id="course-scroll-area"
+          className="flex-1 w-full min-w-0"
+          initial={{ paddingTop: 0 }}
+          animate={{ paddingTop: open ? 0 : 68 }}
+          transition={{ duration: 0.2 }}
+        >
+          {children}
+        </motion.main>
+      </div>
     </div>
   );
 }

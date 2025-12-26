@@ -15,12 +15,32 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  appleWebApp: {
+    capable: true,
+    title: "Math Course",
+    statusBarStyle: "default",
+  },
+  openGraph: {
+    type: "website",
+    siteName: "Math Course Online",
+    title: "Math Course Online",
+    description: "Learn math online",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary",
+    title: "Math Course Online",
+    description: "Learn math online",
+  },
 };
 
 export const viewport: Viewport = {
-  themeColor: {
-    color: "#4e65ff",
-  },
+  themeColor: "#4e65ff",
+  width: "device-width",
+  height: "device-height",
+  initialScale: 1,
+  interactiveWidget: "resizes-content",
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -36,9 +56,7 @@ export default function RootLayout({
           src="//unpkg.com/react-scan/dist/auto.global.js"
         />
       </head>
-      <body
-        className={`${inter.className} ${inter.variable} font-main antialiased`}
-      >
+      <body className={`${inter.className} ${inter.variable} antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 export function HeroBadge() {
   return (
     <motion.div
-      className="w-fit"
+      className="w-fit -mt-4 sm:mt-0"
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{
@@ -18,14 +18,14 @@ export function HeroBadge() {
     >
       <Badge
         variant="secondary"
-        className="flex items-center border border-border gap-2 rounded-full px-3 py-1.5 text-[16px] w-fit cursor-pointer overflow-hidden relative group shadow-sm"
+        className="flex items-center border border-border gap-2 rounded-full px-2 sm:px-3 py-1 sm:py-1.5 w-fit cursor-pointer overflow-hidden relative group shadow-sm"
         asChild
       >
         <motion.a
           href="https://github.com/maciekt07"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1.5 relative"
+          className="flex items-center gap-1.5 relative text-[0.875rem] sm:text-[1rem]"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.98 }}
         >
@@ -53,13 +53,13 @@ export function HeroBadge() {
               alt="maciekt07 GitHub avatar"
               width={32}
               height={32}
-              className="rounded-full border border-border shadow-md"
+              className="rounded-full border border-border shadow-md sm:h-8 sm:w-8 h-7 w-7"
               unoptimized
             />
           </motion.div>
 
           <motion.span
-            className="text-muted-foreground"
+            className="text-muted-foreground "
             initial={{ opacity: 0, x: -10, filter: "blur(8px)" }}
             animate={{ opacity: 1, x: 0, filter: "none" }}
             transition={{ duration: 0.5, delay: 0.4 }}

@@ -6,7 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function CoursesPageSkeleton() {
   return (
-    <div className="max-w-4xl mx-auto p-6 flex flex-col gap-6" aria-hidden>
+    <div className="max-w-4xl mx-auto pt-0 p-6 flex flex-col gap-6" aria-hidden>
       <h1 className="text-3xl font-bold">Your Courses</h1>
       {[...Array(3)].map((_, i) => (
         <Card

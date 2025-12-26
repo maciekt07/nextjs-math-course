@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/ui";
 import { BLOCK_CONFIG, type BlockType } from "./callout-config";
 
 interface CalloutBlockProps {

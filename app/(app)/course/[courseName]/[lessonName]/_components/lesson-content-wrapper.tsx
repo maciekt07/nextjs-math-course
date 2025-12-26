@@ -1,9 +1,9 @@
 "use client";
 
-import { type ReactNode, useMemo } from "react";
+import type { ReactNode } from "react";
 import { Separator } from "@/components/ui/separator";
 import { openDyslexic } from "@/lib/fonts";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/ui";
 import type { Lesson } from "@/payload-types";
 import { useSettingsStore } from "@/stores/settings-store";
 import { LessonTitle } from "./lesson-title";
@@ -22,27 +22,21 @@ export function LessonContentWrapper({
 }: LessonContentWrapperProps) {
   const { fontStyle } = useSettingsStore();
 
-  const fontClass = useMemo(() => {
-    return {
-      default: "font-inter",
-      system: "font-system",
-      dyslexic: "font-dyslexic",
-    }[fontStyle];
-  }, [fontStyle]);
+  const fontClass = {
+    default: "font-inter",
+    system: "font-system",
+    dyslexic: "font-dyslexic",
+  }[fontStyle];
 
   return (
     <article
       className={cn(
-        "mx-auto pb-8 mt-10 px-6",
+        "mx-auto pb-8 mt-10 px-4 sm:px-6",
         lesson?.type === "video" ? "max-w-6xl" : "max-w-4xl",
         fontClass,
         fontStyle === "dyslexic" && openDyslexic.variable,
       )}
     >
-      {/* key={lesson.id}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3, ease: "easeIn" }} */}
       <LessonTitle lesson={lesson} />
       <Separator className="mb-8" />
       {lesson?.type === "text" && <TextLesson lesson={lesson} />}

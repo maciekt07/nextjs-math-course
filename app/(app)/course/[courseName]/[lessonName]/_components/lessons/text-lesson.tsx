@@ -8,17 +8,18 @@ interface TextLessonProps {
 }
 
 export function TextLesson({ lesson }: TextLessonProps) {
-  const headings = extractHeadings(lesson.content || "");
+  const headings = extractHeadings(lesson.content);
+
   return (
-    <div>
-      <LessonTOC headings={headings} />
+    <>
+      {headings.length > 0 && <LessonTOC headings={headings} />}
       <MarkdownRenderer
-        content={lesson.content || "No Content"}
+        content={lesson.content ?? "No Content"}
         media={lesson.uploadImage as Media[]}
         // don't optimize free lessons for better SEO
         // there are no performance issues since they are SSGed
         optimizeMath={!lesson.free || process.env.NODE_ENV === "development"}
       />
-    </div>
+    </>
   );
 }

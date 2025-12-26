@@ -124,6 +124,8 @@
     @apply border-border outline-ring/50;
     scrollbar-width: thin;
     scrollbar-color: var(--scrollbar-thumb) transparent;
+    box-sizing: border-box;
+    -webkit-text-size-adjust: 100%;
   }
   *::-webkit-scrollbar {
     width: 6px;
@@ -150,7 +152,7 @@
   }
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 6rem;
+    /* scroll-padding-top: 6rem; */
   }
 
   /* fix layout shift when Radix locks scroll */

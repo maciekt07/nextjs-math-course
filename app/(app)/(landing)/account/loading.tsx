@@ -4,10 +4,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AccountPageSkeleton() {
   return (
-    <div className="max-w-xl mx-auto mt-16 px-6 space-y-8">
+    <div className="max-w-xl mx-auto mt-0 sm:mt-16 px-6 pb-8 space-y-8">
       <header className="space-y-2 text-center">
-        <Skeleton className="h-12 w-64 mx-auto" />
-        <Skeleton className="h-4 w-96 mx-auto" />
+        <h1 className="sm:text-4xl text-3xl font-bold">Your Account</h1>
+        <p className="sm:text-lg text-md text-muted-foreground">
+          Manage your personal information and settings
+        </p>
       </header>
 
       <div className="space-y-6">

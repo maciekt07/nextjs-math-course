@@ -66,10 +66,10 @@ export default async function AccountPage() {
   }
 
   return (
-    <div className="max-w-xl mx-auto mt-16 px-6 space-y-8">
+    <div className="max-w-xl mx-auto mt-0 sm:mt-16 px-6 pb-8 space-y-8">
       <header className="space-y-2 text-center">
-        <h1 className="text-4xl font-bold">Your Account</h1>
-        <p className="text-lg text-muted-foreground">
+        <h1 className="sm:text-4xl text-3xl font-bold">Your Account</h1>
+        <p className="sm:text-lg text-md text-muted-foreground">
           Manage your personal information and settings
         </p>
       </header>

@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/ui";
 import { useSettingsStore } from "@/stores/settings-store";
 
 export function MarkdownWrapper({ children }: { children: React.ReactNode }) {

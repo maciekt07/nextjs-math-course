@@ -38,7 +38,7 @@ export function FAQ() {
 
   return (
     <section
-      className="mt-16 mb-8 px-4 sm:px-6 max-w-4xl mx-auto w-full"
+      className="mt-16 mb-8 px-4 sm:px-6 max-w-4xl mx-auto w-full scroll-mt-24"
       id="faq"
       ref={ref}
     >

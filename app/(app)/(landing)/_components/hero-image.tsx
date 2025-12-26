@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/ui";
 
 const HeroSvgComponent = dynamic(
   () => import("@/components/hero-svg/hero-svg"),
@@ -13,7 +13,7 @@ export function HeroImage({ className }: HeroImageProps) {
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center w-full gap-2",
+        "flex flex-col items-center justify-center w-full gap-2 mb-2",
         className,
       )}
     >

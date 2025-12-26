@@ -161,7 +161,7 @@ For more details, see the [Markdown + LaTeX documentation](https://ashki23.githu
 
 ### Using Callout Blocks
 
-You can highlight important content or tips using custom callout blocks like `note`, `tip`, `important`, `warning`, etc.
+You can highlight important content or tips using custom callout blocks like `note`, `tip`, `important`, `warning`, `card`.
 
 ```markdown
 :::note

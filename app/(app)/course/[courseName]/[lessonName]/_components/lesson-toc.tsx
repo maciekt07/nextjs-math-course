@@ -8,46 +8,11 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import type { Heading } from "@/lib/markdown/extract-headings";
-import { scrollToHeader } from "@/lib/markdown/scroll-to-header";
-import { cn } from "@/lib/utils";
-import { useSidebarStore } from "@/stores/sidebar-store";
+import { cn } from "@/lib/ui";
 
 export function LessonTOC({ headings }: { headings: Heading[] }) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const headingsRef = useRef(headings);
-
-  const sidebarOpen = useSidebarStore((s) => s.open);
-
-  function handleHeaderClick(id: string) {
-    scrollToHeader(id, {
-      sidebarOpen,
-    });
-
-    //FIXME:
-    setTimeout(() => {
-      setActiveId(id);
-    }, 10);
-  }
-
-  useEffect(() => {
-    function handleHash() {
-      const hash = decodeURIComponent(location.hash.slice(1));
-      if (!hash) return;
-      // ensures correct offset if user has closed sidebar to see content on mobile
-      requestAnimationFrame(() => {
-        scrollToHeader(hash, {
-          sidebarOffset: 0,
-        });
-      });
-    }
-
-    handleHash();
-
-    window.addEventListener("hashchange", handleHash, { passive: true });
-    return () => {
-      window.removeEventListener("hashchange", handleHash);
-    };
-  }, []);
 
   useEffect(() => {
     headingsRef.current = headings;
@@ -117,10 +82,6 @@ export function LessonTOC({ headings }: { headings: Heading[] }) {
                   <a
                     key={h.id}
                     href={`#${h.id}`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleHeaderClick(h.id);
-                    }}
                     className={cn(
                       "group flex items-start gap-2 py-3 sm:py-2  text-[16px] text-muted-foreground transition-colors leading-tight hover:text-foreground",
                       h.level === 3 && "pl-4",
@@ -146,10 +107,6 @@ export function LessonTOC({ headings }: { headings: Heading[] }) {
             <a
               key={h.id}
               href={`#${h.id}`}
-              onClick={(e) => {
-                e.preventDefault();
-                handleHeaderClick(h.id);
-              }}
               className={cn(
                 "group flex items-start gap-2 text-sm transition-colors leading-tight",
                 h.level === 3 && "pl-4",

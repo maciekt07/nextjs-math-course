@@ -2,20 +2,18 @@ import { and, eq } from "drizzle-orm";
 import { Lock, LogIn } from "lucide-react";
 import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
-
 import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import FeedbackWidget from "@/app/(app)/course/[courseName]/[lessonName]/_components/feedback-widget";
 import BuyCourseButton from "@/components/buy-course-button";
 import Footer from "@/components/footer";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
 import { auth } from "@/lib/auth/auth";
 import { getPayloadClient } from "@/lib/payload-client";
 import type { Course } from "@/payload-types";
+import FeedbackWidget from "./_components/feedback-widget";
 import { LessonContentWrapper } from "./_components/lesson-content-wrapper";
 import { LessonNavigation } from "./_components/lesson-navigation";
 
@@ -161,44 +159,46 @@ export default async function LessonPage({
 
   if (!allowed) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Card className="max-w-[400px] text-center p-8">
-          <CardContent className="space-y-4">
-            <Lock className="mx-auto w-12 h-12 text-orange-600 dark:text-orange-500" />
-            <h2 className="text-2xl font-semibold">{lesson.title}</h2>
-            <p className="text-muted-foreground">
-              This is a premium lesson. You need to own the course.
-            </p>
-
-            <div className="flex justify-center gap-3 mt-4">
-              {showSignIn ? (
-                <Button size="lg" asChild>
-                  <Link
-                    href={{
-                      pathname: "/auth/sign-in",
-                      query: {
-                        returnTo: `/course/${courseName}/${lesson.slug}`,
-                      },
-                    }}
-                  >
-                    <LogIn /> Sign in
-                  </Link>
-                </Button>
-              ) : (
-                <BuyCourseButton
-                  courseId={
-                    typeof lesson.course === "string"
-                      ? lesson.course
-                      : (lesson.course as Course).id
-                  }
-                  size="lg"
-                >
-                  Buy course
-                </BuyCourseButton>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+      <div className="flex items-center justify-center h-full p-4">
+        <div className="flex flex-col items-center text-center space-y-6 max-w-[400px]">
+          <div className="mx-auto w-24 h-24 flex items-center justify-center bg-orange-600/10 dark:bg-orange-500/10 rounded-full">
+            <Lock size={48} className="text-orange-600 dark:text-orange-500" />
+          </div>
+          <div className="space-y-2">
+            <h1 className="text-2xl font-semibold">{lesson.title}</h1>
+            <h2 className="text-muted-foreground">
+              This is a premium lesson. You need to own a full course to access
+              it.
+            </h2>
+          </div>
+          {showSignIn ? (
+            <Button size="lg" className="w-full" asChild>
+              <Link
+                href={{
+                  pathname: "/auth/sign-in",
+                  query: {
+                    returnTo: `/course/${courseName}/${lesson.slug}`,
+                  },
+                }}
+              >
+                <LogIn className="h-4 w-4" />
+                Sign in to continue
+              </Link>
+            </Button>
+          ) : (
+            <BuyCourseButton
+              courseId={
+                typeof lesson.course === "string"
+                  ? lesson.course
+                  : (lesson.course as Course).id
+              }
+              size="lg"
+              className="w-full"
+            >
+              Buy course
+            </BuyCourseButton>
+          )}
+        </div>
       </div>
     );
   }

@@ -2,7 +2,7 @@
 import { ExternalLink } from "lucide-react";
 import { useInView } from "react-intersection-observer";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/ui";
 import { useSettingsStore } from "@/stores/settings-store";
 
 interface DesmosGraphProps {
@@ -35,7 +35,7 @@ export function DesmosGraph({ graphUrl, noEmbed = false }: DesmosGraphProps) {
       )}
       ref={ref}
     >
-      <div className="relative w-full h-[500px]">
+      <div className="relative w-full h-[400px] sm:h-[500px]">
         {inView ? (
           <iframe
             title={`Desmos Graph: ${graphId}`}

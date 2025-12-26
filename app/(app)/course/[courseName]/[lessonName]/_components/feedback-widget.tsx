@@ -1,5 +1,6 @@
 "use client";
 
+import Bowser from "bowser";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, Frown, Meh, Send, Smile, Star } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -9,7 +10,7 @@ import { LoadingSwap } from "@/components/ui/loading-swap";
 import { Textarea } from "@/components/ui/textarea";
 import { authClient } from "@/lib/auth/auth-client";
 import { FEEDBACK_LIMITS } from "@/lib/constants/limits";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/ui";
 import type { Lesson } from "@/payload-types";
 
 const reactions = [
@@ -33,6 +34,8 @@ export default function FeedbackWidget({
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isMounted, setIsMounted] = useState(false);
   const commentRef = useRef(comment);
+
+  const isFirefox = Bowser.getParser(window.navigator.userAgent).is("firefox");
 
   useEffect(() => {
     setIsMounted(true);
@@ -122,46 +125,64 @@ export default function FeedbackWidget({
   return (
     <div className="w-full max-w-sm mx-auto my-8 font-inter">
       <div className="flex flex-col items-center rounded-xl border p-4 bg-background">
-        <p className="text-md font-medium text-foreground mb-3">
+        <p className="text-md font-medium text-foreground mb-3 not-sr-only">
           How was this {type === "quiz" || type === "video" ? type : "lesson"}?
         </p>
-
         {/* reaction Buttons */}
-        <div className="flex gap-2 flex-wrap justify-center">
-          {reactions.map((reaction) => {
-            const Icon = reaction.icon;
-            const selected = selectedReaction === reaction.value;
-            return (
-              <motion.button
-                key={reaction.value}
-                onClick={() => toggleReaction(reaction.value)}
-                disabled={isSubmitted}
-                className={cn(
-                  "flex items-center gap-1 px-2 py-1 rounded-full border text-sm transition-colors cursor-pointer",
-                  selected
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-secondary text-foreground border-border hover:bg-secondary/80",
-                )}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Icon strokeWidth={2.4} size={18} />
-                <span>{reaction.label}</span>
-              </motion.button>
-            );
-          })}
+        <div className="flex flex-col items-center gap-2 sm:gap-0">
+          <div className="flex justify-center gap-4 sm:gap-1.5 flex-wrap">
+            {reactions.map((reaction) => {
+              const Icon = reaction.icon;
+              const selected = selectedReaction === reaction.value;
+
+              return (
+                <motion.button
+                  type="button"
+                  aria-label={reaction.label}
+                  aria-pressed={selected}
+                  title={reaction.label}
+                  key={reaction.value}
+                  onClick={() => toggleReaction(reaction.value)}
+                  disabled={isSubmitted}
+                  className={cn(
+                    "flex items-center justify-center whitespace-nowrap border transition-colors cursor-pointer",
+                    "h-10 w-10 sm:h-auto sm:w-auto px-0 sm:px-2 py-0 sm:py-1",
+                    "rounded-md sm:rounded-full",
+                    selected
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-secondary text-foreground border-border hover:bg-secondary/80",
+                  )}
+                  whileHover={!isFirefox ? { scale: 1.05 } : undefined}
+                  whileTap={!isFirefox ? { scale: 0.95 } : undefined}
+                >
+                  <Icon
+                    strokeWidth={2.4}
+                    className="h-6 w-6 sm:h-[18px] sm:w-[18px]"
+                  />
+                  <span className="hidden sm:inline ml-1 text-sm">
+                    {reaction.label}
+                  </span>
+                </motion.button>
+              );
+            })}
+          </div>
+
+          {/* mobile labels */}
+          <div className="flex w-full justify-between px-1 sm:hidden">
+            <span className="text-xs text-muted-foreground">
+              {reactions[0]?.label}
+            </span>
+            <span className="text-xs text-muted-foreground">
+              {reactions[reactions.length - 1]?.label}
+            </span>
+          </div>
         </div>
 
         <motion.div
           className="w-full overflow-hidden"
           initial={false}
           animate={{
-            height:
-              selectedReaction && !isSubmitted
-                ? "auto"
-                : isSubmitted
-                  ? "auto"
-                  : 0,
+            height: selectedReaction || isSubmitted ? "auto" : 0,
             marginTop: selectedReaction || isSubmitted ? 12 : 0,
           }}
           transition={{ duration: 0.35, ease: "easeInOut" }}

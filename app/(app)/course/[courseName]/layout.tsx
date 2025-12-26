@@ -32,8 +32,8 @@ const getCourseWithLessons = cache(async (courseSlug: string) => {
       free: true,
       id: true,
       type: true,
-      quiz: { id: true }, // get number of quizes
-      video: true, // can't select just the duration
+      quiz: { id: true },
+      video: true, //FIXME: can't select just the duration
       readingTimeSeconds: true,
     },
   });

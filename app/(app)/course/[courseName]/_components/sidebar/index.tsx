@@ -1,12 +1,6 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  BadgeCheck,
-  ChevronLeft,
-  PanelLeft,
-  PanelLeftClose,
-  Settings,
-} from "lucide-react";
+import { ChevronLeft, PanelLeft, PanelLeftClose, Settings } from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,11 +9,10 @@ import { useRouter } from "nextjs-toploader/app";
 import { useCallback, useEffect, useState, useTransition } from "react";
 import BuyCourseButton from "@/components/buy-course-button";
 import { ThemeSelect } from "@/components/theme-select";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { authClient } from "@/lib/auth/auth-client";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/ui";
 import type { Course, Lesson, Media } from "@/payload-types";
 import { useSidebarStore } from "@/stores/sidebar-store";
 import { LessonItem } from "./lesson-item";
@@ -72,10 +65,6 @@ export function CourseSidebar({
       //FIXME: first entry should stay open on mobile
       if (window.innerWidth < 768) {
         setOpen(false); // close on mobile after router push completes
-      }
-      const container = document.getElementById("course-scroll-area");
-      if (container) {
-        container.scrollTo({ top: 0 });
       }
     }
   }, [pathname, setOptimisticPath, setOpen]);
@@ -150,16 +139,12 @@ export function CourseSidebar({
       <AnimatePresence>
         {!open && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, y: 0 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="fixed top-0 left-0 z-40 h-17 backdrop-blur-lg bg-background/60 border-b flex items-center px-4 mb-4 gap-3 pointer-events-none"
-            style={{
-              right: "16px",
-              paddingLeft: "max(1rem, env(safe-area-inset-left))",
-            }}
-          ></motion.div>
+            className="fixed top-0 left-0 right-0 z-40 h-17 backdrop-blur-lg bg-background/60 border-b flex items-center mb-4 gap-3 pointer-events-none"
+          />
         )}
       </AnimatePresence>
 
@@ -167,7 +152,7 @@ export function CourseSidebar({
       <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
         <SettingsDialogContent />
       </Dialog>
-
+      {/* FIXME: disable content scroll on Safari */}
       <motion.div
         animate={
           open
@@ -186,7 +171,7 @@ export function CourseSidebar({
         transition={{ duration: 0.2 }}
         className="fixed flex flex-col h-full w-80 border-r bg-background z-40 shadow-2xl md:shadow-none overflow-y-auto"
       >
-        <div className="pt-16 px-4 pb-4 border-b">
+        <div className="pt-14 sm:pt-16 px-4 border-b">
           <Button asChild variant="ghost" className="absolute top-4 right-4">
             <Link href="/">
               <ChevronLeft className="w-4 h-4" />
@@ -195,48 +180,62 @@ export function CourseSidebar({
           </Button>
 
           {course.media && (
-            <div className="relative w-full h-40 mb-4 mt-2 overflow-hidden rounded-2xl shadow-md">
-              <Image
-                src={(course.media as Media).url!}
-                alt={(course.media as Media).alt ?? course.title!}
-                fill
-                className="object-cover"
-                priority
-                fetchPriority="high"
-                placeholder={
-                  (course.media as Media).blurhash ? "blur" : "empty"
-                }
-                blurDataURL={(course.media as Media).blurhash || undefined}
-              />
-              <div className="absolute inset-0 bg-black/20"></div>
+            <div className="flex md:block gap-3 mb-3 mt-2">
+              <div className="relative w-20 h-20 md:w-full md:h-40 shrink-0 overflow-hidden rounded-lg md:rounded-2xl shadow-md md:mb-4">
+                <Image
+                  src={(course.media as Media).url!}
+                  alt={(course.media as Media).alt ?? course.title!}
+                  fill
+                  className="object-cover"
+                  priority
+                  fetchPriority="high"
+                  placeholder={
+                    (course.media as Media).blurhash ? "blur" : "empty"
+                  }
+                  blurDataURL={(course.media as Media).blurhash || undefined}
+                />
+                <div className="absolute inset-0 bg-black/20"></div>
+              </div>
+              <div className="flex-1 min-w-0 md:hidden space-y-1">
+                <h2 className="font-semibold text-base leading-tight">
+                  {course.title}
+                </h2>
+                {course.description && (
+                  <p
+                    className="text-xs text-muted-foreground line-clamp-2"
+                    title={course.description}
+                  >
+                    {course.description}
+                  </p>
+                )}
+              </div>
             </div>
           )}
+
           <div className="space-y-1">
-            <div className="flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-2">
               <h2 className="font-semibold text-lg leading-tight">
                 {course.title}
               </h2>
-              {owned && (
-                <Badge variant="secondary" className="shrink-0">
-                  <BadgeCheck className="w-3 h-3 mr-1" />
-                  Owned
-                </Badge>
-              )}
             </div>
+
             {course.description && (
-              <p
-                className="text-sm text-muted-foreground line-clamp-3"
-                title={course.description}
-              >
-                {course.description}
-              </p>
+              <div className="line-clamp-3 md:mb-3">
+                <p
+                  className="hidden md:block text-sm text-muted-foreground"
+                  title={course.description}
+                >
+                  {course.description}
+                </p>
+              </div>
             )}
+
             {!owned && (
               <BuyCourseButton
                 courseId={course.id}
                 variant="outline"
-                className="w-full mt-3 font-bold"
-                size="lg"
+                className="w-full font-bold mb-3"
+                size="default"
               >
                 Buy Course
               </BuyCourseButton>

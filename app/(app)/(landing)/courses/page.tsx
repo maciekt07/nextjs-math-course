@@ -70,7 +70,7 @@ export default async function CoursesPage() {
 
   if (courseIds.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4 space-y-4">
+      <div className="flex flex-col items-center justify-center text-center px-4 my-8 space-y-4">
         <div className="bg-primary/10 p-6 rounded-full">
           <BookOpen size={48} className="text-primary" />
         </div>
@@ -79,7 +79,7 @@ export default async function CoursesPage() {
           Start learning by exploring available courses. Once you purchase one,
           it will appear here in your library.
         </p>
-        <Button asChild size="xl" className="flex items-center gap-2 my-1">
+        <Button asChild size="xl" className="my-1">
           <a href="/#courses">
             <BookOpen />
             Browse Courses
@@ -92,12 +92,12 @@ export default async function CoursesPage() {
   const courses = await getCoursesByIds(courseIds);
 
   return (
-    <div className="max-w-4xl mx-auto p-6 flex flex-col gap-6">
+    <div className="max-w-4xl mx-auto pt-0 p-6 flex flex-col gap-6">
       <h1 className="text-3xl font-bold">Your Courses</h1>
       {courses.map((c) => (
         <Card
           key={c.id}
-          className="p-4 flex flex-col md:flex-row md:justify-between md:items-center gap-4"
+          className="p-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4"
         >
           {c.media ? (
             <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
@@ -118,7 +118,7 @@ export default async function CoursesPage() {
           )}
 
           <div className="flex-1">
-            <CardTitle className="text-xl md:text-2xl">{c.title}</CardTitle>
+            <CardTitle className="text-xl sm:text-2xl">{c.title}</CardTitle>
             <CardDescription className="text-sm text-muted-foreground">
               {c.description}
             </CardDescription>

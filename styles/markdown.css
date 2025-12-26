@@ -93,7 +93,7 @@ article {
   -webkit-mask-image: linear-gradient(
     to right,
     black 0%,
-    black calc(100% - 2rem),
+    black calc(100% - 3rem),
     transparent 100%
   );
   -webkit-mask-repeat: no-repeat;
@@ -101,7 +101,7 @@ article {
   mask-image: linear-gradient(
     to right,
     black 0%,
-    black calc(100% - 2rem),
+    black calc(100% - 3rem),
     transparent 100%
   );
   mask-repeat: no-repeat;
@@ -111,6 +111,7 @@ article {
 .katex-display > .katex {
   display: inline-block;
   min-width: max-content;
+  padding-right: 16px;
 }
 
 /* colored markdown KaTeX */

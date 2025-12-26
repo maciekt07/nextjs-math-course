@@ -1,7 +1,7 @@
 "use client";
 
 import type { User } from "better-auth";
-import { BookOpen, Calculator, LogIn, Menu, X } from "lucide-react";
+import { BookOpen, Calculator, LogIn, Menu } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ThemeSelect } from "@/components/theme-select";
@@ -14,7 +14,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/ui";
 
 export function Navbar({ user }: { user: User | null }) {
   const [open, setOpen] = useState<boolean>(false);
@@ -22,6 +22,7 @@ export function Navbar({ user }: { user: User | null }) {
 
   useEffect(() => {
     const handleScroll = () => setAtTop(window.scrollY < 10);
+    handleScroll();
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -30,7 +31,7 @@ export function Navbar({ user }: { user: User | null }) {
     <div className="mb-24">
       <header
         className={cn(
-          "w-full py-5 bg-transparent fixed backdrop-blur-3xl z-10 transition-all duration-300",
+          "w-full py-4 sm:py-5 bg-transparent fixed backdrop-blur-3xl z-10 transition-all duration-300",
           atTop ? "border-b border-transparent" : "border-b",
         )}
       >
@@ -75,8 +76,13 @@ export function Navbar({ user }: { user: User | null }) {
             <ThemeSelect />
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
-                <Button variant="outline" size="icon" aria-label="Menu">
-                  {open ? <X /> : <Menu />}
+                <Button
+                  variant="outline"
+                  size="icon"
+                  aria-label="Menu"
+                  className="cursor-pointer"
+                >
+                  <Menu />
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="p-6 space-y-4">

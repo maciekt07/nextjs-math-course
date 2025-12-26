@@ -7,7 +7,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { formatDuration, formatReadingTime } from "@/lib/format";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/ui";
 import type { Lesson, MuxVideo } from "@/payload-types";
 
 interface LessonTitleProps {
@@ -40,7 +40,9 @@ export function LessonTitle({ lesson }: LessonTitleProps) {
 
   return (
     <div className="mb-8 font-inter">
-      <h1 className="text-4xl font-bold mb-4 text-primary">{lesson.title}</h1>
+      <h1 className="text-3xl sm:text-4xl font-bold mb-4 text-primary">
+        {lesson.title}
+      </h1>
 
       <div className="flex items-center text-sm text-muted-foreground">
         <div className="flex items-center gap-1.5 h-5">

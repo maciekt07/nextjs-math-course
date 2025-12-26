@@ -89,12 +89,12 @@ export default async function Home() {
 
   return (
     <div className="w-full flex flex-col">
-      <section className="mt-6 sm:mt-2">
+      <section className="mt-0 sm:mt-2">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            <div className="flex flex-col gap-6 text-left">
+            <div className="flex flex-col gap-3 sm:gap-6 text-left">
               <HeroBadge />
-              <h1 className="text-4xl sm:text-5xl font-bold text-foreground leading-tight text-balance">
+              <h1 className="text-3xl sm:text-5xl font-bold text-foreground leading-tight text-balance">
                 Master <span className="text-primary">Mathematics</span> with
                 Engaging Courses
               </h1>
@@ -105,7 +105,7 @@ export default async function Home() {
               </p>
 
               {/* hero image - shows there on small screens */}
-              <HeroImage className="lg:hidden h-96 sm:h-128 max-w-md mx-auto" />
+              <HeroImage className="lg:hidden h-80 sm:h-128 max-w-md mx-auto" />
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button size="xl" asChild>
                   <a href="#courses">Explore Courses</a>
@@ -164,7 +164,7 @@ export default async function Home() {
         <>
           <div className="mt-16 px-4 sm:px-6 max-w-7xl mx-auto text-center">
             <h2
-              className="text-3xl sm:text-4xl font-bold text-foreground"
+              className="text-3xl sm:text-4xl font-bold text-foreground scroll-mt-24"
               id="courses"
             >
               Courses

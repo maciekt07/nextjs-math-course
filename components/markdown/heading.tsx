@@ -1,35 +1,53 @@
-"use client";
 import { Link } from "lucide-react";
-import { scrollToHeader } from "@/lib/markdown/scroll-to-header";
+import { cn } from "@/lib/ui";
 import { useSidebarStore } from "@/stores/sidebar-store";
 
-type Heading = {
+type HeadingProps = {
   as: "h2" | "h3";
   id: string;
   children: React.ReactNode;
 };
 
-export function Heading({ as: Tag, id, children }: Heading) {
-  const sidebarOpen = useSidebarStore((state) => state.open);
-  const iconSize = Tag === "h2" ? 20 : 16;
+export function Heading({ as: Tag, id, children }: HeadingProps) {
+  const sidebarOpen = useSidebarStore((s) => s.open);
+  const iconSize = Tag === "h2" ? 18 : 16;
 
   return (
-    <Tag id={id} className="group relative">
+    <Tag
+      id={id}
+      className={cn(
+        "group relative",
+        sidebarOpen ? "scroll-mt-6" : "scroll-mt-23",
+      )}
+    >
       <span className="inline">
         {children}
-        <a
-          href={`#${id}`}
-          aria-label="link to section"
-          onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            scrollToHeader(id, { sidebarOpen });
-          }}
-          className="inline-flex items-center ml-2 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-foreground align-middle"
-        >
-          <Link size={iconSize} />
-        </a>
+        <Link
+          size={iconSize}
+          aria-hidden="true"
+          className={cn(
+            "ml-2 inline align-baseline transition-opacity duration-200",
+            "opacity-0",
+            "group-hover:opacity-100",
+            "group-focus-within:opacity-100",
+            "[@media(pointer:coarse)]:opacity-40",
+          )}
+        />
       </span>
+
+      <a
+        href={`#${id}`}
+        aria-label={`Link to ${id}`}
+        className={cn(
+          "absolute inset-0 z-20",
+          "pointer-events-none",
+          "group-hover:pointer-events-auto",
+          "group-focus-within:pointer-events-auto",
+          "[@media(pointer:coarse)]:pointer-events-auto",
+        )}
+      >
+        <span className="sr-only">Link to {id}</span>
+      </a>
     </Tag>
   );
 }
