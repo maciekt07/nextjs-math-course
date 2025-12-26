@@ -1,10 +1,8 @@
-import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { cache } from "react";
-import { db } from "@/drizzle/db";
-import { enrollment } from "@/drizzle/schema";
 import { auth } from "@/lib/auth/auth";
+import { hasEnrollment } from "@/lib/db/enrollment";
 import { getPayloadClient } from "@/lib/payload-client";
 import { CourseLayoutWrapper } from "./_components/course-layout-wrapper";
 
@@ -59,17 +57,7 @@ export default async function CourseLayout({
   let owned = false;
   const session = await auth.api.getSession({ headers: await headers() });
   if (session) {
-    const rows = await db
-      .select()
-      .from(enrollment)
-      .where(
-        and(
-          eq(enrollment.userId, session.user.id),
-          eq(enrollment.courseId, data.course.id),
-          eq(enrollment.status, "completed"),
-        ),
-      );
-    owned = (rows || []).length > 0;
+    owned = await hasEnrollment(session.user.id, data.course.id);
   }
 
   return (

@@ -5,7 +5,7 @@ type SidebarStore = {
   setOpen: (open: boolean) => void;
   toggle: () => void;
   optimisticPath: string | null;
-  setOptimisticPath: (path: string) => void;
+  setOptimisticPath: (path: string | null) => void;
 };
 
 export const useSidebarStore = create<SidebarStore>((set) => ({

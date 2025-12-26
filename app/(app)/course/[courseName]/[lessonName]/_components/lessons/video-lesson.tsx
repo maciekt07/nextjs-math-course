@@ -219,7 +219,7 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
     if (shouldUseSigned && !token) {
       return (
         <div className="w-full aspect-video rounded-xl overflow-hidden bg-muted">
-          <Skeleton className="h-full w-full" />
+          <Skeleton className="h-full w-full bg-card" />
         </div>
       );
     }

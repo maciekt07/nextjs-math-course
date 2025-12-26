@@ -20,12 +20,20 @@ export function CourseLayoutWrapper({
 }) {
   const open = useSidebarStore((state) => state.open);
   const setOpen = useSidebarStore((state) => state.setOpen);
+  const setOptimisticPath = useSidebarStore((state) => state.setOptimisticPath);
   const initialize = useCourseStore((state) => state.initialize);
 
   useEffect(() => {
-    setOpen(true);
     initialize(course, lessons);
-  }, [setOpen, initialize, course, lessons]);
+  }, [initialize, course, lessons]);
+
+  useEffect(() => {
+    return () => {
+      setOptimisticPath(null);
+      setOpen(true);
+    };
+  }, [setOptimisticPath, setOpen]);
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen relative overflow-x-hidden">
       <motion.div
@@ -34,7 +42,9 @@ export function CourseLayoutWrapper({
         animate={{ width: open ? 320 : 0 }}
         transition={{ duration: 0.2 }}
       />
+
       <CourseSidebar course={course} lessons={lessons} owned={owned} />
+
       <div className="flex-1 flex flex-col min-w-0">
         <motion.main
           id="course-scroll-area"

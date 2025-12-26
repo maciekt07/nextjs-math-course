@@ -1,4 +1,3 @@
-import { and, eq } from "drizzle-orm";
 import { Lock, LogIn } from "lucide-react";
 import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
@@ -8,9 +7,8 @@ import { notFound } from "next/navigation";
 import BuyCourseButton from "@/components/buy-course-button";
 import Footer from "@/components/footer";
 import { Button } from "@/components/ui/button";
-import { db } from "@/drizzle/db";
-import { enrollment } from "@/drizzle/schema";
 import { auth } from "@/lib/auth/auth";
+import { hasEnrollment } from "@/lib/db/enrollment";
 import { getPayloadClient } from "@/lib/payload-client";
 import type { Course } from "@/payload-types";
 import FeedbackWidget from "./_components/feedback-widget";
@@ -48,30 +46,6 @@ async function getLesson({
     {
       revalidate: 3600,
       tags: lesson ? [`lesson:${lesson.id}`] : [],
-    },
-  )();
-}
-
-function hasEnrollment(userId: string, courseId: string) {
-  return unstable_cache(
-    async () => {
-      const rows = await db
-        .select()
-        .from(enrollment)
-        .where(
-          and(
-            eq(enrollment.userId, userId),
-            eq(enrollment.courseId, courseId),
-            eq(enrollment.status, "completed"),
-          ),
-        );
-
-      return rows.length > 0;
-    },
-    ["enrollment", userId, courseId],
-    {
-      revalidate: 300,
-      tags: [`enrollment:${userId}:${courseId}`],
     },
   )();
 }

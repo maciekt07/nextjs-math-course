@@ -50,12 +50,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
-      <head>
+      {/* <head>
         <script
           crossOrigin="anonymous"
           src="//unpkg.com/react-scan/dist/auto.global.js"
         />
-      </head>
+      </head> */}
       <body className={`${inter.className} ${inter.variable} antialiased`}>
         <ThemeProvider
           attribute="class"

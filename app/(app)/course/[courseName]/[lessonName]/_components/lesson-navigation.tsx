@@ -78,6 +78,7 @@ export function LessonNavigation({
     return (
       <Link
         href={getLessonPath(lesson)}
+        prefetch
         aria-label={`${isPrevious ? "Previous" : "Next"} lesson - ${lesson.title}`}
         onClick={() => sidebarOpen && setOptimisticPath(getLessonPath(lesson))}
         className="group flex-1 min-h-[5rem] p-4 rounded-lg border border-border transition-all duration-200 flex items-center justify-between"

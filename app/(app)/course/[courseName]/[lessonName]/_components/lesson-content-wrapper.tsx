@@ -20,7 +20,7 @@ export function LessonContentWrapper({
   lesson,
   children,
 }: LessonContentWrapperProps) {
-  const { fontStyle } = useSettingsStore();
+  const fontStyle = useSettingsStore((state) => state.fontStyle);
 
   const fontClass = {
     default: "font-inter",

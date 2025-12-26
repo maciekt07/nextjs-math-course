@@ -39,7 +39,7 @@ export function LessonTitle({ lesson }: LessonTitleProps) {
   }).format(updatedAt);
 
   return (
-    <div className="mb-8 font-inter">
+    <div className="mb-8 font-inter" suppressHydrationWarning>
       <h1 className="text-3xl sm:text-4xl font-bold mb-4 text-primary">
         {lesson.title}
       </h1>

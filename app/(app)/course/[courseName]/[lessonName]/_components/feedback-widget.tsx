@@ -35,7 +35,10 @@ export default function FeedbackWidget({
   const [isMounted, setIsMounted] = useState(false);
   const commentRef = useRef(comment);
 
-  const isFirefox = Bowser.getParser(window.navigator.userAgent).is("firefox");
+  function isFirefox() {
+    if (typeof window === "undefined") return false;
+    return Bowser.getParser(window.navigator.userAgent).is("firefox");
+  }
 
   useEffect(() => {
     setIsMounted(true);
@@ -152,8 +155,8 @@ export default function FeedbackWidget({
                       ? "bg-primary text-primary-foreground border-primary"
                       : "bg-secondary text-foreground border-border hover:bg-secondary/80",
                   )}
-                  whileHover={!isFirefox ? { scale: 1.05 } : undefined}
-                  whileTap={!isFirefox ? { scale: 0.95 } : undefined}
+                  whileHover={!isFirefox() ? { scale: 1.05 } : undefined}
+                  whileTap={!isFirefox() ? { scale: 0.95 } : undefined}
                 >
                   <Icon
                     strokeWidth={2.4}
