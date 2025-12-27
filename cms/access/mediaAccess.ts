@@ -1,9 +1,7 @@
-import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import type { Access } from "payload";
-import { db } from "@/drizzle/db";
-import { enrollment } from "@/drizzle/schema";
 import { auth } from "@/lib/auth/auth";
+import { hasEnrollment } from "@/lib/db/enrollment";
 
 export const mediaReadAccess: Access = async ({ req }): Promise<boolean> => {
   try {
@@ -95,20 +93,7 @@ export const mediaReadAccess: Access = async ({ req }): Promise<boolean> => {
       return false;
     }
 
-    // check enrollment
-    const userEnrollments = await db
-      .select()
-      .from(enrollment)
-      .where(
-        and(
-          eq(enrollment.userId, session.user.id),
-          eq(enrollment.courseId, courseId),
-          eq(enrollment.status, "completed"),
-        ),
-      )
-      .limit(1);
-
-    const hasAccess = userEnrollments.length > 0;
+    const hasAccess = await hasEnrollment(session.user.id, courseId);
 
     return hasAccess;
   } catch (error) {

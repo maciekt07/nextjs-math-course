@@ -1,36 +1,45 @@
 import { BookX } from "lucide-react";
+import { unstable_cache } from "next/cache";
 import { notFound, redirect } from "next/navigation";
-import { cache } from "react";
 import { getPayloadClient } from "@/lib/payload-client";
 
-const getCourseWithFirstLesson = cache(async (courseSlug: string) => {
-  const payload = await getPayloadClient();
+export const revalidate = 3600;
 
-  const { docs: courses } = await payload.find({
-    collection: "courses",
-    where: { slug: { equals: courseSlug } },
-    select: { slug: true },
-    limit: 1,
-  });
+const getCourseWithFirstLesson = unstable_cache(
+  async (courseSlug: string) => {
+    const payload = await getPayloadClient();
 
-  const course = courses[0];
-  if (!course) return null;
+    const { docs: courses } = await payload.find({
+      collection: "courses",
+      where: { slug: { equals: courseSlug } },
+      select: { slug: true, id: true },
+      limit: 1,
+    });
 
-  const { docs: lessons } = await payload.find({
-    collection: "lessons",
-    where: { course: { equals: course.id } },
-    limit: 1,
-    select: {
-      slug: true,
-    },
-  });
+    const course = courses[0];
+    if (!course) return null;
 
-  return { course, firstLesson: lessons[0] || null };
-});
+    const { docs: lessons } = await payload.find({
+      collection: "lessons",
+      where: { course: { equals: course.id } },
+      select: { slug: true },
+      limit: 1,
+    });
+
+    return { course, firstLesson: lessons[0] || null };
+  },
+  [],
+  {
+    tags: ["courses-list"],
+    revalidate: 3600,
+  },
+);
 
 type Args = {
   params: Promise<{ courseName: string }>;
 };
+
+//TODO: add first lesson slug to cms for better performance
 
 export default async function CoursePage({ params: paramsPromise }: Args) {
   const { courseName } = await paramsPromise;

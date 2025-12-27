@@ -16,6 +16,6 @@ export const revalidateLesson: CollectionAfterChangeHook = async ({
 
   payload.logger.info(`Revalidating tag: ${tag} for lesson ${doc.slug}`);
   revalidateTag(tag);
-
+  revalidateTag("courses-list");
   return doc;
 };
