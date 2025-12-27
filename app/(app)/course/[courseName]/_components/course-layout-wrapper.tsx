@@ -47,7 +47,6 @@ export function CourseLayoutWrapper({
 
       <div className="flex-1 flex flex-col min-w-0">
         <motion.main
-          id="course-scroll-area"
           className="flex-1 w-full min-w-0"
           initial={{ paddingTop: 0 }}
           animate={{ paddingTop: open ? 0 : 68 }}

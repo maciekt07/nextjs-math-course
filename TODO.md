@@ -34,7 +34,7 @@
 - [x] Add video chapters [docs](https://www.mux.com/docs/guides/player-advanced-usage#chapters-example)
 - [x] Add lesson feedback form
 - [ ] Add course-release email notifications
-- [ ] Add custom Markdown blocks (Note, Deep Dive)
+- [x] Add custom Markdown callout blocks
 - [ ] Add drafts [docs](https://payloadcms.com/docs/versions/drafts)
 
 ## UI / UX
@@ -50,7 +50,6 @@
 - [x] Add heading anchor links on hover to markdown
 - [ ] Use responsive pagination for quiz [shadcn](https://ui.shadcn.com/docs/components/pagination)
 - [ ] Redesign course cards to be more responsive
-- [ ] Use shadcn empty component [shadcn](https://ui.shadcn.com/docs/components/empty)
 
 ## Backend
 

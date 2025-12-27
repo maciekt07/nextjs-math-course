@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { db } from "@/drizzle/db";
@@ -70,22 +71,19 @@ export default async function CoursesPage() {
 
   if (courseIds.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center text-center px-4 my-8 space-y-4">
-        <div className="bg-primary/10 p-6 rounded-full">
-          <BookOpen size={48} className="text-primary" />
-        </div>
-        <h2 className="text-3xl font-bold tracking-tight">No courses yet</h2>
-        <p className="max-w-md text-muted-foreground">
-          Start learning by exploring available courses. Once you purchase one,
-          it will appear here in your library.
-        </p>
-        <Button asChild size="xl" className="my-1">
-          <a href="/#courses">
-            <BookOpen />
-            Browse Courses
-          </a>
-        </Button>
-      </div>
+      <EmptyState
+        icon={BookOpen}
+        title="No courses yet"
+        description="Start learning by exploring available courses. Once you purchase one, it will appear here in your library."
+        action={
+          <Button asChild size="xl">
+            <a href="/#courses">
+              <BookOpen />
+              Browse Courses
+            </a>
+          </Button>
+        }
+      />
     );
   }
 
