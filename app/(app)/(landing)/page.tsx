@@ -92,7 +92,7 @@ export default async function Home() {
       <section className="mt-0 sm:mt-2">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            <div className="flex flex-col gap-3 sm:gap-6 text-left">
+            <div className="flex flex-col gap-3 sm:gap-6 text-left order-1 lg:order-1">
               <HeroBadge />
               <h1 className="text-3xl sm:text-5xl font-bold text-foreground leading-tight text-balance">
                 Master <span className="text-primary">Mathematics</span> with
@@ -104,8 +104,6 @@ export default async function Home() {
                 learning styles.
               </p>
 
-              {/* hero image - shows there on small screens */}
-              <HeroImage className="lg:hidden h-80 sm:h-128 max-w-md mx-auto" />
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button size="xl" asChild>
                   <a href="#courses">Explore Courses</a>
@@ -145,18 +143,9 @@ export default async function Home() {
                   </p>
                   <p className="text-sm text-muted-foreground">Courses</p>
                 </div>
-                {/* <div className="w-px h-12 bg-border"></div>
-                <div>
-                  <p className="text-2xl font-bold text-foreground">
-                    {totalLessons}
-                  </p>
-                  <p className="text-sm text-muted-foreground">Total Lessons</p>
-                </div> */}
               </div>
             </div>
-
-            {/* hero image - shows on right side on large screens */}
-            <HeroImage className="hidden lg:flex h-[600px]" />
+            <HeroImage className="h-96 -my-8 rounded-2xl sm:h-128 lg:h-[600px] max-w-md lg:max-w-none mx-auto order-3 lg:order-2" />
           </div>
         </div>
       </section>
