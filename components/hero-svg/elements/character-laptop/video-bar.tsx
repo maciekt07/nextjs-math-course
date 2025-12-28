@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { heroAnimation } from "../constants";
+import { heroAnimation } from "../../constants";
 
 export default function VideoBar() {
   return (

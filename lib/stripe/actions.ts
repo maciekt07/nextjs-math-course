@@ -47,7 +47,7 @@ export async function createPaymentIntent(
       courseId: course.id,
     },
     success_url: `${successBase}/course/${(course.slug as string) || ""}?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${successBase}/course/${(course.slug as string) || ""}`,
+    cancel_url: successBase,
   });
 
   const id = randomUUID();

@@ -1,10 +1,4 @@
 export default function Floor() {
-  /* initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{
-          duration: 0.3,
-          ease: "easeOut",
-        }} */
   return (
     <g id="freepik--Floor--inject-14">
       <path
