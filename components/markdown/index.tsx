@@ -31,14 +31,20 @@ interface MarkdownRendererProps {
    * this prevents blocking the main thread and FPS drops on long pages with lots of formulas
    */
   optimizeMath?: boolean;
+  isFreeLesson?: boolean;
 }
 
 export function MarkdownRenderer({
   content,
   media,
   optimizeMath = false,
+  isFreeLesson,
 }: MarkdownRendererProps) {
-  const components = createMarkdownComponents(media, optimizeMath);
+  const components = createMarkdownComponents({
+    media,
+    optimizeMath,
+    optimizeImages: isFreeLesson,
+  });
 
   return (
     <MarkdownWrapper>

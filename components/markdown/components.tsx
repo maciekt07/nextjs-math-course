@@ -15,10 +15,17 @@ import { getText, stripMarkdown } from "./utils";
 
 let currentH2Text = "";
 
-export function createMarkdownComponents(
-  media?: Media[],
-  optimizeMath?: boolean,
-): Components {
+interface CreateMarkdownComponentsOptions {
+  media?: Media[];
+  optimizeMath?: boolean;
+  optimizeImages?: boolean;
+}
+
+export function createMarkdownComponents({
+  media,
+  optimizeMath = false,
+  optimizeImages = false,
+}: CreateMarkdownComponentsOptions): Components {
   return {
     a: ({ node, ...props }) => (
       <a
@@ -43,6 +50,7 @@ export function createMarkdownComponents(
             width={width}
             height={height}
             loading="lazy"
+            unoptimized={!optimizeImages}
             placeholder={blurhash ? "blur" : "empty"}
             blurDataURL={blurhash || undefined}
             className="w-full rounded-2xl object-contain border-2 border-border"

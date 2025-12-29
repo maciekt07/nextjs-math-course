@@ -19,6 +19,7 @@ export function TextLesson({ lesson }: TextLessonProps) {
         // don't optimize free lessons for better SEO
         // there are no performance issues since they are SSGed
         optimizeMath={!lesson.free || process.env.NODE_ENV === "development"}
+        isFreeLesson={lesson.free ?? false}
       />
     </>
   );
