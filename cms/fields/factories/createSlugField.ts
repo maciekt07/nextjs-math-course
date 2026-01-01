@@ -7,7 +7,7 @@ export const createSlugField = (titleField: string): Field => ({
   unique: true,
   admin: {
     components: {
-      Field: "@fields/auto-slug-field",
+      Field: "@fields/slug-field",
     },
   },
   hooks: {

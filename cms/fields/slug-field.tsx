@@ -4,11 +4,11 @@ import { TextInput, useField, useFormFields } from "@payloadcms/ui";
 import type React from "react";
 import { slug } from "@/lib/slugify";
 
-type AutoSlugFieldProps = {
+type SlugFieldProps = {
   path: string;
 };
 
-export default function AutoSlugField({ path }: AutoSlugFieldProps) {
+export default function SlugField({ path }: SlugFieldProps) {
   const { value, setValue } = useField<string>({ path });
   const title = useFormFields(([fields]) => fields.title?.value as string);
 

@@ -9,6 +9,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
+    "ngrok": "ngrok http 3000",
     "build": "next build --turbopack",
     "start": "next start",
     "preview": "next build && next start",

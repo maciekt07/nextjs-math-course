@@ -1,5 +1,6 @@
+import { createMarkdownField } from "@fields/factories/createMarkdownPreviewField";
+import { createSlugField } from "@fields/factories/createSlugField";
 import type { CollectionConfig } from "payload";
-import { createSlugField } from "@/cms/fields/createSlugField";
 import { revalidateLesson } from "@/cms/hooks/revalidateLesson";
 
 export const Lessons: CollectionConfig = {
@@ -71,18 +72,15 @@ export const Lessons: CollectionConfig = {
         condition: (data) => data.type === "text",
       },
     },
-    {
+    createMarkdownField({
       name: "content",
-      type: "text",
-      label: "Content (Markdown + LaTeX)",
+      label: "Content",
+      required: true,
       admin: {
-        components: {
-          Field: "@fields/markdown-preview",
-        },
+        clientProps: { label: "Content" },
         condition: (data) => data.type === "text",
       },
-      required: true,
-    },
+    }),
 
     // QUIZ LESSON CONTENT
     {
@@ -93,12 +91,12 @@ export const Lessons: CollectionConfig = {
         condition: (data) => data.type === "quiz",
       },
       fields: [
-        {
+        createMarkdownField({
           name: "question",
-          type: "textarea",
-          label: "Question (Markdown + LaTeX)",
+          label: "Question",
           required: true,
-        },
+          admin: { clientProps: { label: "Question", rows: 2 } },
+        }),
         {
           name: "options",
           type: "array",
@@ -106,12 +104,12 @@ export const Lessons: CollectionConfig = {
           required: true,
           minRows: 2,
           fields: [
-            {
+            createMarkdownField({
               name: "text",
-              type: "text",
               label: "Option Text",
               required: true,
-            },
+              admin: { clientProps: { label: "Option Text", rows: 1 } },
+            }),
             {
               name: "isCorrect",
               type: "checkbox",
@@ -121,16 +119,16 @@ export const Lessons: CollectionConfig = {
             },
           ],
         },
-        {
+        createMarkdownField({
           name: "hint",
-          type: "text",
           label: "Hint (optional)",
-        },
-        {
+          admin: { clientProps: { label: "Hint (optional)", rows: 2 } },
+        }),
+        createMarkdownField({
           name: "solution",
-          type: "textarea",
           label: "Solution Explanation (Markdown + LaTeX)",
-        },
+          admin: { clientProps: { label: "Solution", rows: 8 } },
+        }),
       ],
     },
     // VIDEO LESSON CONTENT
@@ -142,14 +140,14 @@ export const Lessons: CollectionConfig = {
         condition: (data) => data.type === "video",
       },
     },
-    {
+    createMarkdownField({
       name: "videoDescription",
-      type: "textarea",
       label: "Video Description (Markdown + LaTeX)",
       admin: {
+        clientProps: { label: "Video Description", rows: 8 },
         condition: (data) => data.type === "video",
       },
-    },
+    }),
     {
       name: "chapters",
       type: "array",

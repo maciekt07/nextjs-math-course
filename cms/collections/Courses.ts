@@ -1,5 +1,5 @@
+import { createSlugField } from "@fields/factories/createSlugField";
 import type { Access, CollectionConfig } from "payload";
-import { createSlugField } from "@/cms/fields/createSlugField";
 import { revalidateCourse } from "@/cms/hooks/revalidateCourse";
 
 const isAdmin: Access = ({ req: { user } }) => user?.role === "admin";
@@ -7,7 +7,7 @@ const isAdmin: Access = ({ req: { user } }) => user?.role === "admin";
 export const Courses: CollectionConfig = {
   slug: "courses",
   orderable: true,
-  // only admin can manage courses
+
   access: {
     read: () => true,
     create: isAdmin,
@@ -19,6 +19,7 @@ export const Courses: CollectionConfig = {
   },
   admin: {
     useAsTitle: "title",
+    defaultColumns: ["title", "slug", "media", "description", "price"],
   },
   fields: [
     {
