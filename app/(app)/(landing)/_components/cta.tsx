@@ -29,7 +29,7 @@ export function CTASection({
   ];
 
   return (
-    <section className="py-10 sm:py-16 bg-primary/90 text-primary-foreground border-t mt-8 sm:m-8 sm:rounded-3xl">
+    <section className="py-8 sm:py-16 bg-primary/90 text-primary-foreground border-t mt-8 sm:m-8 sm:rounded-3xl">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h2 className="text-4xl sm:text-5xl font-bold mb-4 text-balance">

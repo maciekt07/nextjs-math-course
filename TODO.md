@@ -49,7 +49,7 @@
 - [x] Add next/previous lesson navigation
 - [x] Add heading anchor links on hover to markdown
 - [ ] Use responsive pagination for quiz [shadcn](https://ui.shadcn.com/docs/components/pagination)
-- [ ] Redesign course cards to be more responsive
+- [x] Redesign course cards to be more responsive
 
 ## Backend
 

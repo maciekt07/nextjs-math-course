@@ -1,6 +1,6 @@
 import { BookX, ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import { EmptyState } from "@/components/empty-state";
+import { EmptyState, EmptyStateCenterWrapper } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 
 export const metadata = {
@@ -11,7 +11,7 @@ export const metadata = {
 
 export default function NotFoundPage() {
   return (
-    <div className="flex h-dvh w-full items-center justify-center">
+    <EmptyStateCenterWrapper>
       <EmptyState
         icon={BookX}
         title="The course does not exist."
@@ -25,6 +25,6 @@ export default function NotFoundPage() {
           </Button>
         }
       />
-    </div>
+    </EmptyStateCenterWrapper>
   );
 }

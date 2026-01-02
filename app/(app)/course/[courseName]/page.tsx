@@ -1,6 +1,9 @@
-import { BookX } from "lucide-react";
+import { BookX, ChevronLeft } from "lucide-react";
 import { unstable_cache } from "next/cache";
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { EmptyState, EmptyStateCenterWrapper } from "@/components/empty-state";
+import { Button } from "@/components/ui/button";
 import { getPayloadClient } from "@/lib/payload-client";
 
 export const revalidate = 3600;
@@ -49,17 +52,21 @@ export default async function CoursePage({ params: paramsPromise }: Args) {
 
   if (!data.firstLesson) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-center">
-          <div className="mx-auto mb-4 w-24 h-24 flex items-center justify-center bg-primary/10 rounded-full">
-            <BookX size={48} className="text-primary" />
-          </div>
-          <h1 className="text-3xl font-bold mb-2">No Lessons Available</h1>
-          <p className="text-muted-foreground">
-            This course doesn't have any lessons yet.
-          </p>
-        </div>
-      </div>
+      <EmptyStateCenterWrapper>
+        <EmptyState
+          icon={BookX}
+          title="No Lessons Available"
+          description="This course doesn't have any lessons yet."
+          action={
+            <Button asChild size="xl">
+              <Link href="/">
+                <ChevronLeft />
+                Go Back Home
+              </Link>
+            </Button>
+          }
+        />
+      </EmptyStateCenterWrapper>
     );
   }
 

@@ -30,7 +30,7 @@ const reasons: Reason[] = [
 export function WhyChoose() {
   return (
     <section className="border-y bg-muted/30 mt-16">
-      <div className="mx-auto max-w-6xl px-4 py-16 sm:py-20 lg:py-24">
+      <div className="mx-auto max-w-6xl px-4 py-12 sm:py-20 lg:py-24">
         <div className="mb-12 text-center">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
             Why Choose Math Course Online?

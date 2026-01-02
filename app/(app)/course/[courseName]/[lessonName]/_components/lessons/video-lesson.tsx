@@ -219,7 +219,7 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
     if (shouldUseSigned && !token) {
       return (
         <div className="w-full aspect-video rounded-xl overflow-hidden bg-muted">
-          <Skeleton className="h-full w-full bg-card" />
+          <Skeleton className="h-full w-full" />
         </div>
       );
     }
@@ -240,7 +240,6 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
             : undefined
         }
         title=""
-        thumbnailTime={2}
         videoTitle={muxVideo.title || lesson.title}
         accentColor="#4E65FF"
         proudlyDisplayMuxBadge
@@ -250,6 +249,7 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
           lesson_id: lesson.id,
         }}
         onError={(e) => console.log(e)}
+        preload="true"
         streamType="on-demand"
         autoPlay={false}
         className="rounded-xl w-full overflow-hidden bg-background aspect-video"

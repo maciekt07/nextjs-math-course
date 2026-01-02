@@ -48,3 +48,23 @@ export function EmptyState({
     </div>
   );
 }
+
+export function EmptyStateCenterWrapper({
+  children,
+  className,
+  ...props
+}: {
+  children: React.ReactNode;
+} & React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn(
+        "flex min-h-[calc(100dvh-68px)] items-center justify-center overflow-hidden pb-18 sm:pb-0",
+        className,
+      )}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}

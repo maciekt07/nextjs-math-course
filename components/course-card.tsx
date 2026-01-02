@@ -21,17 +21,18 @@ interface CourseCardProps {
 
 export function CourseCard({ course, owned, minimal }: CourseCardProps) {
   return (
-    <Card key={course.id} className="flex flex-col">
-      <CardHeader>
-        <div className="flex items-start gap-4">
+    <Card key={course.id} className="flex flex-col py-4 md:py-6">
+      <CardHeader className="px-4 md:px-6">
+        <div className="flex flex-col sm:flex-row items-start gap-4">
           {course.media ? (
-            <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-lg overflow-hidden shrink-0">
+            <div className="relative w-full h-48 sm:w-32 sm:h-32 sm:aspect-square rounded-lg overflow-hidden">
               <Image
                 src={(course.media as Media).url!}
                 alt={(course.media as Media).alt ?? course.title ?? "Preview"}
-                width={128}
-                height={128}
-                className="object-cover w-full h-full"
+                fill
+                className="object-cover"
+                sizes="(min-width: 640px) 128px, 640px"
+                loading="lazy"
                 placeholder={
                   (course.media as Media).blurhash ? "blur" : "empty"
                 }
@@ -39,7 +40,7 @@ export function CourseCard({ course, owned, minimal }: CourseCardProps) {
               />
             </div>
           ) : (
-            <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-lg border-3 border-primary/30 bg-primary/10 shrink-0 flex items-center justify-center">
+            <div className="relative w-full h-48 sm:w-32 sm:h-32 rounded-lg border-3 border-primary/30 bg-primary/10 shrink-0 flex items-center justify-center">
               <GraduationCap className="w-16 h-16 text-primary" />
             </div>
           )}
@@ -55,7 +56,7 @@ export function CourseCard({ course, owned, minimal }: CourseCardProps) {
         </div>
       </CardHeader>
 
-      <CardContent className="flex flex-col gap-4 flex-1">
+      <CardContent className="flex flex-col gap-4 flex-1 -mt-3 px-4 md:px-6">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <BookOpen size={20} /> {course.lessonCount} Chapters
@@ -71,8 +72,9 @@ export function CourseCard({ course, owned, minimal }: CourseCardProps) {
           </Button>
         )}
       </CardContent>
+
       {!minimal && (
-        <CardFooter className="border-t dark:border-border min-h-[80px] flex items-center">
+        <CardFooter className="border-t dark:border-border min-h-[80px] flex items-center px-4 md:px-6 [.border-t]:pt-4 md:[.border-t]:pt-6">
           {owned ? (
             <div className="flex items-center justify-center w-full gap-2">
               <Check size={28} className="text-green-600" />

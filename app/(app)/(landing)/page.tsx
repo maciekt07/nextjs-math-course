@@ -5,7 +5,6 @@ import { headers } from "next/headers";
 import Link from "next/link";
 import { CourseCard } from "@/components/course-card";
 import { Button } from "@/components/ui/button";
-import { CountingNumber } from "@/components/ui/shadcn-io/counting-number";
 import { db } from "@/drizzle/db";
 import { enrollment, user } from "@/drizzle/schema";
 import { auth } from "@/lib/auth/auth";
@@ -123,11 +122,7 @@ export default async function Home() {
               <div className="flex items-center gap-6 pt-4">
                 <div>
                   <p className="text-2xl font-bold text-foreground">
-                    <CountingNumber
-                      number={formattedUserCount}
-                      transition={{ stiffness: 100, damping: 30 }}
-                    />
-                    +
+                    {formattedUserCount}+
                   </p>
                   <p className="text-sm text-muted-foreground">
                     Students Learning
@@ -136,10 +131,7 @@ export default async function Home() {
                 <div className="w-px h-12 bg-border"></div>
                 <div>
                   <p className="text-2xl font-bold text-foreground">
-                    <CountingNumber
-                      number={courses.length}
-                      transition={{ stiffness: 100, damping: 30 }}
-                    />
+                    {courses.length}
                   </p>
                   <p className="text-sm text-muted-foreground">Courses</p>
                 </div>

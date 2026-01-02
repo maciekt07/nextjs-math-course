@@ -186,15 +186,14 @@ export function CourseSidebar({
                   src={(course.media as Media).url!}
                   alt={(course.media as Media).alt ?? course.title!}
                   fill
+                  sizes="(min-width: 768px) 287px, 80px"
                   className="object-cover"
                   priority
-                  fetchPriority="high"
                   placeholder={
                     (course.media as Media).blurhash ? "blur" : "empty"
                   }
                   blurDataURL={(course.media as Media).blurhash || undefined}
                 />
-                <div className="absolute inset-0 bg-black/20"></div>
               </div>
               <div className="flex-1 min-w-0 md:hidden space-y-1">
                 <h2 className="font-semibold text-base leading-tight">
