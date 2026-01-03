@@ -64,7 +64,12 @@ export function CourseSidebar({
       setOptimisticPath(pathname);
       //FIXME: first entry should stay open on mobile
       if (window.innerWidth < 768) {
-        setOpen(false); // close on mobile after router push completes
+        // close on mobile after router push completes
+        requestAnimationFrame(() => {
+          startTransition(() => {
+            setOpen(false);
+          });
+        });
       }
     }
   }, [pathname, setOptimisticPath, setOpen]);
