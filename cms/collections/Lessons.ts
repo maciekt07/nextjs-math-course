@@ -27,7 +27,7 @@ export const Lessons: CollectionConfig = {
       type: "text",
       required: true,
     },
-    createSlugField("title"),
+    createSlugField(),
     {
       name: "free",
       type: "checkbox",

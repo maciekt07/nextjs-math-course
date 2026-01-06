@@ -1,7 +1,7 @@
 import type { Field } from "payload";
 import { slug } from "@/lib/slugify";
 
-export const createSlugField = (titleField: string): Field => ({
+export const createSlugField = (titleField: string = "title"): Field => ({
   name: "slug",
   type: "text",
   unique: true,
