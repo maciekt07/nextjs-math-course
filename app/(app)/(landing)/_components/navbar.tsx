@@ -31,8 +31,10 @@ export function Navbar({ user }: { user: User | null }) {
     <div className="mb-24">
       <header
         className={cn(
-          "w-full py-4 sm:py-5 bg-transparent fixed backdrop-blur-3xl z-10 transition-all duration-300",
-          atTop ? "border-b border-transparent" : "border-b",
+          "w-full py-4 sm:py-5 bg-transparent fixed z-10 transition-colors duration-300",
+          atTop
+            ? "border-b border-transparent"
+            : "border-b bg-background/30 backdrop-blur-2xl",
         )}
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between px-6">
@@ -45,12 +47,12 @@ export function Navbar({ user }: { user: User | null }) {
             <ThemeSelect />
             {user ? (
               <>
-                <Button asChild variant="outline">
+                <Button asChild variant="outline" className="backdrop-blur-2xl">
                   <Link href="/courses">
                     <BookOpen /> My Courses
                   </Link>
                 </Button>
-                <Button asChild variant="outline">
+                <Button asChild variant="outline" className="backdrop-blur-2xl">
                   <Link href="/account" className="flex items-center gap-2">
                     <Avatar className="h-6 w-6">
                       <AvatarFallback className="bg-primary text-primary-foreground">
@@ -64,7 +66,7 @@ export function Navbar({ user }: { user: User | null }) {
                 </Button>
               </>
             ) : (
-              <Button asChild variant="outline">
+              <Button asChild variant="outline" className="backdrop-blur-2xl">
                 <Link href="/auth/sign-in" className="flex items-center gap-2">
                   <LogIn /> Log In
                 </Link>

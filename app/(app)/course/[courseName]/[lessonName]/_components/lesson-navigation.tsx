@@ -17,8 +17,11 @@ export function LessonNavigation({
 }: {
   currentSlug?: string | null;
 }) {
-  const { lessonsMeta, course } = useCourseStore();
-  const { open: sidebarOpen, setOptimisticPath } = useSidebarStore();
+  const lessonsMeta = useCourseStore((state) => state.lessonsMeta);
+  const course = useCourseStore((state) => state.course);
+
+  const sidebarOpen = useSidebarStore((state) => state.open);
+  const setOptimisticPath = useSidebarStore((state) => state.setOptimisticPath);
 
   const { previousLesson, nextLesson } = useMemo(() => {
     const index = lessonsMeta.findIndex((l) => l.slug === currentSlug);

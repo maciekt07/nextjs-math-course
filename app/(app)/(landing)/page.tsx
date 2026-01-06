@@ -11,6 +11,7 @@ import { auth } from "@/lib/auth/auth";
 import { getPayloadClient } from "@/lib/payload-client";
 import { CTASection } from "./_components/cta";
 import { FAQ } from "./_components/faq";
+import { GridBackground } from "./_components/grid-background";
 import { HeroBadge } from "./_components/hero-badge";
 import { HeroImage } from "./_components/hero-image";
 import { WhyChoose } from "./_components/why-choose";
@@ -87,7 +88,8 @@ export default async function Home() {
   );
 
   return (
-    <div className="w-full flex flex-col">
+    <div className="w-full flex flex-col ">
+      <GridBackground />
       <section className="mt-0 sm:mt-2">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
@@ -108,7 +110,12 @@ export default async function Home() {
                   <a href="#courses">Explore Courses</a>
                 </Button>
                 {courses.length > 0 && (
-                  <Button variant="outline" size="xl" asChild>
+                  <Button
+                    variant="outline"
+                    size="xl"
+                    asChild
+                    className="backdrop-blur-2xl"
+                  >
                     <Link
                       href={
                         courses[0].slug ? `/course/${courses[0].slug}` : "#"
@@ -119,7 +126,7 @@ export default async function Home() {
                   </Button>
                 )}
               </div>
-              <div className="flex items-center gap-6 pt-4">
+              <div className="flex h-16 items-center gap-8 pt-4">
                 <div>
                   <p className="text-2xl font-bold text-foreground">
                     {formattedUserCount}+
@@ -128,7 +135,7 @@ export default async function Home() {
                     Students Learning
                   </p>
                 </div>
-                <div className="w-px h-12 bg-border"></div>
+                {/* <Separator orientation="vertical" /> */}
                 <div>
                   <p className="text-2xl font-bold text-foreground">
                     {courses.length}
@@ -142,8 +149,8 @@ export default async function Home() {
         </div>
       </section>
       {courses.length > 0 ? (
-        <>
-          <div className="mt-16 px-4 sm:px-6 max-w-7xl mx-auto text-center">
+        <div className="mt-24 pb-16 bg-gradient-to-b from-background to-neutral-100 dark:to-neutral-900">
+          <div className="px-4 sm:px-6 max-w-7xl mx-auto text-center">
             <h2
               className="text-3xl sm:text-4xl font-bold text-foreground scroll-mt-24"
               id="courses"
@@ -167,7 +174,7 @@ export default async function Home() {
               ))}
             </div>
           </div>
-        </>
+        </div>
       ) : (
         <div className="mt-16 px-4 sm:px-6 max-w-7xl mx-auto text-center text-muted-foreground">
           <h2 className="text-2xl sm:text-3xl font-semibold">

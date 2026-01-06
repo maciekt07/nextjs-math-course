@@ -137,7 +137,7 @@ export default function FeedbackWidget({
             {reactions.map((reaction) => {
               const Icon = reaction.icon;
               const selected = selectedReaction === reaction.value;
-
+              //  text-transparent! animate-pulse opacity-80
               return (
                 <motion.button
                   type="button"
@@ -146,7 +146,7 @@ export default function FeedbackWidget({
                   title={reaction.label}
                   key={reaction.value}
                   onClick={() => toggleReaction(reaction.value)}
-                  disabled={isSubmitted}
+                  disabled={isSubmitted || !isMounted}
                   className={cn(
                     "flex items-center justify-center whitespace-nowrap border transition-colors cursor-pointer",
                     "h-10 w-10 sm:h-auto sm:w-auto px-0 sm:px-2 py-0 sm:py-1",

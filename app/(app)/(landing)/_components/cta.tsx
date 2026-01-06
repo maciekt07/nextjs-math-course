@@ -64,7 +64,7 @@ export function CTASection({
           </div>
 
           <div className="pt-8 border-t border-white/20 overflow-x-auto">
-            <div className="flex justify-center sm:grid sm:grid-cols-3 gap-4 sm:gap-6 min-w-max sm:min-w-0">
+            <div className="flex justify-center sm:grid sm:grid-cols-3 sm:justify-items-center gap-4 sm:gap-6 min-w-max sm:min-w-0">
               {features.map((feature) => (
                 <div
                   key={feature.title}
