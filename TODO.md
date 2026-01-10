@@ -22,7 +22,7 @@
   - [x] Video lessons (Mux Video Payload Plugin)
   - [x] Quizzes
 - [ ] Redesign custom fields
-  - [ ] Markdown preview
+  - [x] Markdown preview
   - [ ] Lesson image upload
 - [x] Integrate Desmos graphs support
 - [x] Protect media for premium lessons
@@ -36,6 +36,7 @@
 - [ ] Add course-release email notifications
 - [x] Add custom Markdown callout blocks
 - [ ] Add drafts [docs](https://payloadcms.com/docs/versions/drafts)
+- [ ] Add lesson groups
 
 ## UI / UX
 

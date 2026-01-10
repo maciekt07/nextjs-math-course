@@ -21,7 +21,7 @@ import { authClient } from "@/lib/auth/auth-client";
 import { type SignUpSchema, signUpSchema } from "@/lib/auth/auth-validation";
 import { AUTH_LIMITS } from "@/lib/constants/limits";
 
-export function SignUpForm() {
+export function SignUpForm({ returnTo }: { returnTo?: string }) {
   const router = useRouter();
   const form = useForm<SignUpSchema>({
     resolver: zodResolver(signUpSchema),
@@ -36,8 +36,12 @@ export function SignUpForm() {
   const { isSubmitting } = form.formState;
 
   async function handleSignUp(data: SignUpSchema) {
+    const callbackURL = returnTo
+      ? `/auth/sign-in?returnTo=${encodeURIComponent(returnTo)}`
+      : "/auth/sign-in";
+
     await authClient.signUp.email(
-      { ...data, callbackURL: "/auth/sign-in" },
+      { ...data, callbackURL },
       {
         onError: (error) => {
           toast.error(error.error.message || "Failed to sign up");
@@ -46,7 +50,10 @@ export function SignUpForm() {
           toast.success(
             "Check your inbox to verify your email before logging in",
           );
-          router.push("/auth/verify-email");
+          const verifyEmailUrl = returnTo
+            ? `/auth/verify-email?returnTo=${encodeURIComponent(returnTo)}`
+            : "/auth/verify-email";
+          router.push(verifyEmailUrl);
         },
       },
     );

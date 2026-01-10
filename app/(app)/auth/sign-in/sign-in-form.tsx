@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSearchParams } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -20,9 +19,8 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { authClient } from "@/lib/auth/auth-client";
 import { type SignInSchema, signInSchema } from "@/lib/auth/auth-validation";
 
-export function SignInForm() {
+export function SignInForm({ returnTo }: { returnTo?: string }) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const form = useForm<SignInSchema>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -30,8 +28,6 @@ export function SignInForm() {
       password: "",
     },
   });
-
-  const returnTo = searchParams.get("returnTo") || "/";
 
   const { isSubmitting } = form.formState;
 
@@ -43,7 +39,7 @@ export function SignInForm() {
           toast.error(error.error.message || "Failed to sign in");
         },
         onSuccess: () => {
-          router.push(returnTo);
+          router.push(returnTo || "/");
         },
       },
     );

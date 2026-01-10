@@ -19,12 +19,24 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function VerifyEmailPage() {
+export default async function VerifyEmailPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const params = await searchParams;
+  const returnTo =
+    typeof params.returnTo === "string" ? params.returnTo : undefined;
+
   const session = await auth.api.getSession({ headers: await headers() });
 
   if (session?.user.emailVerified) {
     redirect("/");
   }
+
+  const loginHref = returnTo
+    ? `/auth/sign-in?returnTo=${encodeURIComponent(returnTo)}`
+    : "/auth/sign-in";
 
   return (
     <Card className="w-full max-w-md mx-auto">
@@ -41,7 +53,7 @@ export default async function VerifyEmailPage() {
 
       <CardContent className="pt-0 flex flex-col items-center space-y-4">
         <Button asChild variant="outline" size="lg">
-          <Link href="/auth/sign-in" className="flex items-center gap-2">
+          <Link href={loginHref} className="flex items-center gap-2">
             <LogIn />
             Go to Login
           </Link>

@@ -21,7 +21,15 @@ export const metadata = {
   },
 };
 
-export default async function SignUpPage() {
+export default async function SignUpPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const params = await searchParams;
+  const returnTo =
+    typeof params.returnTo === "string" ? params.returnTo : undefined;
+
   const session = await auth.api.getSession({ headers: await headers() });
 
   if (session) {
@@ -47,12 +55,13 @@ export default async function SignUpPage() {
 
         <CardContent className="pt-0">
           <div className="space-y-4">
-            <SignUpForm />
+            <SignUpForm returnTo={returnTo} />
           </div>
           <AuthFooter
             message="Already have an account?"
             linkText="Sign in"
             linkHref="/auth/sign-in"
+            returnTo={returnTo}
           />
         </CardContent>
       </Card>
