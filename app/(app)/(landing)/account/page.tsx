@@ -1,6 +1,5 @@
 import { Calendar, Mail, User } from "lucide-react";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth/auth";
 import type { Session } from "@/lib/auth/auth-client";
 import { LogOutButton } from "./_components/logout-button";
@@ -48,10 +47,10 @@ export async function generateMetadata() {
       robots: { index: false, follow: false },
     };
   }
-
+  const { name } = session.user;
   return {
-    title: `Your Account (${session.user.name})`,
-    description: `Manage your account, email, and course settings for ${session.user.name}.`,
+    title: `Your Account (${name})`,
+    description: `Manage your account, email, and course settings for ${name}.`,
     robots: { index: true, follow: true },
   };
 }
@@ -62,7 +61,7 @@ export default async function AccountPage() {
   });
 
   if (!session) {
-    redirect("/auth/sign-in");
+    return null;
   }
 
   return (

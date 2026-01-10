@@ -4,7 +4,6 @@ import { unstable_cache } from "next/cache";
 import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
@@ -61,12 +60,8 @@ const getCoursesByIds = unstable_cache(
 );
 
 export default async function CoursesPage() {
-  const session = await auth.api.getSession({ headers: await headers() });
-
-  if (!session) {
-    redirect("/auth/sign-in?returnTo=/courses");
-  }
-
+  const session = await auth.api.getSession({ headers: await headers() })!;
+  if (!session) return null;
   const courseIds = await getUserEnrollments(session.user.id);
 
   if (courseIds.length === 0) {
