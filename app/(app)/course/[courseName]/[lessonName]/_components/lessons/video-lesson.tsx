@@ -1,8 +1,10 @@
 "use client";
 import MuxPlayer, { type MuxPlayerRefAttributes } from "@mux/mux-player-react";
+import { motion } from "framer-motion";
 import {
   AlertCircle,
   List,
+  Loader2Icon,
   type LucideIcon,
   Video,
   VideoOff,
@@ -14,7 +16,6 @@ import { MarkdownRenderer } from "@/components/markdown";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
 import { formatDuration } from "@/lib/format";
 import { fetchMuxToken, RateLimitError } from "@/lib/mux-token-cache";
 import { cn } from "@/lib/ui";
@@ -213,47 +214,55 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
       );
     }
 
-    const { playbackId = "", playbackPolicy } = playback;
-    const shouldUseSigned = playbackPolicy === "signed";
+    const { playbackId = "" } = playback;
 
-    if (shouldUseSigned && !token) {
+    if (!token) {
       return (
-        <div className="w-full aspect-video rounded-xl overflow-hidden bg-muted">
-          <Skeleton className="h-full w-full" />
+        <div className="w-full aspect-video rounded-xl overflow-hidden bg-background flex items-center justify-center">
+          <Loader2Icon className="animate-spin size-[90px] text-foreground/10" />
         </div>
       );
     }
 
     return (
-      <MuxPlayer
-        ref={muxPlayerCallback}
-        playbackId={playbackId || undefined}
-        src={
-          !shouldUseSigned && playbackId
-            ? `https://stream.mux.com/${playbackId}.m3u8`
-            : undefined
-        }
-        tokens={shouldUseSigned ? { playback: token } : undefined}
-        poster={
-          playback.posterUrl
-            ? `/api/mux/poster?url=${encodeURIComponent(playback.posterUrl)}`
-            : undefined
-        }
-        title=""
-        videoTitle={muxVideo.title || lesson.title}
-        accentColor="#4E65FF"
-        proudlyDisplayMuxBadge
-        metadata={{
-          video_title: muxVideo.title,
-          video_id: muxVideo.id,
-          lesson_id: lesson.id,
+      <motion.div
+        initial={{
+          scale: 0.94,
+          opacity: 0.6,
         }}
-        onError={(e) => console.log(e)}
-        preload="true"
-        streamType="on-demand"
-        autoPlay={false}
-        className="rounded-xl w-full overflow-hidden bg-background aspect-video"
-      />
+        animate={{
+          scale: 1,
+          opacity: 1,
+        }}
+        transition={{
+          duration: 0.2,
+        }}
+      >
+        <MuxPlayer
+          ref={muxPlayerCallback}
+          playbackId={playbackId || undefined}
+          tokens={{ playback: token }}
+          poster={
+            playback.posterUrl
+              ? `/api/mux/poster?url=${encodeURIComponent(playback.posterUrl)}`
+              : undefined
+          }
+          title=""
+          videoTitle={muxVideo.title || lesson.title}
+          accentColor="#4E65FF"
+          proudlyDisplayMuxBadge
+          metadata={{
+            video_title: muxVideo.title,
+            video_id: muxVideo.id,
+            lesson_id: lesson.id,
+          }}
+          onError={(e) => console.log(e)}
+          preload="true"
+          streamType="on-demand"
+          autoPlay={false}
+          className="rounded-xl w-full overflow-hidden bg-background aspect-video"
+        />
+      </motion.div>
     );
   };
 
