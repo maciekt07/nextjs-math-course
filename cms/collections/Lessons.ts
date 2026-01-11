@@ -101,7 +101,6 @@ export const Lessons: CollectionConfig = {
           name: "options",
           type: "array",
           label: "Answer Options",
-          required: true,
           minRows: 2,
           fields: [
             createMarkdownField({

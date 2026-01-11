@@ -5,16 +5,16 @@ import {
   ArrowLeft,
   ArrowRight,
   Check,
-  CheckCircle2,
+  CheckCircle,
   ChevronLeft,
   ChevronRight,
-  Info,
+  CircleEqual,
+  Eye,
   Lightbulb,
   X,
 } from "lucide-react";
 import { useState } from "react";
 import { MarkdownRenderer } from "@/components/markdown";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/ui";
@@ -23,7 +23,7 @@ import type { Lesson } from "@/payload-types";
 interface QuizLessonProps {
   lesson: Lesson;
 }
-//FIXME: CLS
+
 export function QuizLesson({ lesson }: QuizLessonProps) {
   const [activeQuestionIdx, setActiveQuestionIdx] = useState<number>(0);
   const [submittedAnswers, setSubmittedAnswers] = useState<
@@ -38,7 +38,7 @@ export function QuizLesson({ lesson }: QuizLessonProps) {
   if (!activeQuestion) {
     return (
       <div className="flex justify-center items-center min-h-[200px] px-4">
-        <Card className="w-full max-w-md">
+        <Card className="w-full max-w-md shadow-none">
           <CardContent className="py-8 flex justify-center">
             <p className="text-muted-foreground text-center">
               No quiz questions available.
@@ -49,10 +49,15 @@ export function QuizLesson({ lesson }: QuizLessonProps) {
     );
   }
 
+  const hasOptions =
+    (activeQuestion.options && activeQuestion.options.length > 0) || false;
   const isSubmitted = submittedAnswers[activeQuestionIdx] !== undefined;
   const submittedOptionIdx = submittedAnswers[activeQuestionIdx];
   const isCorrect =
-    isSubmitted && activeQuestion.options[submittedOptionIdx]?.isCorrect;
+    isSubmitted &&
+    hasOptions &&
+    submittedOptionIdx !== undefined &&
+    activeQuestion.options?.[submittedOptionIdx]?.isCorrect;
   const isHintVisible = hintsVisible[activeQuestionIdx];
 
   const handleOptionSelect = (optionIdx: number) => {
@@ -62,11 +67,18 @@ export function QuizLesson({ lesson }: QuizLessonProps) {
   };
 
   const handleSubmit = () => {
-    if (selectedOption !== null && !isSubmitted) {
-      setSubmittedAnswers((prev) => ({
-        ...prev,
-        [activeQuestionIdx]: selectedOption,
-      }));
+    if (!isSubmitted) {
+      if (hasOptions && selectedOption !== null) {
+        setSubmittedAnswers((prev) => ({
+          ...prev,
+          [activeQuestionIdx]: selectedOption,
+        }));
+      } else if (!hasOptions) {
+        setSubmittedAnswers((prev) => ({
+          ...prev,
+          [activeQuestionIdx]: -1,
+        }));
+      }
     }
   };
 
@@ -74,6 +86,7 @@ export function QuizLesson({ lesson }: QuizLessonProps) {
     if (activeQuestionIdx > 0) {
       setActiveQuestionIdx(activeQuestionIdx - 1);
       setSelectedOption(submittedAnswers[activeQuestionIdx - 1] ?? null);
+      window.scrollTo({ top: 0, behavior: "instant" });
     }
   };
 
@@ -81,17 +94,12 @@ export function QuizLesson({ lesson }: QuizLessonProps) {
     if (activeQuestionIdx < questions.length - 1) {
       setActiveQuestionIdx(activeQuestionIdx + 1);
       setSelectedOption(submittedAnswers[activeQuestionIdx + 1] ?? null);
+      window.scrollTo({ top: 0, behavior: "instant" });
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      {lesson.content && (
-        <div className="text-muted-foreground">
-          <MarkdownRenderer content={lesson.content} />
-        </div>
-      )}
-
+    <div className="max-w-4xl mx-auto space-y-6 -mt-3">
       {questions.length > 1 && (
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div className="flex gap-2 flex-wrap">
@@ -106,8 +114,9 @@ export function QuizLesson({ lesson }: QuizLessonProps) {
                   onClick={() => {
                     setActiveQuestionIdx(idx);
                     setSelectedOption(submittedAnswers[idx] ?? null);
+                    window.scrollTo({ top: 0, behavior: "instant" });
                   }}
-                  className="w-10 h-10 cursor-pointer"
+                  className="size-10 cursor-pointer"
                 >
                   {idx + 1}
                 </Button>
@@ -123,7 +132,7 @@ export function QuizLesson({ lesson }: QuizLessonProps) {
               disabled={activeQuestionIdx === 0}
               className="cursor-pointer"
             >
-              <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft size={16} />
               Previous
             </Button>
             <Button
@@ -134,62 +143,51 @@ export function QuizLesson({ lesson }: QuizLessonProps) {
               className="cursor-pointer"
             >
               Next
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight size={16} />
             </Button>
           </div>
         </div>
       )}
 
-      <Card>
-        <CardHeader>
-          <div className="space-y-3">
-            <Badge variant="secondary" className="font-inter">
-              Question {activeQuestionIdx + 1} of {questions.length}
-            </Badge>
-            <CardTitle className="text-2xl">
-              <MarkdownRenderer content={activeQuestion.question} />
-            </CardTitle>
-          </div>
+      <Card className="shadow-none bg-card/50 dark:bg-card">
+        <CardHeader className="border-b-1 pb-4">
+          <CardTitle>
+            <MarkdownRenderer content={activeQuestion.question} />
+          </CardTitle>
         </CardHeader>
 
         <CardContent className="space-y-6">
           {activeQuestion.hint && !hintsVisible[activeQuestionIdx] && (
             <Button
               variant="outline"
-              size="sm"
               onClick={() => {
                 setHintsVisible((prev) => ({
                   ...prev,
                   [activeQuestionIdx]: true,
                 }));
               }}
-              className="shrink-0 cursor-pointer"
+              className="cursor-pointer"
             >
-              <Lightbulb className="w-4 h-4 mr-2" />
-              {isHintVisible ? "Hide" : "Show"} Hint
+              <Lightbulb size={16} />
+              Show Hint
             </Button>
           )}
           {isHintVisible && activeQuestion.hint && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8, filter: "blur(10px)" }}
-              animate={{ opacity: 1, scale: 1, filter: "none" }}
-              transition={{ duration: 0.2 }}
-            >
-              <Card className="bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900">
-                <CardContent>
-                  <div className="flex gap-3">
-                    <Lightbulb className="w-5 h-5 text-amber-600 dark:text-amber-500 shrink-0 mt-0.5" />
-                    <div className="flex-1">
-                      <MarkdownRenderer content={activeQuestion.hint} />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
+            <Card className="bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900 py-4">
+              <CardContent className="px-4">
+                <div className="flex justify-left items-center gap-2">
+                  <Lightbulb
+                    size={20}
+                    className="text-amber-600 dark:text-amber-500"
+                  />
+                  <MarkdownRenderer content={activeQuestion.hint} />
+                </div>
+              </CardContent>
+            </Card>
           )}
 
           <div className="space-y-3">
-            {activeQuestion.options.map((option, optionIdx) => {
+            {activeQuestion.options?.map((option, optionIdx) => {
               const isSelected = selectedOption === optionIdx;
               const isThisCorrect = option.isCorrect;
               const showAsCorrect = isSubmitted && isThisCorrect;
@@ -203,10 +201,12 @@ export function QuizLesson({ lesson }: QuizLessonProps) {
                   onClick={() => handleOptionSelect(optionIdx)}
                   disabled={isSubmitted}
                   className={cn(
-                    "w-full text-left p-4 rounded-lg border-2 transition-colors",
+                    "w-full text-left p-4 rounded-xl border-2 transition-colors duration-150 shadow-xs",
                     !isSubmitted &&
                       "hover:bg-accent hover:border-accent-foreground/20 cursor-pointer",
-                    !isSubmitted && isSelected && "border-primary bg-primary/5",
+                    !isSubmitted &&
+                      isSelected &&
+                      "border-primary bg-primary/5 hover:border-primary",
                     !isSubmitted && !isSelected && "border-border",
                     isSubmitted && "cursor-default",
                     showAsCorrect &&
@@ -222,7 +222,7 @@ export function QuizLesson({ lesson }: QuizLessonProps) {
                   <div className="flex items-start gap-3">
                     <div
                       className={cn(
-                        "flex h-6 w-6 items-center justify-center rounded-full shrink-0 mt-0.5 transition-colors",
+                        "flex h-6 w-6 items-center justify-center rounded-full shrink-0 mt-0.5 transition-colors duration-300",
                         !isSubmitted &&
                           !isSelected &&
                           "border-2 border-muted-foreground/50",
@@ -252,6 +252,7 @@ export function QuizLesson({ lesson }: QuizLessonProps) {
                           className="w-2 h-2 rounded-full bg-white"
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
+                          whileHover={{ scale: 1.5 }}
                           transition={{
                             type: "spring",
                             stiffness: 300,
@@ -268,6 +269,7 @@ export function QuizLesson({ lesson }: QuizLessonProps) {
                             type: "spring",
                             stiffness: 300,
                             damping: 20,
+                            delay: 0.1,
                           }}
                         >
                           <Check
@@ -284,6 +286,7 @@ export function QuizLesson({ lesson }: QuizLessonProps) {
                             type: "spring",
                             stiffness: 300,
                             damping: 20,
+                            delay: 0.1,
                           }}
                         >
                           <X className="w-4 h-4 text-white" strokeWidth={3} />
@@ -299,74 +302,82 @@ export function QuizLesson({ lesson }: QuizLessonProps) {
               );
             })}
           </div>
-
-          {!isSubmitted && (
-            <Button
-              onClick={handleSubmit}
-              disabled={selectedOption === null}
-              className="w-full cursor-pointer"
-              size="lg"
-            >
-              Submit Answer
-            </Button>
-          )}
-          {isSubmitted && activeQuestionIdx !== questions.length - 1 && (
-            <Button
-              onClick={navigateToNext}
-              className="w-full cursor-pointer"
-              size="lg"
-              variant="green"
-            >
-              Next Question <ArrowRight />
-            </Button>
-          )}
-          {isSubmitted && activeQuestionIdx === questions.length - 1 && (
-            <div className="text-center text-sm text-muted-foreground">
-              This was the last question in the quiz.
-            </div>
-          )}
-          {activeQuestionIdx !== 0 && (
-            <Button
-              onClick={navigateToPrevious}
-              className="w-full cursor-pointer"
-              size="lg"
-              variant="outline"
-            >
-              <ArrowLeft /> Previous Question
-            </Button>
-          )}
-          {/* 
-          {isSubmitted && !isCorrect && (
-            <div className="text-center text-red-500 font-bold">
-              Not quite right
-            </div>
-          )} */}
-
+          <div className="flex flex-col gap-3">
+            {!isSubmitted && (
+              <Button
+                onClick={handleSubmit}
+                disabled={hasOptions && selectedOption === null}
+                className="w-full cursor-pointer"
+                size="lg"
+              >
+                {hasOptions ? (
+                  "Submit Answer"
+                ) : (
+                  <>
+                    <Eye /> Show Solution
+                  </>
+                )}
+              </Button>
+            )}
+            {isSubmitted && activeQuestionIdx !== questions.length - 1 && (
+              <Button
+                onClick={navigateToNext}
+                className="w-full cursor-pointer"
+                size="lg"
+                variant="green"
+              >
+                Next Question <ArrowRight />
+              </Button>
+            )}
+            {isSubmitted && activeQuestionIdx === questions.length - 1 && (
+              <div className="text-center text-sm text-muted-foreground">
+                This was the last question in the quiz.
+              </div>
+            )}
+            {activeQuestionIdx !== 0 && (
+              <Button
+                onClick={navigateToPrevious}
+                className="w-full cursor-pointer"
+                size="lg"
+                variant="outline"
+              >
+                <ArrowLeft /> Previous Question
+              </Button>
+            )}
+          </div>
           {isSubmitted && activeQuestion.solution && (
             <Card
               className={cn(
-                "border-2",
+                "border-1 shadow-none",
                 isCorrect
-                  ? "bg-green-50 dark:bg-green-950/20 border-green-500"
-                  : "bg-blue-50 dark:bg-blue-950/20 border-blue-500",
+                  ? "bg-green-50/80 dark:bg-green-950/20 "
+                  : "bg-blue-50/80 dark:bg-blue-950/20 ",
               )}
             >
-              <CardContent>
-                <div className="flex gap-3 items-start">
-                  {isCorrect ? (
-                    <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
-                  ) : (
-                    <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+              <CardHeader>
+                <CardTitle
+                  className={cn(
+                    "text-xl flex items-center gap-2",
+                    isCorrect
+                      ? "text-green-600 dark:text-green-400"
+                      : "text-blue-600 dark:text-blue-400",
                   )}
-                  <div className="flex-1 min-w-0 space-y-2">
-                    <p className="font-semibold text-lg">
-                      {isCorrect ? "Correct!" : "Solution"}
-                    </p>
-                    <div className="text-sm break-words">
-                      <MarkdownRenderer content={activeQuestion.solution} />
-                    </div>
-                  </div>
-                </div>
+                >
+                  {isCorrect ? (
+                    <>
+                      <CheckCircle />
+                      Correct!
+                    </>
+                  ) : (
+                    <>
+                      <CircleEqual />
+                      Solution
+                    </>
+                  )}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <MarkdownRenderer content={activeQuestion.solution} />
               </CardContent>
             </Card>
           )}

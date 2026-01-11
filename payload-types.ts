@@ -177,11 +177,13 @@ export interface Lesson {
   quiz?:
     | {
         question: string;
-        options: {
-          text: string;
-          isCorrect: boolean;
-          id?: string | null;
-        }[];
+        options?:
+          | {
+              text: string;
+              isCorrect: boolean;
+              id?: string | null;
+            }[]
+          | null;
         hint?: string | null;
         solution?: string | null;
         id?: string | null;
