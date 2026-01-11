@@ -126,14 +126,14 @@ export default function FeedbackWidget({
   }
 
   return (
-    <div className="w-full max-w-sm mx-auto my-8 font-inter">
+    <div className="w-full sm:max-w-sm mx-auto my-8 font-inter">
       <div className="flex flex-col items-center rounded-xl border p-4 bg-background">
         <p className="text-md font-medium text-foreground mb-3 not-sr-only">
           How was this {type === "quiz" || type === "video" ? type : "lesson"}?
         </p>
         {/* reaction Buttons */}
         <div className="flex flex-col items-center gap-2 sm:gap-0">
-          <div className="flex justify-center gap-4 sm:gap-1.5 flex-wrap">
+          <div className="flex justify-center gap-6 sm:gap-1.5 flex-wrap">
             {reactions.map((reaction) => {
               const Icon = reaction.icon;
               const selected = selectedReaction === reaction.value;

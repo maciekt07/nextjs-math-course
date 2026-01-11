@@ -63,13 +63,10 @@ export const KatexRenderer = memo(
     return block ? (
       <div
         ref={divRef}
-        style={{
-          minHeight: "64px", // prevent CLS for block
-          width: "100%",
-        }}
+        className="flex items-center justify-center min-h-[56px]"
       />
     ) : (
-      <span ref={spanRef} style={{ minHeight: "1em" }} />
+      <span ref={spanRef} />
     );
   },
   (prev, next) => prev.content === next.content && prev.block === next.block,

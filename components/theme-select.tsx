@@ -1,6 +1,6 @@
 "use client";
 
-import { Monitor, Moon, Sun } from "lucide-react";
+import { Check, type LucideIcon, Monitor, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,20 +10,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+type ThemeItem = {
+  key: "light" | "dark" | "system";
+  label: string;
+  icon: LucideIcon;
+};
+
+const items: ThemeItem[] = [
+  { key: "light", label: "Light", icon: Sun },
+  { key: "dark", label: "Dark", icon: Moon },
+  { key: "system", label: "System", icon: Monitor },
+];
+
 export function ThemeSelect() {
   const { theme, setTheme } = useTheme();
-
-  type ThemeItem = {
-    key: "light" | "dark" | "system";
-    label: string;
-    icon: React.FC<React.SVGProps<SVGSVGElement>>;
-  };
-
-  const items: ThemeItem[] = [
-    { key: "light", label: "Light", icon: Sun },
-    { key: "dark", label: "Dark", icon: Moon },
-    { key: "system", label: "System", icon: Monitor },
-  ];
 
   return (
     <DropdownMenu>
@@ -46,10 +46,13 @@ export function ThemeSelect() {
             className="flex justify-between items-center cursor-pointer"
           >
             <div className="flex items-center gap-2">
-              <Icon className="h-4 w-4" /> {label}
+              <Icon size={16} /> {label}
             </div>
             {theme === key && (
-              <span className="w-2 h-2 rounded-full bg-primary" />
+              <Check
+                size={16}
+                className="animate-in fade-in zoom-in duration-200"
+              />
             )}
           </DropdownMenuItem>
         ))}

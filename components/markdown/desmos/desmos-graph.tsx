@@ -42,13 +42,13 @@ export function DesmosGraph({ graphUrl, noEmbed = false }: DesmosGraphProps) {
             src={iframeUrl}
             loading="lazy"
             className={cn(
-              "block h-full w-full transition-all duration-300",
+              "block size-full transition-all duration-300",
               forceDarkMode &&
                 "dark:[filter:invert(1)_hue-rotate(180deg)_brightness(0.9)_contrast(1.1)]",
             )}
           />
         ) : (
-          <div className="h-full w-full rounded-xl" />
+          <div className="size-full rounded-xl" />
         )}
       </div>
       <div className="border-t-2 border-border p-3">

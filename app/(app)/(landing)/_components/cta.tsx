@@ -29,13 +29,13 @@ export function CTASection({
   ];
 
   return (
-    <section className="py-8 sm:py-16 bg-primary/90 text-primary-foreground border-t mt-8 sm:m-8 sm:rounded-3xl">
+    <section className="py-8 md:py-16 bg-primary/90 text-primary-foreground border-t mt-8 md:m-8 md:rounded-3xl">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h2 className="text-4xl sm:text-5xl font-bold mb-4 text-balance">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-balance">
             Ready to Master Mathematics?
           </h2>
-          <p className="text-lg text-primary-foreground/90 mb-8 max-w-2xl mx-auto text-pretty">
+          <p className="md:text-lg text-md text-primary-foreground/90 mb-8 max-w-2xl mx-auto text-pretty">
             Join many students who have transformed their relationship with
             math. Start your learning journey today with a free preview of any
             course.

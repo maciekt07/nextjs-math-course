@@ -1,15 +1,15 @@
+import type { LucideIcon } from "lucide-react";
 import type * as React from "react";
 import { cn } from "@/lib/ui";
 
-type EmptyStateProps = {
-  icon?: React.ElementType;
+interface EmptyStateProps extends React.ComponentProps<"div"> {
+  icon?: LucideIcon;
   title: string;
   description?: string;
   action?: React.ReactNode;
   iconColor?: string;
   iconBgColor?: string;
-  className?: string;
-};
+}
 
 export function EmptyState({
   icon: Icon,
@@ -19,6 +19,7 @@ export function EmptyState({
   iconColor = "text-primary",
   iconBgColor = "bg-primary/10",
   className,
+  ...props
 }: EmptyStateProps) {
   return (
     <div
@@ -26,15 +27,16 @@ export function EmptyState({
         "flex flex-col items-center justify-center text-center px-8 my-8 space-y-4",
         className,
       )}
+      {...props}
     >
       {Icon && (
         <div
           className={cn(
-            "flex h-24 w-24 items-center justify-center rounded-full",
+            "flex size-24 items-center justify-center rounded-full",
             iconBgColor,
           )}
         >
-          <Icon className={cn("h-12 w-12", iconColor)} />
+          <Icon className={cn("size-12", iconColor)} />
         </div>
       )}
 
@@ -53,9 +55,7 @@ export function EmptyStateCenterWrapper({
   children,
   className,
   ...props
-}: {
-  children: React.ReactNode;
-} & React.HTMLAttributes<HTMLDivElement>) {
+}: React.ComponentProps<"div">) {
   return (
     <div
       className={cn(

@@ -5,6 +5,7 @@ import { Eye, EyeOff, Mouse } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
+import { cn } from "@/lib/ui";
 
 const MarkdownRenderer = dynamic(
   () => import("@/components/markdown").then((mod) => mod.MarkdownRenderer),
@@ -109,7 +110,10 @@ export default function MarkdownPreviewField({
             value={value}
             onChange={(e) => setValue(e.target.value)}
             rows={rows}
-            className="h-full resize-none border-none focus:ring-0"
+            className={cn(
+              "h-full resize-none border-none focus:ring-0",
+              showPreview && "[&_textarea]:rounded-r-none",
+            )}
             placeholder="Write Markdown or LaTeX here..."
             path={path || ""}
           />

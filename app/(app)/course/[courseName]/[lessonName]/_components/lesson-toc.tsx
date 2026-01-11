@@ -97,7 +97,7 @@ export function LessonTOC({ headings }: { headings: Heading[] }) {
         </Accordion>
       </div>
 
-      <div className="hidden min-[1704px]:block fixed right-2 top-24 w-64 max-h-[70vh] overflow-auto border-l pl-6 font-inter">
+      <div className="hidden min-[1704px]:block fixed right-2 top-24 w-64 max-h-[70vh] overflow-auto pl-6 font-inter">
         <p className="text-xs font-medium mb-4 uppercase tracking-wide text-muted-foreground/80">
           In this lesson
         </p>

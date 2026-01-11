@@ -11,17 +11,28 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { cn } from "@/lib/ui";
 import type { Course, Media } from "@/payload-types";
 
-interface CourseCardProps {
+interface CourseCardProps extends React.ComponentProps<"div"> {
   course: Course & { lessonCount: number | undefined };
   owned: boolean;
   minimal?: boolean;
 }
 
-export function CourseCard({ course, owned, minimal }: CourseCardProps) {
+export function CourseCard({
+  course,
+  owned,
+  minimal,
+  className,
+  ...props
+}: CourseCardProps) {
   return (
-    <Card key={course.id} className="flex flex-col py-4 md:py-6">
+    <Card
+      key={course.id}
+      className={cn("flex flex-col py-4 md:py-6", className)}
+      {...props}
+    >
       <CardHeader className="px-4 md:px-6">
         <div className="flex flex-col sm:flex-row items-start gap-4">
           {course.media ? (

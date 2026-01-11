@@ -48,7 +48,7 @@
   --radius: 0.8rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
-  --card: oklch(0.972 0.0025 235);
+  --card: oklch(0.98 0.0025 245);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
@@ -126,39 +126,39 @@
     scrollbar-color: var(--scrollbar-thumb) transparent;
     box-sizing: border-box;
   }
-  *::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
   *,
   *::-webkit-scrollbar-track {
-    background: transparent;
+    @apply bg-transparent;
   }
   *::-webkit-scrollbar-thumb {
+    @apply rounded-full transition-colors;
     background-color: var(--scrollbar-thumb);
     border-radius: 9999px;
-    transition: background-color 0.2s;
   }
   *::-webkit-scrollbar-thumb:hover {
     background-color: var(--scrollbar-thumb-hover);
   }
   *::selection {
-    background-color: oklch(49.697% 0.20315 281.305);
-    color: var(--color-primary-foreground);
+    background-color: oklch(78% 0.14 270.934);
+    color: oklch(18% 0.02 270.934);
+  }
+
+  .dark *::selection {
+    background-color: oklch(49.226% 0.22277 275.888);
+    color: oklch(96% 0.01 270.934);
   }
   body {
     @apply bg-background text-foreground !min-w-full;
   }
-  html {
-    scroll-behavior: smooth;
-    /* scroll-padding-top: 6rem; */
-  }
-
   /* fix layout shift when Radix locks scroll */
   body[data-scroll-locked] {
     overflow: visible !important;
     overscroll-behavior: contain;
     position: relative !important;
+  }
+  html {
+    scroll-behavior: smooth;
+    /* scroll-padding-top: 6rem; */
   }
 }
 

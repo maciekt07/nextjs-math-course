@@ -50,11 +50,11 @@ export function HeroBadge() {
           >
             <Image
               src="/pfp.png"
-              alt="maciekt07 GitHub avatar"
-              width={32}
-              height={32}
+              alt="avatar"
+              width={96}
+              height={96}
               className="rounded-full border border-border shadow-md sm:h-8 sm:w-8 h-7 w-7"
-              unoptimized
+              priority
             />
           </motion.div>
 
