@@ -61,7 +61,7 @@ export const SidebarAccount = memo(
                 query: { returnTo: pathname },
               }}
             >
-              <LogIn className="w-4 h-4" />
+              <LogIn size={16} />
               Log In
             </Link>
           </Button>

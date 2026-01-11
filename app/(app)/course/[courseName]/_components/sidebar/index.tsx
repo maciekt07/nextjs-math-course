@@ -8,9 +8,11 @@ import { usePathname } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
 import { useCallback, useEffect, useState, useTransition } from "react";
 import BuyCourseButton from "@/components/buy-course-button";
+import { ScrollShadow } from "@/components/scroll-shadow";
 import { ThemeSelect } from "@/components/theme-select";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
+import { useScrollShadows } from "@/hooks/useScrollShadows";
 import { authClient } from "@/lib/auth/auth-client";
 import { cn } from "@/lib/ui";
 import type { Course, Lesson, Media } from "@/payload-types";
@@ -41,6 +43,14 @@ export function CourseSidebar({
   const { data: session, isPending } = authClient.useSession();
   const [_isTransitionLoading, startTransition] = useTransition();
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
+
+  const {
+    ref: scrollRef,
+    showTop,
+    showBottom,
+  } = useScrollShadows<HTMLDivElement>({
+    topOffset: 64,
+  });
 
   const handleLessonClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>, lessonPath: string) => {
@@ -247,36 +257,44 @@ export function CourseSidebar({
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto min-h-[128px]">
-          <div className="p-4">
-            <div className="mb-3">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Lessons · {lessons.length}
-              </p>
-            </div>
-            <nav className="space-y-1">
-              {lessons.map((lesson) => {
-                const lessonPath = `/course/${course.slug}/${lesson.slug}`;
-                const isActive =
-                  optimisticPath === lessonPath ||
-                  (optimisticPath === null && pathname === lessonPath);
+        <div className="relative flex-1 min-h-[128px] overflow-hidden">
+          <div className="h-full overflow-y-auto" ref={scrollRef}>
+            <ScrollShadow position="top" show={showTop} />
+            <div className="p-4">
+              <div className="mb-3">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Lessons · {lessons.length}
+                </p>
+              </div>
 
-                return (
-                  <LessonItem
-                    key={lesson.id}
-                    lesson={lesson}
-                    courseSlug={course.slug!}
-                    isActive={isActive}
-                    owned={owned}
-                    onClick={handleLessonClick}
-                  />
-                );
-              })}
-            </nav>
+              <nav className="space-y-1">
+                {lessons.map((lesson) => {
+                  const lessonPath = `/course/${course.slug}/${lesson.slug}`;
+                  const isActive =
+                    optimisticPath === lessonPath ||
+                    (optimisticPath === null && pathname === lessonPath);
+
+                  return (
+                    <LessonItem
+                      key={lesson.id}
+                      lesson={lesson}
+                      courseSlug={course.slug!}
+                      isActive={isActive}
+                      owned={owned}
+                      onClick={handleLessonClick}
+                    />
+                  );
+                })}
+              </nav>
+            </div>
           </div>
+          {/* <div className="absolute bottom-0 left-0 z-20">
+            Bottom: {String(showBottom)} Top: {String(showTop)}
+          </div> */}
+          <ScrollShadow position="bottom" show={showBottom} />
         </div>
 
-        <div className="p-4 border-t mt-auto bg-background">
+        <div className="p-4 border-t bg-background">
           <Button
             variant="outline"
             className="w-full mb-3 cursor-pointer"
