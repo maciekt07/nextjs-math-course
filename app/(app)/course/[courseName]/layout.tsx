@@ -72,7 +72,7 @@ export default async function CourseLayout({
   if (session) {
     owned = await hasEnrollment(session.user.id, data.course.id);
   }
-  console.log(data.lessons);
+
   return (
     <CourseLayoutWrapper
       course={data.course}

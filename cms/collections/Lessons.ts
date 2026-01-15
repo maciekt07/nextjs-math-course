@@ -65,7 +65,7 @@ export const Lessons: CollectionConfig = {
                 const typedData = data as LessonData;
                 const typedSiblingData = siblingData as LessonData;
                 const courseId = typedData?.course || typedSiblingData?.course;
-                if (!courseId) return false;
+                if (!courseId) return true;
                 return {
                   course: {
                     equals:
