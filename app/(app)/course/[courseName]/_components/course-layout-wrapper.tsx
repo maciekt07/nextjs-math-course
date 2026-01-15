@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useEffect } from "react";
-import type { Course, Lesson } from "@/payload-types";
+import type { Chapter, Course, Lesson } from "@/payload-types";
 import { useCourseStore } from "@/stores/course-store";
 import { useSidebarStore } from "@/stores/sidebar-store";
 import { CourseSidebar } from "./sidebar";
@@ -10,11 +10,13 @@ import { CourseSidebar } from "./sidebar";
 export function CourseLayoutWrapper({
   course,
   lessons,
+  chapters,
   owned,
   children,
 }: {
   course: Course;
   lessons: Lesson[];
+  chapters: Chapter[];
   owned?: boolean;
   children: React.ReactNode;
 }) {
@@ -43,7 +45,12 @@ export function CourseLayoutWrapper({
         transition={{ duration: 0.2 }}
       />
 
-      <CourseSidebar course={course} lessons={lessons} owned={owned} />
+      <CourseSidebar
+        course={course}
+        lessons={lessons}
+        chapters={chapters}
+        owned={owned}
+      />
 
       <div className="flex-1 flex flex-col min-w-0">
         <motion.main

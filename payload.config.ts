@@ -10,6 +10,7 @@ import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { s3Storage } from "@payloadcms/storage-s3";
 import { buildConfig } from "payload";
 import sharp from "sharp";
+import { Chapters } from "@/cms/collections/Chapters";
 import { clientEnv } from "@/env/client";
 import { serverEnv } from "@/env/server";
 
@@ -18,7 +19,7 @@ const useS3 = serverEnv.ENABLE_S3 && !!serverEnv.S3_BUCKET;
 
 export default buildConfig({
   editor: lexicalEditor(),
-  collections: [Courses, Lessons, Media, Users, Feedbacks],
+  collections: [Courses, Lessons, Chapters, Media, Users, Feedbacks],
   secret: serverEnv.PAYLOAD_SECRET,
   db: mongooseAdapter({
     url: serverEnv.MONGO_URL,

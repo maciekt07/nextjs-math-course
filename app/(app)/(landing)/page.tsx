@@ -95,14 +95,18 @@ export default async function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div className="flex flex-col gap-3 sm:gap-6 text-left order-1 lg:order-1">
               <HeroBadge />
-              <h1 className="text-3xl sm:text-5xl font-bold text-foreground leading-tight text-balance">
-                Master <span className="text-primary">Mathematics</span> with
-                Engaging Courses
+              <h1 className="text-3xl sm:text-5xl font-bold text-foreground leading-tight text-balance text-shadow-md">
+                Master{" "}
+                <span className="text-primary text-shadow-lg">Mathematics</span>{" "}
+                with Engaging Courses
               </h1>
               <p className="text-md sm:text-lg text-muted-foreground max-w-xl">
-                Learn from a <b>dedicated math educator</b> with interactive
-                lessons, exercises, and real-life examples. Perfect for all
-                learning styles.
+                Learn from a{" "}
+                <b className="text-foreground/80 text-shadow-md">
+                  dedicated math educator
+                </b>{" "}
+                with interactive lessons, exercises, and real-life examples.
+                Perfect for all learning styles.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">

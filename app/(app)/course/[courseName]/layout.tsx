@@ -19,24 +19,32 @@ const getCourseWithLessons = cache(async (courseSlug: string) => {
 
   const course = courseDocs[0];
 
-  //FIXME: use partial type
-  const { docs: lessons } = await payload.find({
-    collection: "lessons",
-    where: { course: { equals: course.id } },
-    limit: 100,
-    select: {
-      title: true,
-      slug: true,
-      free: true,
-      id: true,
-      type: true,
-      quiz: { id: true },
-      video: true, //FIXME: can't select just the duration
-      readingTimeSeconds: true,
-    },
-  });
+  const [{ docs: chapters }, { docs: lessons }] = await Promise.all([
+    payload.find({
+      collection: "chapters",
+      where: { course: { equals: course.id } },
+      depth: 0,
+      limit: 100,
+    }),
+    payload.find({
+      collection: "lessons",
+      where: { course: { equals: course.id } },
+      limit: 100,
+      select: {
+        title: true,
+        slug: true,
+        free: true,
+        id: true,
+        type: true,
+        chapter: true,
+        quiz: { id: true },
+        video: true,
+        readingTimeSeconds: true,
+      },
+    }),
+  ]);
 
-  return { course, lessons };
+  return { course, lessons, chapters };
 });
 
 type Args = {
@@ -64,6 +72,7 @@ export default async function CourseLayout({
     <CourseLayoutWrapper
       course={data.course}
       lessons={data.lessons}
+      chapters={data.chapters}
       owned={owned}
     >
       {children}

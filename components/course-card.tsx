@@ -70,7 +70,7 @@ export function CourseCard({
       <CardContent className="flex flex-col gap-4 flex-1 -mt-3 px-4 md:px-6">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <BookOpen size={20} /> {course.lessonCount} Chapters
+            <BookOpen size={20} /> {course.lessonCount} Lessons
           </div>
         </div>
         {minimal ? null : owned ? (

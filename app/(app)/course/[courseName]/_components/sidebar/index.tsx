@@ -6,16 +6,28 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
-import { useCallback, useEffect, useState, useTransition } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useTransition,
+} from "react";
 import BuyCourseButton from "@/components/buy-course-button";
 import { ScrollShadow } from "@/components/scroll-shadow";
 import { ThemeSelect } from "@/components/theme-select";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { useScrollShadows } from "@/hooks/useScrollShadows";
 import { authClient } from "@/lib/auth/auth-client";
 import { cn } from "@/lib/ui";
-import type { Course, Lesson, Media } from "@/payload-types";
+import type { Chapter, Course, Lesson, Media } from "@/payload-types";
 import { useSidebarStore } from "@/stores/sidebar-store";
 import { LessonItem } from "./lesson-item";
 import { SidebarAccount } from "./sidebar-account";
@@ -24,13 +36,53 @@ const SettingsDialogContent = dynamic(() =>
   import("./settings-dialog-content").then((mod) => mod.SettingsDialogContent),
 );
 
+interface ChapterLessonsGroup {
+  chapter: Chapter;
+  lessons: Lesson[];
+}
+
+const getChapterId = (chapter: Lesson["chapter"]): string => {
+  if (!chapter) return "";
+  return typeof chapter === "object" ? chapter.id : chapter;
+};
+
+const groupLessonsByChapter = (
+  lessons: Lesson[],
+  chapters: Chapter[],
+): ChapterLessonsGroup[] => {
+  return chapters
+    .map((chapter) => ({
+      chapter,
+      lessons: lessons.filter(
+        (lesson) =>
+          lesson.chapter && getChapterId(lesson.chapter) === chapter.id,
+      ),
+    }))
+    .filter(({ lessons }) => lessons.length > 0);
+};
+
+const getActiveLessonPath = (
+  pathname: string,
+  optimisticPath: string | null,
+  courseSlug: string,
+  lesson: Lesson,
+): boolean => {
+  const lessonPath = `/course/${courseSlug}/${lesson.slug}`;
+  return (
+    optimisticPath === lessonPath ||
+    (optimisticPath === null && pathname === lessonPath)
+  );
+};
+
 export function CourseSidebar({
   course,
   lessons,
+  chapters,
   owned,
 }: {
   course: Course;
   lessons: Lesson[];
+  chapters: Chapter[];
   owned?: boolean;
 }) {
   const pathname = usePathname();
@@ -43,6 +95,7 @@ export function CourseSidebar({
   const { data: session, isPending } = authClient.useSession();
   const [_isTransitionLoading, startTransition] = useTransition();
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
+  const [expandedChapters, setExpandedChapters] = useState<string[]>([]);
 
   const {
     ref: scrollRef,
@@ -52,33 +105,51 @@ export function CourseSidebar({
     topOffset: 64,
   });
 
+  const unassignedLessons = useMemo(
+    () => lessons.filter((lesson) => !lesson.chapter),
+    [lessons],
+  );
+
+  const groupedChapters = useMemo(
+    () => groupLessonsByChapter(lessons, chapters),
+    [lessons, chapters],
+  );
+
+  useEffect(() => {
+    if (!open) return;
+    const defaultExpanded = groupedChapters
+      .filter(({ lessons }) =>
+        lessons.some((lesson) =>
+          getActiveLessonPath(pathname, optimisticPath, course.slug!, lesson),
+        ),
+      )
+      .map(({ chapter }) => chapter.id);
+
+    requestAnimationFrame(() => {
+      setExpandedChapters(defaultExpanded);
+    });
+  }, [groupedChapters, pathname, optimisticPath, course.slug, open]);
+
   const handleLessonClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>, lessonPath: string) => {
       e.preventDefault();
       setOptimisticPath(lessonPath);
-      // navigate with transition for smoother experience
-      startTransition(() => {
-        router.push(lessonPath);
+      requestAnimationFrame(() => {
+        startTransition(() => {
+          router.push(lessonPath);
+        });
       });
     },
     [setOptimisticPath, router],
   );
 
-  const handleToggle = () => {
-    toggle();
-  };
-
   useEffect(() => {
     const lessonRegex = /^\/course\/[^/]+\/[^/]+$/;
     if (lessonRegex.test(pathname)) {
       setOptimisticPath(pathname);
-      //FIXME: first entry should stay open on mobile
       if (window.innerWidth < 768) {
-        // close on mobile after router push completes
         requestAnimationFrame(() => {
-          startTransition(() => {
-            setOpen(false);
-          });
+          setOpen(false);
         });
       }
     }
@@ -116,7 +187,7 @@ export function CourseSidebar({
           variant={open ? "ghost" : "outline"}
           size="icon"
           aria-label="Toggle Sidebar"
-          onClick={handleToggle}
+          onClick={() => toggle()}
           className={cn(
             "transition-all duration-300 cursor-pointer bg-background",
             !open && "backdrop-blur-md",
@@ -194,8 +265,8 @@ export function CourseSidebar({
             </Link>
           </Button>
 
-          {course.media && (
-            <div className="flex md:block gap-3 mb-3 mt-2">
+          <div className="flex md:block gap-3 mb-3 mt-2">
+            {course.media && (
               <div className="relative w-20 h-20 md:w-full md:h-40 shrink-0 overflow-hidden rounded-lg md:rounded-2xl shadow-md md:mb-4">
                 <Image
                   src={(course.media as Media).url!}
@@ -203,28 +274,27 @@ export function CourseSidebar({
                   fill
                   sizes="(min-width: 768px) 287px, 80px"
                   className="object-cover"
-                  priority
                   placeholder={
                     (course.media as Media).blurhash ? "blur" : "empty"
                   }
                   blurDataURL={(course.media as Media).blurhash || undefined}
                 />
               </div>
-              <div className="flex-1 min-w-0 md:hidden space-y-1">
-                <h2 className="font-semibold text-base leading-tight">
-                  {course.title}
-                </h2>
-                {course.description && (
-                  <p
-                    className="text-xs text-muted-foreground line-clamp-2"
-                    title={course.description}
-                  >
-                    {course.description}
-                  </p>
-                )}
-              </div>
+            )}
+            <div className="flex-1 min-w-0 md:hidden space-y-1">
+              <h2 className="font-semibold text-base leading-tight">
+                {course.title}
+              </h2>
+              {course.description && (
+                <p
+                  className="text-xs text-muted-foreground line-clamp-2"
+                  title={course.description}
+                >
+                  {course.description}
+                </p>
+              )}
             </div>
-          )}
+          </div>
 
           <div className="space-y-1">
             <div className="hidden md:flex items-center gap-2">
@@ -260,37 +330,72 @@ export function CourseSidebar({
         <div className="relative flex-1 min-h-[128px] overflow-hidden">
           <div className="h-full overflow-y-auto" ref={scrollRef}>
             <ScrollShadow position="top" show={showTop} />
-            <div className="p-4">
-              <div className="mb-3">
+            <div>
+              {/* <div className="p-4">
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   Lessons · {lessons.length}
                 </p>
+              </div> */}
+              {groupedChapters.length > 0 && (
+                <Accordion
+                  type="multiple"
+                  value={expandedChapters}
+                  onValueChange={setExpandedChapters}
+                  className="w-full border-t border-b first:border-t-0"
+                >
+                  {groupedChapters.map(
+                    ({ chapter, lessons: chapterLessons }) => (
+                      <AccordionItem key={chapter.id} value={chapter.id}>
+                        <AccordionTrigger className="px-4 py-3 font-medium text-sm hover:no-underline cursor-pointer">
+                          <span>{chapter.title}</span>
+                        </AccordionTrigger>
+                        <AccordionContent className="px-0 py-0">
+                          <nav className="px-2 pb-3">
+                            {chapterLessons.map((lesson) => (
+                              <LessonItem
+                                key={lesson.id}
+                                lesson={lesson}
+                                courseSlug={course.slug!}
+                                isActive={getActiveLessonPath(
+                                  pathname,
+                                  optimisticPath,
+                                  course.slug!,
+                                  lesson,
+                                )}
+                                owned={owned}
+                                onClick={handleLessonClick}
+                              />
+                            ))}
+                          </nav>
+                        </AccordionContent>
+                      </AccordionItem>
+                    ),
+                  )}
+                </Accordion>
+              )}
+              <div className="py-3">
+                {unassignedLessons.length > 0 && (
+                  <div className="mb-4 space-y-1 px-2">
+                    {unassignedLessons.map((lesson) => (
+                      <LessonItem
+                        key={lesson.id}
+                        lesson={lesson}
+                        courseSlug={course.slug!}
+                        isActive={getActiveLessonPath(
+                          pathname,
+                          optimisticPath,
+                          course.slug!,
+                          lesson,
+                        )}
+                        owned={owned}
+                        onClick={handleLessonClick}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
-
-              <nav className="space-y-1">
-                {lessons.map((lesson) => {
-                  const lessonPath = `/course/${course.slug}/${lesson.slug}`;
-                  const isActive =
-                    optimisticPath === lessonPath ||
-                    (optimisticPath === null && pathname === lessonPath);
-
-                  return (
-                    <LessonItem
-                      key={lesson.id}
-                      lesson={lesson}
-                      courseSlug={course.slug!}
-                      isActive={isActive}
-                      owned={owned}
-                      onClick={handleLessonClick}
-                    />
-                  );
-                })}
-              </nav>
             </div>
           </div>
-          {/* <div className="absolute bottom-0 left-0 z-20">
-            Bottom: {String(showBottom)} Top: {String(showTop)}
-          </div> */}
           <ScrollShadow position="bottom" show={showBottom} />
         </div>
 
