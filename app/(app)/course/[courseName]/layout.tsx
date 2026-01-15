@@ -44,7 +44,12 @@ const getCourseWithLessons = cache(async (courseSlug: string) => {
     }),
   ]);
 
-  return { course, lessons, chapters };
+  const sortedLessons = [
+    ...lessons.filter((l) => l.chapter),
+    ...lessons.filter((l) => !l.chapter),
+  ];
+
+  return { course, lessons: sortedLessons, chapters };
 });
 
 type Args = {
@@ -67,7 +72,7 @@ export default async function CourseLayout({
   if (session) {
     owned = await hasEnrollment(session.user.id, data.course.id);
   }
-
+  console.log(data.lessons);
   return (
     <CourseLayoutWrapper
       course={data.course}
