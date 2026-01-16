@@ -4,10 +4,48 @@
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
-@theme inline {
-  --color-primary: var(--primary);
-}
-
 :root {
   --primary: oklch(58.222% 0.22825 270.934);
+  --theme-bg: oklch(1 0 0);
+  --theme-input-bg: oklch(0.98 0.0025 245);
+  --theme-elevation-50: oklch(0.98 0.0025 245);
+  --theme-elevation-100: oklch(0.92 0 0);
+  --theme-elevation-200: oklch(0.92 0 0);
+  --card: oklch(0.98 0.0025 245);
+  --style-radius-s: 6px;
+  --style-radius-m: 10px;
+  --style-radius-l: 14px;
+}
+
+html[data-theme="dark"] {
+  --theme-bg: oklch(0.145 0 0);
+  --theme-input-bg: oklch(0.205 0 0);
+  --theme-elevation-50: oklch(0.205 0 0);
+  --theme-elevation-100: oklch(1 0 0 / 10%);
+  --theme-elevation-200: oklch(1 0 0 / 10%);
+  --card: oklch(0.205 0 0);
+}
+
+.card {
+  background-color: var(--card);
+}
+
+.doc-controls__dots,
+.hamburger,
+.pill,
+td img {
+  border-radius: var(--style-radius-s) !important;
+}
+
+.where-builder,
+.pill-selector {
+  border-radius: var(--style-radius-m) !important;
+}
+
+.table {
+  width: 100%;
+}
+
+.table-wrap {
+  overflow-x: auto;
 }
