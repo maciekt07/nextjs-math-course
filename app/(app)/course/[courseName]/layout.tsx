@@ -43,11 +43,32 @@ const getCourseWithLessons = cache(async (courseSlug: string) => {
       },
     }),
   ]);
+  // sort lessons so that lessons with chapters follow the chapters' order,
+  //  and lessons without a chapter go at the end
+  const lessonsByChapter: Record<string, typeof lessons> = {};
+  chapters.forEach((chapter) => {
+    lessonsByChapter[chapter.id] = [];
+  });
 
-  const sortedLessons = [
-    ...lessons.filter((l) => l.chapter),
-    ...lessons.filter((l) => !l.chapter),
-  ];
+  const ungroupedLessons: typeof lessons = [];
+
+  lessons.forEach((lesson) => {
+    const chapterId =
+      typeof lesson.chapter === "string" ? lesson.chapter : lesson.chapter?.id;
+
+    if (chapterId && lessonsByChapter[chapterId]) {
+      lessonsByChapter[chapterId].push(lesson);
+    } else {
+      ungroupedLessons.push(lesson);
+    }
+  });
+
+  const sortedLessons: typeof lessons = [];
+  chapters.forEach((chapter) => {
+    sortedLessons.push(...lessonsByChapter[chapter.id]);
+  });
+
+  sortedLessons.push(...ungroupedLessons);
 
   return { course, lessons: sortedLessons, chapters };
 });
@@ -72,6 +93,7 @@ export default async function CourseLayout({
   if (session) {
     owned = await hasEnrollment(session.user.id, data.course.id);
   }
+  // console.log(data.lessons.map((lesson) => lesson.title));
 
   return (
     <CourseLayoutWrapper
