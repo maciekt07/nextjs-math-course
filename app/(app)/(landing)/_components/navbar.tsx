@@ -37,8 +37,8 @@ export function Navbar({ user }: { user: User | null }) {
             : "border-b bg-background/30 backdrop-blur-2xl",
         )}
       >
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-6">
-          <Link href="/" className="flex items-center gap-2">
+        <div className="max-w-7xl mx-auto flex items-center justify-between px-4">
+          <Link href="/" className="flex items-center gap-3 ml-1">
             <Calculator className="w-6 h-6 text-primary" />
             <span className="text-xl font-bold">Math Course Online</span>
           </Link>
@@ -47,12 +47,12 @@ export function Navbar({ user }: { user: User | null }) {
             <ThemeSelect />
             {user ? (
               <>
-                <Button asChild variant="outline" className="backdrop-blur-2xl">
+                <Button asChild variant="outline" className="backdrop-blur-md">
                   <Link href="/courses">
                     <BookOpen /> My Courses
                   </Link>
                 </Button>
-                <Button asChild variant="outline" className="backdrop-blur-2xl">
+                <Button asChild variant="outline" className="backdrop-blur-md">
                   <Link href="/account" className="flex items-center gap-2">
                     <Avatar className="h-6 w-6">
                       <AvatarFallback className="bg-primary text-primary-foreground">
@@ -66,7 +66,7 @@ export function Navbar({ user }: { user: User | null }) {
                 </Button>
               </>
             ) : (
-              <Button asChild variant="outline" className="backdrop-blur-2xl">
+              <Button asChild variant="outline" className="backdrop-blur-md">
                 <Link href="/auth/sign-in" className="flex items-center gap-2">
                   <LogIn /> Log In
                 </Link>
@@ -74,7 +74,7 @@ export function Navbar({ user }: { user: User | null }) {
             )}
           </div>
 
-          <div className="md:hidden flex items-center gap-2">
+          <div className="md:hidden flex items-center sm:gap-2 gap-3">
             <ThemeSelect />
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
@@ -82,7 +82,7 @@ export function Navbar({ user }: { user: User | null }) {
                   variant="outline"
                   size="icon"
                   aria-label="Menu"
-                  className="cursor-pointer"
+                  className="cursor-pointer backdrop-blur-md"
                 >
                   <Menu />
                 </Button>

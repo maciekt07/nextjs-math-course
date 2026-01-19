@@ -10,6 +10,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
   useTransition,
 } from "react";
@@ -96,6 +97,7 @@ export function CourseSidebar({
   const [_isTransitionLoading, startTransition] = useTransition();
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
   const [expandedChapters, setExpandedChapters] = useState<string[]>([]);
+  const animate = useRef<boolean>(false);
 
   const {
     ref: scrollRef,
@@ -116,40 +118,55 @@ export function CourseSidebar({
   );
 
   useEffect(() => {
-    if (!open) return;
-    const defaultExpanded = groupedChapters
-      .filter(({ lessons }) =>
+    const t = setTimeout(() => {
+      animate.current = true;
+    }, 1000);
+    return () => clearTimeout(t);
+  }, []);
+
+  const activeChapterId = useMemo(() => {
+    for (const { chapter, lessons } of groupedChapters) {
+      if (
         lessons.some((lesson) =>
           getActiveLessonPath(pathname, optimisticPath, course.slug!, lesson),
-        ),
-      )
-      .map(({ chapter }) => chapter.id);
+        )
+      ) {
+        return chapter.id;
+      }
+    }
+    return null;
+  }, [groupedChapters, pathname, optimisticPath, course.slug]);
 
-    requestAnimationFrame(() => {
-      setExpandedChapters(defaultExpanded);
-    });
-  }, [groupedChapters, pathname, optimisticPath, course.slug, open]);
+  useEffect(() => {
+    if (!open || !activeChapterId) return;
+    setExpandedChapters((prev) =>
+      prev.includes(activeChapterId) ? prev : [...prev, activeChapterId],
+    );
+  }, [activeChapterId, open]);
 
   const handleLessonClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>, lessonPath: string) => {
       e.preventDefault();
       setOptimisticPath(lessonPath);
-      requestAnimationFrame(() => {
-        startTransition(() => {
-          router.push(lessonPath);
-        });
+
+      startTransition(() => {
+        router.push(lessonPath);
       });
     },
-    [setOptimisticPath, router],
+    [router, setOptimisticPath],
   );
 
   useEffect(() => {
     const lessonRegex = /^\/course\/[^/]+\/[^/]+$/;
     if (lessonRegex.test(pathname)) {
       setOptimisticPath(pathname);
+      if (!animate.current) return;
+      // close on mobile after router push completes
       if (window.innerWidth < 768) {
-        requestAnimationFrame(() => {
-          setOpen(false);
+        startTransition(() => {
+          requestAnimationFrame(() => {
+            setOpen(false);
+          });
         });
       }
     }
@@ -229,7 +246,7 @@ export function CourseSidebar({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="fixed top-0 left-0 right-0 z-40 h-17 backdrop-blur-lg bg-background/60 border-b flex items-center mb-4 gap-3 pointer-events-none"
+            className="fixed top-0 left-0 right-0 z-40 h-17 backdrop-blur-xl bg-background/60 border-b flex items-center mb-4 gap-3"
           />
         )}
       </AnimatePresence>
@@ -253,9 +270,9 @@ export function CourseSidebar({
       <motion.aside
         initial={false}
         layout={false}
-        animate={open ? { x: 0, opacity: 1 } : { x: -320, opacity: 0.8 }}
-        transition={{ duration: 0.2 }}
-        className="fixed flex flex-col h-full w-80 border-r bg-background z-40 shadow-2xl md:shadow-none overflow-y-auto"
+        animate={open ? { x: 0 } : { x: -320 }}
+        transition={{ type: "tween", duration: 0.2 }}
+        className="fixed flex flex-col h-dvh w-80 border-r bg-background z-40 shadow-2xl md:shadow-none overflow-y-auto will-change-transform md:will-change-auto"
       >
         <div className="pt-14 sm:pt-16 px-4 border-b">
           <Button asChild variant="ghost" className="absolute top-4 right-4">
@@ -272,6 +289,7 @@ export function CourseSidebar({
                   src={(course.media as Media).url!}
                   alt={(course.media as Media).alt ?? course.title!}
                   fill
+                  priority
                   sizes="(min-width: 768px) 287px, 80px"
                   className="object-cover"
                   placeholder={
@@ -326,16 +344,10 @@ export function CourseSidebar({
             )}
           </div>
         </div>
-
         <div className="relative flex-1 min-h-[128px] overflow-hidden">
           <div className="h-full overflow-y-auto" ref={scrollRef}>
             <ScrollShadow position="top" show={showTop} />
             <div>
-              {/* <div className="p-4">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  Lessons · {lessons.length}
-                </p>
-              </div> */}
               {groupedChapters.length > 0 && (
                 <Accordion
                   type="multiple"
@@ -346,11 +358,17 @@ export function CourseSidebar({
                   {groupedChapters.map(
                     ({ chapter, lessons: chapterLessons }) => (
                       <AccordionItem key={chapter.id} value={chapter.id}>
-                        <AccordionTrigger className="px-4 py-3 font-medium text-sm hover:no-underline cursor-pointer">
+                        <AccordionTrigger
+                          className="px-4 sm:py-4 py-6 font-medium text-sm hover:no-underline cursor-pointer rounded-none transition-none hover:bg-muted/70"
+                          data-animate={animate.current}
+                        >
                           <span>{chapter.title}</span>
                         </AccordionTrigger>
-                        <AccordionContent className="px-0 py-0">
-                          <nav className="px-2 pb-3">
+                        <AccordionContent
+                          className="px-0 py-0"
+                          data-animate={animate.current}
+                        >
+                          <nav className="px-2 pb-2 mt-2">
                             {chapterLessons.map((lesson) => (
                               <LessonItem
                                 key={lesson.id}
@@ -403,6 +421,7 @@ export function CourseSidebar({
           <Button
             variant="outline"
             className="w-full mb-3 cursor-pointer"
+            aria-label="Open settings"
             onClick={() => setSettingsOpen(true)}
           >
             <Settings className="w-4 h-4" /> Settings
