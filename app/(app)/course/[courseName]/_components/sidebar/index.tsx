@@ -145,15 +145,31 @@ export function CourseSidebar({
   }, [activeChapterId, open]);
 
   const handleLessonClick = useCallback(
-    (e: React.MouseEvent<HTMLAnchorElement>, lessonPath: string) => {
+    (e: React.MouseEvent<HTMLAnchorElement>, nextPath: string) => {
       e.preventDefault();
-      setOptimisticPath(lessonPath);
+
+      const isSameLesson = nextPath === optimisticPath;
+      const isMobile = window.innerWidth < 768;
+
+      setOptimisticPath(nextPath);
 
       startTransition(() => {
-        router.push(lessonPath);
+        if (!isSameLesson) {
+          router.push(nextPath);
+          return;
+        }
+
+        if (isMobile) {
+          setOpen(false);
+          return;
+        }
+
+        requestAnimationFrame(() => {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
       });
     },
-    [router, setOptimisticPath],
+    [router, optimisticPath, setOpen, setOptimisticPath],
   );
 
   useEffect(() => {
