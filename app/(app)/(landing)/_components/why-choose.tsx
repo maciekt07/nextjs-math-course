@@ -32,6 +32,7 @@ export function WhyChoose() {
     <section className="border-y bg-muted/30">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:py-20 lg:py-24">
         <div className="mb-12 text-center">
+          {/* bg-gradient-to-b from-foreground to-neutral-500 dark:to-neutral-500 bg-clip-text text-transparent text-shadow-md */}
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
             Why Choose Math Course Online?
           </h2>

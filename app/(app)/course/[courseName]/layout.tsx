@@ -19,24 +19,58 @@ const getCourseWithLessons = cache(async (courseSlug: string) => {
 
   const course = courseDocs[0];
 
-  //FIXME: use partial type
-  const { docs: lessons } = await payload.find({
-    collection: "lessons",
-    where: { course: { equals: course.id } },
-    limit: 100,
-    select: {
-      title: true,
-      slug: true,
-      free: true,
-      id: true,
-      type: true,
-      quiz: { id: true },
-      video: true, //FIXME: can't select just the duration
-      readingTimeSeconds: true,
-    },
+  const [{ docs: chapters }, { docs: lessons }] = await Promise.all([
+    payload.find({
+      collection: "chapters",
+      where: { course: { equals: course.id } },
+      depth: 0,
+      limit: 100,
+    }),
+    payload.find({
+      collection: "lessons",
+      where: { course: { equals: course.id } },
+      limit: 100,
+      select: {
+        title: true,
+        slug: true,
+        free: true,
+        id: true,
+        type: true,
+        chapter: true,
+        quiz: { id: true },
+        video: true,
+        readingTimeSeconds: true,
+      },
+    }),
+  ]);
+  // sort lessons so that lessons with chapters follow the chapters' order,
+  //  and lessons without a chapter go at the end
+  const lessonsByChapter: Record<string, typeof lessons> = {};
+  chapters.forEach((chapter) => {
+    lessonsByChapter[chapter.id] = [];
   });
 
-  return { course, lessons };
+  const ungroupedLessons: typeof lessons = [];
+
+  lessons.forEach((lesson) => {
+    const chapterId =
+      typeof lesson.chapter === "string" ? lesson.chapter : lesson.chapter?.id;
+
+    if (chapterId && lessonsByChapter[chapterId]) {
+      lessonsByChapter[chapterId].push(lesson);
+    } else {
+      ungroupedLessons.push(lesson);
+    }
+  });
+
+  const sortedLessons: typeof lessons = [];
+  chapters.forEach((chapter) => {
+    sortedLessons.push(...lessonsByChapter[chapter.id]);
+  });
+
+  sortedLessons.push(...ungroupedLessons);
+
+  return { course, lessons: sortedLessons, chapters };
 });
 
 type Args = {
@@ -59,11 +93,13 @@ export default async function CourseLayout({
   if (session) {
     owned = await hasEnrollment(session.user.id, data.course.id);
   }
+  // console.log(data.lessons.map((lesson) => lesson.title));
 
   return (
     <CourseLayoutWrapper
       course={data.course}
       lessons={data.lessons}
+      chapters={data.chapters}
       owned={owned}
     >
       {children}

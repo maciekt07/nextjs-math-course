@@ -41,13 +41,14 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
   const muxPlayerCallback = useCallback(
     (node: MuxPlayerRefAttributes | null) => {
       playerElementRef.current = node;
-      if (!node || !lesson.chapters || lesson.chapters.length === 0) return;
+      if (!node || !lesson.videoChapters || lesson.videoChapters.length === 0)
+        return;
 
       // https://www.mux.com/docs/guides/player-advanced-usage#chapters-example
       const addChaptersToPlayer = () => {
-        if (!lesson.chapters) return;
+        if (!lesson.videoChapters) return;
 
-        const chapters = lesson.chapters.map((chapter) => ({
+        const chapters = lesson.videoChapters.map((chapter) => ({
           startTime: chapter.startTime,
           ...(chapter.endTime && { endTime: chapter.endTime }),
           value: chapter.title,
@@ -70,7 +71,7 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
         });
       }
     },
-    [lesson.chapters],
+    [lesson.videoChapters],
   );
 
   useEffect(() => {
@@ -272,8 +273,8 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
 
       <Card className="mt-2 bg-card/40 shadow-none">
         <CardHeader className="border-b font-inter">
-          <CardTitle className="flex items-center gap-2 -mb-2">
-            <Video className="w-5 h-5 text-primary" />
+          <CardTitle className="flex items-center gap-3 -mb-2">
+            <Video className="size-5 text-primary" />
             Video Details
           </CardTitle>
         </CardHeader>
@@ -288,16 +289,16 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
           ) : (
             <p className="italic text-muted-foreground">No Description</p>
           )}
-          {lesson.chapters && lesson.chapters.length > 0 && (
+          {lesson.videoChapters && lesson.videoChapters.length > 0 && (
             <>
               <Separator className="mt-4" />
               <div className="mt-4 font-inter">
-                <h3 className="text-xl font-semibold mb-4 text-primary flex items-center gap-2">
-                  <List className="h-5 w-5" />
+                <h3 className="text-lg font-semibold mb-4 text-primary flex items-center gap-2">
+                  <List className="size-5" />
                   Chapters
                 </h3>
                 <ul className=" space-y-2 sm:space-y-1">
-                  {lesson.chapters.map((chapter, index) => (
+                  {lesson.videoChapters.map((chapter, index) => (
                     <li
                       key={chapter.id || index}
                       className="flex items-center gap-2"

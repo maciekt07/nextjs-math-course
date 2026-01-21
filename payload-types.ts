@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     courses: Course;
     lessons: Lesson;
+    chapters: Chapter;
     media: Media;
     users: User;
     feedback: Feedback;
@@ -81,6 +82,7 @@ export interface Config {
   collectionsSelect: {
     courses: CoursesSelect<false> | CoursesSelect<true>;
     lessons: LessonsSelect<false> | LessonsSelect<true>;
+    chapters: ChaptersSelect<false> | ChaptersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     feedback: FeedbackSelect<false> | FeedbackSelect<true>;
@@ -167,12 +169,12 @@ export interface Lesson {
   slug?: string | null;
   free?: boolean | null;
   course: string | Course;
+  /**
+   * Select a chapter from the course above (optional)
+   */
+  chapter?: (string | null) | Chapter;
   type: 'text' | 'quiz' | 'video';
   uploadImage?: (string | Media)[] | null;
-  /**
-   * Calculated automatically from content
-   */
-  readingTimeSeconds?: number | null;
   content?: string | null;
   quiz?:
     | {
@@ -194,7 +196,7 @@ export interface Lesson {
   /**
    * Define chapters for the video. Each chapter has a start time, optional end time, and title.
    */
-  chapters?:
+  videoChapters?:
     | {
         startTime: number;
         /**
@@ -205,6 +207,25 @@ export interface Lesson {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Calculated automatically from content
+   */
+  readingTimeSeconds?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chapters".
+ */
+export interface Chapter {
+  id: string;
+  _order?: string | null;
+  title: string;
+  /**
+   * Which course does this chapter belong to?
+   */
+  course: string | Course;
   updatedAt: string;
   createdAt: string;
 }
@@ -305,6 +326,10 @@ export interface PayloadLockedDocument {
         value: string | Lesson;
       } | null)
     | ({
+        relationTo: 'chapters';
+        value: string | Chapter;
+      } | null)
+    | ({
         relationTo: 'media';
         value: string | Media;
       } | null)
@@ -386,9 +411,9 @@ export interface LessonsSelect<T extends boolean = true> {
   slug?: T;
   free?: T;
   course?: T;
+  chapter?: T;
   type?: T;
   uploadImage?: T;
-  readingTimeSeconds?: T;
   content?: T;
   quiz?:
     | T
@@ -407,7 +432,7 @@ export interface LessonsSelect<T extends boolean = true> {
       };
   video?: T;
   videoDescription?: T;
-  chapters?:
+  videoChapters?:
     | T
     | {
         startTime?: T;
@@ -415,6 +440,18 @@ export interface LessonsSelect<T extends boolean = true> {
         title?: T;
         id?: T;
       };
+  readingTimeSeconds?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chapters_select".
+ */
+export interface ChaptersSelect<T extends boolean = true> {
+  _order?: T;
+  title?: T;
+  course?: T;
   updatedAt?: T;
   createdAt?: T;
 }

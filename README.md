@@ -181,10 +181,16 @@ This is a tip with a custom title
 
 ### Reordering Lessons
 
-1. Go to the **Lessons** collection in the CMS.
+1. Go to the **[Lessons](http://localhost:3000/admin/collections/lessons)** collection in the CMS.
 2. In the top-right, open **Filters → Add Filter**.
 3. Select **course → equals → your course**.
 4. Use drag-and-drop to reorder the filtered lessons.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="screenshots/sort-filter-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="screenshots/sort-filter-light.png">
+  <img alt="Sort Filter" src="screenshots/sort-filter-dark.png">
+</picture>
 
 ## Performance
 

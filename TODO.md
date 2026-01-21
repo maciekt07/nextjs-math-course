@@ -36,7 +36,7 @@
 - [ ] Add course-release email notifications
 - [x] Add custom Markdown callout blocks
 - [ ] Add drafts [docs](https://payloadcms.com/docs/versions/drafts)
-- [ ] Add lesson groups
+- [x] Add lesson groups
 
 ## UI / UX
 
