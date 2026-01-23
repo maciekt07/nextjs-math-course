@@ -16,7 +16,7 @@ export const clientEnv = createEnv({
     NEXT_PUBLIC_MUX_SIGNED_URL_EXPIRATION: z
       .string()
       .regex(durationRegex)
-      .default("60s"),
+      .default("2m"),
     NEXT_PUBLIC_MUX_PUBLIC_EXPIRATION: z
       .string()
       .regex(durationRegex)

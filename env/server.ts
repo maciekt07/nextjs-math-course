@@ -3,6 +3,7 @@ import { z } from "zod";
 
 export const serverEnv = createEnv({
   server: {
+    NGROK_URL: z.url().optional().or(z.literal("")),
     DATABASE_URL: z
       .url()
       .min(10)
@@ -41,13 +42,7 @@ export const serverEnv = createEnv({
     S3_BUCKET: z.string().optional(),
     S3_ACCESS_KEY_ID: z.string().optional(),
     S3_SECRET: z.string().optional(),
-    S3_ENDPOINT: z
-      .string()
-      .optional()
-      // allow empty string since it's optional
-      .refine((val) => !val || z.url().safeParse(val).success, {
-        message: "Invalid URL",
-      }),
+    S3_ENDPOINT: z.url().optional().or(z.literal("")),
 
     MUX_TOKEN_ID: z.string().min(1),
     MUX_TOKEN_SECRET: z.string().min(1),
@@ -63,7 +58,7 @@ export const serverEnv = createEnv({
       }),
     STRIPE_WEBHOOK_SECRET: z
       .string()
-      .min(1)
+      .min(10)
       .refine((val) => val.startsWith("whsec"), {
         message: "STRIPE_WEBHOOK_SECRET must start with 'whsec'",
       }),

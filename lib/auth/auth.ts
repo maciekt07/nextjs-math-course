@@ -3,6 +3,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { db } from "@/drizzle/db";
 import { sendEmail } from "@/email/send-email";
+import { serverEnv } from "@/env/server";
 import { AUTH_LIMITS } from "@/lib/constants/limits";
 
 export const auth = betterAuth({
@@ -25,6 +26,7 @@ export const auth = betterAuth({
     },
   },
   plugins: [nextCookies()],
+  trustedOrigins: [serverEnv.NGROK_URL].filter((o): o is string => Boolean(o)),
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
