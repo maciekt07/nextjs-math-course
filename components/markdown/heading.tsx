@@ -1,4 +1,5 @@
 import { Link } from "lucide-react";
+import { scrollToHeader } from "@/lib/markdown/scroll-to-header";
 import { cn } from "@/lib/ui";
 import { useSidebarStore } from "@/stores/sidebar-store";
 
@@ -37,6 +38,10 @@ export function Heading({ as: Tag, id, children }: HeadingProps) {
 
       <a
         href={`#${id}`}
+        onClick={(e) => {
+          e.preventDefault();
+          scrollToHeader(id, { behavior: "smooth" });
+        }}
         aria-label={`Link to ${id}`}
         className={cn(
           "absolute inset-0 z-20",

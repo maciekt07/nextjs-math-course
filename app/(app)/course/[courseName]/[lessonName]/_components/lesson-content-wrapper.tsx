@@ -1,8 +1,9 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { type ReactNode, useEffect } from "react";
 import { Separator } from "@/components/ui/separator";
 import { openDyslexic } from "@/lib/fonts";
+import { scrollToHeader } from "@/lib/markdown/scroll-to-header";
 import { cn } from "@/lib/ui";
 import type { Lesson } from "@/payload-types";
 import { useSettingsStore } from "@/stores/settings-store";
@@ -27,6 +28,28 @@ export function LessonContentWrapper({
     system: "font-system",
     dyslexic: "font-dyslexic",
   }[fontStyle];
+
+  useEffect(() => {
+    const scrollToHash = () => {
+      const hash = window.location.hash.slice(1);
+      if (hash)
+        scrollToHeader(hash, {
+          maxAttempts: 6,
+          attemptInterval: 150,
+          force: true,
+        });
+    };
+
+    scrollToHash();
+
+    const onHashChange = (e: HashChangeEvent) => {
+      e.preventDefault();
+      scrollToHash();
+    };
+    window.addEventListener("hashchange", onHashChange);
+
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
 
   return (
     <article

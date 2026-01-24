@@ -8,38 +8,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import type { Heading } from "@/lib/markdown/extract-headings";
+import { scrollToHeader } from "@/lib/markdown/scroll-to-header";
 import { cn } from "@/lib/ui";
-
-interface ScrollToHeaderOptions {
-  behavior?: ScrollBehavior;
-}
-
-export function scrollToHeader(
-  id: string,
-  { behavior = "instant" }: ScrollToHeaderOptions = {},
-) {
-  const el = document.getElementById(id);
-  if (!el) return;
-
-  el.scrollIntoView({ behavior, block: "start" });
-
-  requestAnimationFrame(() => {
-    setTimeout(() => {
-      const rect = el.getBoundingClientRect();
-      const scrollY =
-        window.scrollY +
-        rect.top -
-        parseFloat(getComputedStyle(el).scrollMarginTop || "0");
-
-      // only scroll if the element moved (lazy content shifted it)
-      if (Math.abs(scrollY - window.scrollY) > 1) {
-        window.scrollTo({ top: scrollY, behavior: "instant" });
-      }
-    }, 100);
-  });
-
-  history.replaceState(null, "", `#${id}`);
-}
 
 export function LessonTOC({ headings }: { headings: Heading[] }) {
   const [activeId, setActiveId] = useState<string | null>(null);

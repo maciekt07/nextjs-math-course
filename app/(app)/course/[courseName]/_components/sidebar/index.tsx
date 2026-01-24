@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
+
 import { useScrollShadows } from "@/hooks/useScrollShadows";
 import { authClient } from "@/lib/auth/auth-client";
 import { cn } from "@/lib/ui";
@@ -262,7 +263,9 @@ export function CourseSidebar({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="fixed top-0 left-0 right-0 z-40 h-17 backdrop-blur-xl bg-background/60 border-b flex items-center mb-4 gap-3"
+            className={cn(
+              "fixed top-0 left-0 right-0 z-40 h-17 max-[1450px]:backdrop-blur-xl max-[1450px]:bg-background/60 max-[1450px]:border-b flex items-center mb-4 gap-3 transition-[border-color] duration-300",
+            )}
           />
         )}
       </AnimatePresence>
