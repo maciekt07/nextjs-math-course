@@ -10,6 +10,37 @@ import {
 import type { Heading } from "@/lib/markdown/extract-headings";
 import { cn } from "@/lib/ui";
 
+interface ScrollToHeaderOptions {
+  behavior?: ScrollBehavior;
+}
+
+export function scrollToHeader(
+  id: string,
+  { behavior = "instant" }: ScrollToHeaderOptions = {},
+) {
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  el.scrollIntoView({ behavior, block: "start" });
+
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      const rect = el.getBoundingClientRect();
+      const scrollY =
+        window.scrollY +
+        rect.top -
+        parseFloat(getComputedStyle(el).scrollMarginTop || "0");
+
+      // only scroll if the element moved (lazy content shifted it)
+      if (Math.abs(scrollY - window.scrollY) > 1) {
+        window.scrollTo({ top: scrollY, behavior: "instant" });
+      }
+    }, 100);
+  });
+
+  history.replaceState(null, "", `#${id}`);
+}
+
 export function LessonTOC({ headings }: { headings: Heading[] }) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const headingsRef = useRef(headings);
@@ -64,9 +95,18 @@ export function LessonTOC({ headings }: { headings: Heading[] }) {
     return null;
   }
 
+  const handleTOCClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    id: string,
+  ) => {
+    e.preventDefault();
+    scrollToHeader(id);
+    setActiveId(id);
+  };
+
   return (
     <>
-      <div className="hidden max-[1704px]:block mb-6 font-inter">
+      <div className="hidden max-[1704px]:block mb-6 font-inter sticky top-24">
         <Accordion
           type="single"
           collapsible
@@ -82,8 +122,9 @@ export function LessonTOC({ headings }: { headings: Heading[] }) {
                   <a
                     key={h.id}
                     href={`#${h.id}`}
+                    onClick={(e) => handleTOCClick(e, h.id)}
                     className={cn(
-                      "group flex items-start gap-2 py-3 sm:py-2  text-[16px] text-muted-foreground transition-colors leading-tight hover:text-foreground",
+                      "group flex items-start gap-2 py-3 sm:py-2 text-[16px] text-muted-foreground transition-colors leading-tight hover:text-foreground",
                       h.level === 3 && "pl-4",
                     )}
                   >
@@ -107,17 +148,18 @@ export function LessonTOC({ headings }: { headings: Heading[] }) {
             <a
               key={h.id}
               href={`#${h.id}`}
+              onClick={(e) => handleTOCClick(e, h.id)}
               className={cn(
-                "group flex items-start gap-2 text-sm transition-colors leading-tight",
+                "group flex items-start gap-2 text-sm transition-color leading-tight",
                 h.level === 3 && "pl-4",
                 activeId === h.id
-                  ? "text-primary font-medium"
+                  ? "text-primary"
                   : "text-muted-foreground hover:text-foreground",
               )}
             >
               <span
                 className={cn(
-                  "mt-1 h-2 w-2 rounded-full transition-all",
+                  "mt-1 size-2 rounded-full transition-all",
                   activeId === h.id
                     ? "bg-primary"
                     : "bg-muted-foreground/40 group-hover:bg-muted-foreground/70",
