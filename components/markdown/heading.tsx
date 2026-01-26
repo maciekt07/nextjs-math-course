@@ -18,7 +18,7 @@ export function Heading({ as: Tag, id, children }: HeadingProps) {
       id={id}
       className={cn(
         "group relative",
-        sidebarOpen ? "scroll-mt-6" : "scroll-mt-23",
+        sidebarOpen ? "scroll-mt-6" : "max-[1450px]:scroll-mt-23 scroll-mt-6",
       )}
     >
       <span className="inline">
