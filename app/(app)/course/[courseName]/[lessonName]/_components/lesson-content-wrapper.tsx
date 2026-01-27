@@ -34,8 +34,6 @@ export function LessonContentWrapper({
       const hash = window.location.hash.slice(1);
       if (hash)
         scrollToHeader(hash, {
-          maxAttempts: 6,
-          attemptInterval: 150,
           force: true,
         });
     };
