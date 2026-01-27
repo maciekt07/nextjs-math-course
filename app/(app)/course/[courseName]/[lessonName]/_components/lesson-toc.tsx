@@ -8,6 +8,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import type { Heading } from "@/lib/markdown/extract-headings";
+import { scrollToHeader } from "@/lib/markdown/scroll-to-header";
 import { cn } from "@/lib/ui";
 
 export function LessonTOC({ headings }: { headings: Heading[] }) {
@@ -64,9 +65,18 @@ export function LessonTOC({ headings }: { headings: Heading[] }) {
     return null;
   }
 
+  const handleTOCClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    id: string,
+  ) => {
+    e.preventDefault();
+    scrollToHeader(id);
+    setActiveId(id);
+  };
+
   return (
     <>
-      <div className="hidden max-[1704px]:block mb-6 font-inter">
+      <div className="hidden max-[1704px]:block mb-6 font-inter sticky top-24">
         <Accordion
           type="single"
           collapsible
@@ -82,8 +92,9 @@ export function LessonTOC({ headings }: { headings: Heading[] }) {
                   <a
                     key={h.id}
                     href={`#${h.id}`}
+                    onClick={(e) => handleTOCClick(e, h.id)}
                     className={cn(
-                      "group flex items-start gap-2 py-3 sm:py-2  text-[16px] text-muted-foreground transition-colors leading-tight hover:text-foreground",
+                      "group flex items-start gap-2 py-3 sm:py-2 text-[16px] text-muted-foreground transition-colors leading-tight hover:text-foreground",
                       h.level === 3 && "pl-4",
                     )}
                   >
@@ -107,17 +118,18 @@ export function LessonTOC({ headings }: { headings: Heading[] }) {
             <a
               key={h.id}
               href={`#${h.id}`}
+              onClick={(e) => handleTOCClick(e, h.id)}
               className={cn(
-                "group flex items-start gap-2 text-sm transition-colors leading-tight",
+                "group flex items-start gap-2 text-sm transition-color leading-tight",
                 h.level === 3 && "pl-4",
                 activeId === h.id
-                  ? "text-primary font-medium"
+                  ? "text-primary"
                   : "text-muted-foreground hover:text-foreground",
               )}
             >
               <span
                 className={cn(
-                  "mt-1 h-2 w-2 rounded-full transition-all",
+                  "mt-1 size-2 rounded-full transition-all",
                   activeId === h.id
                     ? "bg-primary"
                     : "bg-muted-foreground/40 group-hover:bg-muted-foreground/70",

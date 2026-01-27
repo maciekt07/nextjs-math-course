@@ -53,7 +53,7 @@ export const KatexRenderer = memo(
             return () => clearTimeout(id);
           }
         },
-        { rootMargin: "500px" },
+        { rootMargin: "300px" },
       );
 
       observer.observe(el);

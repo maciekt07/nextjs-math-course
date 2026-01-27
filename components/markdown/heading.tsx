@@ -1,4 +1,5 @@
 import { Link } from "lucide-react";
+import { scrollToHeader } from "@/lib/markdown/scroll-to-header";
 import { cn } from "@/lib/ui";
 import { useSidebarStore } from "@/stores/sidebar-store";
 
@@ -17,7 +18,7 @@ export function Heading({ as: Tag, id, children }: HeadingProps) {
       id={id}
       className={cn(
         "group relative",
-        sidebarOpen ? "scroll-mt-6" : "scroll-mt-23",
+        sidebarOpen ? "scroll-mt-6" : "max-[1450px]:scroll-mt-23 scroll-mt-6",
       )}
     >
       <span className="inline">
@@ -37,6 +38,10 @@ export function Heading({ as: Tag, id, children }: HeadingProps) {
 
       <a
         href={`#${id}`}
+        onClick={(e) => {
+          e.preventDefault();
+          scrollToHeader(id, { behavior: "smooth" });
+        }}
         aria-label={`Link to ${id}`}
         className={cn(
           "absolute inset-0 z-20",

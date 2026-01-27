@@ -14,7 +14,7 @@ export default async function MarketingLayout({
   });
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen viewport-smooth-scroll">
       <Navbar user={session?.user || null} />
       <main className="flex-1 w-full">{children}</main>
       <Footer />

@@ -156,9 +156,8 @@
     overscroll-behavior: contain;
     position: relative !important;
   }
-  html {
+  html:has(.viewport-smooth-scroll) {
     scroll-behavior: smooth;
-    /* scroll-padding-top: 6rem; */
   }
 }
 
