@@ -30,28 +30,25 @@ export function DesmosGraph({ graphUrl, noEmbed = false }: DesmosGraphProps) {
   return (
     <div
       className={cn(
-        "w-full rounded-2xl border-2 border-border bg-background",
+        "w-full rounded-2xl border-1 border-border bg-background shadow-sm",
         "flex flex-col overflow-hidden",
       )}
       ref={ref}
     >
       <div className="relative w-full h-[400px] sm:h-[500px]">
-        {inView ? (
+        {inView && (
           <iframe
             title={`Desmos Graph: ${graphId}`}
             src={iframeUrl}
             loading="lazy"
             className={cn(
               "block size-full transition-all duration-300",
-              forceDarkMode &&
-                "dark:[filter:invert(1)_hue-rotate(180deg)_brightness(0.9)_contrast(1.1)]",
+              forceDarkMode && "dark:[filter:invert(1)_hue-rotate(180deg)]",
             )}
           />
-        ) : (
-          <div className="size-full rounded-xl" />
         )}
       </div>
-      <div className="border-t-2 border-border p-3">
+      <div className="border-t-1 border-border p-3">
         <Button asChild className="w-full" variant="outline">
           <a
             href={editUrl}

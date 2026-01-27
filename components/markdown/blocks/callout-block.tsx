@@ -15,7 +15,7 @@ export function CalloutBlock({ type, title, children }: CalloutBlockProps) {
     <div
       role="note"
       className={cn(
-        "block rounded-xl px-4 py-3 sm:px-5 sm:py-4 my-4 border-1",
+        "block rounded-2xl px-4 py-3 sm:px-5 sm:py-4 my-4 border-1",
         config.bg,
       )}
     >
