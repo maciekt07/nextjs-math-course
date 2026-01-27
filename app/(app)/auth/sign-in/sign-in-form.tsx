@@ -40,6 +40,7 @@ export function SignInForm({ returnTo }: { returnTo?: string }) {
         },
         onSuccess: () => {
           router.push(returnTo || "/");
+          router.refresh();
         },
       },
     );
