@@ -53,7 +53,7 @@ export function createMarkdownComponents({
             unoptimized={!optimizeImages}
             placeholder={blurhash ? "blur" : "empty"}
             blurDataURL={blurhash || undefined}
-            className="w-full rounded-2xl object-contain border-2 border-border"
+            className="w-full rounded-2xl object-contain border-1 shadow-sm"
           />
         </ImageZoom>
       );
