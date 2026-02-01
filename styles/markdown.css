@@ -93,7 +93,7 @@ article {
   -webkit-mask-image: linear-gradient(
     to right,
     black 0%,
-    black calc(100% - 3rem),
+    black calc(100% - 2rem),
     transparent 100%
   );
   -webkit-mask-repeat: no-repeat;
@@ -101,7 +101,7 @@ article {
   mask-image: linear-gradient(
     to right,
     black 0%,
-    black calc(100% - 3rem),
+    black calc(100% - 2rem),
     transparent 100%
   );
   mask-repeat: no-repeat;

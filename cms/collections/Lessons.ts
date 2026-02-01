@@ -16,16 +16,34 @@ export const Lessons: CollectionConfig = {
   orderable: true,
   hooks: {
     beforeChange: [
-      async ({ data }) => {
+      async ({ data, req }) => {
         if (data.content) {
           const { getReadingTime } = await import("@lib/reading-time");
           data.readingTimeSeconds = getReadingTime(data.content);
         }
+
+        if (data.type === "video" && data.video) {
+          const videoId =
+            typeof data.video === "string" ? data.video : data.video.id;
+
+          const muxVideo = await req.payload.findByID({
+            collection: "mux-video",
+            id: videoId,
+          });
+
+          const duration = muxVideo.duration ?? null;
+
+          if (typeof duration === "number") {
+            data.videoDurationSeconds = Math.floor(duration);
+          }
+        }
+
         return data;
       },
     ],
     afterChange: [revalidateLesson],
   },
+
   fields: [
     {
       type: "tabs",
@@ -226,6 +244,15 @@ export const Lessons: CollectionConfig = {
                 readOnly: true,
                 description: "Calculated automatically from content",
                 condition: (data) => data.type === "text",
+              },
+            },
+            {
+              name: "videoDurationSeconds",
+              type: "number",
+              label: "Video Duration (seconds)",
+              admin: {
+                readOnly: true,
+                condition: (data) => data.type === "video",
               },
             },
           ],

@@ -126,7 +126,7 @@ export default function FeedbackWidget({
   }
 
   return (
-    <div className="w-full sm:max-w-sm mx-auto my-8 font-inter">
+    <div className="w-full sm:max-w-sm mx-auto my-10 font-inter">
       <div className="flex flex-col items-center rounded-xl border p-4 bg-background">
         <p className="text-md font-medium text-foreground mb-3 not-sr-only">
           How was this {type === "quiz" || type === "video" ? type : "lesson"}?

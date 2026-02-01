@@ -211,6 +211,7 @@ export interface Lesson {
    * Calculated automatically from content
    */
   readingTimeSeconds?: number | null;
+  videoDurationSeconds?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -441,6 +442,7 @@ export interface LessonsSelect<T extends boolean = true> {
         id?: T;
       };
   readingTimeSeconds?: T;
+  videoDurationSeconds?: T;
   updatedAt?: T;
   createdAt?: T;
 }

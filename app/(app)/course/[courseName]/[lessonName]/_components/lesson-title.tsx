@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/tooltip";
 import { formatDuration, formatReadingTime } from "@/lib/format";
 import { cn } from "@/lib/ui";
-import type { Lesson, MuxVideo } from "@/payload-types";
+import type { Lesson } from "@/payload-types";
 
 interface LessonTitleProps {
   lesson: Lesson | null;
@@ -18,25 +18,24 @@ export function LessonTitle({ lesson }: LessonTitleProps) {
   if (!lesson) return null;
 
   const metadata = getLessonMetadata(lesson);
-
   const createdAt = new Date(lesson.createdAt);
   const updatedAt = new Date(lesson.updatedAt);
 
-  const formattedDate = new Intl.DateTimeFormat(navigator.language, {
+  const formattedDate = formatDate(createdAt, {
     year: "numeric",
     month: "short",
     day: "numeric",
-  }).format(createdAt);
+  });
 
-  const fullCreatedAt = new Intl.DateTimeFormat(navigator.language, {
+  const fullCreatedAt = formatDate(createdAt, {
     dateStyle: "full",
     timeStyle: "short",
-  }).format(createdAt);
+  });
 
-  const fullUpdatedAt = new Intl.DateTimeFormat(navigator.language, {
+  const fullUpdatedAt = formatDate(updatedAt, {
     dateStyle: "full",
     timeStyle: "short",
-  }).format(updatedAt);
+  });
 
   return (
     <div className="mb-8 font-inter" suppressHydrationWarning>
@@ -57,12 +56,12 @@ export function LessonTitle({ lesson }: LessonTitleProps) {
           <TooltipProvider delayDuration={200}>
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className="flex items-center gap-1.5 cursor-default">
+                <div className="flex items-center gap-1.5">
                   <Calendar size={18} />
                   <span>{formattedDate}</span>
                 </div>
               </TooltipTrigger>
-              <TooltipContent side="top" className="text-xs space-y-1">
+              <TooltipContent side="top" className="text-xs">
                 <div>
                   <span className="font-medium">Created:</span> {fullCreatedAt}
                 </div>
@@ -90,6 +89,9 @@ export function LessonTitle({ lesson }: LessonTitleProps) {
   );
 }
 
+const formatDate = (date: Date, options: Intl.DateTimeFormatOptions) =>
+  new Intl.DateTimeFormat(navigator.language, options).format(date);
+
 function getLessonMetadata(lesson: Lesson) {
   switch (lesson.type) {
     case "text": {
@@ -97,7 +99,7 @@ function getLessonMetadata(lesson: Lesson) {
       return readingTime ? { icon: Clock, text: readingTime } : null;
     }
     case "video": {
-      const duration = (lesson.video as MuxVideo)?.duration;
+      const duration = lesson.videoDurationSeconds;
       return duration ? { icon: Film, text: formatDuration(duration) } : null;
     }
     case "quiz": {

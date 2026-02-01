@@ -38,7 +38,7 @@ const getCourseWithLessons = cache(async (courseSlug: string) => {
         type: true,
         chapter: true,
         quiz: { id: true },
-        video: true,
+        videoDurationSeconds: true,
         readingTimeSeconds: true,
       },
     }),

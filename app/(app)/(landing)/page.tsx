@@ -93,9 +93,11 @@ export default async function Home() {
       <section className="mt-0 sm:mt-2">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            <div className="flex flex-col gap-3 sm:gap-6 text-left order-1 lg:order-1">
-              <HeroBadge />
-              <h1 className="text-3xl sm:text-5xl font-bold text-foreground leading-tight text-balance text-shadow-md">
+            <div className="flex flex-col gap-4 sm:gap-6 text-left order-1 lg:order-1">
+              <div className="flex items-center justify-center md:justify-start">
+                <HeroBadge />
+              </div>
+              <h1 className="text-3xl sm:text-5xl text-center md:text-left font-bold text-foreground leading-tight text-balance text-shadow-md">
                 Master{" "}
                 <span className="text-primary text-shadow-lg">Mathematics</span>{" "}
                 with Engaging Courses
@@ -148,7 +150,7 @@ export default async function Home() {
                 </div>
               </div>
             </div>
-            <HeroImage className="h-96 -my-8 rounded-2xl sm:h-128 lg:h-[600px] max-w-md lg:max-w-none mx-auto order-3 lg:order-2" />
+            <HeroImage className="h-[450px] -my-8 rounded-2xl sm:h-128 lg:h-[600px] max-w-md lg:max-w-none mx-auto order-3 lg:order-2" />
           </div>
         </div>
       </section>

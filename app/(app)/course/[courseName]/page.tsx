@@ -42,8 +42,6 @@ type Args = {
   params: Promise<{ courseName: string }>;
 };
 
-//TODO: add first lesson slug to cms for better performance
-
 export default async function CoursePage({ params: paramsPromise }: Args) {
   const { courseName } = await paramsPromise;
   const data = await getCourseWithFirstLesson(courseName);

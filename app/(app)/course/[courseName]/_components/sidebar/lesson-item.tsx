@@ -5,7 +5,7 @@ import Link from "next/link";
 import { memo } from "react";
 import { formatDuration, formatReadingTime } from "@/lib/format";
 import { cn } from "@/lib/ui";
-import type { Lesson, MuxVideo } from "@/payload-types";
+import type { Lesson } from "@/payload-types";
 
 const lessonTypeConfig = {
   quiz: {
@@ -49,10 +49,7 @@ export const LessonItem = memo(
 
     const Icon = typeConfig.icon;
 
-    const videoDuration =
-      lesson.type === "video"
-        ? ((lesson.video as MuxVideo)?.duration ?? null)
-        : null;
+    const videoDuration = lesson.videoDurationSeconds;
 
     return (
       <Link
