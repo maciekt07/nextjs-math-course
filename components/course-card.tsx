@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { cn } from "@/lib/ui";
-import type { Course, Media } from "@/payload-types";
+import type { Course, Poster } from "@/payload-types";
 
 interface CourseCardProps extends React.ComponentProps<"div"> {
   course: Course & { lessonCount: number | undefined };
@@ -27,20 +27,20 @@ export function CourseCard({
   className,
   ...props
 }: CourseCardProps) {
-  const palette = (course.media as Media).palette ?? {};
+  const palette =
+    typeof course.poster === "object" && course.poster
+      ? course.poster.palette
+      : {};
 
-  const dominant = palette.dominant ?? "#363636";
-  // const vibrant = palette.vibrant ?? dominant;
-  // const light = palette.lightVibrant ?? vibrant;
-  // const dark = palette.darkVibrant ?? dominant;
-  // const muted = palette.muted ?? dominant;
+  const dominant = palette?.dominant ?? "#8f8f8f";
+
   return (
     <Card
       key={course.id}
       className={cn(
         "group relative flex flex-col py-4 md:py-6 rounded-3xl",
-        "[--start-opacity:18%] [--mid-opacity:9%]",
-        "dark:[--start-opacity:12%] dark:[--mid-opacity:6%]",
+        "[--start:18%] [--mid:9%]",
+        "dark:[--start:12%] dark:[--mid:6%]",
         className,
       )}
       style={{
@@ -48,8 +48,8 @@ export function CourseCard({
         background: `
         linear-gradient(
           155deg,
-          color-mix(in oklab, var(--d) var(--start-opacity), transparent),
-          color-mix(in oklab, var(--d) var(--mid-opacity), transparent) 40%,
+          color-mix(in oklab, var(--d) var(--start), transparent),
+          color-mix(in oklab, var(--d) var(--mid), transparent) 40%,
           transparent
         )
       `,
@@ -74,19 +74,19 @@ export function CourseCard({
 
       <CardHeader className="px-4 md:px-6 relative">
         <div className="flex flex-col sm:flex-row items-start gap-4">
-          {course.media ? (
+          {course.poster ? (
             <div className="relative w-full h-48 sm:w-32 sm:h-32 sm:aspect-square rounded-lg overflow-hidden shadow-lg">
               <Image
-                src={(course.media as Media).url!}
-                alt={(course.media as Media).alt ?? course.title ?? "Preview"}
+                src={(course.poster as Poster).url!}
+                alt={(course.poster as Poster).alt ?? course.title ?? "Preview"}
                 fill
                 className="object-cover group-hover:scale-110 ease-in-out transition-transform duration-200"
                 sizes="(min-width: 640px) 256px, 640px"
                 loading="lazy"
                 placeholder={
-                  (course.media as Media).blurhash ? "blur" : "empty"
+                  (course.poster as Poster).blurhash ? "blur" : "empty"
                 }
-                blurDataURL={(course.media as Media).blurhash || undefined}
+                blurDataURL={(course.poster as Poster).blurhash || undefined}
               />
             </div>
           ) : (

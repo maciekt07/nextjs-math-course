@@ -11,6 +11,7 @@ import { s3Storage } from "@payloadcms/storage-s3";
 import { buildConfig } from "payload";
 import sharp from "sharp";
 import { Chapters } from "@/cms/collections/Chapters";
+import { Posters } from "@/cms/collections/Posters";
 import { clientEnv } from "@/env/client";
 import { serverEnv } from "@/env/server";
 
@@ -19,7 +20,7 @@ const useS3 = serverEnv.ENABLE_S3 && !!serverEnv.S3_BUCKET;
 
 export default buildConfig({
   editor: lexicalEditor(),
-  collections: [Courses, Lessons, Chapters, Media, Users, Feedbacks],
+  collections: [Courses, Posters, Lessons, Chapters, Media, Users, Feedbacks],
   secret: serverEnv.PAYLOAD_SECRET,
   db: mongooseAdapter({
     url: serverEnv.MONGO_URL,
@@ -52,6 +53,7 @@ export default buildConfig({
       enabled: useS3,
       collections: {
         media: true,
+        posters: true,
       },
       bucket: serverEnv.S3_BUCKET || "",
       config: {

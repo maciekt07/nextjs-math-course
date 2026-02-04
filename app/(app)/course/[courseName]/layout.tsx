@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { auth } from "@/lib/auth/auth";
-import { hasEnrollment } from "@/lib/db/enrollment";
+import { hasEnrollment } from "@/lib/data/enrollment";
 import { getPayloadClient } from "@/lib/payload-client";
 import { CourseLayoutWrapper } from "./_components/course-layout-wrapper";
 

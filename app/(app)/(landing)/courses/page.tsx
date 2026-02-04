@@ -11,7 +11,7 @@ import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
 import { auth } from "@/lib/auth/auth";
 import { getPayloadClient } from "@/lib/payload-client";
-import type { Media } from "@/payload-types";
+import type { Poster } from "@/payload-types";
 
 export const metadata = {
   title: "Your Courses",
@@ -50,7 +50,7 @@ const getCoursesByIds = unstable_cache(
         description: true,
         slug: true,
         id: true,
-        media: true,
+        poster: true,
       },
     });
     return res.docs || [];
@@ -92,16 +92,16 @@ export default async function CoursesPage() {
           key={c.id}
           className="p-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4"
         >
-          {c.media ? (
+          {c.poster ? (
             <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
               <Image
-                src={(c.media as Media).url!}
-                alt={(c.media as Media).alt ?? c.title}
+                src={(c.poster as Poster).url!}
+                alt={(c.poster as Poster).alt ?? c.title}
                 width={96}
                 height={96}
                 className="object-cover w-full h-full"
-                placeholder={(c.media as Media).blurhash ? "blur" : "empty"}
-                blurDataURL={(c.media as Media).blurhash || undefined}
+                placeholder={(c.poster as Poster).blurhash ? "blur" : "empty"}
+                blurDataURL={(c.poster as Poster).blurhash || undefined}
               />
             </div>
           ) : (

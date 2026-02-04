@@ -7,7 +7,6 @@ export const extractPalette: CollectionAfterChangeHook = async ({
   req,
 }) => {
   if (operation !== "create") return;
-  if (doc.kind !== "poster") return;
 
   try {
     const buffer = req.file?.data;
@@ -17,7 +16,7 @@ export const extractPalette: CollectionAfterChangeHook = async ({
     const palette = await Vibrant.from(buffer).quality(8).getPalette();
 
     await req.payload.update({
-      collection: "media",
+      collection: "posters",
       id: doc.id,
       data: {
         palette: {
@@ -31,7 +30,7 @@ export const extractPalette: CollectionAfterChangeHook = async ({
     });
   } catch (err) {
     req.payload.logger.warn(
-      `Palette extraction failed for media ${doc.id}: ${err}`,
+      `Palette extraction failed for posters ${doc.id}: ${err}`,
     );
   }
 };

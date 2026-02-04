@@ -33,8 +33,8 @@ export function ThemeSelect() {
           size="icon"
           className="cursor-pointer backdrop-blur-md focus-visible:ring-0"
         >
-          <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
-          <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+          <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 dark:scale-0 dark:-rotate-90" />
+          <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 dark:scale-100 dark:rotate-0" />
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
@@ -49,10 +49,7 @@ export function ThemeSelect() {
               <Icon size={16} /> {label}
             </div>
             {theme === key && (
-              <Check
-                size={16}
-                className="animate-in fade-in zoom-in duration-200"
-              />
+              <Check size={16} className="animate-in zoom-in duration-200" />
             )}
           </DropdownMenuItem>
         ))}
