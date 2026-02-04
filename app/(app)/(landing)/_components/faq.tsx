@@ -58,7 +58,7 @@ export function FAQ() {
             key={i}
             initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
             animate={isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
-            transition={{ duration: 0.5, delay: i * 0.15, ease: "easeOut" }}
+            transition={{ duration: 0.6, delay: i * 0.15, ease: "easeOut" }}
           >
             <AccordionItem
               value={`item-${i}`}

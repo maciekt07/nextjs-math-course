@@ -144,7 +144,18 @@ export interface Course {
  */
 export interface Media {
   id: string;
+  kind: 'poster' | 'other';
   alt?: string | null;
+  /**
+   * Auto-generated color palette (poster only)
+   */
+  palette?: {
+    dominant?: string | null;
+    vibrant?: string | null;
+    darkVibrant?: string | null;
+    lightVibrant?: string | null;
+    muted?: string | null;
+  };
   blurhash?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -462,7 +473,17 @@ export interface ChaptersSelect<T extends boolean = true> {
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
+  kind?: T;
   alt?: T;
+  palette?:
+    | T
+    | {
+        dominant?: T;
+        vibrant?: T;
+        darkVibrant?: T;
+        lightVibrant?: T;
+        muted?: T;
+      };
   blurhash?: T;
   updatedAt?: T;
   createdAt?: T;
