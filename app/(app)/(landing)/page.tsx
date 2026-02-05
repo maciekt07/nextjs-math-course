@@ -1,14 +1,11 @@
-import { and, count, eq } from "drizzle-orm";
 import { BookOpen } from "lucide-react";
-import { unstable_cache } from "next/cache";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { CourseCard } from "@/components/course-card";
 import { Button } from "@/components/ui/button";
-import { db } from "@/drizzle/db";
-import { enrollment, user } from "@/drizzle/schema";
 import { auth } from "@/lib/auth/auth";
-import { getPayloadClient } from "@/lib/payload-client";
+import { getCourses, getOwnedCourseIds } from "@/lib/data/courses";
+import { getUserCount } from "@/lib/data/users";
 import { CTASection } from "./_components/cta";
 import { FAQ } from "./_components/faq";
 import { GridBackground } from "./_components/grid-background";
@@ -16,76 +13,18 @@ import { HeroBadge } from "./_components/hero-badge";
 import { HeroImage } from "./_components/hero-image";
 import { WhyChoose } from "./_components/why-choose";
 
-const getCourses = unstable_cache(
-  async () => {
-    const payload = await getPayloadClient();
-    const { docs } = await payload.find({
-      collection: "courses",
-      limit: 10,
-    });
-
-    const coursesWithLessons = await Promise.all(
-      (docs || []).map(async (course) => {
-        const { totalDocs: lessonCount } = await payload.find({
-          collection: "lessons",
-          where: {
-            course: { equals: course.id },
-          },
-          limit: 0,
-        });
-        return { ...course, lessonCount };
-      }),
-    );
-
-    return coursesWithLessons;
-  },
-  ["courses-list"],
-  { revalidate: 3600, tags: ["courses-list"] },
-);
-
-const getUserCount = unstable_cache(
-  async () => {
-    const result = await db.select({ count: count() }).from(user);
-    return result[0]?.count || 0;
-  },
-  ["user-count"],
-  { revalidate: 3600 },
-);
-
-const getOwnedCourseIds = (userId: string) =>
-  unstable_cache(
-    async () => {
-      const rows = await db
-        .select({ courseId: enrollment.courseId })
-        .from(enrollment)
-        .where(
-          and(
-            eq(enrollment.userId, userId),
-            eq(enrollment.status, "completed"),
-          ),
-        );
-      return rows.map((r) => r.courseId);
-    },
-    ["enrollments", userId],
-    { revalidate: 300, tags: [`enrollments:${userId}`] },
-  );
-
 export default async function Home() {
   const session = await auth.api.getSession({ headers: await headers() });
   const courses = await getCourses();
-  const userCount = getUserCount();
+  const userCount = await getUserCount();
 
   let ownedCourseIds: string[] = [];
 
   if (session?.user?.id) {
-    const getOwnedCoursesFunc = getOwnedCourseIds(session.user.id);
-    ownedCourseIds = await getOwnedCoursesFunc();
+    ownedCourseIds = await getOwnedCourseIds(session.user.id);
   }
 
-  const formattedUserCount = Math.max(
-    10,
-    Math.floor((await userCount) / 10) * 10,
-  );
+  const formattedUserCount = Math.max(10, Math.floor(userCount / 10) * 10);
 
   return (
     <div className="w-full flex flex-col ">
@@ -102,7 +41,7 @@ export default async function Home() {
                 <span className="text-primary text-shadow-lg">Mathematics</span>{" "}
                 with Engaging Courses
               </h1>
-              <p className="text-md sm:text-lg text-muted-foreground max-w-xl">
+              <p className="text-md sm:text-lg text-center md:text-left text-muted-foreground max-w-xl">
                 Learn from a{" "}
                 <b className="text-foreground/80 text-shadow-md">
                   dedicated math educator
@@ -141,7 +80,6 @@ export default async function Home() {
                     Students Learning
                   </p>
                 </div>
-                {/* <Separator orientation="vertical" /> */}
                 <div>
                   <p className="text-2xl font-bold text-foreground">
                     {courses.length}

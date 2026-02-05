@@ -1,101 +1,38 @@
 import { headers } from "next/headers";
 import type { Access } from "payload";
 import { auth } from "@/lib/auth/auth";
-import { hasEnrollment } from "@/lib/db/enrollment";
+import { hasEnrollment } from "@/lib/data/enrollment";
 
 export const mediaReadAccess: Access = async ({ req }): Promise<boolean> => {
   try {
     const url = req.pathname;
-    const id = url.match(
-      /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i,
-    )?.[0];
 
-    if (req.user?.role === "admin" || req.user?.role === "editor") {
-      return true;
-    }
+    if (req.user?.role === "admin" || req.user?.role === "editor") return true;
 
-    if (!id) return false;
+    const filename = url.split("/").pop();
+    if (!filename) return false;
 
-    const allCourses = await req.payload.find({
-      collection: "courses",
-      where: {
-        and: [
-          {
-            media: { exists: true },
-          },
-        ],
-      },
-      depth: 1,
-      select: { media: true },
-    });
-
-    // check if media is a course thumbnail
-    const courseWithMedia = allCourses.docs.filter((course) => {
-      if (!course.media) return false;
-      const mediaURL =
-        typeof course.media === "string" ? course.media : course.media.url;
-
-      return mediaURL === url;
-    });
-
-    // course thumbnails are always public
-    if (courseWithMedia.length > 0) {
-      return true;
-    }
-
-    // check if media is in the uploadImage array
-    const allLessons = await req.payload.find({
+    const lessons = await req.payload.find({
       collection: "lessons",
-      where: {
-        and: [
-          {
-            uploadImage: { exists: true },
-          },
-        ],
-      },
-      depth: 1,
+      where: { "uploadImage.filename": { equals: filename } },
       select: { uploadImage: true, free: true, course: true },
+      depth: 0,
+      limit: 1,
     });
 
-    const lessonsWithMedia = allLessons.docs.filter((lesson) => {
-      if (!lesson.uploadImage || !Array.isArray(lesson.uploadImage))
-        return false;
+    const lesson = lessons.docs[0];
+    if (!lesson) return false;
 
-      return lesson.uploadImage.some((mediaItem) => {
-        const mediaURL =
-          typeof mediaItem === "string" ? mediaItem : mediaItem.url;
-        return mediaURL === url;
-      });
-    });
+    if (lesson.free) return true;
 
-    if (lessonsWithMedia.length === 0) {
-      return false;
-    }
-
-    const lesson = lessonsWithMedia[0];
-
-    // free lesson images are public
-    if (lesson.free) {
-      return true;
-    }
-
-    // for paid lessons user must be authenticated
     const session = await auth.api.getSession({ headers: await headers() });
-
-    if (!session?.user) {
-      return false;
-    }
+    if (!session?.user) return false;
 
     const courseId =
       typeof lesson.course === "string" ? lesson.course : lesson.course?.id;
+    if (!courseId) return false;
 
-    if (!courseId) {
-      return false;
-    }
-
-    const hasAccess = await hasEnrollment(session.user.id, courseId);
-
-    return hasAccess;
+    return await hasEnrollment(session.user.id, courseId);
   } catch (error) {
     console.error("Media access error:", error);
     return false;

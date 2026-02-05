@@ -12,21 +12,15 @@ export const Media: CollectionConfig = {
     beforeOperation: [renameFile],
     beforeValidate: [generateBlurhash],
   },
+  upload: {
+    mimeTypes: ["image/*"],
+    staticDir: "media",
+  },
   fields: [
     {
       name: "alt",
       type: "text",
     },
-    // { // TODO: make blur generation optional
-    //   name: "generateBlur",
-    //   type: "checkbox",
-    //   label: "Generate Blur Placeholder",
-    //   defaultValue: true,
-    //   admin: {
-    //     description:
-    //       "Automatically create a blurred placeholder for this image.",
-    //   },
-    // },
     {
       name: "blurhash",
       type: "text",
@@ -37,8 +31,4 @@ export const Media: CollectionConfig = {
       },
     },
   ],
-  upload: {
-    mimeTypes: ["image/*"],
-    staticDir: "media",
-  },
 };

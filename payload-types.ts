@@ -68,6 +68,7 @@ export interface Config {
   blocks: {};
   collections: {
     courses: Course;
+    posters: Poster;
     lessons: Lesson;
     chapters: Chapter;
     media: Media;
@@ -81,6 +82,7 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     courses: CoursesSelect<false> | CoursesSelect<true>;
+    posters: PostersSelect<false> | PostersSelect<true>;
     lessons: LessonsSelect<false> | LessonsSelect<true>;
     chapters: ChaptersSelect<false> | ChaptersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -134,17 +136,27 @@ export interface Course {
   slug?: string | null;
   price: number;
   description?: string | null;
-  media?: (string | null) | Media;
+  poster?: (string | null) | Poster;
   updatedAt: string;
   createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
+ * via the `definition` "posters".
  */
-export interface Media {
+export interface Poster {
   id: string;
   alt?: string | null;
+  /**
+   * Auto-generated color palette
+   */
+  palette?: {
+    dominant?: string | null;
+    vibrant?: string | null;
+    darkVibrant?: string | null;
+    lightVibrant?: string | null;
+    muted?: string | null;
+  };
   blurhash?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -229,6 +241,26 @@ export interface Chapter {
   course: string | Course;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: string;
+  alt?: string | null;
+  blurhash?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -323,6 +355,10 @@ export interface PayloadLockedDocument {
         value: string | Course;
       } | null)
     | ({
+        relationTo: 'posters';
+        value: string | Poster;
+      } | null)
+    | ({
         relationTo: 'lessons';
         value: string | Lesson;
       } | null)
@@ -398,9 +434,37 @@ export interface CoursesSelect<T extends boolean = true> {
   slug?: T;
   price?: T;
   description?: T;
-  media?: T;
+  poster?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posters_select".
+ */
+export interface PostersSelect<T extends boolean = true> {
+  alt?: T;
+  palette?:
+    | T
+    | {
+        dominant?: T;
+        vibrant?: T;
+        darkVibrant?: T;
+        lightVibrant?: T;
+        muted?: T;
+      };
+  blurhash?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

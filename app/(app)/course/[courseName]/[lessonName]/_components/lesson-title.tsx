@@ -39,7 +39,7 @@ export function LessonTitle({ lesson }: LessonTitleProps) {
 
   return (
     <div className="mb-8 font-inter" suppressHydrationWarning>
-      <h1 className="text-3xl sm:text-4xl font-bold mb-4 text-primary">
+      <h1 className="text-3xl sm:text-4xl font-bold mb-4 text-foreground/90">
         {lesson.title}
       </h1>
 

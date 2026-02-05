@@ -29,7 +29,7 @@ import { Dialog } from "@/components/ui/dialog";
 import { useScrollShadows } from "@/hooks/useScrollShadows";
 import { authClient } from "@/lib/auth/auth-client";
 import { cn } from "@/lib/ui";
-import type { Chapter, Course, Lesson, Media } from "@/payload-types";
+import type { Chapter, Course, Lesson, Poster } from "@/payload-types";
 import { useSidebarStore } from "@/stores/sidebar-store";
 import { LessonItem } from "./lesson-item";
 import { SidebarAccount } from "./sidebar-account";
@@ -303,19 +303,19 @@ export function CourseSidebar({
           </Button>
 
           <div className="flex md:block gap-3 mb-3 mt-2">
-            {course.media && (
+            {course.poster && (
               <div className="relative w-20 h-20 md:w-full md:h-40 shrink-0 overflow-hidden rounded-lg md:rounded-2xl shadow-md md:mb-4">
                 <Image
-                  src={(course.media as Media).url!}
-                  alt={(course.media as Media).alt ?? course.title!}
+                  src={(course.poster as Poster).url!}
+                  alt={(course.poster as Poster).alt ?? course.title!}
                   fill
                   priority
                   sizes="(min-width: 768px) 287px, 80px"
                   className="object-cover"
                   placeholder={
-                    (course.media as Media).blurhash ? "blur" : "empty"
+                    (course.poster as Poster).blurhash ? "blur" : "empty"
                   }
-                  blurDataURL={(course.media as Media).blurhash || undefined}
+                  blurDataURL={(course.poster as Poster).blurhash || undefined}
                 />
               </div>
             )}

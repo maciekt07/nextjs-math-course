@@ -9,7 +9,7 @@ import { EmptyStateCenterWrapper } from "@/components/empty-state";
 import Footer from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth/auth";
-import { hasEnrollment } from "@/lib/db/enrollment";
+import { hasEnrollment } from "@/lib/data/enrollment";
 import { getPayloadClient } from "@/lib/payload-client";
 import type { Course } from "@/payload-types";
 import FeedbackWidget from "./_components/feedback-widget";

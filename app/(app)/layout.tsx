@@ -57,12 +57,7 @@ export default function RootLayout({
         />
       </head> */}
       <body className={`${inter.className} ${inter.variable} antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <ThemeProvider>
           <NextTopLoader
             color="#4e65ff"
             shadow="0 0 20px #4e65ff, 0 0 40px #4e65ff, 0 0 60px #4e65ff"
