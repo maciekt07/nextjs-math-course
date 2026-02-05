@@ -178,7 +178,7 @@ export function QuizLesson({ lesson }: QuizLessonProps) {
                 <div className="flex justify-left items-center gap-2">
                   <Lightbulb
                     size={20}
-                    className="text-amber-600 dark:text-amber-500"
+                    className="text-amber-600 dark:text-amber-500 shrink-0"
                   />
                   <MarkdownRenderer content={activeQuestion.hint} />
                 </div>

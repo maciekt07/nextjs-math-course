@@ -1,68 +1,21 @@
-import { and, eq } from "drizzle-orm";
-import { BookOpen, GraduationCap } from "lucide-react";
-import { unstable_cache } from "next/cache";
+import { BookOpen } from "lucide-react";
 import { headers } from "next/headers";
-import Image from "next/image";
 import Link from "next/link";
+import { CourseCard } from "@/components/course-card";
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
-import { Card, CardDescription, CardTitle } from "@/components/ui/card";
-import { db } from "@/drizzle/db";
-import { enrollment } from "@/drizzle/schema";
 import { auth } from "@/lib/auth/auth";
-import { getPayloadClient } from "@/lib/payload-client";
-import type { Poster } from "@/payload-types";
+import { getCoursesByIds, getOwnedCourseIds } from "@/lib/data/courses";
 
 export const metadata = {
   title: "Your Courses",
 };
 
-function getUserEnrollments(userId: string) {
-  return unstable_cache(
-    async () => {
-      const rows = await db
-        .select()
-        .from(enrollment)
-        .where(
-          and(
-            eq(enrollment.userId, userId),
-            eq(enrollment.status, "completed"),
-          ),
-        );
-
-      return rows.map((r) => r.courseId);
-    },
-    ["enrollments", userId],
-    { revalidate: 300, tags: [`enrollments:${userId}`] },
-  )();
-}
-
-const getCoursesByIds = unstable_cache(
-  async (ids: string[]) => {
-    if (ids.length === 0) return [];
-    const payload = await getPayloadClient();
-    const res = await payload.find({
-      collection: "courses",
-      where: { id: { in: ids } },
-      limit: 100,
-      select: {
-        title: true,
-        description: true,
-        slug: true,
-        id: true,
-        poster: true,
-      },
-    });
-    return res.docs || [];
-  },
-  ["courses-by-ids"],
-  { revalidate: 3600, tags: ["courses-list"] },
-);
-
 export default async function CoursesPage() {
-  const session = await auth.api.getSession({ headers: await headers() })!;
+  const session = await auth.api.getSession({ headers: await headers() });
   if (!session) return null;
-  const courseIds = await getUserEnrollments(session.user.id);
+
+  const courseIds = await getOwnedCourseIds(session.user.id);
 
   if (courseIds.length === 0) {
     return (
@@ -88,41 +41,16 @@ export default async function CoursesPage() {
     <div className="max-w-4xl mx-auto pt-0 p-6 flex flex-col gap-6">
       <h1 className="text-3xl font-bold">Your Courses</h1>
       {courses.map((c) => (
-        <Card
+        <CourseCard
           key={c.id}
-          className="p-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4"
-        >
-          {c.poster ? (
-            <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
-              <Image
-                src={(c.poster as Poster).url!}
-                alt={(c.poster as Poster).alt ?? c.title}
-                width={96}
-                height={96}
-                className="object-cover w-full h-full"
-                placeholder={(c.poster as Poster).blurhash ? "blur" : "empty"}
-                blurDataURL={(c.poster as Poster).blurhash || undefined}
-              />
-            </div>
-          ) : (
-            <div className="w-24 h-24 rounded-lg border-3 border-primary/30 bg-primary/10 shrink-0 flex items-center justify-center">
-              <GraduationCap className="w-10 h-10 text-primary" />
-            </div>
-          )}
-
-          <div className="flex-1">
-            <CardTitle className="text-xl sm:text-2xl">{c.title}</CardTitle>
-            <CardDescription className="text-sm text-muted-foreground">
-              {c.description}
-            </CardDescription>
-          </div>
-
-          <div className="flex-shrink-0">
+          course={c}
+          owned={true}
+          customContent={
             <Button asChild size="lg" className="w-full">
               <Link href={`/course/${c.slug}`}>Open</Link>
             </Button>
-          </div>
-        </Card>
+          }
+        />
       ))}
     </div>
   );

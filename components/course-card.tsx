@@ -1,6 +1,7 @@
 import { BookOpen, Check, GraduationCap } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import type * as React from "react";
 import BuyCourseButton from "@/components/buy-course-button";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,13 +18,13 @@ import type { Course, Poster } from "@/payload-types";
 interface CourseCardProps extends React.ComponentProps<"div"> {
   course: Course & { lessonCount: number | undefined };
   owned: boolean;
-  minimal?: boolean;
+  customContent?: React.ReactNode;
 }
 
 export function CourseCard({
   course,
   owned,
-  minimal,
+  customContent,
   className,
   ...props
 }: CourseCardProps) {
@@ -62,7 +63,7 @@ export function CourseCard({
                 dark:from-white/6"
       />
       <div
-        className="pointer-events-none absolute inset-0 sm:opacity-0 opacity-100  group-hover:opacity-100 transition-opacity duration-400 rounded-3xl"
+        className="pointer-events-none absolute inset-0 sm:opacity-0 opacity-100 group-hover:opacity-100 transition-opacity duration-400 rounded-3xl"
         style={{
           background: `radial-gradient(
             circle at 50% 0%,
@@ -106,13 +107,15 @@ export function CourseCard({
         </div>
       </CardHeader>
 
-      <CardContent className="flex flex-col gap-4 flex-1 -mt-3 px-4 md:px-6 relative">
-        <div className="flex items-center gap-4">
+      <CardContent className="flex flex-col gap-4 flex-1 px-4 md:px-6 -mt-4 relative">
+        <div className="flex items-center gap-4 mb-1">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <BookOpen size={20} /> {course.lessonCount} Lessons
           </div>
         </div>
-        {minimal ? null : owned ? (
+        {customContent ? (
+          customContent
+        ) : owned ? (
           <Button size="lg" asChild>
             <Link href={`/course/${course.slug}`}>See All Lessons</Link>
           </Button>
@@ -123,7 +126,7 @@ export function CourseCard({
         )}
       </CardContent>
 
-      {!minimal && (
+      {!customContent && (
         <CardFooter className="border-t border-foreground/10 min-h-[80px] flex items-center px-4 md:px-6 [.border-t]:pt-4 md:[.border-t]:pt-6">
           {owned ? (
             <div className="flex items-center justify-center w-full gap-2">
