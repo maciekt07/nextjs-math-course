@@ -25,8 +25,7 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
-
-import { useScrollShadows } from "@/hooks/useScrollShadows";
+import { useScrollShadows } from "@/hooks/use-scroll-shadows";
 import { authClient } from "@/lib/auth/auth-client";
 import { cn } from "@/lib/ui";
 import type { Chapter, Course, Lesson, Poster } from "@/payload-types";
@@ -365,7 +364,10 @@ export function CourseSidebar({
           </div>
         </div>
         <div className="relative flex-1 min-h-[128px] overflow-hidden">
-          <div className="h-full overflow-y-auto" ref={scrollRef}>
+          <div
+            className="h-full overflow-y-auto overscroll-none"
+            ref={scrollRef}
+          >
             <ScrollShadow position="top" show={showTop} />
             <div>
               {groupedChapters.length > 0 && (

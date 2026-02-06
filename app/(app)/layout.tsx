@@ -3,6 +3,7 @@ import "@styles/globals.css";
 import NextTopLoader from "nextjs-toploader";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { META_THEME_COLORS } from "@/hooks/use-meta-color";
 import { inter } from "@/lib/fonts";
 
 export const metadata: Metadata = {
@@ -35,7 +36,6 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#4e65ff",
   width: "device-width",
   height: "device-height",
   initialScale: 1,
@@ -50,12 +50,25 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
-      {/* <head>
-        <script
+      <head>
+        {/* <script
           crossOrigin="anonymous"
           src="//unpkg.com/react-scan/dist/auto.global.js"
+        /> */}
+        <script
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: safe here
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                if (localStorage.theme === 'dark' || ((!('theme' in localStorage) || localStorage.theme === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.querySelector('meta[name="theme-color"]').setAttribute('content', '${META_THEME_COLORS.dark}')
+                }
+              } catch (_) {}
+            `,
+          }}
         />
-      </head> */}
+        <meta name="theme-color" content={META_THEME_COLORS.light} />
+      </head>
       <body className={`${inter.className} ${inter.variable} antialiased`}>
         <ThemeProvider>
           <NextTopLoader

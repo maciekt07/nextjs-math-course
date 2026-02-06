@@ -2,6 +2,7 @@
 
 import { Check, type LucideIcon, Monitor, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useMetaColor } from "@/hooks/use-meta-color";
 
 type ThemeItem = {
   key: "light" | "dark" | "system";
@@ -24,6 +26,11 @@ const items: ThemeItem[] = [
 
 export function ThemeSelect() {
   const { theme, setTheme } = useTheme();
+  const { setMetaColor, metaColor } = useMetaColor();
+
+  useEffect(() => {
+    setMetaColor(metaColor);
+  }, [metaColor, setMetaColor]);
 
   return (
     <DropdownMenu>

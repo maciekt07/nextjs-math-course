@@ -119,6 +119,7 @@ export function LessonTOC({ headings }: { headings: Heading[] }) {
               key={h.id}
               href={`#${h.id}`}
               onClick={(e) => handleTOCClick(e, h.id)}
+              data-active={activeId === h.id}
               className={cn(
                 "group flex items-start gap-2 text-sm transition-color leading-tight",
                 h.level === 3 && "pl-4",
