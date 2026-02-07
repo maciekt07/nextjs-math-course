@@ -21,24 +21,24 @@ export function LessonTitle({ lesson }: LessonTitleProps) {
   const createdAt = new Date(lesson.createdAt);
   const updatedAt = new Date(lesson.updatedAt);
 
-  const formattedDate = formatDate(createdAt, {
+  const formattedDate = new Intl.DateTimeFormat("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
-  });
+  }).format(createdAt);
 
-  const fullCreatedAt = formatDate(createdAt, {
+  const fullCreatedAt = new Intl.DateTimeFormat(navigator.language, {
     dateStyle: "full",
     timeStyle: "short",
-  });
+  }).format(createdAt);
 
-  const fullUpdatedAt = formatDate(updatedAt, {
+  const fullUpdatedAt = new Intl.DateTimeFormat(navigator.language, {
     dateStyle: "full",
     timeStyle: "short",
-  });
+  }).format(updatedAt);
 
   return (
-    <div className="mb-8 font-inter" suppressHydrationWarning>
+    <div className="mb-8 font-inter">
       <h1 className="text-3xl sm:text-4xl font-bold mb-4 text-foreground/90">
         {lesson.title}
       </h1>
@@ -58,15 +58,17 @@ export function LessonTitle({ lesson }: LessonTitleProps) {
               <TooltipTrigger asChild>
                 <div className="flex items-center gap-1.5">
                   <Calendar size={18} />
-                  <span>{formattedDate}</span>
+                  <span suppressHydrationWarning>{formattedDate}</span>
                 </div>
               </TooltipTrigger>
               <TooltipContent side="top" className="text-xs">
                 <div>
-                  <span className="font-medium">Created:</span> {fullCreatedAt}
+                  <span className="font-medium">Created:</span>{" "}
+                  <span suppressHydrationWarning>{fullCreatedAt}</span>
                 </div>
                 <div>
-                  <span className="font-medium">Updated:</span> {fullUpdatedAt}
+                  <span className="font-medium">Updated:</span>{" "}
+                  <span suppressHydrationWarning>{fullUpdatedAt}</span>
                 </div>
               </TooltipContent>
             </Tooltip>
@@ -88,9 +90,6 @@ export function LessonTitle({ lesson }: LessonTitleProps) {
     </div>
   );
 }
-
-const formatDate = (date: Date, options: Intl.DateTimeFormatOptions) =>
-  new Intl.DateTimeFormat(navigator.language, options).format(date);
 
 function getLessonMetadata(lesson: Lesson) {
   switch (lesson.type) {
