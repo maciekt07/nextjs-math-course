@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 import { Textarea } from "@/components/ui/textarea";
+import { useMounted } from "@/hooks/use-mounted";
 import { authClient } from "@/lib/auth/auth-client";
 import { FEEDBACK_LIMITS } from "@/lib/constants/limits";
 import { cn } from "@/lib/ui";
@@ -32,17 +33,13 @@ export default function FeedbackWidget({
   const [comment, setComment] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-  const [isMounted, setIsMounted] = useState(false);
+  const isMounted = useMounted();
   const commentRef = useRef(comment);
 
   function isFirefox() {
     if (typeof window === "undefined") return false;
     return Bowser.getParser(window.navigator.userAgent).is("firefox");
   }
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   const toggleReaction = (value: number) => {
     setSelectedReaction((prev) => (prev === value ? null : value));

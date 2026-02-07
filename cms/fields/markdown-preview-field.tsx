@@ -4,7 +4,7 @@ import { Button, TextareaInput, useField } from "@payloadcms/ui";
 import { Eye, EyeOff, Mouse } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
-import { useDebounce } from "@/hooks/useDebounce";
+import { useDebounce } from "@/hooks/use-debounce";
 import { cn } from "@/lib/ui";
 
 const MarkdownRenderer = dynamic(

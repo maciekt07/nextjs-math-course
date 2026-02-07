@@ -5,7 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Loading() {
   return (
-    <article className="mx-auto pb-8 mt-10 px-6 max-w-4xl">
+    <article className="mx-auto pb-8 mt-10 px-4 sm:px-6 max-w-4xl">
       {/* lesson title */}
       <div className="mb-8 font-inter">
         <Skeleton className="h-[2.5rem] w-3/4 mb-4 rounded-lg" />

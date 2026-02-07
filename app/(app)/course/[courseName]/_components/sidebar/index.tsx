@@ -148,45 +148,38 @@ export function CourseSidebar({
     (e: React.MouseEvent<HTMLAnchorElement>, nextPath: string) => {
       e.preventDefault();
 
-      const isSameLesson = nextPath === optimisticPath;
       const isMobile = window.innerWidth < 768;
+      const isSameLesson = nextPath === optimisticPath;
 
       setOptimisticPath(nextPath);
 
       startTransition(() => {
-        if (!isSameLesson) {
-          router.push(nextPath);
-          return;
-        }
-
         if (isMobile) {
           setOpen(false);
-          return;
         }
 
-        requestAnimationFrame(() => {
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        });
+        if (!isSameLesson) {
+          router.push(nextPath);
+        }
       });
     },
     [router, optimisticPath, setOpen, setOptimisticPath],
   );
 
-  useEffect(() => {
-    const lessonRegex = /^\/course\/[^/]+\/[^/]+$/;
-    if (lessonRegex.test(pathname)) {
-      setOptimisticPath(pathname);
-      if (!animate.current) return;
-      // close on mobile after router push completes
-      if (window.innerWidth < 768) {
-        startTransition(() => {
-          requestAnimationFrame(() => {
-            setOpen(false);
-          });
-        });
-      }
-    }
-  }, [pathname, setOptimisticPath, setOpen]);
+  // useEffect(() => {
+  //   const lessonRegex = /^\/course\/[^/]+\/[^/]+$/;
+  //   if (!lessonRegex.test(pathname) || !animate.current) return;
+
+  //   if (window.innerWidth < 768) {
+  //     const close = () => setOpen(false);
+
+  //     if ("requestIdleCallback" in window) {
+  //       requestIdleCallback(close, { timeout: 500 });
+  //     } else {
+  //       setTimeout(close, 50);
+  //     }
+  //   }
+  // }, [pathname, setOpen]);
 
   return (
     <>

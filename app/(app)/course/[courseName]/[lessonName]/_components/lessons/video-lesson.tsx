@@ -258,7 +258,7 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
             lesson_id: lesson.id,
           }}
           onError={(e) => console.log(e)}
-          preload="true"
+          preload="metadata"
           streamType="on-demand"
           autoPlay={false}
           className="rounded-xl w-full overflow-hidden bg-background aspect-video"
