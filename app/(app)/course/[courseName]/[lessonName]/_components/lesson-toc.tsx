@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -11,71 +11,65 @@ import type { Heading } from "@/lib/markdown/extract-headings";
 import { scrollToHeader } from "@/lib/markdown/scroll-to-header";
 import { cn } from "@/lib/ui";
 
-export function LessonTOC({ headings }: { headings: Heading[] }) {
+function useActiveHeading(ids: string[]) {
   const [activeId, setActiveId] = useState<string | null>(null);
-  const headingsRef = useRef(headings);
 
   useEffect(() => {
-    headingsRef.current = headings;
-  }, [headings]);
+    if (!ids?.length) return;
 
-  useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        const visibleHeaders: { id: string; distance: number }[] = [];
+        const visible: { id: string; distance: number }[] = [];
 
-        entries.forEach((entry) => {
+        for (const entry of entries) {
           if (entry.isIntersecting) {
-            const rect = entry.boundingClientRect;
-            // positive = below top, negative = above top
-            const distance = rect.top;
-            visibleHeaders.push({
+            visible.push({
               id: entry.target.id,
-              distance: distance,
+              distance: entry.boundingClientRect.top,
             });
           }
-        });
+        }
 
-        if (visibleHeaders.length > 0) {
-          const closestHeader = visibleHeaders.reduce((closest, current) =>
-            Math.abs(current.distance) < Math.abs(closest.distance)
-              ? current
-              : closest,
+        if (visible.length) {
+          const closest = visible.reduce((a, b) =>
+            Math.abs(b.distance) < Math.abs(a.distance) ? b : a,
           );
-          setActiveId(closestHeader.id);
+          setActiveId(closest.id);
         }
       },
-      {
-        // when element enters top 20% of viewport
-        rootMargin: "0px 0px -80% 0px",
-        threshold: 0,
-      },
+      { rootMargin: "0px 0px -80% 0px" },
     );
 
-    const currentHeadings = headingsRef.current;
-    currentHeadings.forEach((h) => {
-      const el = document.getElementById(h.id);
+    for (const id of ids) {
+      const el = document.getElementById(id);
       if (el) observer.observe(el);
-    });
+    }
 
-    return () => observer.disconnect();
-  }, []);
+    return () => {
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el) observer.unobserve(el);
+      }
+    };
+  }, [ids]);
 
-  if (headings.length <= 1) {
-    return null;
-  }
+  return activeId;
+}
 
-  const handleTOCClick = (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    id: string,
-  ) => {
+export function LessonTOC({ headings }: { headings: Heading[] }) {
+  const itemIds = useMemo(() => headings.map((h) => h.id), [headings]);
+  const activeId = useActiveHeading(itemIds);
+
+  if (headings.length <= 1) return null;
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
     scrollToHeader(id);
-    setActiveId(id);
   };
 
   return (
     <>
+      {/* accordion for mobile */}
       <div className="hidden max-[1704px]:block mb-6 font-inter sticky top-24">
         <Accordion
           type="single"
@@ -92,7 +86,7 @@ export function LessonTOC({ headings }: { headings: Heading[] }) {
                   <a
                     key={h.id}
                     href={`#${h.id}`}
-                    onClick={(e) => handleTOCClick(e, h.id)}
+                    onClick={(e) => handleClick(e, h.id)}
                     className={cn(
                       "group flex items-start gap-2 py-3 sm:py-2 text-[16px] text-muted-foreground transition-colors leading-tight hover:text-foreground",
                       h.level === 3 && "pl-4",
@@ -108,17 +102,17 @@ export function LessonTOC({ headings }: { headings: Heading[] }) {
         </Accordion>
       </div>
 
+      {/* for desktop */}
       <div className="hidden min-[1704px]:block fixed right-2 top-24 w-64 max-h-[70vh] overflow-auto pl-6 font-inter">
         <p className="text-xs font-medium mb-4 uppercase tracking-wide text-muted-foreground/80">
           In this lesson
         </p>
-
         <div className="space-y-3">
           {headings.map((h) => (
             <a
               key={h.id}
               href={`#${h.id}`}
-              onClick={(e) => handleTOCClick(e, h.id)}
+              onClick={(e) => handleClick(e, h.id)}
               data-active={activeId === h.id}
               className={cn(
                 "group flex items-start gap-2 text-sm transition-color leading-tight",
