@@ -1,4 +1,10 @@
-import { BookOpen, Check, GraduationCap } from "lucide-react";
+import {
+  BookOpen,
+  Check,
+  Clock,
+  GraduationCap,
+  HelpCircle,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import type * as React from "react";
@@ -12,11 +18,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+
 import { cn } from "@/lib/ui";
 import type { Course, Poster } from "@/payload-types";
 
 interface CourseCardProps extends React.ComponentProps<"div"> {
-  course: Course & { lessonCount: number | undefined };
+  course: Course & {
+    lessonCount: number | undefined;
+    totalQuizQuestions: number;
+    totalReadingTimeSeconds: number;
+    totalVideoSeconds: number;
+  };
   owned: boolean;
   customContent?: React.ReactNode;
 }
@@ -39,7 +52,7 @@ export function CourseCard({
     <Card
       key={course.id}
       className={cn(
-        "group relative flex flex-col py-4 md:py-6 rounded-3xl",
+        "group relative flex flex-col py-4 md:py-5 rounded-3xl",
         "[--start:18%] [--mid:9%]",
         "dark:[--start:12%] dark:[--mid:6%]",
         className,
@@ -73,7 +86,7 @@ export function CourseCard({
         }}
       />
 
-      <CardHeader className="px-4 md:px-6 relative">
+      <CardHeader className="px-4 md:px-5 relative">
         <div className="flex flex-col sm:flex-row items-start gap-4">
           {course.poster ? (
             <div className="relative w-full h-48 sm:w-32 sm:h-32 sm:aspect-square rounded-lg overflow-hidden shadow-lg">
@@ -107,11 +120,40 @@ export function CourseCard({
         </div>
       </CardHeader>
 
-      <CardContent className="flex flex-col gap-4 flex-1 px-4 md:px-6 -mt-4 relative">
-        <div className="flex items-center gap-4 mb-1">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <BookOpen size={20} /> {course.lessonCount} Lessons
+      <CardContent className="flex flex-col gap-4 flex-1 px-4 md:px-5 -mt-4 relative">
+        <div className="flex items-center gap-3 mb-1 text-xs sm:text-sm text-muted-foreground">
+          <div className="flex items-center gap-1.5">
+            <BookOpen size={15} /> {course.lessonCount} Lessons
           </div>
+
+          {course.totalReadingTimeSeconds > 0 ||
+          course.totalVideoSeconds > 0 ? (
+            <>
+              <Separator orientation="vertical" />
+
+              <div className="flex items-center gap-1.5">
+                <Clock size={15} />{" "}
+                {getHoursDisplay(
+                  course.totalReadingTimeSeconds + course.totalVideoSeconds,
+                )}{" "}
+                hours
+              </div>
+
+              {course.totalQuizQuestions > 0 && (
+                <Separator orientation="vertical" />
+              )}
+            </>
+          ) : (
+            course.totalQuizQuestions > 0 && (
+              <Separator orientation="vertical" />
+            )
+          )}
+
+          {course.totalQuizQuestions > 0 && (
+            <div className="flex items-center gap-1.5">
+              <HelpCircle size={15} /> {course.totalQuizQuestions} Exercises
+            </div>
+          )}
         </div>
         {customContent ? (
           customContent
@@ -127,7 +169,7 @@ export function CourseCard({
       </CardContent>
 
       {!customContent && (
-        <CardFooter className="border-t border-foreground/10 min-h-[80px] flex items-center px-4 md:px-6 [.border-t]:pt-4 md:[.border-t]:pt-6">
+        <CardFooter className="border-t border-foreground/10 min-h-[80px] flex items-center px-4 md:px-5 [.border-t]:pt-4 md:[.border-t]:pt-5">
           {owned ? (
             <div className="flex items-center justify-center w-full gap-2">
               <Check size={28} className="text-green-600" />
@@ -160,4 +202,12 @@ export function CourseCard({
       )}
     </Card>
   );
+}
+
+function getHoursDisplay(seconds: number): string {
+  const hours = seconds / 3600;
+  return new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 1,
+  }).format(hours);
 }

@@ -15,14 +15,14 @@ import { WhyChoose } from "./_components/why-choose";
 
 export default async function Home() {
   const session = await auth.api.getSession({ headers: await headers() });
-  const courses = await getCourses();
-  const userCount = await getUserCount();
 
-  let ownedCourseIds: string[] = [];
+  const [courses, userCount, ownedIds] = await Promise.all([
+    getCourses(),
+    getUserCount(),
+    session?.user?.id ? getOwnedCourseIds(session.user.id) : [],
+  ]);
 
-  if (session?.user?.id) {
-    ownedCourseIds = await getOwnedCourseIds(session.user.id);
-  }
+  const ownedSet = new Set(ownedIds);
 
   const formattedUserCount = Math.max(10, Math.floor(userCount / 10) * 10);
 
@@ -113,7 +113,7 @@ export default async function Home() {
                 <CourseCard
                   key={course.id}
                   course={course}
-                  owned={ownedCourseIds.includes(course.id)}
+                  owned={ownedSet.has(course.id)}
                 />
               ))}
             </div>

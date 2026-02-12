@@ -29,7 +29,7 @@ export default function Loading() {
         <Skeleton className="bg-card rounded-2xl px-6 border-1">
           <div className="flex items-center justify-between py-4">
             <Skeleton className="h-5 w-28 rounded-md" />
-            <Skeleton className="h-5 w-5 rounded" />
+            <Skeleton className="h-5 w-5 rounded-sm" />
           </div>
         </Skeleton>
       </div>

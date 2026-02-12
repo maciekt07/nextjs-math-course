@@ -149,21 +149,29 @@ export function CourseSidebar({
       e.preventDefault();
 
       const isMobile = window.innerWidth < 768;
-      const isSameLesson = nextPath === optimisticPath;
+      const current = optimisticPath ?? pathname;
+      const isSameLesson = nextPath === current;
 
       setOptimisticPath(nextPath);
 
-      startTransition(() => {
-        if (isMobile) {
-          setOpen(false);
-        }
-
+      if (isMobile) {
+        setOpen(false);
+        setTimeout(() => {
+          if (!isSameLesson) {
+            startTransition(() => {
+              router.push(nextPath);
+            });
+          }
+        }, 200);
+      } else {
         if (!isSameLesson) {
-          router.push(nextPath);
+          startTransition(() => {
+            router.push(nextPath);
+          });
         }
-      });
+      }
     },
-    [router, optimisticPath, setOpen, setOptimisticPath],
+    [router, optimisticPath, setOpen, setOptimisticPath, pathname],
   );
 
   // useEffect(() => {
