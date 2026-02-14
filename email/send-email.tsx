@@ -1,8 +1,9 @@
 import { Resend } from "resend";
 import VerificationEmailTemplate from "@/email/templates/verification-template";
+import { serverEnv } from "@/env/server";
 import type { Session } from "@/lib/auth/auth-client";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(serverEnv.RESEND_API_KEY);
 
 export const sendEmail = async (url: string, user: Session) => {
   await resend.emails.send({
