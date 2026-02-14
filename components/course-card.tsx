@@ -159,11 +159,15 @@ export function CourseCard({
           customContent
         ) : owned ? (
           <Button size="lg" asChild>
-            <Link href={`/course/${course.slug}`}>See All Lessons</Link>
+            <Link prefetch href={`/course/${course.slug}`}>
+              See All Lessons
+            </Link>
           </Button>
         ) : (
           <Button variant="green" size="lg" asChild>
-            <Link href={`/course/${course.slug}`}>See Free Lessons</Link>
+            <Link prefetch href={`/course/${course.slug}`}>
+              See Free Lessons
+            </Link>
           </Button>
         )}
       </CardContent>

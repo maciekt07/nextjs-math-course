@@ -1,22 +1,7 @@
 import { clientEnv } from "@/env/client";
+import type { MuxTokens } from "@/types/mux";
 
-// client-side cache for Mux public and signed tokens with automatic expiration
-
-type CacheItem = {
-  value: string;
-  expiresAt: number;
-};
-
-type CacheMap = Record<string, CacheItem>;
-
-type TokenKind = "public" | "signed";
-
-type TokenConfig = {
-  cacheKey: `mux_${TokenKind}_tokens`;
-  storage: Storage | null;
-  expirationEnv: string;
-  cacheMargin: number;
-};
+// client-side cache for Mux signed tokens with automatic expiration
 
 export class MuxTokenError extends Error {
   constructor(
@@ -34,149 +19,87 @@ export class RateLimitError extends MuxTokenError {
   }
 }
 
-const TOKEN_CONFIGS = {
-  public: {
-    cacheKey: "mux_public_tokens",
-    storage: typeof window !== "undefined" ? localStorage : null,
-    expirationEnv: clientEnv.NEXT_PUBLIC_MUX_PUBLIC_EXPIRATION,
-    cacheMargin: 5 * 60 * 1000, // 5 minutes
-  },
-  signed: {
-    cacheKey: "mux_signed_tokens",
-    storage: typeof window !== "undefined" ? sessionStorage : null,
-    expirationEnv: clientEnv.NEXT_PUBLIC_MUX_SIGNED_URL_EXPIRATION,
-    cacheMargin: 10 * 1000, // 10 seconds
-  },
-} as const satisfies Record<TokenKind, TokenConfig>;
+type CacheItem = {
+  value: MuxTokens;
+  expiresAt: number;
+};
 
-function readCache(storage: Storage, cacheKey: string): CacheMap {
-  return JSON.parse(storage.getItem(cacheKey) || "{}");
+type CacheMap = Record<string, CacheItem>;
+
+const CACHE_KEY = "mux_signed_tokens";
+const STORAGE = typeof window !== "undefined" ? sessionStorage : null;
+const CACHE_MARGIN = 10 * 1000; //10s
+
+function readCache(): CacheMap {
+  return STORAGE ? JSON.parse(STORAGE.getItem(CACHE_KEY) || "{}") : {};
 }
 
-function writeCache(storage: Storage, cacheKey: string, cache: CacheMap): void {
-  storage.setItem(cacheKey, JSON.stringify(cache));
+function writeCache(cache: CacheMap) {
+  STORAGE?.setItem(CACHE_KEY, JSON.stringify(cache));
 }
 
 function isExpired(item: CacheItem): boolean {
   return Date.now() > item.expiresAt;
 }
 
-function getCachedToken(
-  storage: Storage | null,
-  cacheKey: string,
-  playbackId: string,
-): string | null {
-  if (!storage) return null;
-  const cache = readCache(storage, cacheKey);
+function getCachedToken(playbackId: string): MuxTokens | null {
+  const cache = readCache();
   const item = cache[playbackId];
 
   if (!item || isExpired(item)) {
     delete cache[playbackId];
-    writeCache(storage, cacheKey, cache);
+    writeCache(cache);
     return null;
   }
 
   return item.value;
 }
 
-function setCachedToken(
-  storage: Storage | null,
-  cacheKey: string,
-  playbackId: string,
-  token: string,
-  ttl: number,
-  margin: number,
-): void {
-  if (!storage) return;
-  const cache = readCache(storage, cacheKey);
+function setCachedToken(playbackId: string, tokens: MuxTokens, ttl: number) {
+  const cache = readCache();
+
   cache[playbackId] = {
-    value: token,
-    expiresAt: Date.now() + ttl - margin,
+    value: tokens,
+    expiresAt: Date.now() + ttl - CACHE_MARGIN,
   };
-  writeCache(storage, cacheKey, cache);
+
+  writeCache(cache);
 }
 
-async function requestToken(
-  playbackId: string,
-  signed: boolean,
-): Promise<string> {
-  const response = await fetch("/api/mux/token", {
+async function requestToken(playbackId: string): Promise<MuxTokens> {
+  const res = await fetch("/api/mux/token", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ playbackId, signed }),
+    body: JSON.stringify({ playbackId }),
   });
 
-  if (response.status === 429) {
-    throw new RateLimitError();
-  }
+  if (res.status === 429) throw new RateLimitError();
+  if (!res.ok) throw new MuxTokenError("Failed to fetch Mux token", res.status);
 
-  if (!response.ok) {
-    throw new MuxTokenError("Failed to fetch mux token", response.status);
-  }
-
-  const { token } = await response.json();
-  return token;
+  return res.json();
 }
-
-function getTokenConfig(isFree: boolean): TokenConfig {
-  const config = isFree ? TOKEN_CONFIGS.public : TOKEN_CONFIGS.signed;
-
-  if (!config.storage) {
-    throw new MuxTokenError("fetchMuxToken must run on the client");
-  }
-
-  return config as TokenConfig;
-}
-
-export async function fetchMuxToken(
-  playbackId: string,
-  isFree: boolean,
-): Promise<string> {
-  const config = getTokenConfig(isFree);
-
-  const cachedToken = getCachedToken(
-    config.storage,
-    config.cacheKey,
-    playbackId,
-  );
-  if (cachedToken) {
-    return cachedToken;
-  }
-
-  const token = await requestToken(playbackId, !isFree);
-  const ttl = parseDuration(config.expirationEnv);
-
-  setCachedToken(
-    config.storage,
-    config.cacheKey,
-    playbackId,
-    token,
-    ttl,
-    config.cacheMargin,
-  );
-
-  return token;
-}
-
-const TIME_UNITS = {
-  s: 1000,
-  m: 60 * 1000,
-  h: 60 * 60 * 1000,
-  d: 24 * 60 * 60 * 1000,
-} as const;
 
 function parseDuration(duration: string): number {
+  const units = { s: 1000, m: 60_000, h: 3_600_000, d: 86_400_000 };
   const match = duration.match(/^(\d+)(s|m|h|d)$/);
-  if (!match) {
-    throw new Error(`Invalid duration format: ${duration}`);
-  }
+
+  if (!match) throw new Error(`Invalid duration format: ${duration}`);
 
   const [, value, unit] = match;
-  const multiplier = TIME_UNITS[unit as keyof typeof TIME_UNITS];
+  return Number(value) * units[unit as keyof typeof units];
+}
 
-  if (!multiplier) {
-    throw new Error(`Unknown time unit: ${unit}`);
-  }
+export async function fetchMuxToken(playbackId: string): Promise<MuxTokens> {
+  if (!STORAGE) throw new MuxTokenError("fetchMuxToken must run on the client");
 
-  return Number(value) * multiplier;
+  const cached = getCachedToken(playbackId);
+  if (cached) return cached;
+
+  const tokens = await requestToken(playbackId);
+
+  const ttl = parseDuration(clientEnv.NEXT_PUBLIC_MUX_SIGNED_URL_EXPIRATION);
+
+  setCachedToken(playbackId, tokens, ttl);
+
+  return tokens;
 }

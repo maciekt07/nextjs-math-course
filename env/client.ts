@@ -17,10 +17,6 @@ export const clientEnv = createEnv({
       .string()
       .regex(durationRegex)
       .default("2m"),
-    NEXT_PUBLIC_MUX_PUBLIC_EXPIRATION: z
-      .string()
-      .regex(durationRegex)
-      .default("7d"),
   },
   experimental__runtimeEnv: {
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL!,
@@ -28,8 +24,6 @@ export const clientEnv = createEnv({
 
     NEXT_PUBLIC_MUX_SIGNED_URL_EXPIRATION:
       process.env.NEXT_PUBLIC_MUX_SIGNED_URL_EXPIRATION!,
-    NEXT_PUBLIC_MUX_PUBLIC_EXPIRATION:
-      process.env.NEXT_PUBLIC_MUX_PUBLIC_EXPIRATION!,
   },
 });
 

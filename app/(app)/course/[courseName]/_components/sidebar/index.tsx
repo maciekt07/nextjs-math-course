@@ -293,6 +293,7 @@ export function CourseSidebar({
         animate={open ? { x: 0 } : { x: -320 }}
         transition={{ type: "tween", duration: 0.2 }}
         className="fixed flex flex-col h-dvh w-80 border-r bg-background z-40 shadow-2xl md:shadow-none overflow-y-auto will-change-transform md:will-change-auto"
+        style={{ transform: "translateZ(0)" }}
       >
         <div className="pt-14 sm:pt-16 px-4 border-b">
           <Button asChild variant="ghost" className="absolute top-4 right-4">

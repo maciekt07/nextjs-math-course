@@ -48,12 +48,16 @@ export function Navbar({ user }: { user: User | null }) {
             {user ? (
               <>
                 <Button asChild variant="outline" className="backdrop-blur-md">
-                  <Link href="/courses">
+                  <Link prefetch href="/courses">
                     <BookOpen /> My Courses
                   </Link>
                 </Button>
                 <Button asChild variant="outline" className="backdrop-blur-md">
-                  <Link href="/account" className="flex items-center gap-2">
+                  <Link
+                    prefetch
+                    href="/account"
+                    className="flex items-center gap-2"
+                  >
                     <Avatar className="h-6 w-6">
                       <AvatarFallback className="bg-primary text-primary-foreground">
                         {user.name?.charAt(0).toUpperCase() ||
@@ -67,7 +71,11 @@ export function Navbar({ user }: { user: User | null }) {
               </>
             ) : (
               <Button asChild variant="outline" className="backdrop-blur-md">
-                <Link href="/auth/sign-in" className="flex items-center gap-2">
+                <Link
+                  prefetch
+                  href="/auth/sign-in"
+                  className="flex items-center gap-2"
+                >
                   <LogIn /> Log In
                 </Link>
               </Button>
