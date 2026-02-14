@@ -29,7 +29,6 @@
   - [x] Optimize static images
 - [x] Add optional Cloudflare R2 support for media uploads
 - [x] Generate blur placeholder for media
-  - [ ] Make it optional with automatic generation and cleanup
 - [x] Improve caching and add on-demand revalidation
 - [x] Add video chapters [docs](https://www.mux.com/docs/guides/player-advanced-usage#chapters-example)
 - [x] Add lesson feedback form

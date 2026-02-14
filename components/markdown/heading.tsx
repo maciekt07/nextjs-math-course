@@ -1,3 +1,5 @@
+"use client";
+
 import { Link } from "lucide-react";
 import { scrollToHeader } from "@/lib/markdown/scroll-to-header";
 import { cn } from "@/lib/ui";

@@ -13,7 +13,7 @@ import { hasEnrollment } from "@/lib/data/enrollment";
 import { getPayloadClient } from "@/lib/payload-client";
 import type { Course } from "@/payload-types";
 import FeedbackWidget from "./_components/feedback-widget";
-import { LessonContentWrapper } from "./_components/lesson-content-wrapper";
+import { LessonLayout } from "./_components/lesson-layout";
 import { LessonNavigation } from "./_components/lesson-navigation";
 
 export const revalidate = 3600;
@@ -181,11 +181,11 @@ export default async function LessonPage({
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex-grow">
-        <LessonContentWrapper lesson={lesson}>
+        <LessonLayout lesson={lesson}>
           <FeedbackWidget lessonId={lesson.id} type={lesson.type} />
           {/* FIXME: CLS */}
           <LessonNavigation currentSlug={lesson.slug} />
-        </LessonContentWrapper>
+        </LessonLayout>
       </div>
       <Footer />
     </div>

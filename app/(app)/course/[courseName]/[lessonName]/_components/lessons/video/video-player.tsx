@@ -19,36 +19,57 @@ import { Separator } from "@/components/ui/separator";
 import { formatDuration } from "@/lib/format";
 import { fetchMuxToken, RateLimitError } from "@/lib/mux-token-cache";
 import { cn } from "@/lib/ui";
-import type { Lesson, MuxVideo } from "@/payload-types";
+import type { Course, Lesson, MuxVideo } from "@/payload-types";
+import type { MuxTokens } from "@/types/mux";
 
-interface VideoLessonProps {
-  lesson: Lesson;
+type PlaybackOption = NonNullable<MuxVideo["playbackOptions"]>[number];
+
+interface VideoPlayerProps
+  extends Pick<
+    Lesson,
+    "videoChapters" | "free" | "videoDescription" | "id" | "title"
+  > {
+  playbackId: PlaybackOption["playbackId"];
+  playbackPolicy: PlaybackOption["playbackPolicy"];
+  placeholder: string;
+  posterUrl: PlaybackOption["posterUrl"];
+  hasVideo: boolean;
+  videoTitle: Lesson["title"];
+  videoId: MuxVideo["id"];
+  course: Course;
 }
-//TODO: add blur placeholder
-// https://www.mux.com/docs/guides/player-customize-look-and-feel#provide-a-placeholder-while-the-poster-image-loads
 
-export function VideoLesson({ lesson }: VideoLessonProps) {
-  const video = lesson.video;
-  const muxVideo = (
-    video && typeof video !== "string" ? video : null
-  ) as MuxVideo | null;
+export function VideoPlayer({
+  playbackId,
+  playbackPolicy,
+  posterUrl,
+  placeholder,
+  hasVideo,
+  videoId,
+  videoTitle,
+  videoChapters,
+  id,
+  title,
+  videoDescription,
+  free,
+  course,
+}: VideoPlayerProps) {
   const playerRef = useRef<HTMLDivElement>(null);
   const playerElementRef = useRef<MuxPlayerRefAttributes | null>(null);
-  const [token, setToken] = useState<string | undefined>();
-  const [isRateLimited, setIsRateLimited] = useState(false);
-  const hasVideo = muxVideo?.playbackOptions?.length;
+  const [tokens, setTokens] = useState<Partial<MuxTokens>>({});
+
+  const [isRateLimited, setIsRateLimited] = useState<boolean>(false);
 
   const muxPlayerCallback = useCallback(
     (node: MuxPlayerRefAttributes | null) => {
       playerElementRef.current = node;
-      if (!node || !lesson.videoChapters || lesson.videoChapters.length === 0)
-        return;
+      if (!node || !videoChapters || videoChapters.length === 0) return;
 
       // https://www.mux.com/docs/guides/player-advanced-usage#chapters-example
       const addChaptersToPlayer = () => {
-        if (!lesson.videoChapters) return;
+        if (!videoChapters) return;
 
-        const chapters = lesson.videoChapters.map((chapter) => ({
+        const chapters = videoChapters.map((chapter) => ({
           startTime: chapter.startTime,
           ...(chapter.endTime && { endTime: chapter.endTime }),
           value: chapter.title,
@@ -71,47 +92,49 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
         });
       }
     },
-    [lesson.videoChapters],
+    [videoChapters],
   );
 
   useEffect(() => {
-    if ("mediaSession" in navigator && muxVideo) {
+    if ("mediaSession" in navigator) {
       // initialize Media Session API for OS-level media controls
       // https://developer.mozilla.org/en-US/docs/Web/API/MediaMetadata
       navigator.mediaSession.metadata = new MediaMetadata({
-        title: muxVideo.title || lesson.title,
+        title: videoTitle || title,
         artist:
-          lesson.course && typeof lesson.course !== "string"
-            ? `${lesson.course.title} | Math Course Online`
+          course && typeof course !== "string"
+            ? `${course.title} | Math Course Online`
             : "Math Course Online",
         album: "Course Video",
         artwork: [
           {
-            src: `/api/mux/poster?url=${encodeURIComponent(muxVideo.playbackOptions?.[0]?.posterUrl || "")}`,
+            src: posterUrl ? `${posterUrl}` : "",
             sizes: "512x512",
             type: "image/png",
           },
         ],
       });
     }
-  }, [muxVideo, lesson.title, lesson.course]);
+  }, [course, posterUrl, title, videoTitle]);
 
   useEffect(() => {
-    if (!muxVideo?.playbackOptions?.length) return;
+    if (!hasVideo) return;
+    if (playbackPolicy === "public") return;
 
-    const playback = muxVideo.playbackOptions[0];
-    const playbackId = playback.playbackId;
-    const isSigned = playback.playbackPolicy === "signed";
-    const isFree = lesson.free || false;
+    const isSigned = playbackPolicy === "signed";
 
     if (!playbackId || !isSigned) return;
 
     let mounted = true;
 
-    fetchMuxToken(playbackId, isFree)
+    fetchMuxToken(playbackId)
       .then((t) => {
         if (mounted) {
-          setToken(t);
+          setTokens({
+            playback: t.playback,
+            storyboard: t.storyboard,
+          });
+
           setIsRateLimited(false);
         }
       })
@@ -130,7 +153,7 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
     return () => {
       mounted = false;
     };
-  }, [muxVideo, lesson.free]);
+  }, [playbackId, playbackPolicy, hasVideo]);
 
   const handleTimestampClick = (startTime: number) => {
     const player = playerElementRef.current;
@@ -144,8 +167,6 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
   };
 
   const renderVideoArea = () => {
-    const playback = muxVideo?.playbackOptions?.[0];
-
     const EmptyState = ({
       icon: Icon,
       title,
@@ -158,10 +179,10 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
       variant?: "muted" | "destructive";
     }) => (
       <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-muted dark:bg-card/80 flex items-center justify-center">
-        {playback?.posterUrl && (
+        {posterUrl && (
           <Image
-            src={`/api/mux/poster?url=${encodeURIComponent(playback.posterUrl)}`}
-            alt={lesson.title}
+            src={posterUrl}
+            alt={title}
             fill
             className="object-cover blur-lg scale-110 opacity-40"
           />
@@ -200,7 +221,7 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
       </div>
     );
 
-    if (!hasVideo || !playback) {
+    if (!hasVideo || !playbackId) {
       return <EmptyState icon={VideoOff} title="No video available" />;
     }
 
@@ -215,9 +236,7 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
       );
     }
 
-    const { playbackId = "" } = playback;
-
-    if (!token) {
+    if (!tokens.playback && playbackPolicy === "signed") {
       return (
         <div className="w-full aspect-video rounded-xl overflow-hidden bg-background flex items-center justify-center">
           <Loader2Icon className="animate-spin size-[90px] text-foreground/10" />
@@ -242,20 +261,17 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
         <MuxPlayer
           ref={muxPlayerCallback}
           playbackId={playbackId || undefined}
-          tokens={{ playback: token }}
-          poster={
-            playback.posterUrl
-              ? `/api/mux/poster?url=${encodeURIComponent(playback.posterUrl)}`
-              : undefined
-          }
+          tokens={playbackPolicy === "signed" ? tokens : undefined}
+          poster={posterUrl ?? undefined}
+          placeholder={placeholder}
           title=""
-          videoTitle={muxVideo.title || lesson.title}
+          videoTitle={videoTitle || title}
           accentColor="#4E65FF"
           proudlyDisplayMuxBadge
           metadata={{
-            video_title: muxVideo.title,
-            video_id: muxVideo.id,
-            lesson_id: lesson.id,
+            video_title: videoTitle,
+            video_id: videoId,
+            lesson_id: id,
           }}
           onError={(e) => console.log(e)}
           preload="metadata"
@@ -279,17 +295,15 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {lesson.videoDescription ? (
+          {videoDescription ? (
             <MarkdownRenderer
-              content={lesson.videoDescription}
-              optimizeMath={
-                !lesson.free || process.env.NODE_ENV === "development"
-              }
+              content={videoDescription}
+              optimizeMath={!free || process.env.NODE_ENV === "development"}
             />
           ) : (
             <p className="italic text-muted-foreground">No Description</p>
           )}
-          {lesson.videoChapters && lesson.videoChapters.length > 0 && (
+          {videoChapters && videoChapters.length > 0 && (
             <>
               <Separator className="mt-4" />
               <div className="mt-4 font-inter">
@@ -297,8 +311,9 @@ export function VideoLesson({ lesson }: VideoLessonProps) {
                   <List className="size-5" />
                   Chapters
                 </h3>
+
                 <ul className=" space-y-2 sm:space-y-1">
-                  {lesson.videoChapters.map((chapter, index) => (
+                  {videoChapters.map((chapter, index) => (
                     <li
                       key={chapter.id || index}
                       className="flex items-center gap-2"

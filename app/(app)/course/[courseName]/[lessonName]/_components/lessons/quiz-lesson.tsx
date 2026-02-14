@@ -21,10 +21,10 @@ import { cn } from "@/lib/ui";
 import type { Lesson } from "@/payload-types";
 
 interface QuizLessonProps {
-  lesson: Lesson;
+  quiz: Lesson["quiz"];
 }
 
-export function QuizLesson({ lesson }: QuizLessonProps) {
+export function QuizLesson({ quiz }: QuizLessonProps) {
   const [activeQuestionIdx, setActiveQuestionIdx] = useState<number>(0);
   const [submittedAnswers, setSubmittedAnswers] = useState<
     Record<number, number>
@@ -32,7 +32,7 @@ export function QuizLesson({ lesson }: QuizLessonProps) {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [hintsVisible, setHintsVisible] = useState<Record<number, boolean>>({});
 
-  const questions = lesson.quiz || [];
+  const questions = quiz || [];
   const activeQuestion = questions[activeQuestionIdx];
 
   if (!activeQuestion) {

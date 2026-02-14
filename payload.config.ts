@@ -45,7 +45,7 @@ export default buildConfig({
         cors_origin: clientEnv.NEXT_PUBLIC_APP_URL,
         new_asset_settings: {
           // ignore deprecation warning this works fine and the other thing doesn't
-          playback_policy: ["signed"],
+          playback_policy: ["signed", "public"],
         },
       },
     }),

@@ -26,10 +26,6 @@ const nextConfig: NextConfig = {
     serverMinification: true,
   },
 
-  compiler: {
-    removeConsole: process.env.NODE_ENV === "production",
-  },
-
   // enable statically typed links
   // @see https://nextjs.org/docs/app/api-reference/config/typescript#statically-typed-links
   // typedRoutes: true,

@@ -56,7 +56,7 @@ export const LessonItem = memo(
         key={lesson.id}
         href={lessonPath}
         title={lesson.title}
-        prefetch={true}
+        prefetch
         onClick={(e) => onClick(e, lessonPath)}
       >
         <div
