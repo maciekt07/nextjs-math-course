@@ -1,10 +1,10 @@
-import { VideoLesson } from "@/app/(app)/course/[courseName]/[lessonName]/_components/lessons/video";
 import { Separator } from "@/components/ui/separator";
 import type { Lesson } from "@/payload-types";
 import { LessonClientShell } from "./lesson-client-shell";
 import { LessonTitle } from "./lesson-title";
 import { QuizLesson } from "./lessons/quiz-lesson";
 import { TextLesson } from "./lessons/text-lesson";
+import { VideoLesson } from "./lessons/video";
 
 interface Props {
   lesson: Lesson;
