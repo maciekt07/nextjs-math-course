@@ -1,12 +1,19 @@
-import { randomUUID } from "node:crypto";
+import { Ratelimit } from "@upstash/ratelimit";
 import type { User } from "better-auth";
-import type { InferSelectModel } from "drizzle-orm";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
 import { clientEnv } from "@/env/client";
+import { redis } from "@/lib/redis";
 import type { Course } from "@/payload-types";
 import { stripe } from "./stripe";
+
+const limiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(3, "180 s"),
+  analytics: true,
+  prefix: "checkout_ratelimit",
+});
 
 /**
  * Create a Stripe checkout session and a pending enrollment row in Postgres.
@@ -16,14 +23,47 @@ export async function createPaymentIntent(
   course: Pick<Course, "title" | "description" | "id" | "price" | "slug">,
   user: User,
 ) {
-  const price = Math.round((course.price || 0) * 100); // cents
+  const { success, reset } = await limiter.limit(`user:${user.id}`);
+  if (!success) {
+    const retryAfter = Math.ceil((reset - Date.now()) / 1000);
+    throw new Error(
+      `Too many checkout attempts, try again in ${retryAfter} seconds`,
+    );
+  }
 
+  const existingEnrollment = await db
+    .select()
+    .from(enrollment)
+    .where(
+      and(
+        eq(enrollment.userId, user.id),
+        eq(enrollment.courseId, course.id),
+        eq(enrollment.status, "completed"),
+      ),
+    )
+    .limit(1);
+
+  if (existingEnrollment.length > 0) {
+    throw new Error("You already have access to this course");
+  }
+
+  const price = Math.round((course.price || 0) * 100);
   const successBase = clientEnv.NEXT_PUBLIC_APP_URL;
 
-  const customer = await stripe.customers.create({
+  const existingCustomers = await stripe.customers.list({
     email: user.email,
-    name: user.name,
+    limit: 1,
   });
+
+  const customer =
+    existingCustomers.data[0] ||
+    (await stripe.customers.create({
+      email: user.email,
+      name: user.name,
+      metadata: {
+        userId: user.id,
+      },
+    }));
 
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
@@ -36,6 +76,9 @@ export async function createPaymentIntent(
           product_data: {
             name: course.title,
             description: course.description || undefined,
+            metadata: {
+              courseId: course.id,
+            },
           },
           unit_amount: price,
         },
@@ -45,41 +88,54 @@ export async function createPaymentIntent(
     metadata: {
       userId: user.id,
       courseId: course.id,
+      courseTitle: course.title,
+      amount: String(course.price ?? 0),
     },
     success_url: `${successBase}/course/${(course.slug as string) || ""}?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: successBase,
+    cancel_url: `${successBase}/course/${(course.slug as string) || ""}?canceled=true`,
+    // prevent duplicate checkouts
+    client_reference_id: `${user.id}_${course.id}`,
+    expires_at: Math.floor(Date.now() / 1000) + 1800,
   });
 
-  const id = randomUUID();
-
-  await db.insert(enrollment).values({
-    id,
-    userId: user.id,
-    courseId: course.id,
-    stripePaymentIntentId: (session.payment_intent as string) || session.id,
-    stripeCustomerId: customer.id,
-    amount: String(course.price ?? 0),
-    currency: "usd",
-    status: "pending",
-  });
-
-  return { url: session.url };
+  return { url: session.url, sessionId: session.id };
 }
 
 /**
- * Helper to update an enrollment's metadata when we learn of the payment intent.
- * Used by webhook or other reconciliation flows.
+ * verify a checkout session and return enrollment status
  */
-export async function updatePaymentMetadata(
-  paymentIntentId: string,
-  updated: InferSelectModel<typeof enrollment>,
-) {
-  await db
-    .update(enrollment)
-    .set({
-      stripeCustomerId: updated.stripeCustomerId ?? undefined,
-      amount: updated.amount ?? undefined,
-      currency: updated.currency ?? undefined,
-    })
-    .where(eq(enrollment.stripePaymentIntentId, paymentIntentId));
+export async function verifyCheckoutSession(sessionId: string, userId: string) {
+  try {
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+    if (session.payment_status !== "paid") {
+      return { success: false, status: session.payment_status };
+    }
+
+    const courseId = session.metadata?.courseId;
+    if (!courseId) {
+      return { success: false, error: "Invalid session metadata" };
+    }
+
+    const existingEnrollment = await db
+      .select()
+      .from(enrollment)
+      .where(
+        and(
+          eq(enrollment.userId, userId),
+          eq(enrollment.courseId, courseId),
+          eq(enrollment.status, "completed"),
+        ),
+      )
+      .limit(1);
+
+    return {
+      success: existingEnrollment.length > 0,
+      enrolled: existingEnrollment.length > 0,
+      courseId,
+    };
+  } catch (error) {
+    console.error("Error verifying checkout session:", error);
+    return { success: false, error: "Failed to verify session" };
+  }
 }
