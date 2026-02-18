@@ -9,7 +9,6 @@ import {
   Video,
   VideoOff,
 } from "lucide-react";
-import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { MarkdownRenderer } from "@/components/markdown";
@@ -178,20 +177,21 @@ export function VideoPlayer({
       description?: string;
       variant?: "muted" | "destructive";
     }) => (
-      <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-muted dark:bg-card/80 flex items-center justify-center">
+      <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-background flex items-center justify-center">
         {posterUrl && (
-          <Image
-            src={posterUrl}
+          // biome-ignore lint/performance/noImgElement: data url placeholder
+          <img
+            src={placeholder}
             alt={title}
-            fill
-            className="object-cover blur-lg scale-110 opacity-40"
+            className="absolute inset-0 w-full h-full object-cover scale-110 opacity-50"
+            aria-hidden="true"
           />
         )}
         <div className="absolute inset-0 bg-muted/60 dark:bg-card/60" />
-        <div className="relative z-10 flex flex-col items-center justify-center gap-4 p-8 text-center max-w-md">
+        <div className="relative z-10 flex flex-col items-center justify-center gap-3 sm:gap-4 px-4 sm:px-6 md:px-8 py-6 sm:py-8 text-center max-w-sm sm:max-w-md md:max-w-lg">
           <div
             className={cn(
-              "p-6 rounded-full",
+              "p-4 md:p-5 rounded-full transition-colors",
               variant === "destructive"
                 ? "bg-destructive/10"
                 : "bg-muted-foreground/10",
@@ -199,23 +199,26 @@ export function VideoPlayer({
           >
             <Icon
               className={cn(
-                "w-12 h-12",
+                "size-10 sm:size-10 md:size-11",
                 variant === "destructive"
                   ? "text-destructive"
                   : "text-muted-foreground",
               )}
+              strokeWidth={2}
             />
           </div>
           <h3
             className={cn(
-              "text-lg font-semibold",
+              "text-lg md:text-xl font-bold tracking-tight leading-tight text-shadow-md",
               variant === "destructive" && "text-destructive",
             )}
           >
             {title}
           </h3>
           {description && (
-            <p className="text-sm text-muted-foreground">{description}</p>
+            <p className="text-sm md:text-base text-foreground/70 leading-relaxed text-shadow-md">
+              {description}
+            </p>
           )}
         </div>
       </div>
