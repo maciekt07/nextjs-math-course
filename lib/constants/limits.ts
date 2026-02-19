@@ -16,3 +16,7 @@ export const FEEDBACK_LIMITS = {
 export const VIDEO_LIMITS = {
   playbackId: 100,
 } as const satisfies LimitTree;
+
+export const LESSON_LIMITS = {
+  lessonId: 32,
+} as const satisfies LimitTree;

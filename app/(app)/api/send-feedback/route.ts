@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
 import sanitizeHtml from "sanitize-html";
 import { auth } from "@/lib/auth/auth";
-import { FEEDBACK_LIMITS } from "@/lib/constants/limits";
+import { FEEDBACK_LIMITS, LESSON_LIMITS } from "@/lib/constants/limits";
 import { getPayloadClient } from "@/lib/payload-client";
 import { redis } from "@/lib/redis";
 
@@ -53,7 +53,12 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { lessonId, reaction, comment = "" } = body;
 
-    if (!lessonId || typeof lessonId !== "string" || !lessonId.trim())
+    if (
+      !lessonId ||
+      typeof lessonId !== "string" ||
+      !lessonId.trim() ||
+      lessonId.trim().length > LESSON_LIMITS.lessonId
+    )
       return NextResponse.json({ error: "Invalid lessonId" }, { status: 400 });
 
     if (typeof reaction !== "number" || !Number.isInteger(reaction))
