@@ -62,6 +62,9 @@ export const serverEnv = createEnv({
       .refine((val) => val.startsWith("whsec"), {
         message: "STRIPE_WEBHOOK_SECRET must start with 'whsec'",
       }),
+
+    UPSTASH_REDIS_REST_URL: z.url(),
+    UPSTASH_REDIS_REST_TOKEN: z.string().min(1),
   },
   experimental__runtimeEnv: {},
 });

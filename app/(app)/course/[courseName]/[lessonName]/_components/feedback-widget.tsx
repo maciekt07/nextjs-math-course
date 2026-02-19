@@ -73,7 +73,8 @@ export default function FeedbackWidget({
       }, 3000);
     } catch (error) {
       console.error(error);
-      toast.error(`Failed to submit feedback. ${error}`);
+      const message = error instanceof Error ? error.message : String(error);
+      toast.error(`Failed to submit feedback. ${message}`);
     } finally {
       setIsSubmitting(false);
     }

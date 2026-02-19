@@ -53,6 +53,6 @@
 
 ## Backend
 
-- [x] Add in-memory rate limiting
 - [ ] Track lesson completion and quiz progress per user in DB
 - [ ] Update Next.js caching [payload/pull/14456](https://github.com/payloadcms/payload/pull/14456)
+- [x] Add Upstash Redis rate limiting

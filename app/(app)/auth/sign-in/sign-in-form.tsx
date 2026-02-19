@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "nextjs-toploader/app";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -35,9 +34,6 @@ export function SignInForm({ returnTo }: { returnTo?: string }) {
     await authClient.signIn.email(
       { ...data, callbackURL: returnTo },
       {
-        onError: (error) => {
-          toast.error(error.error.message || "Failed to sign in");
-        },
         onSuccess: () => {
           router.push(returnTo || "/");
           router.refresh();

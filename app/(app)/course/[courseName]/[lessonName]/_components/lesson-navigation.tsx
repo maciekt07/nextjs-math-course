@@ -110,7 +110,7 @@ export function LessonNavigation({
 
   return (
     <nav className="mt-8 mb-8 w-full font-inter">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 max-w-6xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 max-w-4xl mx-auto ">
         {renderLessonCard(previousLesson, true)}
         {renderLessonCard(nextLesson)}
       </div>

@@ -19,7 +19,7 @@ export function Heading({ as: Tag, id, children }: HeadingProps) {
     <Tag
       id={id}
       className={cn(
-        "group relative text-foreground",
+        "group relative",
         sidebarOpen ? "scroll-mt-6" : "max-[1450px]:scroll-mt-23 scroll-mt-6",
       )}
     >

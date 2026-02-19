@@ -43,9 +43,6 @@ export function SignUpForm({ returnTo }: { returnTo?: string }) {
     await authClient.signUp.email(
       { ...data, callbackURL },
       {
-        onError: (error) => {
-          toast.error(error.error.message || "Failed to sign up");
-        },
         onSuccess: () => {
           toast.success(
             "Check your inbox to verify your email before logging in",
