@@ -40,7 +40,7 @@ export const viewport: Viewport = {
   height: "device-height",
   initialScale: 1,
   interactiveWidget: "resizes-content",
-  viewportFit: "cover",
+  viewportFit: "contain",
 };
 
 export default function RootLayout({
