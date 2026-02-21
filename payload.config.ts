@@ -26,6 +26,9 @@ export default buildConfig({
     url: serverEnv.MONGO_URL,
   }),
   sharp,
+  graphQL: {
+    disable: true,
+  },
   email: resendAdapter({
     defaultFromAddress: "hello@resend.dev",
     defaultFromName: "Math Course Online",
