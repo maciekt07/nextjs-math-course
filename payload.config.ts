@@ -29,6 +29,9 @@ export default buildConfig({
   graphQL: {
     disable: true,
   },
+  typescript: {
+    outputFile: "types/payload-types.ts",
+  },
   email: resendAdapter({
     defaultFromAddress: "hello@resend.dev",
     defaultFromName: "Math Course Online",

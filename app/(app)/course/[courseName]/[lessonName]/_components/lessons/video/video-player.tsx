@@ -18,8 +18,8 @@ import { Separator } from "@/components/ui/separator";
 import { formatDuration } from "@/lib/format";
 import { fetchMuxToken, RateLimitError } from "@/lib/mux-token-cache";
 import { cn } from "@/lib/ui";
-import type { Course, Lesson, MuxVideo } from "@/payload-types";
 import type { MuxTokens } from "@/types/mux";
+import type { Course, Lesson, MuxVideo } from "@/types/payload-types";
 
 type PlaybackOption = NonNullable<MuxVideo["playbackOptions"]>[number];
 

@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/tooltip";
 import { formatDuration, formatReadingTime } from "@/lib/format";
 import { cn } from "@/lib/ui";
-import type { Lesson } from "@/payload-types";
+import type { Lesson } from "@/types/payload-types";
 
 interface LessonTitleProps {
   lesson: Lesson | null;

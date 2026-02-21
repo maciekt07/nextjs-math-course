@@ -21,7 +21,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 
 import { cn } from "@/lib/ui";
-import type { Course, Poster } from "@/payload-types";
+import type { Course, Poster } from "@/types/payload-types";
 
 interface CourseCardProps extends React.ComponentProps<"div"> {
   course: Course & {

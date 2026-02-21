@@ -12,7 +12,7 @@ import { useMounted } from "@/hooks/use-mounted";
 import { authClient } from "@/lib/auth/auth-client";
 import { FEEDBACK_LIMITS } from "@/lib/constants/limits";
 import { cn } from "@/lib/ui";
-import type { Lesson } from "@/payload-types";
+import type { Lesson } from "@/types/payload-types";
 
 const reactions = [
   { value: 1, icon: Frown, label: "Poor" },

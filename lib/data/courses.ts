@@ -3,7 +3,7 @@ import { unstable_cache } from "next/cache";
 import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
 import { getPayloadClient } from "@/lib/payload-client";
-import type { Course } from "@/payload-types";
+import type { Course } from "@/types/payload-types";
 
 export interface LessonStats {
   lessonCount: number;

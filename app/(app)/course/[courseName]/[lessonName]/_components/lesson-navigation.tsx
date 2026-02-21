@@ -8,9 +8,9 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useMemo } from "react";
-import type { Lesson } from "@/payload-types";
 import { useCourseStore } from "@/stores/course-store";
 import { useSidebarStore } from "@/stores/sidebar-store";
+import type { Lesson } from "@/types/payload-types";
 
 export function LessonNavigation({
   currentSlug,

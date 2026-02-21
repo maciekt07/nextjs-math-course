@@ -5,7 +5,7 @@ import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
 import { clientEnv } from "@/env/client";
 import { redis } from "@/lib/redis";
-import type { Course } from "@/payload-types";
+import type { Course } from "@/types/payload-types";
 import { stripe } from "./stripe";
 
 const limiter = new Ratelimit({

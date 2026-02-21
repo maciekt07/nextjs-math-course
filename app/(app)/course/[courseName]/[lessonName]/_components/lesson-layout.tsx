@@ -1,5 +1,5 @@
 import { Separator } from "@/components/ui/separator";
-import type { Lesson } from "@/payload-types";
+import type { Lesson } from "@/types/payload-types";
 import { LessonClientShell } from "./lesson-client-shell";
 import { LessonTitle } from "./lesson-title";
 import { QuizLesson } from "./lessons/quiz-lesson";

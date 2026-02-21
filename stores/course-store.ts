@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { Course, Lesson } from "@/payload-types";
+import type { Course, Lesson } from "@/types/payload-types";
 
 type CourseStore = {
   course: Course | null;

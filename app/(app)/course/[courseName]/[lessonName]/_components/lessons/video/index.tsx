@@ -1,5 +1,5 @@
 import { createBlurUp } from "@mux/blurup";
-import type { Course, Lesson, MuxVideo } from "@/payload-types";
+import type { Course, Lesson, MuxVideo } from "@/types/payload-types";
 import { VideoPlayer } from "./video-player";
 
 interface VideoLessonProps {

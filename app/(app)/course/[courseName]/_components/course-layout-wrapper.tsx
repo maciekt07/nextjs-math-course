@@ -2,9 +2,9 @@
 
 import { motion } from "framer-motion";
 import { useEffect } from "react";
-import type { Chapter, Course, Lesson } from "@/payload-types";
 import { useCourseStore } from "@/stores/course-store";
 import { useSidebarStore } from "@/stores/sidebar-store";
+import type { Chapter, Course, Lesson } from "@/types/payload-types";
 import { CourseSidebar } from "./sidebar";
 
 export function CourseLayoutWrapper({

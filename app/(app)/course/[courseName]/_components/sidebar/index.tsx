@@ -28,8 +28,8 @@ import { Dialog } from "@/components/ui/dialog";
 import { useScrollShadows } from "@/hooks/use-scroll-shadows";
 import { authClient } from "@/lib/auth/auth-client";
 import { cn } from "@/lib/ui";
-import type { Chapter, Course, Lesson, Poster } from "@/payload-types";
 import { useSidebarStore } from "@/stores/sidebar-store";
+import type { Chapter, Course, Lesson, Poster } from "@/types/payload-types";
 import { LessonItem } from "./lesson-item";
 import { SidebarAccount } from "./sidebar-account";
 

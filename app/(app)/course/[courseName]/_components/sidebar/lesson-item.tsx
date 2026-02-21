@@ -5,7 +5,7 @@ import Link from "next/link";
 import { memo } from "react";
 import { formatDuration, formatReadingTime } from "@/lib/format";
 import { cn } from "@/lib/ui";
-import type { Lesson } from "@/payload-types";
+import type { Lesson } from "@/types/payload-types";
 
 const lessonTypeConfig = {
   quiz: {

@@ -13,8 +13,8 @@
       "!.next",
       "!dist",
       "!build",
-      "!payload-types.ts",
-      "!importMap.js"
+      "!**/payload-types.ts",
+      "!**/importMap.js"
     ]
   },
   "formatter": {

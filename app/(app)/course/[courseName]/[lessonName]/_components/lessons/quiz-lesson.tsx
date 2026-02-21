@@ -18,7 +18,7 @@ import { MarkdownRenderer } from "@/components/markdown";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/ui";
-import type { Lesson } from "@/payload-types";
+import type { Lesson } from "@/types/payload-types";
 
 interface QuizLessonProps {
   quiz: Lesson["quiz"];

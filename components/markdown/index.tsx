@@ -5,7 +5,7 @@ import remarkDirective from "remark-directive";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import type { Pluggable } from "unified";
-import type { Media } from "@/payload-types";
+import type { Media } from "@/types/payload-types";
 import { blocks } from "./blocks/blocks-plugin";
 import { createMarkdownComponents } from "./components";
 import { desmos } from "./desmos/desmos-plugin";

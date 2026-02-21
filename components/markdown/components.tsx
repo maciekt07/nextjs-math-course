@@ -3,7 +3,7 @@ import type { Components } from "react-markdown";
 import { CalloutBlock } from "@/components/markdown/blocks/callout-block";
 import type { BlockType } from "@/components/markdown/blocks/callout-config";
 import { slug } from "@/lib/slugify";
-import type { Media } from "@/payload-types";
+import type { Media } from "@/types/payload-types";
 import { ImageZoom } from "../ui/shadcn-io/image-zoom";
 import type { CalloutDivProps } from "./blocks/blocks-plugin";
 import { DesmosGraph } from "./desmos/desmos-graph";

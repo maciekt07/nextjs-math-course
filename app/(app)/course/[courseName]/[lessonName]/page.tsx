@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth/auth";
 import { hasEnrollment } from "@/lib/data/enrollment";
 import { getPayloadClient } from "@/lib/payload-client";
-import type { Course } from "@/payload-types";
+import type { Course } from "@/types/payload-types";
 import FeedbackWidget from "./_components/feedback-widget";
 import { LessonLayout } from "./_components/lesson-layout";
 import { LessonNavigation } from "./_components/lesson-navigation";
