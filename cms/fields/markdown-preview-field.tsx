@@ -56,8 +56,12 @@ export default function MarkdownPreviewField({
     const handleTextareaScroll = () => syncScroll(textarea, preview);
     const handlePreviewScroll = () => syncScroll(preview, textarea);
 
-    textarea?.addEventListener("scroll", handleTextareaScroll);
-    preview?.addEventListener("scroll", handlePreviewScroll);
+    textarea?.addEventListener("scroll", handleTextareaScroll, {
+      passive: true,
+    });
+    preview?.addEventListener("scroll", handlePreviewScroll, {
+      passive: true,
+    });
 
     return () => {
       textarea?.removeEventListener("scroll", handleTextareaScroll);

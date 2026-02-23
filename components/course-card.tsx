@@ -19,17 +19,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-
+import type { LessonStats } from "@/lib/data/courses";
 import { cn } from "@/lib/ui";
 import type { Course, Poster } from "@/types/payload-types";
 
 interface CourseCardProps extends React.ComponentProps<"div"> {
-  course: Course & {
-    lessonCount: number | undefined;
-    totalQuizQuestions: number;
-    totalReadingTimeSeconds: number;
-    totalVideoSeconds: number;
-  };
+  course: Course & LessonStats;
   owned: boolean;
   customContent?: React.ReactNode;
 }
@@ -182,14 +177,14 @@ export function CourseCard({
           ) : (
             <div className="flex justify-between w-full items-center">
               <div className="flex flex-col">
-                <span className="text-xs text-muted-foreground uppercase tracking-wide">
-                  Price
-                </span>
                 <span className="text-2xl font-bold">
                   {new Intl.NumberFormat("en-US", {
                     style: "currency",
                     currency: "USD",
                   }).format(course.price ?? 0)}
+                </span>
+                <span className="text-xs text-muted-foreground tracking-wide">
+                  One-time purchase
                 </span>
               </div>
 

@@ -167,10 +167,19 @@
 
   html {
     @apply overscroll-y-none;
+    scrollbar-gutter: stable;
   }
 
   html:has(.viewport-smooth-scroll) {
     scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      scroll-behavior: auto !important;
+    }
   }
 }
 

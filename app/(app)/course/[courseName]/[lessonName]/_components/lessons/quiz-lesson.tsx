@@ -83,19 +83,21 @@ export function QuizLesson({ quiz }: QuizLessonProps) {
   };
 
   const navigateToPrevious = () => {
-    if (activeQuestionIdx > 0) {
-      setActiveQuestionIdx(activeQuestionIdx - 1);
-      setSelectedOption(submittedAnswers[activeQuestionIdx - 1] ?? null);
+    setActiveQuestionIdx((prev) => {
+      const nextIdx = Math.max(0, prev - 1);
+      setSelectedOption(submittedAnswers[nextIdx] ?? null);
       window.scrollTo({ top: 0, behavior: "instant" });
-    }
+      return nextIdx;
+    });
   };
 
   const navigateToNext = () => {
-    if (activeQuestionIdx < questions.length - 1) {
-      setActiveQuestionIdx(activeQuestionIdx + 1);
-      setSelectedOption(submittedAnswers[activeQuestionIdx + 1] ?? null);
+    setActiveQuestionIdx((prev) => {
+      const nextIdx = Math.min(questions.length - 1, prev + 1);
+      setSelectedOption(submittedAnswers[nextIdx] ?? null);
       window.scrollTo({ top: 0, behavior: "instant" });
-    }
+      return nextIdx;
+    });
   };
 
   return (

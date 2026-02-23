@@ -2,7 +2,6 @@
 
 import { useRouter } from "nextjs-toploader/app";
 import type React from "react";
-import { useEffect } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth/auth-client";
@@ -25,10 +24,6 @@ export default function BuyCourseButton({
   const { buy, loading, error } = useBuyCourse();
   const { data: session } = authClient.useSession();
 
-  useEffect(() => {
-    if (error) toast.error(error);
-  }, [error]);
-
   const handleClick = async () => {
     if (!session?.user) {
       toast.error("You must be signed in to purchase a course");
@@ -36,7 +31,11 @@ export default function BuyCourseButton({
       return;
     }
 
-    buy(courseId);
+    await buy(courseId);
+
+    if (error) {
+      toast.error(error);
+    }
   };
 
   return (

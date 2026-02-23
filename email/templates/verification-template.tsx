@@ -16,10 +16,7 @@ interface VerificationEmailProps {
   name: string;
 }
 
-export const VerificationEmailTemplate = ({
-  url,
-  name,
-}: VerificationEmailProps) => (
+const VerificationEmailTemplate = ({ url, name }: VerificationEmailProps) => (
   <Html>
     <Head />
     <Body style={main}>

@@ -31,10 +31,10 @@ export default async function CoursesPage() {
         description="Start learning by exploring available courses. Once you purchase one, it will appear here in your library."
         action={
           <Button asChild size="xl">
-            <a href="/#courses">
+            <Link href="/#courses">
               <BookOpen />
               Browse Courses
-            </a>
+            </Link>
           </Button>
         }
       />

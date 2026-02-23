@@ -4,6 +4,7 @@ import {
   ChevronLeft,
   ChevronRight,
   FileText,
+  type LucideIcon,
   Video,
 } from "lucide-react";
 import Link from "next/link";
@@ -12,14 +13,13 @@ import { useCourseStore } from "@/stores/course-store";
 import { useSidebarStore } from "@/stores/sidebar-store";
 import type { Lesson } from "@/types/payload-types";
 
-export function LessonNavigation({
-  currentSlug,
-}: {
+interface LessonNavigationProps {
   currentSlug?: string | null;
-}) {
+}
+
+export function LessonNavigation({ currentSlug }: LessonNavigationProps) {
   const lessonsMeta = useCourseStore((state) => state.lessonsMeta);
   const course = useCourseStore((state) => state.course);
-
   const setOptimisticPath = useSidebarStore((state) => state.setOptimisticPath);
 
   const { previousLesson, nextLesson } = useMemo(() => {
@@ -35,85 +35,102 @@ export function LessonNavigation({
 
   if (!lessonsMeta?.length || (!previousLesson && !nextLesson)) return null;
 
-  const getLessonIcon = (lesson: Lesson) => {
-    switch (lesson.type) {
-      case "video":
-        return Video;
-      case "quiz":
-        return Calculator;
-      default:
-        return FileText;
-    }
-  };
-
-  const getLessonPath = (lesson: Lesson) =>
-    `/course/${course?.slug}/${lesson.slug}`;
-
-  const renderPlaceholder = (isPrevious: boolean) => (
-    <div className="flex-1 min-h-[5rem] opacity-50 select-none p-4 rounded-lg border border-border/50 flex items-center justify-between bg-muted/20 cursor-not-allowed">
-      <div className="flex items-center gap-3 min-w-0">
-        {isPrevious && (
-          <ChevronLeft className="w-5 h-5 text-muted-foreground/50 flex-shrink-0" />
-        )}
-        <div className="min-w-0">
-          <div className="text-xs text-muted-foreground/70 mb-0.5">
-            {isPrevious ? "Previous lesson" : "Next lesson"}
-          </div>
-          <div className="text-sm text-muted-foreground/50">
-            {isPrevious
-              ? "Nothing before this lesson"
-              : "Nothing after this lesson"}
-          </div>
-        </div>
-      </div>
-      {!isPrevious && (
-        <ChevronRight className="w-5 h-5 text-muted-foreground/50 flex-shrink-0 ml-3" />
-      )}
-    </div>
-  );
-
-  const renderLessonCard = (lesson: Lesson | null, isPrevious = false) => {
-    if (!lesson) return renderPlaceholder(isPrevious);
-
-    const Icon = getLessonIcon(lesson);
-
-    return (
-      <Link
-        href={getLessonPath(lesson)}
-        prefetch
-        aria-label={`${isPrevious ? "Previous" : "Next"} lesson - ${lesson.title}`}
-        onClick={() => setOptimisticPath(getLessonPath(lesson))}
-        className="group flex-1 min-h-[5rem] p-4 rounded-lg border border-border transition-all duration-200 flex items-center justify-between"
-      >
-        <div className="flex items-center gap-3 min-w-0 flex-1">
-          {isPrevious && (
-            <ChevronLeft className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0" />
-          )}
-          <div className="min-w-0 flex-1">
-            <div className="text-xs text-muted-foreground mb-1 transition-colors group-hover:text-foreground">
-              {isPrevious ? "Previous lesson" : "Next lesson"}
-            </div>
-            <div className="font-medium text-sm flex items-center gap-2">
-              <Icon className="w-4 h-4 flex-shrink-0 opacity-70" />
-              <span className="line-clamp-2 break-words leading-tight">
-                {lesson.title}
-              </span>
-            </div>
-          </div>
-        </div>
-        {!isPrevious && (
-          <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0 ml-3" />
-        )}
-      </Link>
-    );
-  };
-
   return (
     <nav className="mt-8 mb-8 w-full font-inter">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 max-w-4xl mx-auto ">
-        {renderLessonCard(previousLesson, true)}
-        {renderLessonCard(nextLesson)}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 max-w-4xl mx-auto">
+        <LessonCard
+          lesson={previousLesson}
+          isPrevious
+          courseSlug={course?.slug!}
+          setOptimisticPath={setOptimisticPath}
+        />
+        <LessonCard
+          lesson={nextLesson}
+          isPrevious={false}
+          courseSlug={course?.slug!}
+          setOptimisticPath={setOptimisticPath}
+        />
       </div>
     </nav>
   );
 }
+
+interface LessonCardProps {
+  lesson: Lesson | null;
+  isPrevious: boolean;
+  courseSlug?: string;
+  setOptimisticPath: (path: string) => void;
+}
+
+const LESSON_ICONS = {
+  video: Video,
+  quiz: Calculator,
+  default: FileText,
+} as const satisfies Record<"video" | "quiz" | "default", LucideIcon>;
+
+const LessonCard = ({
+  lesson,
+  isPrevious,
+  courseSlug,
+  setOptimisticPath,
+}: LessonCardProps) => {
+  if (!lesson) return <LessonPlaceholder isPrevious={isPrevious} />;
+
+  const Icon =
+    LESSON_ICONS[lesson.type as keyof typeof LESSON_ICONS] ??
+    LESSON_ICONS.default;
+  const path = `/course/${courseSlug}/${lesson.slug}`;
+
+  return (
+    <Link
+      href={path}
+      prefetch
+      aria-label={`${isPrevious ? "Previous" : "Next"} lesson - ${lesson.title}`}
+      onClick={() => setOptimisticPath(path)}
+      className="group flex-1 min-h-[5rem] p-4 rounded-lg border border-border transition-all duration-200 flex items-center justify-between"
+    >
+      <div className="flex items-center gap-3 min-w-0 flex-1">
+        {isPrevious && (
+          <ChevronLeft className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0" />
+        )}
+        <div className="min-w-0 flex-1">
+          <div className="text-xs text-muted-foreground mb-1 transition-colors group-hover:text-foreground">
+            {isPrevious ? "Previous lesson" : "Next lesson"}
+          </div>
+          <div className="font-medium text-sm flex items-center gap-2">
+            <Icon className="w-4 h-4 flex-shrink-0 opacity-70" />
+            <span className="line-clamp-2 break-words leading-tight">
+              {lesson.title}
+            </span>
+          </div>
+        </div>
+      </div>
+      {!isPrevious && (
+        <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0 ml-3" />
+      )}
+    </Link>
+  );
+};
+
+const LessonPlaceholder = ({ isPrevious }: { isPrevious: boolean }) => (
+  <div className="flex-1 min-h-[5rem] opacity-50 select-none p-4 rounded-lg border border-border/50 flex items-center justify-between bg-muted/20 cursor-not-allowed">
+    <div className="flex items-center gap-3 min-w-0">
+      {isPrevious && (
+        <ChevronLeft className="w-5 h-5 text-muted-foreground/50 flex-shrink-0" />
+      )}
+      <div className="min-w-0">
+        <div className="text-xs text-muted-foreground/70 mb-0.5">
+          {isPrevious ? "Previous lesson" : "Next lesson"}
+        </div>
+        <div className="text-sm text-muted-foreground/50">
+          {isPrevious
+            ? "Nothing before this lesson"
+            : "Nothing after this lesson"}
+        </div>
+      </div>
+    </div>
+    {!isPrevious && (
+      <ChevronRight className="w-5 h-5 text-muted-foreground/50 flex-shrink-0 ml-3" />
+    )}
+  </div>
+);

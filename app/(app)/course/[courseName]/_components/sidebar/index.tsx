@@ -10,7 +10,6 @@ import {
   useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState,
   useTransition,
 } from "react";
@@ -97,7 +96,7 @@ export function CourseSidebar({
   const [_isTransitionLoading, startTransition] = useTransition();
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
   const [expandedChapters, setExpandedChapters] = useState<string[]>([]);
-  const animate = useRef<boolean>(false);
+  const [animate, setAnimate] = useState<boolean>(false);
 
   const {
     ref: scrollRef,
@@ -119,7 +118,7 @@ export function CourseSidebar({
 
   useEffect(() => {
     const t = setTimeout(() => {
-      animate.current = true;
+      setAnimate(true);
     }, 1000);
     return () => clearTimeout(t);
   }, []);
@@ -139,9 +138,11 @@ export function CourseSidebar({
 
   useEffect(() => {
     if (!open || !activeChapterId) return;
-    setExpandedChapters((prev) =>
-      prev.includes(activeChapterId) ? prev : [...prev, activeChapterId],
-    );
+    startTransition(() => {
+      setExpandedChapters((prev) =>
+        prev.includes(activeChapterId) ? prev : [...prev, activeChapterId],
+      );
+    });
   }, [activeChapterId, open]);
 
   const handleLessonClick = useCallback(
@@ -292,7 +293,7 @@ export function CourseSidebar({
         layout={false}
         animate={open ? { x: 0 } : { x: -320 }}
         transition={{ type: "tween", duration: 0.2 }}
-        className="fixed flex flex-col h-dvh w-80 border-r bg-background z-40 shadow-2xl md:shadow-none overflow-y-auto will-change-transform md:will-change-auto"
+        className="fixed flex flex-col h-dvh w-80 border-r bg-background z-40 shadow-2xl md:shadow-none overflow-y-auto will-change-transform"
         style={{ transform: "translateZ(0)" }}
       >
         <div className="pt-14 sm:pt-16 px-4 border-b">
@@ -384,13 +385,13 @@ export function CourseSidebar({
                       <AccordionItem key={chapter.id} value={chapter.id}>
                         <AccordionTrigger
                           className="px-4 sm:py-4 py-6 font-medium text-sm hover:no-underline cursor-pointer rounded-none transition-none hover:bg-muted/70"
-                          data-animate={animate.current}
+                          data-animate={animate}
                         >
                           <span>{chapter.title}</span>
                         </AccordionTrigger>
                         <AccordionContent
                           className="px-0 py-0"
-                          data-animate={animate.current}
+                          data-animate={animate}
                         >
                           <nav className="px-2 pb-2 mt-2">
                             {chapterLessons.map((lesson) => (

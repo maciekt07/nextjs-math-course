@@ -8,7 +8,6 @@ interface VideoLessonProps {
 
 export async function VideoLesson({ lesson }: VideoLessonProps) {
   const muxVideo = lesson.video as MuxVideo;
-
   const playbackOptions = muxVideo.playbackOptions ?? [];
 
   // 0 for signed, 1 for public
@@ -20,14 +19,21 @@ export async function VideoLesson({ lesson }: VideoLessonProps) {
     posterUrl = "",
   } = playbackOptions[index] ?? {};
 
-  // https://www.mux.com/docs/guides/player-customize-look-and-feel#provide-a-placeholder-while-the-poster-image-loads
-  const { blurDataURL } = await createBlurUp(
-    playbackOptions[1].playbackId || "",
-  );
+  let blurDataURL: string | undefined;
+
+  try {
+    if (playbackOptions[1]?.playbackId) {
+      // https://www.mux.com/docs/guides/player-customize-look-and-feel#provide-a-placeholder-while-the-poster-image-loads
+      const result = await createBlurUp(playbackOptions[1].playbackId);
+      blurDataURL = result.blurDataURL;
+    }
+  } catch (err) {
+    console.warn("Failed to generate blur placeholder:", err);
+    blurDataURL = undefined;
+  }
 
   return (
     <VideoPlayer
-      // media / playback
       playbackId={playbackId}
       playbackPolicy={playbackPolicy}
       placeholder={blurDataURL}

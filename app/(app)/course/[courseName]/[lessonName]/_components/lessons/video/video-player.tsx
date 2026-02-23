@@ -9,12 +9,14 @@ import {
   Video,
   VideoOff,
 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import type React from "react";
+import { useCallback, useEffect, useReducer, useRef } from "react";
 import { toast } from "sonner";
 import { MarkdownRenderer } from "@/components/markdown";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { useMounted } from "@/hooks/use-mounted";
 import { formatDuration } from "@/lib/format";
 import { fetchMuxToken, RateLimitError } from "@/lib/mux-token-cache";
 import { cn } from "@/lib/ui";
@@ -30,7 +32,7 @@ interface VideoPlayerProps
   > {
   playbackId: PlaybackOption["playbackId"];
   playbackPolicy: PlaybackOption["playbackPolicy"];
-  placeholder: string;
+  placeholder: string | undefined;
   posterUrl: PlaybackOption["posterUrl"];
   hasVideo: boolean;
   videoTitle: Lesson["title"];
@@ -53,11 +55,34 @@ export function VideoPlayer({
   free,
   course,
 }: VideoPlayerProps) {
+  const mounted = useMounted();
   const playerRef = useRef<HTMLDivElement>(null);
   const playerElementRef = useRef<MuxPlayerRefAttributes | null>(null);
-  const [tokens, setTokens] = useState<Partial<MuxTokens>>({});
 
-  const [isRateLimited, setIsRateLimited] = useState<boolean>(false);
+  type MuxState = {
+    tokens: Partial<MuxTokens>;
+    isRateLimited: boolean;
+  };
+
+  type Action =
+    | { type: "SET_TOKENS"; tokens: Partial<MuxTokens> }
+    | { type: "SET_RATE_LIMITED"; value: boolean };
+
+  function reducer(state: MuxState, action: Action): MuxState {
+    switch (action.type) {
+      case "SET_TOKENS":
+        return { ...state, tokens: action.tokens, isRateLimited: false };
+      case "SET_RATE_LIMITED":
+        return { ...state, isRateLimited: action.value };
+      default:
+        return state;
+    }
+  }
+
+  const [state, dispatch] = useReducer(reducer, {
+    tokens: {},
+    isRateLimited: false,
+  });
 
   const muxPlayerCallback = useCallback(
     (node: MuxPlayerRefAttributes | null) => {
@@ -125,23 +150,19 @@ export function VideoPlayer({
     if (!playbackId || !isSigned) return;
 
     let mounted = true;
-
     fetchMuxToken(playbackId)
       .then((t) => {
         if (mounted) {
-          setTokens({
-            playback: t.playback,
-            storyboard: t.storyboard,
+          dispatch({
+            type: "SET_TOKENS",
+            tokens: { playback: t.playback, storyboard: t.storyboard },
           });
-
-          setIsRateLimited(false);
         }
       })
       .catch((err) => {
         if (!mounted) return;
-
         if (err instanceof RateLimitError) {
-          setIsRateLimited(true);
+          dispatch({ type: "SET_RATE_LIMITED", value: true });
           toast.error("Rate limit exceeded. Please try again later.");
         } else {
           toast.error(`Failed to fetch token: ${err.message}`);
@@ -166,69 +187,15 @@ export function VideoPlayer({
   };
 
   const renderVideoArea = () => {
-    const EmptyState = ({
-      icon: Icon,
-      title,
-      description,
-      variant = "muted",
-    }: {
-      icon: LucideIcon;
-      title: string;
-      description?: string;
-      variant?: "muted" | "destructive";
-    }) => (
-      <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-background flex items-center justify-center">
-        {posterUrl && (
-          // biome-ignore lint/performance/noImgElement: data url placeholder
-          <img
-            src={placeholder}
-            alt={title}
-            className="absolute inset-0 w-full h-full object-cover scale-110 opacity-50"
-            aria-hidden="true"
-          />
-        )}
-        <div className="absolute inset-0 bg-muted/60 dark:bg-card/60" />
-        <div className="relative z-10 flex flex-col items-center justify-center gap-3 sm:gap-4 px-4 sm:px-6 md:px-8 py-6 sm:py-8 text-center max-w-sm sm:max-w-md md:max-w-lg">
-          <div
-            className={cn(
-              "p-4 md:p-5 rounded-full transition-colors",
-              variant === "destructive"
-                ? "bg-destructive/10"
-                : "bg-muted-foreground/10",
-            )}
-          >
-            <Icon
-              className={cn(
-                "size-10 sm:size-10 md:size-11",
-                variant === "destructive"
-                  ? "text-destructive"
-                  : "text-muted-foreground",
-              )}
-              strokeWidth={2}
-            />
-          </div>
-          <h3
-            className={cn(
-              "text-lg md:text-xl font-bold tracking-tight leading-tight text-shadow-md",
-              variant === "destructive" && "text-destructive",
-            )}
-          >
-            {title}
-          </h3>
-          {description && (
-            <p className="text-sm md:text-base text-foreground/70 leading-relaxed text-shadow-md">
-              {description}
-            </p>
-          )}
-        </div>
-      </div>
-    );
-
     if (!hasVideo || !playbackId) {
       return <EmptyState icon={VideoOff} title="No video available" />;
     }
+    // SSR placeholder
+    if (!mounted) {
+      return <EmptyState className="bg-transparent" />;
+    }
 
-    if (isRateLimited) {
+    if (state.isRateLimited) {
       return (
         <EmptyState
           icon={AlertCircle}
@@ -239,7 +206,7 @@ export function VideoPlayer({
       );
     }
 
-    if (!tokens.playback && playbackPolicy === "signed") {
+    if (!state.tokens.playback && playbackPolicy === "signed") {
       return (
         <div className="w-full aspect-video rounded-xl overflow-hidden bg-background flex items-center justify-center">
           <Loader2Icon className="animate-spin size-[90px] text-foreground/10" />
@@ -264,7 +231,7 @@ export function VideoPlayer({
         <MuxPlayer
           ref={muxPlayerCallback}
           playbackId={playbackId || undefined}
-          tokens={playbackPolicy === "signed" ? tokens : undefined}
+          tokens={playbackPolicy === "signed" ? state.tokens : undefined}
           poster={posterUrl ?? undefined}
           placeholder={placeholder}
           title=""
@@ -326,7 +293,7 @@ export function VideoPlayer({
                         size="sm"
                         onClick={() => handleTimestampClick(chapter.startTime)}
                         className="text-primary text-md p-0 shrink-0 hover:underline disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed disabled:no-underline"
-                        disabled={!hasVideo || isRateLimited}
+                        disabled={!hasVideo || state.isRateLimited}
                       >
                         {formatDuration(chapter.startTime)}
                       </Button>
@@ -342,6 +309,85 @@ export function VideoPlayer({
           )}
         </CardContent>
       </Card>
+    </div>
+  );
+}
+
+interface EmptyStateProps extends React.ComponentProps<"div"> {
+  icon?: LucideIcon;
+  title?: string;
+  description?: string;
+  variant?: "muted" | "destructive";
+  posterUrl?: string;
+  placeholder?: string;
+}
+
+function EmptyState({
+  icon: Icon,
+  title,
+  description,
+  variant = "muted",
+  posterUrl,
+  placeholder,
+  className,
+  ...props
+}: EmptyStateProps) {
+  return (
+    <div
+      className={cn(
+        "relative w-full aspect-video rounded-xl overflow-hidden bg-background flex items-center justify-center mb-[6px]",
+        className,
+      )}
+      {...props}
+    >
+      {posterUrl && (
+        // biome-ignore lint/performance/noImgElement: data url placeholder
+        <img
+          src={placeholder}
+          alt={title}
+          className="absolute inset-0 w-full h-full object-cover scale-110 opacity-50"
+          aria-hidden="true"
+        />
+      )}
+      {title && (
+        <div className="absolute inset-0 bg-muted/60 dark:bg-card/60" />
+      )}
+
+      <div className="relative z-10 flex flex-col items-center gap-3 text-center max-w-md">
+        {Icon && (
+          <div
+            className={cn(
+              "p-4 rounded-full",
+              variant === "destructive"
+                ? "bg-destructive/10"
+                : "bg-muted-foreground/10",
+            )}
+          >
+            <Icon
+              className={cn(
+                "size-10",
+                variant === "destructive"
+                  ? "text-destructive"
+                  : "text-muted-foreground",
+              )}
+            />
+          </div>
+        )}
+        {title && (
+          <h3
+            className={cn(
+              "text-lg font-bold",
+              variant === "destructive" && "text-destructive",
+            )}
+          >
+            {title}
+          </h3>
+        )}
+
+        {description && (
+          <p className="text-sm text-foreground/70">{description}</p>
+        )}
+      </div>
     </div>
   );
 }

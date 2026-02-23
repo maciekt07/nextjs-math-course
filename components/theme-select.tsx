@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useMetaColor } from "@/hooks/use-meta-color";
+import { META_THEME_COLORS, useMetaColor } from "@/hooks/use-meta-color";
 
 type ThemeItem = {
   key: "light" | "dark" | "system";
@@ -26,11 +26,13 @@ const items: ThemeItem[] = [
 
 export function ThemeSelect() {
   const { theme, setTheme } = useTheme();
-  const { setMetaColor, metaColor } = useMetaColor();
+  const { setMetaColor } = useMetaColor();
 
   useEffect(() => {
-    setMetaColor(metaColor);
-  }, [metaColor, setMetaColor]);
+    const color =
+      theme === "dark" ? META_THEME_COLORS.dark : META_THEME_COLORS.light;
+    setMetaColor(color);
+  }, [theme, setMetaColor]);
 
   return (
     <DropdownMenu>

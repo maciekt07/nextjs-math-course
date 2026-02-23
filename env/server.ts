@@ -69,4 +69,4 @@ export const serverEnv = createEnv({
   experimental__runtimeEnv: {},
 });
 
-export type ServerEnv = typeof serverEnv;
+// export type ServerEnv = typeof serverEnv;

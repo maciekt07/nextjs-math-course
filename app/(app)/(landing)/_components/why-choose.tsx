@@ -59,7 +59,7 @@ function WhyChooseCard({ reason, idx }: { reason: Reason; idx: number }) {
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, filter: "blur(16px)", y: 30 }}
+      initial={{ opacity: 0, filter: "blur(8px)", y: 30 }}
       animate={isInView ? { opacity: 1, filter: "blur(0px)", y: 0 } : {}}
       transition={{ duration: 0.6, ease: "easeOut", delay: idx * 0.15 }}
       className="space-y-3"

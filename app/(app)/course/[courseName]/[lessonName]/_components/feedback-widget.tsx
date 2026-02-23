@@ -49,35 +49,35 @@ export default function FeedbackWidget({
     if (!selectedReaction) return;
 
     setIsSubmitting(true);
-    try {
-      const response = await fetch("/api/send-feedback", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          lessonId,
-          reaction: selectedReaction,
-          comment: comment.trim(),
-        }),
-      });
 
-      if (!response.ok) {
-        const data = await response.json().catch(() => ({}));
-        throw new Error(data.error || "Failed to submit feedback");
-      }
+    const response = await fetch("/api/send-feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        lessonId,
+        reaction: selectedReaction,
+        comment: comment.trim(),
+      }),
+    });
 
-      setIsSubmitted(true);
-      setTimeout(() => {
-        setIsSubmitted(false);
-        setSelectedReaction(null);
-        setComment("");
-      }, 3000);
-    } catch (error) {
-      console.error(error);
-      const message = error instanceof Error ? error.message : String(error);
-      toast.error(`Failed to submit feedback. ${message}`);
-    } finally {
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      toast.error(
+        `Failed to submit feedback: ${data.error || "Unknown error"}`,
+      );
       setIsSubmitting(false);
+      return;
     }
+
+    setIsSubmitted(true);
+    setTimeout(() => {
+      setIsSubmitted(false);
+      setSelectedReaction(null);
+      setComment("");
+    }, 3000);
+
+    setIsSubmitting(false);
   };
 
   useEffect(() => {

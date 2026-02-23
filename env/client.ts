@@ -27,4 +27,4 @@ export const clientEnv = createEnv({
   },
 });
 
-export type ClientEnv = typeof clientEnv;
+// export type ClientEnv = typeof clientEnv;
