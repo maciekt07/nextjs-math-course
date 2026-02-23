@@ -8,17 +8,18 @@ export default function Loading() {
     <article className="mx-auto pb-8 mt-10 px-4 sm:px-6 max-w-4xl">
       {/* lesson title */}
       <div className="mb-8 font-inter">
-        <Skeleton className="h-[2.5rem] w-3/4 mb-4 rounded-lg" />
+        <Skeleton className="h-[2rem] md:h-[2.5rem] w-full md:w-3/4 mb-2 md:mb-4 rounded-lg" />
+        <Skeleton className="h-[2rem] md:h-[2.5rem] md:hidden w-3/4 mb-4 rounded-lg" />
+
         <div className="flex items-center gap-1.5 h-5">
-          <Skeleton className="h-5 w-5 rounded" />
-          <Skeleton className="h-6 w-24" />
+          <Skeleton className="h-6 w-[94px]" />
           <Separator orientation="vertical" className="self-stretch mx-2" />
-          <Skeleton className="h-5 w-5 rounded" />
-          <Skeleton className="h-6 w-20" />
+
+          <Skeleton className="h-6 w-28" />
 
           <Separator orientation="vertical" className="self-stretch mx-2" />
-          <Skeleton className="h-5 w-5 rounded" />
-          <Skeleton className="h-6 w-16" />
+
+          <Skeleton className="h-6 w-18" />
         </div>
       </div>
 
@@ -35,28 +36,28 @@ export default function Loading() {
       </div>
 
       {/* TOC for large screens */}
-      <div className="hidden min-[1704px]:block fixed right-4 top-24 w-64 max-h-[70vh] overflow-auto border-l pl-6">
+      <div className="hidden min-[1704px]:block fixed right-4 top-24 w-64 max-h-[70vh] overflow-auto pl-6">
         <Skeleton className="h-4 w-26 mb-4 rounded-md" />
         <div className="space-y-3">
           <div className="flex items-start gap-2">
             <Skeleton className="mt-1 h-2 w-2 rounded-full flex-shrink-0" />
-            <Skeleton className="h-[18px] w-full rounded-md" />
+            <Skeleton className="h-[18px] w-3/5 rounded-md" />
           </div>
           <div className="flex items-start gap-2">
             <Skeleton className="mt-1 h-2 w-2 rounded-full flex-shrink-0" />
-            <Skeleton className="h-[18px] w-full rounded-md" />
+            <Skeleton className="h-[18px] w-2/5 rounded-md" />
           </div>
           <div className="flex items-start gap-2 pl-4">
             <Skeleton className="mt-1 h-2 w-2 rounded-full flex-shrink-0" />
-            <Skeleton className="h-[18px] w-full rounded-md" />
+            <Skeleton className="h-[18px] w-4/5 rounded-md" />
           </div>
           <div className="flex items-start gap-2">
             <Skeleton className="mt-1 h-2 w-2 rounded-full flex-shrink-0" />
-            <Skeleton className="h-[18px] w-full rounded-md" />
+            <Skeleton className="h-[18px] w-3/5 rounded-md" />
           </div>
           <div className="flex items-start gap-2 pl-4">
             <Skeleton className="mt-1 h-2 w-2 rounded-full flex-shrink-0" />
-            <Skeleton className="h-[18px] w-full rounded-md" />
+            <Skeleton className="h-[18px] w-4/6 rounded-md" />
           </div>
           <div className="flex items-start gap-2">
             <Skeleton className="mt-1 h-2 w-2 rounded-full flex-shrink-0" />
@@ -66,7 +67,7 @@ export default function Loading() {
       </div>
 
       {/* example content */}
-      <div className="space-y-6 mt-6">
+      <div className="space-y-6 mt-8">
         {/* p */}
         <div className="space-y-2">
           <Skeleton className="h-5 w-full rounded-md" />
