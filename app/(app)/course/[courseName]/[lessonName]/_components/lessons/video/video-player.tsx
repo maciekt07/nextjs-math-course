@@ -190,10 +190,6 @@ export function VideoPlayer({
     if (!hasVideo || !playbackId) {
       return <EmptyState icon={VideoOff} title="No video available" />;
     }
-    // SSR placeholder
-    if (!mounted) {
-      return <EmptyState className="bg-transparent" />;
-    }
 
     if (state.isRateLimited) {
       return (
@@ -255,8 +251,7 @@ export function VideoPlayer({
 
   return (
     <div className="flex flex-col gap-4" ref={playerRef}>
-      {renderVideoArea()}
-
+      {mounted ? renderVideoArea() : <EmptyState className="bg-transparent" />}
       <Card className="mt-2 bg-card/40 shadow-none">
         <CardHeader className="border-b font-inter">
           <CardTitle className="flex items-center gap-3 -mb-2">
