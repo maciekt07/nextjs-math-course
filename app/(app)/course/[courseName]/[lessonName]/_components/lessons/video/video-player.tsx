@@ -1,6 +1,5 @@
 "use client";
 import MuxPlayer, { type MuxPlayerRefAttributes } from "@mux/mux-player-react";
-import { motion } from "framer-motion";
 import {
   AlertCircle,
   List,
@@ -9,6 +8,7 @@ import {
   Video,
   VideoOff,
 } from "lucide-react";
+import { type HTMLMotionProps, motion, useReducedMotion } from "motion/react";
 import type React from "react";
 import { useCallback, useEffect, useReducer, useRef } from "react";
 import { toast } from "sonner";
@@ -58,6 +58,7 @@ export function VideoPlayer({
   const mounted = useMounted();
   const playerRef = useRef<HTMLDivElement>(null);
   const playerElementRef = useRef<MuxPlayerRefAttributes | null>(null);
+  const prefersReducedMotion = useReducedMotion();
 
   type MuxState = {
     tokens: Partial<MuxTokens>;
@@ -210,20 +211,20 @@ export function VideoPlayer({
       );
     }
 
+    const playerMotionProps: HTMLMotionProps<"div"> = {
+      initial: {
+        opacity: 0.6,
+        ...(prefersReducedMotion ? {} : { scale: 0.94 }),
+      },
+      animate: {
+        opacity: 1,
+        ...(prefersReducedMotion ? {} : { scale: 1 }),
+      },
+      transition: { duration: 0.2 },
+    };
+
     return (
-      <motion.div
-        initial={{
-          scale: 0.94,
-          opacity: 0.6,
-        }}
-        animate={{
-          scale: 1,
-          opacity: 1,
-        }}
-        transition={{
-          duration: 0.2,
-        }}
-      >
+      <motion.div {...playerMotionProps}>
         <MuxPlayer
           ref={muxPlayerCallback}
           playbackId={playbackId || undefined}

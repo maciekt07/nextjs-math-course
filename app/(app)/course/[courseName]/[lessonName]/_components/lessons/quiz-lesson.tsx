@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import {
   ArrowLeft,
   ArrowRight,
@@ -13,6 +12,7 @@ import {
   Lightbulb,
   X,
 } from "lucide-react";
+import { motion } from "motion/react";
 import { useState } from "react";
 import { MarkdownRenderer } from "@/components/markdown";
 import { Button } from "@/components/ui/button";

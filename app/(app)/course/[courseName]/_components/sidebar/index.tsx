@@ -1,6 +1,6 @@
 "use client";
-import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, PanelLeft, PanelLeftClose, Settings } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
@@ -97,6 +97,7 @@ export function CourseSidebar({
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
   const [expandedChapters, setExpandedChapters] = useState<string[]>([]);
   const [animate, setAnimate] = useState<boolean>(false);
+  const prefersReducedMotion = useReducedMotion();
 
   const {
     ref: scrollRef,
@@ -201,7 +202,7 @@ export function CourseSidebar({
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.2 }}
+              transition={{ duration: prefersReducedMotion ? 0 : 0.2 }}
             >
               <Button
                 variant="outline"
@@ -242,7 +243,7 @@ export function CourseSidebar({
               initial={{ opacity: 0, x: -12 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -12 }}
-              transition={{ duration: 0.2 }}
+              transition={{ duration: prefersReducedMotion ? 0 : 0.2 }}
               className="rounded-md"
             >
               <Button variant="outline" asChild className="backdrop-blur-md">
@@ -263,7 +264,7 @@ export function CourseSidebar({
             initial={{ opacity: 0, y: 0 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.2 }}
             className={cn(
               "fixed top-0 left-0 right-0 z-40 h-17 hidden max-[1450px]:flex max-[1450px]:backdrop-blur-xl max-[1450px]:bg-background/60 max-[1450px]:border-b items-center mb-4 gap-3 transition-[border-color] duration-300",
             )}
@@ -292,7 +293,7 @@ export function CourseSidebar({
         initial={false}
         layout={false}
         animate={open ? { x: 0 } : { x: -320 }}
-        transition={{ type: "tween", duration: 0.2 }}
+        transition={{ type: "tween", duration: prefersReducedMotion ? 0 : 0.2 }}
         className="fixed flex flex-col h-dvh w-80 border-r bg-background z-40 shadow-2xl md:shadow-none overflow-y-auto will-change-transform"
         style={{ transform: "translateZ(0)" }}
       >
@@ -385,13 +386,13 @@ export function CourseSidebar({
                       <AccordionItem key={chapter.id} value={chapter.id}>
                         <AccordionTrigger
                           className="px-4 sm:py-4 py-6 font-medium text-sm hover:no-underline cursor-pointer rounded-none transition-none hover:bg-muted/70"
-                          data-animate={animate}
+                          data-animate={animate && !prefersReducedMotion}
                         >
                           <span>{chapter.title}</span>
                         </AccordionTrigger>
                         <AccordionContent
                           className="px-0 py-0"
-                          data-animate={animate}
+                          data-animate={animate && !prefersReducedMotion}
                         >
                           <nav className="px-2 pb-2 mt-2">
                             {chapterLessons.map((lesson) => (

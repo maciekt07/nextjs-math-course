@@ -1,8 +1,16 @@
 "use client";
 
 import Bowser from "bowser";
-import { AnimatePresence, motion } from "framer-motion";
-import { Check, Frown, Meh, Send, Smile, Star } from "lucide-react";
+import {
+  Check,
+  Frown,
+  type LucideIcon,
+  Meh,
+  Send,
+  Smile,
+  Star,
+} from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -14,12 +22,18 @@ import { FEEDBACK_LIMITS } from "@/lib/constants/limits";
 import { cn } from "@/lib/ui";
 import type { Lesson } from "@/types/payload-types";
 
-const reactions = [
+interface Reaction {
+  value: number;
+  icon: LucideIcon;
+  label: string;
+}
+
+export const reactions = [
   { value: 1, icon: Frown, label: "Poor" },
   { value: 2, icon: Meh, label: "Fair" },
   { value: 3, icon: Smile, label: "Good" },
   { value: 4, icon: Star, label: "Excellent" },
-];
+] as const satisfies readonly Reaction[];
 
 export default function FeedbackWidget({
   lessonId,
@@ -34,7 +48,8 @@ export default function FeedbackWidget({
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const isMounted = useMounted();
-  const commentRef = useRef(comment);
+  const commentRef = useRef<string>(comment);
+  const prefersReducedMotion = useReducedMotion();
 
   function isFirefox() {
     if (typeof window === "undefined") return false;
@@ -153,8 +168,16 @@ export default function FeedbackWidget({
                       ? "bg-primary text-primary-foreground border-primary"
                       : "bg-secondary text-foreground border-border hover:bg-secondary/80",
                   )}
-                  whileHover={!isFirefox() ? { scale: 1.05 } : undefined}
-                  whileTap={!isFirefox() ? { scale: 0.95 } : undefined}
+                  whileHover={
+                    !isFirefox() && !prefersReducedMotion
+                      ? { scale: 1.05 }
+                      : undefined
+                  }
+                  whileTap={
+                    !isFirefox() && !prefersReducedMotion
+                      ? { scale: 0.95 }
+                      : undefined
+                  }
                 >
                   <Icon
                     strokeWidth={2.4}

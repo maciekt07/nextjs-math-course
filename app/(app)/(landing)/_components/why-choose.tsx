@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
 import { Check } from "lucide-react";
+import { motion, useInView } from "motion/react";
 import { useRef } from "react";
 
 type Reason = {

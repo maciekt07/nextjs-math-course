@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "motion/react";
 import { useEffect } from "react";
 import { useCourseStore } from "@/stores/course-store";
 import { useSidebarStore } from "@/stores/sidebar-store";
@@ -24,6 +24,7 @@ export function CourseLayoutWrapper({
   const setOpen = useSidebarStore((state) => state.setOpen);
   const setOptimisticPath = useSidebarStore((state) => state.setOptimisticPath);
   const initialize = useCourseStore((state) => state.initialize);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     initialize(course, lessons);
@@ -42,7 +43,7 @@ export function CourseLayoutWrapper({
         className="hidden md:block shrink-0"
         initial={{ width: 320 }}
         animate={{ width: open ? 320 : 0 }}
-        transition={{ duration: 0.2 }}
+        transition={{ duration: prefersReducedMotion ? 0 : 0.2 }}
       />
 
       <CourseSidebar
@@ -57,7 +58,7 @@ export function CourseLayoutWrapper({
           className="flex-1 w-full min-w-0"
           initial={{ paddingTop: 0 }}
           animate={{ paddingTop: open ? 0 : 68 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: prefersReducedMotion ? 0 : 0.2 }}
         >
           {children}
         </motion.main>

@@ -58,7 +58,10 @@ export function ThemeSelect() {
               <Icon size={16} /> {label}
             </div>
             {theme === key && (
-              <Check size={16} className="animate-in zoom-in duration-200" />
+              <Check
+                size={16}
+                className="animate-in zoom-in duration-200 motion-reduce:animate-none! motion-reduce:transition-none!"
+              />
             )}
           </DropdownMenuItem>
         ))}

@@ -1,8 +1,13 @@
 "use client";
 
 import type { User } from "better-auth";
-import { AnimatePresence, motion } from "framer-motion";
 import { BookOpen, Calculator, LogIn, Menu, UserPlus, X } from "lucide-react";
+import {
+  AnimatePresence,
+  type HTMLMotionProps,
+  motion,
+  useReducedMotion,
+} from "motion/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ThemeSelect } from "@/components/theme-select";
@@ -89,6 +94,7 @@ function AuthButtons({
 export function Navbar({ user }: { user: User | null }) {
   const [open, setOpen] = useState<boolean>(false);
   const [atTop, setAtTop] = useState<boolean>(true);
+  const prefersReducedMotion = useReducedMotion();
   const mounted = useMounted();
 
   useEffect(() => {
@@ -104,14 +110,39 @@ export function Navbar({ user }: { user: User | null }) {
 
   const showBorder = !atTop || open;
 
+  const iconMotionProps: HTMLMotionProps<"div"> = prefersReducedMotion
+    ? {}
+    : {
+        initial: { opacity: 0.5, scale: 0.8, filter: "blur(4px)" },
+        animate: { opacity: 1, scale: 1, filter: "blur(0px)" },
+        exit: { opacity: 0.5, scale: 0.8, filter: "blur(4px)" },
+        transition: { duration: 0.14 },
+      };
+
+  const backdropMotionProps: HTMLMotionProps<"div"> = prefersReducedMotion
+    ? {}
+    : {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        exit: { opacity: 0 },
+        transition: { duration: 0.2 },
+      };
+
+  const menuMotionProps: HTMLMotionProps<"div"> = prefersReducedMotion
+    ? {}
+    : {
+        initial: { y: -10, opacity: 0 },
+        animate: { y: 0, opacity: 1 },
+        exit: { y: -10, opacity: 0 },
+        transition: { duration: 0.2 },
+      };
+
   return (
     <div className="mb-24">
       <header
         className={cn(
-          "w-full py-4 sm:py-5 bg-transparent fixed z-50 transition-colors duration-250",
-          showBorder
-            ? "border-b bg-background/30 backdrop-blur-2xl"
-            : "border-b border-transparent",
+          "w-full py-4 sm:py-5 fixed z-50 border-b bg-background/30 backdrop-blur-2xl transition-colors duration-250 motion-reduce:transition-none motion-reduce:duration-0",
+          !showBorder && "border-transparent bg-transparent backdrop-blur-0",
           open && "bg-background",
         )}
       >
@@ -161,10 +192,7 @@ export function Navbar({ user }: { user: User | null }) {
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.div
                     key={open ? "close" : "menu"}
-                    initial={{ opacity: 0.5, scale: 0.8, filter: "blur(4px)" }}
-                    animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                    exit={{ opacity: 0.5, scale: 0.8, filter: "blur(4px)" }}
-                    transition={{ duration: 0.15 }}
+                    {...iconMotionProps}
                   >
                     {open ? <X /> : <Menu />}
                   </motion.div>
@@ -181,18 +209,12 @@ export function Navbar({ user }: { user: User | null }) {
             {/* BACKDROP */}
             <motion.div
               onClick={() => setOpen(false)}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
               className="fixed inset-x-0 bottom-0 top-16 sm:top-18 z-30 bg-black/30 backdrop-blur-xs"
+              {...backdropMotionProps}
             />
             <motion.div
-              initial={{ y: -10, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -10, opacity: 0 }}
-              transition={{ duration: 0.2 }}
               className="fixed left-0 right-0 top-16 sm:top-18 z-40 border-b bg-background p-6 space-y-4"
+              {...menuMotionProps}
             >
               <nav className="flex flex-col gap-3">
                 {navLinks.map((link) => (
