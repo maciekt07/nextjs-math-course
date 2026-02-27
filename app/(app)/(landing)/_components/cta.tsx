@@ -1,5 +1,7 @@
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import Link from "next/link";
+import { ArrowRight } from "@/components/animate-ui/icons/arrow-right";
+import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { Button } from "@/components/ui/button";
 
 interface CTASectionProps {
@@ -43,16 +45,18 @@ export function CTASection({
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8 md:mb-10">
             {previewLink && (
-              <Button
-                size="lg"
-                asChild
-                className="px-8 py-6 inline-flex items-center justify-center gap-2 text-base"
-              >
-                <Link href={previewLink}>
-                  Start Free Preview
-                  <ArrowRight size={20} />
-                </Link>
-              </Button>
+              <AnimateIcon animateOnHover>
+                <Button
+                  size="lg"
+                  asChild
+                  className="px-8 py-6 inline-flex items-center justify-center gap-2 text-base w-full"
+                >
+                  <Link href={previewLink}>
+                    Start Free Preview
+                    <ArrowRight size={20} />
+                  </Link>
+                </Button>
+              </AnimateIcon>
             )}
             <Button
               size="lg"

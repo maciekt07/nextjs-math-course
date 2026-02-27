@@ -1,5 +1,5 @@
 "use client";
-import { ChevronLeft, PanelLeft, PanelLeftClose, Settings } from "lucide-react";
+import { ChevronLeft, PanelLeft, PanelLeftClose } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
@@ -13,6 +13,8 @@ import {
   useState,
   useTransition,
 } from "react";
+import { AnimateIcon } from "@/components/animate-ui/icons/icon";
+import { Settings } from "@/components/animate-ui/icons/settings";
 import BuyCourseButton from "@/components/buy-course-button";
 import { ScrollShadow } from "@/components/scroll-shadow";
 import { ThemeSelect } from "@/components/theme-select";
@@ -120,7 +122,7 @@ export function CourseSidebar({
   useEffect(() => {
     const t = setTimeout(() => {
       setAnimate(true);
-    }, 1000);
+    }, 1500);
     return () => clearTimeout(t);
   }, []);
 
@@ -204,14 +206,16 @@ export function CourseSidebar({
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: prefersReducedMotion ? 0 : 0.2 }}
             >
-              <Button
-                variant="outline"
-                size="icon"
-                className="cursor-pointer"
-                onClick={() => setSettingsOpen(true)}
-              >
-                <Settings />
-              </Button>
+              <AnimateIcon animateOnHover>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="cursor-pointer"
+                  onClick={() => setSettingsOpen(true)}
+                >
+                  <Settings />
+                </Button>
+              </AnimateIcon>
             </motion.div>
           )}
         </AnimatePresence>
@@ -225,7 +229,7 @@ export function CourseSidebar({
           aria-label="Toggle Sidebar"
           onClick={() => toggle()}
           className={cn(
-            "transition-all duration-300 cursor-pointer bg-background",
+            "cursor-pointer bg-background",
             !open && "backdrop-blur-md",
           )}
         >
@@ -444,14 +448,16 @@ export function CourseSidebar({
         </div>
 
         <div className="p-4 border-t bg-background">
-          <Button
-            variant="outline"
-            className="w-full mb-3 cursor-pointer"
-            aria-label="Open settings"
-            onClick={() => setSettingsOpen(true)}
-          >
-            <Settings className="w-4 h-4" /> Settings
-          </Button>
+          <AnimateIcon animateOnHover>
+            <Button
+              variant="outline"
+              className="w-full mb-3 cursor-pointer"
+              aria-label="Open settings"
+              onClick={() => setSettingsOpen(true)}
+            >
+              <Settings className="w-4 h-4" /> Settings
+            </Button>
+          </AnimateIcon>
           <SidebarAccount
             isPending={isPending}
             session={session}

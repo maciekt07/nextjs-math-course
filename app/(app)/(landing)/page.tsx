@@ -1,6 +1,8 @@
 import { BookOpen } from "lucide-react";
 import { headers } from "next/headers";
 import Link from "next/link";
+import { Compass } from "@/components/animate-ui/icons/compass";
+import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { CourseCard } from "@/components/course-card";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth/auth";
@@ -51,9 +53,13 @@ export default async function Home() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="xl" asChild>
-                  <a href="#courses">Explore Courses</a>
-                </Button>
+                <AnimateIcon animateOnHover>
+                  <Button size="xl" asChild className="w-full">
+                    <a href="#courses">
+                      <Compass className="size-5" /> Explore Courses
+                    </a>
+                  </Button>
+                </AnimateIcon>
                 {courses.length > 0 && (
                   <Button
                     variant="outline"
@@ -66,7 +72,7 @@ export default async function Home() {
                         courses[0].slug ? `/course/${courses[0].slug}` : "#"
                       }
                     >
-                      <BookOpen /> Watch Free Demo
+                      <BookOpen className="size-4" /> Watch Free Demo
                     </Link>
                   </Button>
                 )}

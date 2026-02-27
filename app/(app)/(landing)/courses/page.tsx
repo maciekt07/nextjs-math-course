@@ -1,6 +1,8 @@
 import { BookOpen } from "lucide-react";
 import { headers } from "next/headers";
 import Link from "next/link";
+import { Compass } from "@/components/animate-ui/icons/compass";
+import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { CourseCard } from "@/components/course-card";
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
@@ -30,12 +32,14 @@ export default async function CoursesPage() {
         title="No courses yet"
         description="Start learning by exploring available courses. Once you purchase one, it will appear here in your library."
         action={
-          <Button asChild size="xl">
-            <Link href="/#courses">
-              <BookOpen />
-              Browse Courses
-            </Link>
-          </Button>
+          <AnimateIcon animateOnHover>
+            <Button asChild size="xl">
+              <Link href="/#courses">
+                <Compass className="size-5" />
+                Explore Courses
+              </Link>
+            </Button>
+          </AnimateIcon>
         }
       />
     );

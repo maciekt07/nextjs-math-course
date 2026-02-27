@@ -28,7 +28,7 @@ const faqs: { question: string; answer: string }[] = [
   {
     question: "Can I access courses on mobile devices?",
     answer:
-      "Completely! The platform is fully responsive and works seamlessly on phones, tablets, and computers. Learn on your schedule, wherever you are.",
+      "Completely! Learn on any phone, tablet, or computer. You can be logged in on up to 2 devices at once per account.",
   },
 ];
 
