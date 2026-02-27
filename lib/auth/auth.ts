@@ -41,7 +41,7 @@ export const auth = betterAuth({
   rateLimit: {
     storage: "secondary-storage",
     // enable in dev
-    enabled: true,
+    // enabled: true,
     window: 10,
     max: 100,
   },
