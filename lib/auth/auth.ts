@@ -40,7 +40,10 @@ export const auth = betterAuth({
 
   rateLimit: {
     storage: "secondary-storage",
-    // enabled: true,
+    // enable in dev
+    enabled: true,
+    window: 10,
+    max: 100,
   },
 
   secondaryStorage: {
@@ -62,6 +65,48 @@ export const auth = betterAuth({
 
     async delete(key: string) {
       await redis.del(key);
+    },
+  },
+
+  databaseHooks: {
+    session: {
+      // prevents account sharing by limiting how many active sessions a user can have at the same time
+      // if the limit is exceeded, the oldest sessions are automatically revoked
+      create: {
+        after: async (session) => {
+          // if (process.env.NODE_ENV === "development") return;
+
+          try {
+            const key = `user:sessions:${session.userId}`;
+            const now = Date.now();
+            const limit = AUTH_LIMITS.maxSessions;
+            const TTL = 30 * 24 * 60 * 60; // 30 days
+
+            const pipeline = redis.multi();
+
+            pipeline.zadd(key, { score: now, member: session.token });
+            pipeline.expire(key, TTL);
+            pipeline.zrange(key, 0, -limit - 1);
+            pipeline.zremrangebyrank(key, 0, -limit - 1);
+
+            const [, , removedTokens] = (await pipeline.exec()) as [
+              unknown,
+              unknown,
+              string[],
+              unknown,
+            ];
+
+            if (removedTokens?.length) {
+              await redis.del(...removedTokens);
+            }
+          } catch (err) {
+            console.error(
+              "[session.create] Redis session limit hook failed:",
+              err,
+            );
+          }
+        },
+      },
     },
   },
 });
