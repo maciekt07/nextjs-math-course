@@ -3,7 +3,7 @@ import { Navbar } from "@/app/(app)/(landing)/_components/navbar";
 import Footer from "@/components/footer";
 import { auth } from "@/lib/auth/auth";
 
-export default async function RootLayout({
+export default async function AuthLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

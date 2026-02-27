@@ -9,11 +9,12 @@ import {
   ChevronRight,
   CircleEqual,
   Eye,
-  Lightbulb,
   X,
 } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
+import { AnimateIcon } from "@/components/animate-ui/icons/icon";
+import { Lightbulb } from "@/components/animate-ui/icons/lightbulb";
 import { MarkdownRenderer } from "@/components/markdown";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -160,28 +161,34 @@ export function QuizLesson({ quiz }: QuizLessonProps) {
 
         <CardContent className="space-y-6">
           {activeQuestion.hint && !hintsVisible[activeQuestionIdx] && (
-            <Button
-              variant="outline"
-              onClick={() => {
-                setHintsVisible((prev) => ({
-                  ...prev,
-                  [activeQuestionIdx]: true,
-                }));
-              }}
-              className="cursor-pointer"
-            >
-              <Lightbulb size={16} />
-              Show Hint
-            </Button>
+            <div>
+              <AnimateIcon animateOnHover>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setHintsVisible((prev) => ({
+                      ...prev,
+                      [activeQuestionIdx]: true,
+                    }));
+                  }}
+                  className="cursor-pointer"
+                >
+                  <Lightbulb size={16} />
+                  Show Hint
+                </Button>
+              </AnimateIcon>
+            </div>
           )}
           {isHintVisible && activeQuestion.hint && (
             <Card className="bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900 py-4">
               <CardContent className="px-4">
                 <div className="flex justify-left items-center gap-2">
-                  <Lightbulb
-                    size={20}
-                    className="text-amber-600 dark:text-amber-500 shrink-0"
-                  />
+                  <AnimateIcon animate animation="path">
+                    <Lightbulb
+                      size={20}
+                      className="text-amber-600 dark:text-amber-500 shrink-0"
+                    />
+                  </AnimateIcon>
                   <MarkdownRenderer content={activeQuestion.hint} />
                 </div>
               </CardContent>

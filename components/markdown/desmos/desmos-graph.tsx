@@ -1,6 +1,8 @@
 "use client";
-import { ExternalLink } from "lucide-react";
+
 import { useInView } from "react-intersection-observer";
+import { ExternalLink } from "@/components/animate-ui/icons/external-link";
+import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/ui";
 import { useSettingsStore } from "@/stores/settings-store";
@@ -49,16 +51,18 @@ export function DesmosGraph({ graphUrl, noEmbed = false }: DesmosGraphProps) {
         )}
       </div>
       <div className="border-t-1 border-border p-3">
-        <Button asChild className="w-full" variant="outline">
-          <a
-            href={editUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="no-underline"
-          >
-            Edit Graph on Desmos <ExternalLink />
-          </a>
-        </Button>
+        <AnimateIcon animateOnHover>
+          <Button asChild className="w-full" variant="outline">
+            <a
+              href={editUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="no-underline"
+            >
+              Edit Graph on Desmos <ExternalLink size={24} />
+            </a>
+          </Button>
+        </AnimateIcon>
       </div>
     </div>
   );

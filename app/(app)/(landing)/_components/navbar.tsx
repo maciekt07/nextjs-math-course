@@ -140,9 +140,10 @@ export function Navbar({ user }: { user: User | null }) {
   return (
     <div className="mb-24">
       <header
+        suppressHydrationWarning
         className={cn(
           "w-full py-4 sm:py-5 fixed z-50 border-b bg-background/30 backdrop-blur-2xl transition-colors duration-250 motion-reduce:transition-none motion-reduce:duration-0",
-          !showBorder && "border-transparent bg-transparent backdrop-blur-0",
+          !showBorder && "border-transparent bg-transparent backdrop-blur-none",
           open && "bg-background",
         )}
       >

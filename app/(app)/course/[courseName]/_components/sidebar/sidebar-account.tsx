@@ -1,7 +1,9 @@
 import type { User } from "better-auth";
-import { LogIn } from "lucide-react";
+
 import Link from "next/link";
 import { memo } from "react";
+import { AnimateIcon } from "@/components/animate-ui/icons/icon";
+import { LogIn } from "@/components/animate-ui/icons/log-in";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -54,17 +56,19 @@ export const SidebarAccount = memo(
             </Link>
           </div>
         ) : (
-          <Button asChild className="w-full h-9 my-2" size="lg">
-            <Link
-              href={{
-                pathname: "/auth/sign-in",
-                query: { returnTo: pathname },
-              }}
-            >
-              <LogIn size={16} />
-              Log In
-            </Link>
-          </Button>
+          <AnimateIcon animateOnHover>
+            <Button asChild className="w-full h-9 my-2" size="lg">
+              <Link
+                href={{
+                  pathname: "/auth/sign-in",
+                  query: { returnTo: pathname },
+                }}
+              >
+                <LogIn size={16} />
+                Log In
+              </Link>
+            </Button>
+          </AnimateIcon>
         )}
       </>
     );

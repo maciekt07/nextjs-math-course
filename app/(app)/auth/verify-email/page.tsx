@@ -1,8 +1,10 @@
-import { LogIn, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { AnimateIcon } from "@/components/animate-ui/icons/icon";
+import { LogIn } from "@/components/animate-ui/icons/log-in";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -52,12 +54,14 @@ export default async function VerifyEmailPage({
       </CardHeader>
 
       <CardContent className="pt-0 flex flex-col items-center space-y-4">
-        <Button asChild variant="outline" size="lg">
-          <Link href={loginHref} className="flex items-center gap-2">
-            <LogIn />
-            Go to Login
-          </Link>
-        </Button>
+        <AnimateIcon animateOnHover>
+          <Button asChild variant="outline" size="lg">
+            <Link href={loginHref} className="flex items-center gap-2">
+              <LogIn />
+              Go to Login
+            </Link>
+          </Button>
+        </AnimateIcon>
       </CardContent>
     </Card>
   );

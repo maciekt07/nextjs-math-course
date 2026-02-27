@@ -1,18 +1,12 @@
 "use client";
 
 import Bowser from "bowser";
-import {
-  Check,
-  Frown,
-  type LucideIcon,
-  Meh,
-  Send,
-  Smile,
-  Star,
-} from "lucide-react";
+import { Check, Frown, type LucideIcon, Meh, Smile, Star } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { AnimateIcon } from "@/components/animate-ui/icons/icon";
+import { Send } from "@/components/animate-ui/icons/send";
 import { Button } from "@/components/ui/button";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 import { Textarea } from "@/components/ui/textarea";
@@ -238,23 +232,25 @@ export default function FeedbackWidget({
                 >
                   {comment.length}/{FEEDBACK_LIMITS.comment}
                 </p>
-                <Button
-                  onClick={handleSubmit}
-                  disabled={
-                    isSubmitting ||
-                    !selectedReaction ||
-                    comment.length > FEEDBACK_LIMITS.comment
-                  }
-                  className="w-full mt-2 flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  <LoadingSwap
-                    isLoading={isSubmitting}
-                    className="flex items-center gap-2"
+                <AnimateIcon animateOnHover>
+                  <Button
+                    onClick={handleSubmit}
+                    disabled={
+                      isSubmitting ||
+                      !selectedReaction ||
+                      comment.length > FEEDBACK_LIMITS.comment
+                    }
+                    className="w-full mt-2 flex items-center justify-center gap-2 cursor-pointer"
                   >
-                    <Send className="w-4 h-4" />
-                    Send Feedback
-                  </LoadingSwap>
-                </Button>
+                    <LoadingSwap
+                      isLoading={isSubmitting}
+                      className="flex items-center gap-2"
+                    >
+                      <Send className="w-4 h-4" />
+                      Send Feedback
+                    </LoadingSwap>
+                  </Button>
+                </AnimateIcon>
               </motion.div>
             )}
 

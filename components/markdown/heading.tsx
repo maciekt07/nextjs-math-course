@@ -1,6 +1,7 @@
 "use client";
 
-import { Link } from "lucide-react";
+import { AnimateIcon } from "@/components/animate-ui/icons/icon";
+import { Link } from "@/components/animate-ui/icons/link";
 import { scrollToHeader } from "@/lib/markdown/scroll-to-header";
 import { cn } from "@/lib/ui";
 import { useSidebarStore } from "@/stores/sidebar-store";
@@ -23,38 +24,40 @@ export function Heading({ as: Tag, id, children }: HeadingProps) {
         sidebarOpen ? "scroll-mt-6" : "max-[1450px]:scroll-mt-23 scroll-mt-6",
       )}
     >
-      <span className="inline">
-        {children}
-        <Link
-          size={iconSize}
-          aria-hidden="true"
+      {" "}
+      <AnimateIcon animateOnTap completeOnStop className="mt-0! pt-0!">
+        <span className="inline">
+          {children}
+          <Link
+            size={iconSize}
+            aria-hidden="true"
+            className={cn(
+              "ml-2 inline align-baseline transition-opacity duration-200",
+              "opacity-0",
+              "group-hover:opacity-100",
+              "group-focus-within:opacity-100",
+              "[@media(pointer:coarse)]:opacity-40",
+            )}
+          />
+        </span>
+        <a
+          href={`#${id}`}
+          onClick={(e) => {
+            e.preventDefault();
+            scrollToHeader(id, { behavior: "smooth" });
+          }}
+          aria-label={`Link to ${id}`}
           className={cn(
-            "ml-2 inline align-baseline transition-opacity duration-200",
-            "opacity-0",
-            "group-hover:opacity-100",
-            "group-focus-within:opacity-100",
-            "[@media(pointer:coarse)]:opacity-40",
+            "absolute inset-0 z-20",
+            "pointer-events-none",
+            "group-hover:pointer-events-auto",
+            "group-focus-within:pointer-events-auto",
+            "[@media(pointer:coarse)]:pointer-events-auto",
           )}
-        />
-      </span>
-
-      <a
-        href={`#${id}`}
-        onClick={(e) => {
-          e.preventDefault();
-          scrollToHeader(id, { behavior: "smooth" });
-        }}
-        aria-label={`Link to ${id}`}
-        className={cn(
-          "absolute inset-0 z-20",
-          "pointer-events-none",
-          "group-hover:pointer-events-auto",
-          "group-focus-within:pointer-events-auto",
-          "[@media(pointer:coarse)]:pointer-events-auto",
-        )}
-      >
-        <span className="sr-only">Link to {id}</span>
-      </a>
+        >
+          <span className="sr-only">Link to {id}</span>
+        </a>
+      </AnimateIcon>
     </Tag>
   );
 }

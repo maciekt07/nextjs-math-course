@@ -1,9 +1,11 @@
-import { Lock, LogIn } from "lucide-react";
 import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { AnimateIcon } from "@/components/animate-ui/icons/icon";
+import { Lock } from "@/components/animate-ui/icons/lock";
+import { LogIn } from "@/components/animate-ui/icons/log-in";
 import BuyCourseButton from "@/components/buy-course-button";
 import { EmptyStateCenterWrapper } from "@/components/empty-state";
 import Footer from "@/components/footer";
@@ -137,7 +139,12 @@ export default async function LessonPage({
       <EmptyStateCenterWrapper className="px-8">
         <div className="flex flex-col items-center text-center space-y-6 max-w-[400px]">
           <div className="mx-auto w-24 h-24 flex items-center justify-center bg-orange-600/10 dark:bg-orange-500/10 rounded-full">
-            <Lock size={48} className="text-orange-600 dark:text-orange-500" />
+            <AnimateIcon animate animation="path">
+              <Lock
+                size={48}
+                className="text-orange-600 dark:text-orange-500"
+              />
+            </AnimateIcon>
           </div>
           <div className="space-y-2">
             <h1 className="text-2xl font-semibold">{lesson.title}</h1>
@@ -147,19 +154,21 @@ export default async function LessonPage({
             </h2>
           </div>
           {showSignIn ? (
-            <Button size="lg" className="w-full" asChild>
-              <Link
-                href={{
-                  pathname: "/auth/sign-in",
-                  query: {
-                    returnTo: `/course/${courseName}/${lesson.slug}`,
-                  },
-                }}
-              >
-                <LogIn className="h-4 w-4" />
-                Sign in to continue
-              </Link>
-            </Button>
+            <AnimateIcon animateOnHover className="w-full">
+              <Button size="lg" className="w-full" asChild>
+                <Link
+                  href={{
+                    pathname: "/auth/sign-in",
+                    query: {
+                      returnTo: `/course/${courseName}/${lesson.slug}`,
+                    },
+                  }}
+                >
+                  <LogIn className="h-4 w-4" />
+                  Sign in to continue
+                </Link>
+              </Button>
+            </AnimateIcon>
           ) : (
             <BuyCourseButton
               courseId={
