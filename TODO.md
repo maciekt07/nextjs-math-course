@@ -4,7 +4,7 @@
 
 - [ ] Integrate OAuth login with Google
 - [ ] Implement forgot password and reset password functionality
-- [ ] Limit simultaneous logins per account
+- [x] Limit simultaneous logins per account
 
 ## Payments
 
