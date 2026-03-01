@@ -5,9 +5,11 @@ import { emailHarmony } from "better-auth-harmony";
 import { db } from "@/drizzle/db";
 import { sendEmail } from "@/email/send-email";
 import { serverEnv } from "@/env/server";
+import { secondaryStorage } from "@/lib/auth/secondary-storage";
+import { limitUserSessions } from "@/lib/auth/session-limit";
 import { AUTH_LIMITS } from "@/lib/constants/limits";
-import { redis } from "@/lib/redis";
 
+// https://www.better-auth.com/docs/reference/options
 export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: "pg" }),
 
@@ -40,28 +42,19 @@ export const auth = betterAuth({
 
   rateLimit: {
     storage: "secondary-storage",
+    // enable in dev
     // enabled: true,
+    window: 10,
+    max: 100,
   },
 
-  secondaryStorage: {
-    async get(key: string) {
-      const val = await redis.get(key);
-      if (val === null) return null;
-      return typeof val === "string" ? val : JSON.stringify(val);
-    },
+  secondaryStorage,
 
-    async set(key: string, value: unknown, ttl?: number) {
-      const serialized =
-        typeof value === "string" ? value : JSON.stringify(value);
-      if (ttl) {
-        await redis.set(key, serialized, { ex: ttl });
-      } else {
-        await redis.set(key, serialized);
-      }
-    },
-
-    async delete(key: string) {
-      await redis.del(key);
+  databaseHooks: {
+    session: {
+      create: {
+        after: limitUserSessions,
+      },
     },
   },
 });

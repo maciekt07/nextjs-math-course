@@ -7,6 +7,7 @@ export const AUTH_LIMITS = {
   email: 254,
   passwordMax: 72,
   passwordMin: 8,
+  maxSessions: 2,
 } as const satisfies LimitTree;
 
 export const FEEDBACK_LIMITS = {
