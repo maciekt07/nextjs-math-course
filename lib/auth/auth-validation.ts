@@ -25,6 +25,7 @@ export const passwordSchema = z
 export const signInSchema = z.object({
   email: emailSchema,
   password: passwordSchema,
+  rememberMe: z.boolean(),
 });
 
 export type SignInSchema = z.infer<typeof signInSchema>;

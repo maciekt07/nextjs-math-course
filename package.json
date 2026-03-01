@@ -76,6 +76,7 @@
     "payload": "^3.60.0",
     "pg": "^8.16.3",
     "plaiceholder": "^3.0.0",
+    "radix-ui": "^1.4.3",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-hook-form": "^7.65.0",

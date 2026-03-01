@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "nextjs-toploader/app";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -20,11 +21,13 @@ import { type SignInSchema, signInSchema } from "@/lib/auth/auth-validation";
 
 export function SignInForm({ returnTo }: { returnTo?: string }) {
   const router = useRouter();
+
   const form = useForm<SignInSchema>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
       email: "",
       password: "",
+      rememberMe: true,
     },
   });
 
@@ -32,7 +35,12 @@ export function SignInForm({ returnTo }: { returnTo?: string }) {
 
   async function handleSignIn(data: SignInSchema) {
     await authClient.signIn.email(
-      { ...data, callbackURL: returnTo },
+      {
+        email: data.email,
+        password: data.password,
+        callbackURL: returnTo,
+        rememberMe: data.rememberMe,
+      },
       {
         onSuccess: () => {
           router.push(returnTo || "/");
@@ -81,6 +89,24 @@ export function SignInForm({ returnTo }: { returnTo?: string }) {
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="rememberMe"
+          render={({ field }) => (
+            <FormItem className="flex items-center">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  className="cursor-pointer"
+                />
+              </FormControl>
+              <FormLabel className="m-0 cursor-pointer">Remember me</FormLabel>
+            </FormItem>
+          )}
+        />
+
         <Button
           type="submit"
           size="lg"
