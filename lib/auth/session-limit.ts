@@ -14,27 +14,23 @@ export async function limitUserSessions({
   token,
 }: Session): Promise<void> {
   if (process.env.NODE_ENV === "development") return;
+
   try {
     const key = `user:sessions:${userId}`;
     const limit = AUTH_LIMITS.maxSessions;
     const overflowEnd = -limit - 1;
 
-    const results = await redis
-      .multi()
-      .zadd(key, { score: Date.now(), member: token })
-      .expire(key, TTL_SECONDS)
-      .zrange(key, 0, overflowEnd)
-      .zremrangebyrank(key, 0, overflowEnd)
-      .exec();
+    const pipeline = redis.pipeline();
 
-    const [, , removedTokens] = results as [
-      unknown,
-      unknown,
-      string[], // zrange result
-      unknown,
-    ];
+    pipeline.zadd(key, { score: Date.now(), member: token });
+    pipeline.expire(key, TTL_SECONDS);
+    pipeline.zrange(key, 0, overflowEnd);
+    pipeline.zremrangebyrank(key, 0, overflowEnd);
 
-    if (removedTokens?.length) {
+    const results = await pipeline.exec<[number, number, string[], number]>();
+    const removedTokens = results[2];
+
+    if (removedTokens && removedTokens.length > 0) {
       await redis.del(...removedTokens);
     }
   } catch (error) {
