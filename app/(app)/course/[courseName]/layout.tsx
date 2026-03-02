@@ -1,7 +1,6 @@
-import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { cache } from "react";
-import { auth } from "@/lib/auth/auth";
+import { getServerSession } from "@/lib/auth/get-session";
 import { hasEnrollment } from "@/lib/data/enrollment";
 import { getPayloadClient } from "@/lib/payload-client";
 import { CourseLayoutWrapper } from "./_components/course-layout-wrapper";
@@ -89,7 +88,7 @@ export default async function CourseLayout({
 
   // determine whether the current user owns this course
   let owned = false;
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getServerSession();
   if (session) {
     owned = await hasEnrollment(session.user.id, data.course.id);
   }

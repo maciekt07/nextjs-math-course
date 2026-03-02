@@ -31,6 +31,12 @@ export default function BuyCourseButton({
       return;
     }
 
+    if (!session?.user.emailVerified) {
+      toast.error("You must verify your email before purchasing a course");
+      router.push("/auth/verify-email");
+      return;
+    }
+
     await buy(courseId);
 
     if (error) {

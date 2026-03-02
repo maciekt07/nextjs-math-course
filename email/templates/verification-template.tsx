@@ -8,80 +8,57 @@ import {
   Link,
   Preview,
   Section,
+  Tailwind,
   Text,
 } from "@react-email/components";
+import { AUTH_LIMITS } from "@/lib/constants/limits";
 
 interface VerificationEmailProps {
   url: string;
   name: string;
 }
 
+const hours = AUTH_LIMITS.verificationTokenTTL / 3600;
+
 const VerificationEmailTemplate = ({ url, name }: VerificationEmailProps) => (
   <Html>
     <Head />
-    <Body style={main}>
-      <Preview>Verify your Email</Preview>
-      <Container style={container}>
-        <Heading style={heading}>Hi {name}!</Heading>
-        <Section style={buttonContainer}></Section>
-        <Text style={paragraph}>
-          Welcome to Math Course Online! Please click the button below to verify
-          your email address and complete your registration.
-        </Text>
-        <Hr style={hr} />
-        <Link href={url} style={reportLink}>
-          Click here to verify your email address
-        </Link>
-      </Container>
-    </Body>
+    <Preview>Verify your email</Preview>
+
+    <Tailwind>
+      <Body className="bg-gray-50 font-sans py-10">
+        <Container className="mx-auto max-w-md rounded-2xl bg-white p-8 shadow-sm">
+          <Heading className="text-2xl font-semibold text-gray-900 mb-4">
+            Hi, {name} 👋
+          </Heading>
+
+          <Text className="text-gray-600 leading-relaxed mb-6">
+            Welcome to <strong>Math Course Online</strong>. Please verify your
+            email address to finish creating your account.
+          </Text>
+
+          <Section className="text-center my-8">
+            <Link
+              href={url}
+              className="inline-block rounded-xl bg-black px-6 py-3 text-white text-sm font-medium no-underline"
+            >
+              Verify email
+            </Link>
+          </Section>
+
+          <Hr className="border-gray-200 my-6" />
+
+          <Text className="text-xs text-gray-500 text-center">
+            This link expires in {hours} hours.
+          </Text>
+
+          <Text className="text-xs text-gray-400 text-center mt-2">
+            If you didn't create an account, you can safely ignore this email.
+          </Text>
+        </Container>
+      </Body>
+    </Tailwind>
   </Html>
 );
 
-VerificationEmailTemplate.PreviewProps = {
-  url: "https://example.com/verify-email",
-  name: "Maciej",
-} as VerificationEmailProps;
-
 export default VerificationEmailTemplate;
-
-const main = {
-  backgroundColor: "#ffffff",
-  fontFamily:
-    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
-};
-
-const container = {
-  margin: "0 auto",
-  padding: "20px 0 48px",
-  maxWidth: "560px",
-};
-
-const heading = {
-  fontSize: "24px",
-  letterSpacing: "-0.5px",
-  lineHeight: "1.3",
-  fontWeight: "400",
-  color: "#484848",
-  padding: "17px 0 0",
-};
-
-const paragraph = {
-  margin: "0 0 15px",
-  fontSize: "15px",
-  lineHeight: "1.4",
-  color: "#3c4149",
-};
-
-const buttonContainer = {
-  padding: "27px 0 27px",
-};
-
-const reportLink = {
-  fontSize: "14px",
-  color: "#b4becc",
-};
-
-const hr = {
-  borderColor: "#dfe1e4",
-  margin: "42px 0 26px",
-};

@@ -1,10 +1,12 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { APIError, createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
 import { emailHarmony } from "better-auth-harmony";
 import { db } from "@/drizzle/db";
 import { sendEmail } from "@/email/send-email";
 import { serverEnv } from "@/env/server";
+import { passwordSchema } from "@/lib/auth/auth-validation";
 import { secondaryStorage } from "@/lib/auth/secondary-storage";
 import { limitUserSessions } from "@/lib/auth/session-limit";
 import { AUTH_LIMITS } from "@/lib/constants/limits";
@@ -20,6 +22,8 @@ export const auth = betterAuth({
   ),
 
   emailVerification: {
+    expiresIn: AUTH_LIMITS.verificationTokenTTL,
+    sendOnSignUp: false,
     sendVerificationEmail: async ({ url, user }) => {
       await sendEmail(url, user);
     },
@@ -27,8 +31,8 @@ export const auth = betterAuth({
 
   emailAndPassword: {
     enabled: true,
-    autoSignIn: false,
-    requireEmailVerification: true,
+    autoSignIn: true,
+    requireEmailVerification: false,
     minPasswordLength: AUTH_LIMITS.passwordMin,
     maxPasswordLength: AUTH_LIMITS.passwordMax,
   },
@@ -49,6 +53,24 @@ export const auth = betterAuth({
   },
 
   secondaryStorage,
+
+  hooks: {
+    before: createAuthMiddleware(async (ctx) => {
+      if (
+        ctx.path === "/sign-up/email" ||
+        ctx.path === "/reset-password" ||
+        ctx.path === "/change-password"
+      ) {
+        const password = ctx.body.password || ctx.body.newPassword;
+        const { error } = passwordSchema.safeParse(password);
+        if (error) {
+          throw new APIError("BAD_REQUEST", {
+            message: "Password not strong enough",
+          });
+        }
+      }
+    }),
+  },
 
   databaseHooks: {
     session: {

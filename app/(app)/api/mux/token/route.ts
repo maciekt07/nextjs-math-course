@@ -32,7 +32,12 @@ export async function POST(request: NextRequest) {
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
+    if (!session.user.emailVerified) {
+      return NextResponse.json(
+        { error: "Email not verified" },
+        { status: 403 },
+      );
+    }
     const { playbackId } = await request.json();
 
     if (

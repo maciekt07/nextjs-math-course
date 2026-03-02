@@ -25,7 +25,12 @@ export async function POST(req: Request) {
     if (!session?.user) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
-
+    if (!session.user.emailVerified) {
+      return NextResponse.json(
+        { error: "Email not verified" },
+        { status: 403 },
+      );
+    }
     const userId = session.user.id;
 
     const body = await req.json();

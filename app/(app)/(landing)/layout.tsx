@@ -1,7 +1,6 @@
-import { headers } from "next/headers";
 import type { ReactNode } from "react";
 import Footer from "@/components/footer";
-import { auth } from "@/lib/auth/auth";
+import { getServerSession } from "@/lib/auth/get-session";
 import { Navbar } from "./_components/navbar";
 
 export default async function MarketingLayout({
@@ -9,10 +8,7 @@ export default async function MarketingLayout({
 }: {
   children: ReactNode;
 }) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
+  const session = await getServerSession();
   return (
     <div className="flex flex-col min-h-screen viewport-smooth-scroll">
       <Navbar user={session?.user || null} />

@@ -1,7 +1,18 @@
-import { Calendar, Mail, User } from "lucide-react";
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth/auth";
+import { Calendar, Mail, MailWarning, User } from "lucide-react";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { AnimateIcon } from "@/components/animate-ui/icons/icon";
+import { Send } from "@/components/animate-ui/icons/send";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import type { Session } from "@/lib/auth/auth-client";
+import { getServerSession } from "@/lib/auth/get-session";
 import { LogOutButton } from "./_components/logout-button";
 
 function formatDate(date: string | Date) {
@@ -39,7 +50,7 @@ const items = [
 ];
 
 export async function generateMetadata() {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getServerSession();
 
   if (!session) {
     return {
@@ -47,22 +58,20 @@ export async function generateMetadata() {
       robots: { index: false, follow: false },
     };
   }
-  const { name } = session.user;
+
   return {
-    title: `Your Account (${name})`,
-    description: `Manage your account, email, and course settings for ${name}.`,
-    robots: { index: true, follow: true },
+    title: `Your Account (${session.user.name})`,
   };
 }
 
 export default async function AccountPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getServerSession();
 
   if (!session) {
-    return null;
+    redirect("/auth/sign-in");
   }
+
+  const user = session.user;
 
   return (
     <div className="max-w-xl mx-auto mt-0 sm:mt-16 px-6 pb-8 space-y-8">
@@ -72,6 +81,30 @@ export default async function AccountPage() {
           Manage your personal information and settings
         </p>
       </header>
+
+      {!user.emailVerified && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-yellow-600 dark:text-yellow-400 flex items-center justify-start gap-2">
+              <MailWarning /> Verify your email
+            </CardTitle>
+            <CardDescription>
+              Please verify your email address to unlock all features.
+            </CardDescription>
+          </CardHeader>
+          <CardFooter>
+            <AnimateIcon animateOnHover className="w-full">
+              <Button className="w-full cursor-pointer" asChild>
+                <Link href="/auth/verify-email">
+                  <Send /> Send verification email
+                </Link>
+              </Button>
+            </AnimateIcon>
+          </CardFooter>
+        </Card>
+      )}
+
+      {/* Account info */}
       <div className="space-y-6">
         {items.map(({ icon: Icon, label, getValue, bg, text }) => (
           <div key={label} className="flex items-center gap-4">
@@ -82,13 +115,12 @@ export default async function AccountPage() {
             </div>
             <div className="flex flex-col">
               <span className="text-sm text-muted-foreground">{label}</span>
-              <span className="text-lg font-medium">
-                {getValue(session.user)}
-              </span>
+              <span className="text-lg font-medium">{getValue(user)}</span>
             </div>
           </div>
         ))}
       </div>
+
       <LogOutButton />
     </div>
   );

@@ -24,6 +24,7 @@ const nextConfig: NextConfig = {
   experimental: {
     reactCompiler: true,
     serverMinification: true,
+    authInterrupts: true,
   },
 
   // enable statically typed links

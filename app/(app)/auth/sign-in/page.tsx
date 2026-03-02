@@ -1,6 +1,4 @@
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-
 import {
   Card,
   CardContent,
@@ -8,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { auth } from "@/lib/auth/auth";
+import { getServerSession } from "@/lib/auth/get-session";
 import { AuthFooter } from "../_components/auth-footer";
 import { SignInForm } from "./sign-in-form";
 
@@ -31,7 +29,7 @@ export default async function SignInPage({
   const returnTo =
     typeof params.returnTo === "string" ? params.returnTo : undefined;
 
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getServerSession();
 
   if (session) {
     redirect("/");
