@@ -51,6 +51,7 @@ export function SendVerificationButton({
       });
 
       if (error) {
+        if (error.status === 429) return;
         toast.error(error.message || "Failed to send verification email");
       } else {
         toast.success(

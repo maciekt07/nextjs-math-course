@@ -50,6 +50,12 @@ export const auth = betterAuth({
     // enabled: true,
     window: 10,
     max: 100,
+    customRules: {
+      "/send-verification-email": {
+        window: 60,
+        max: 2,
+      },
+    },
   },
 
   secondaryStorage,
