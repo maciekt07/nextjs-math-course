@@ -22,16 +22,21 @@ export default function BuyCourseButton({
 }: BuyButtonProps) {
   const router = useRouter();
   const { buy, loading, error } = useBuyCourse();
-  const { data: session } = authClient.useSession();
 
   const handleClick = async () => {
-    if (!session?.user) {
+    const { data: session } = await authClient.getSession({
+      query: { disableCookieCache: true },
+    });
+
+    const user = session?.user;
+
+    if (!user) {
       toast.error("You must be signed in to purchase a course");
       router.push("/auth/sign-in");
       return;
     }
 
-    if (!session?.user.emailVerified) {
+    if (!user.emailVerified) {
       toast.error("You must verify your email before purchasing a course");
       router.push("/auth/verify-email");
       return;

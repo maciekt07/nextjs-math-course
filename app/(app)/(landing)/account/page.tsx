@@ -65,7 +65,11 @@ export async function generateMetadata() {
 }
 
 export default async function AccountPage() {
-  const session = await getServerSession();
+  const session = await getServerSession({
+    query: {
+      disableCookieCache: true,
+    },
+  });
 
   if (!session) {
     redirect("/auth/sign-in");

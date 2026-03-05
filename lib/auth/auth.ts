@@ -25,7 +25,7 @@ export const auth = betterAuth({
     expiresIn: AUTH_LIMITS.verificationTokenTTL,
     sendOnSignUp: false,
     sendVerificationEmail: async ({ url, user }) => {
-      await sendEmail(url, user);
+      void sendEmail(url, user);
     },
   },
 

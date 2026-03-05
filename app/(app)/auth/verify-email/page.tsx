@@ -1,4 +1,4 @@
-import { AlertCircle, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
 import type { Metadata } from "next";
 import { redirect, unauthorized } from "next/navigation";
 import {
@@ -17,21 +17,19 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function VerifyEmailPage({
-  searchParams,
-}: {
-  searchParams?: { error?: string };
-}) {
-  const session = await getServerSession();
+export default async function VerifyEmailPage() {
+  const session = await getServerSession({
+    query: {
+      disableCookieCache: true,
+    },
+  });
   const user = session?.user;
 
   if (!user) unauthorized();
 
-  if (user?.emailVerified) {
+  if (user.emailVerified) {
     redirect("/");
   }
-
-  const tokenExpired = searchParams?.error === "token_expired";
 
   return (
     <Card className="w-full max-w-md mx-auto">
@@ -40,16 +38,6 @@ export default async function VerifyEmailPage({
           <Mail className="h-12 w-12 text-primary" />
         </div>
         <CardTitle className="text-2xl">Verify your email</CardTitle>
-        {tokenExpired && (
-          <Card className="w-full p-3 text-left rounded-md border border-red-500 bg-red-50 dark:bg-red-900/30 dark:border-red-400 shadow-sm">
-            <CardContent className="flex items-center gap-3 px-1">
-              <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0" />
-              <p className="text-sm font-medium text-red-800 dark:text-red-200">
-                Verification link expired. Please request a new email.
-              </p>
-            </CardContent>
-          </Card>
-        )}
         <CardDescription>
           We will send a verification link to your email address ({user?.email}
           ). Please check your inbox or{" "}

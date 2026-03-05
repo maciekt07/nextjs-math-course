@@ -20,6 +20,9 @@ const limiter = new Ratelimit({
 export async function POST(req: Request) {
   try {
     const session = await auth.api.getSession({
+      query: {
+        disableCookieCache: true,
+      },
       headers: req.headers,
     });
     if (!session?.user) {
