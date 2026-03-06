@@ -1,10 +1,9 @@
 import { Calculator, Github } from "lucide-react";
-import { headers } from "next/headers";
 import Link from "next/link";
-import { auth } from "@/lib/auth/auth";
+import { getServerSession } from "@/lib/auth/get-session";
 
 export default async function Footer() {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getServerSession();
 
   return (
     <footer className="w-full border-t border-foreground/10 bg-transparent">

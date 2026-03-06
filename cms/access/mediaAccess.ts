@@ -1,6 +1,5 @@
-import { headers } from "next/headers";
 import type { Access } from "payload";
-import { auth } from "@/lib/auth/auth";
+import { getServerSession } from "@/lib/auth/get-session";
 import { hasEnrollment } from "@/lib/data/enrollment";
 
 export const mediaReadAccess: Access = async ({ req }): Promise<boolean> => {
@@ -25,7 +24,7 @@ export const mediaReadAccess: Access = async ({ req }): Promise<boolean> => {
 
     if (lesson.free) return true;
 
-    const session = await auth.api.getSession({ headers: await headers() });
+    const session = await getServerSession();
     if (!session?.user) return false;
 
     const courseId =

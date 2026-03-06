@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "nextjs-toploader/app";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -21,7 +21,7 @@ import { authClient } from "@/lib/auth/auth-client";
 import { type SignUpSchema, signUpSchema } from "@/lib/auth/auth-validation";
 import { AUTH_LIMITS } from "@/lib/constants/limits";
 
-export function SignUpForm({ returnTo }: { returnTo?: string }) {
+export function SignUpForm() {
   const router = useRouter();
   const form = useForm<SignUpSchema>({
     resolver: zodResolver(signUpSchema),
@@ -36,21 +36,12 @@ export function SignUpForm({ returnTo }: { returnTo?: string }) {
   const { isSubmitting } = form.formState;
 
   async function handleSignUp(data: SignUpSchema) {
-    const callbackURL = returnTo
-      ? `/auth/sign-in?returnTo=${encodeURIComponent(returnTo)}`
-      : "/auth/sign-in";
-
     await authClient.signUp.email(
-      { ...data, callbackURL },
+      { ...data, callbackURL: "/auth/email-verified" },
       {
         onSuccess: () => {
-          toast.success(
-            "Check your inbox to verify your email before logging in",
-          );
-          const verifyEmailUrl = returnTo
-            ? `/auth/verify-email?returnTo=${encodeURIComponent(returnTo)}`
-            : "/auth/verify-email";
-          router.push(verifyEmailUrl);
+          router.push("/auth/verify-email");
+          router.refresh();
         },
       },
     );

@@ -1,4 +1,3 @@
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import {
@@ -8,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { auth } from "@/lib/auth/auth";
+import { getServerSession } from "@/lib/auth/get-session";
 import { AuthFooter } from "../_components/auth-footer";
 import { SignUpForm } from "./sign-up-form";
 
@@ -30,7 +29,7 @@ export default async function SignUpPage({
   const returnTo =
     typeof params.returnTo === "string" ? params.returnTo : undefined;
 
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getServerSession();
 
   if (session) {
     redirect("/");
@@ -55,7 +54,7 @@ export default async function SignUpPage({
 
         <CardContent className="pt-0">
           <div className="space-y-4">
-            <SignUpForm returnTo={returnTo} />
+            <SignUpForm />
           </div>
           <AuthFooter
             message="Already have an account?"

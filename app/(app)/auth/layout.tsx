@@ -1,16 +1,13 @@
-import { headers } from "next/headers";
 import { Navbar } from "@/app/(app)/(landing)/_components/navbar";
 import Footer from "@/components/footer";
-import { auth } from "@/lib/auth/auth";
+import { getServerSession } from "@/lib/auth/get-session";
 
 export default async function AuthLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getServerSession();
 
   return (
     <>

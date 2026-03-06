@@ -25,9 +25,7 @@ export default function AccountPageSkeleton() {
         ))}
       </div>
 
-      <div className="pt-2">
-        <Skeleton className="h-10 w-full rounded-md mx-auto" />
-      </div>
+      <Skeleton className="h-10 w-full rounded-md mx-auto" />
     </div>
   );
 }

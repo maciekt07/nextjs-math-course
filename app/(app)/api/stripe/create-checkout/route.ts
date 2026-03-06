@@ -20,12 +20,20 @@ const limiter = new Ratelimit({
 export async function POST(req: Request) {
   try {
     const session = await auth.api.getSession({
+      query: {
+        disableCookieCache: true,
+      },
       headers: req.headers,
     });
     if (!session?.user) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
-
+    if (!session.user.emailVerified) {
+      return NextResponse.json(
+        { error: "Email not verified" },
+        { status: 403 },
+      );
+    }
     const userId = session.user.id;
 
     const body = await req.json();

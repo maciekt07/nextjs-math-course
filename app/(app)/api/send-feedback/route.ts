@@ -1,8 +1,7 @@
 import { Ratelimit } from "@upstash/ratelimit";
-import { headers } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
 import sanitizeHtml from "sanitize-html";
-import { auth } from "@/lib/auth/auth";
+import { getServerSession } from "@/lib/auth/get-session";
 import { FEEDBACK_LIMITS, LESSON_LIMITS } from "@/lib/constants/limits";
 import { getPayloadClient } from "@/lib/payload-client";
 import { redis } from "@/lib/redis";
@@ -22,11 +21,16 @@ const sanitize = (text: string) =>
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
+    const session = await getServerSession();
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
+    if (!session.user.emailVerified) {
+      return NextResponse.json(
+        { error: "Email not verified" },
+        { status: 403 },
+      );
+    }
     const { name: userName, id: userId, email: userEmail } = session.user;
 
     const { success, limit, reset, remaining } = await limiter.limit(userId);

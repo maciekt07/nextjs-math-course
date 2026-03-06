@@ -1,11 +1,6 @@
 import { Mail } from "lucide-react";
 import type { Metadata } from "next";
-import { headers } from "next/headers";
-import Link from "next/link";
-import { redirect } from "next/navigation";
-import { AnimateIcon } from "@/components/animate-ui/icons/icon";
-import { LogIn } from "@/components/animate-ui/icons/log-in";
-import { Button } from "@/components/ui/button";
+import { redirect, unauthorized } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -13,7 +8,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { auth } from "@/lib/auth/auth";
+import { getServerSession } from "@/lib/auth/get-session";
+import { SendVerificationButton } from "./_components/send-verification-button";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Verify your email",
@@ -21,47 +19,37 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function VerifyEmailPage({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}) {
-  const params = await searchParams;
-  const returnTo =
-    typeof params.returnTo === "string" ? params.returnTo : undefined;
+export default async function VerifyEmailPage() {
+  const session = await getServerSession({
+    query: {
+      disableCookieCache: true,
+    },
+  });
+  const user = session?.user;
 
-  const session = await auth.api.getSession({ headers: await headers() });
+  if (!user) unauthorized();
 
-  if (session?.user.emailVerified) {
+  if (user.emailVerified) {
     redirect("/");
   }
 
-  const loginHref = returnTo
-    ? `/auth/sign-in?returnTo=${encodeURIComponent(returnTo)}`
-    : "/auth/sign-in";
-
   return (
     <Card className="w-full max-w-md mx-auto">
-      <CardHeader className="space-y-5 text-center">
+      <CardHeader className="space-y-3 text-center">
         <div className="bg-primary/10 p-6 rounded-full mx-auto">
           <Mail className="h-12 w-12 text-primary" />
         </div>
         <CardTitle className="text-2xl">Verify your email</CardTitle>
         <CardDescription>
-          We've sent a verification link to your email address. Please check
-          your inbox and click the link to continue.
+          We will send a verification link to your email address ({user?.email}
+          ). Please check your inbox or{" "}
+          <strong className="text-foreground/80">your spam folder</strong> and
+          click the link to continue.
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="pt-0 flex flex-col items-center space-y-4">
-        <AnimateIcon animateOnHover>
-          <Button asChild variant="outline" size="lg">
-            <Link href={loginHref} className="flex items-center gap-2">
-              <LogIn />
-              Go to Login
-            </Link>
-          </Button>
-        </AnimateIcon>
+      <CardContent className="pt-0 flex flex-col items-center space-y-4 w-full">
+        <SendVerificationButton email={user?.email || ""} />
       </CardContent>
     </Card>
   );

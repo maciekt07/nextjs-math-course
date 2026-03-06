@@ -1,11 +1,10 @@
 import { BookOpen } from "lucide-react";
-import { headers } from "next/headers";
 import Link from "next/link";
 import { Compass } from "@/components/animate-ui/icons/compass";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { CourseCard } from "@/components/course-card";
 import { Button } from "@/components/ui/button";
-import { auth } from "@/lib/auth/auth";
+import { getServerSession } from "@/lib/auth/get-session";
 import { getCourses, getOwnedCourseIds } from "@/lib/data/courses";
 import { getUserCount } from "@/lib/data/users";
 import { CTASection } from "./_components/cta";
@@ -16,7 +15,7 @@ import { HeroImage } from "./_components/hero-image";
 import { WhyChoose } from "./_components/why-choose";
 
 export default async function Home() {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getServerSession();
 
   const [courses, userCount, ownedIds] = await Promise.all([
     getCourses(),

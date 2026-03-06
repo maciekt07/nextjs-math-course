@@ -1,12 +1,11 @@
 import { BookOpen } from "lucide-react";
-import { headers } from "next/headers";
 import Link from "next/link";
 import { Compass } from "@/components/animate-ui/icons/compass";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { CourseCard } from "@/components/course-card";
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
-import { auth } from "@/lib/auth/auth";
+import { getServerSession } from "@/lib/auth/get-session";
 import { getCoursesByIds, getOwnedCourseIds } from "@/lib/data/courses";
 
 export const metadata = {
@@ -14,15 +13,10 @@ export const metadata = {
 };
 
 export default async function CoursesPage() {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getServerSession();
   if (!session) return null;
 
   const ids = await getOwnedCourseIds(session.user.id);
-
-  if (ids.length === 0) {
-    return <EmptyState title="No courses yet" />;
-  }
-
   const courses = await getCoursesByIds(ids);
 
   if (courses.length === 0) {
