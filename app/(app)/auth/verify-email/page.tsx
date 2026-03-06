@@ -11,6 +11,8 @@ import {
 import { getServerSession } from "@/lib/auth/get-session";
 import { SendVerificationButton } from "./_components/send-verification-button";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Verify your email",
   description: "Check your inbox to verify your email before logging in.",
