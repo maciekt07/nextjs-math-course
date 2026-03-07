@@ -5,7 +5,7 @@ import type React from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth/auth-client";
-import { useBuyCourse } from "@/lib/stripe/useBuyCourse";
+import { useBuyCourse } from "@/lib/stripe/use-buy-course";
 import { cn } from "@/lib/ui";
 import { LoadingSwap } from "./ui/loading-swap";
 
@@ -21,31 +21,39 @@ export default function BuyCourseButton({
   ...props
 }: BuyButtonProps) {
   const router = useRouter();
-  const { buy, loading, error } = useBuyCourse();
+  const { buy, loading, setLoading } = useBuyCourse();
 
   const handleClick = async () => {
-    const { data: session } = await authClient.getSession({
-      query: { disableCookieCache: true },
-    });
+    setLoading(true);
+    try {
+      const { data: session } = await authClient.getSession({
+        query: { disableCookieCache: true },
+      });
 
-    const user = session?.user;
+      const user = session?.user;
 
-    if (!user) {
-      toast.error("You must be signed in to purchase a course");
-      router.push("/auth/sign-in");
-      return;
-    }
+      if (!user) {
+        toast.error("You must be signed in to purchase a course.");
+        router.push("/auth/sign-in");
+        return;
+      }
 
-    if (!user.emailVerified) {
-      toast.error("You must verify your email before purchasing a course");
-      router.push("/auth/verify-email");
-      return;
-    }
+      if (!user.emailVerified) {
+        toast.error("You must verify your email before purchasing a course.");
+        router.push("/auth/verify-email");
+        return;
+      }
 
-    await buy(courseId);
+      const result = await buy(courseId);
 
-    if (error) {
-      toast.error(error);
+      if (!result.success) {
+        toast.error(result.error);
+      }
+    } catch (err) {
+      console.error("[BuyCourseButton]", err);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
