@@ -24,7 +24,6 @@ export function Heading({ as: Tag, id, children }: HeadingProps) {
         sidebarOpen ? "scroll-mt-6" : "max-[1450px]:scroll-mt-23 scroll-mt-6",
       )}
     >
-      {" "}
       <AnimateIcon animateOnTap completeOnStop className="mt-0! pt-0!">
         <span className="inline">
           {children}

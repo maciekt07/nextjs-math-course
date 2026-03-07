@@ -159,7 +159,12 @@ export function CourseCard({
             </Link>
           </Button>
         ) : (
-          <Button variant="green" size="lg" asChild>
+          <Button
+            variant="outline"
+            size="lg"
+            asChild
+            className="bg-background/20 hover:bg-background/50 border-foreground/10 shadow-sm"
+          >
             <Link prefetch href={`/course/${course.slug}`}>
               See Free Lessons
             </Link>
