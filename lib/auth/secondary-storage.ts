@@ -1,5 +1,3 @@
-import "server-only";
-
 import type { SecondaryStorage } from "better-auth";
 import { redis } from "@/lib/redis";
 

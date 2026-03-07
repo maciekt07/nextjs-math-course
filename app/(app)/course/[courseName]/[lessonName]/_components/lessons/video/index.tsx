@@ -1,4 +1,3 @@
-import { createBlurUp } from "@mux/blurup";
 import type { Course, Lesson, MuxVideo } from "@/types/payload-types";
 import { VideoPlayer } from "./video-player";
 
@@ -8,7 +7,7 @@ interface VideoLessonProps {
 
 export async function VideoLesson({ lesson }: VideoLessonProps) {
   const muxVideo = lesson.video as MuxVideo;
-  const playbackOptions = muxVideo.playbackOptions ?? [];
+  const playbackOptions = muxVideo?.playbackOptions ?? [];
 
   // 0 for signed, 1 for public
   const index = lesson.free ? 1 : 0;
@@ -19,18 +18,8 @@ export async function VideoLesson({ lesson }: VideoLessonProps) {
     posterUrl = "",
   } = playbackOptions[index] ?? {};
 
-  let blurDataURL: string | undefined;
-
-  try {
-    if (playbackOptions[1]?.playbackId) {
-      // https://www.mux.com/docs/guides/player-customize-look-and-feel#provide-a-placeholder-while-the-poster-image-loads
-      const result = await createBlurUp(playbackOptions[1].playbackId);
-      blurDataURL = result.blurDataURL;
-    }
-  } catch (err) {
-    console.warn("Failed to generate blur placeholder:", err);
-    blurDataURL = undefined;
-  }
+  // https://www.mux.com/docs/guides/player-customize-look-and-feel#provide-a-placeholder-while-the-poster-image-loads
+  const blurDataURL = lesson.videoBlurDataURL ?? undefined;
 
   return (
     <VideoPlayer
@@ -38,9 +27,9 @@ export async function VideoLesson({ lesson }: VideoLessonProps) {
       playbackPolicy={playbackPolicy}
       placeholder={blurDataURL}
       posterUrl={posterUrl}
-      hasVideo={!!muxVideo?.playbackOptions?.length}
-      videoId={muxVideo.id}
-      videoTitle={muxVideo.title}
+      hasVideo={!!playbackOptions.length}
+      videoId={muxVideo?.id}
+      videoTitle={muxVideo?.title}
       videoChapters={lesson.videoChapters}
       // lesson info
       id={lesson.id}

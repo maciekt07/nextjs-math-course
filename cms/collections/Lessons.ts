@@ -1,5 +1,6 @@
 import { createMarkdownField } from "@fields/factories/createMarkdownPreviewField";
 import { createSlugField } from "@fields/factories/createSlugField";
+import createBlurUp from "@mux/blurup";
 import type { CollectionConfig } from "payload";
 import { revalidateLesson } from "@/cms/hooks/revalidateLesson";
 
@@ -41,7 +42,44 @@ export const Lessons: CollectionConfig = {
         return data;
       },
     ],
-    afterChange: [revalidateLesson],
+    afterChange: [
+      async ({ doc, req }) => {
+        if (doc.type !== "video") return;
+
+        if (doc.videoBlurDataURL) return;
+
+        if (!doc.video) return;
+
+        try {
+          const videoId =
+            typeof doc.video === "string" ? doc.video : doc.video.id;
+
+          const muxVideo = await req.payload.findByID({
+            collection: "mux-video",
+            id: videoId,
+          });
+
+          const playback = muxVideo.playbackOptions?.find(
+            (p) => p.playbackPolicy === "public",
+          );
+
+          if (!playback?.playbackId) return;
+
+          const { blurDataURL } = await createBlurUp(playback.playbackId);
+
+          await req.payload.update({
+            collection: "lessons",
+            id: doc.id,
+            data: {
+              videoBlurDataURL: blurDataURL,
+            },
+          });
+        } catch (err) {
+          console.warn("Blur generation failed:", err);
+        }
+      },
+      revalidateLesson,
+    ],
   },
 
   fields: [
@@ -250,6 +288,15 @@ export const Lessons: CollectionConfig = {
               name: "videoDurationSeconds",
               type: "number",
               label: "Video Duration (seconds)",
+              admin: {
+                readOnly: true,
+                condition: (data) => data.type === "video",
+              },
+            },
+            {
+              name: "videoBlurDataURL",
+              type: "text",
+              label: "Video Blur Placeholder",
               admin: {
                 readOnly: true,
                 condition: (data) => data.type === "video",
