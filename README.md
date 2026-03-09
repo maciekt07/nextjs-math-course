@@ -1,6 +1,6 @@
 # Next.js Math Course Platform
 
-A modern full-stack Next.js 15 platform with CMS, auth, and Stripe integration - built to manage and sell online math courses with videos, quizzes, LaTeX, and interactive graphs.
+A modern full-stack Next.js 16 platform with CMS, auth, and Stripe integration - built to manage and sell online math courses with videos, quizzes, LaTeX, and interactive graphs.
 
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/maciekt07/nextjs-math-course?color=4e65ff&labelColor=0A0A0A)
 ![GitHub created at](https://img.shields.io/github/created-at/maciekt07/nextjs-math-course?color=4e65ff&labelColor=0A0A0A)

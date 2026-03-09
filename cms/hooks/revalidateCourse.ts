@@ -10,7 +10,7 @@ export const revalidateCourse: CollectionAfterChangeHook = async ({
   const tag = "courses-list";
 
   payload.logger.info(`Revalidating tag: ${tag} for course: ${doc.slug}`);
-  revalidateTag(tag);
+  revalidateTag(tag, "max");
 
   return doc;
 };

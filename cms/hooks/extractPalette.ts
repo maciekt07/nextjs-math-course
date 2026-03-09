@@ -28,9 +28,9 @@ export const extractPalette: CollectionAfterChangeHook = async ({
         },
       },
     });
-  } catch (err) {
+  } catch (error) {
     req.payload.logger.warn(
-      `Palette extraction failed for posters ${doc.id}: ${err}`,
+      `Palette extraction failed for posters ${doc.id}: ${error}`,
     );
   }
 };

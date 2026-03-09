@@ -21,7 +21,7 @@ export const renameFile: CollectionBeforeOperationHook = async ({
 
     payload.logger.info(`File renamed from "${oldName}" to "${file.name}"`);
   } catch (error) {
-    payload.logger.error("Error renaming file:", error);
+    payload.logger.error(`Error renaming file: ${error}`);
     throw new CustomAPIError("Failed to rename file");
   }
 };

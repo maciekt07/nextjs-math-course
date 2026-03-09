@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "./markdown.css";
-@plugin '@tailwindcss/typography';
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -180,6 +180,12 @@
     *::after {
       scroll-behavior: auto !important;
     }
+  }
+}
+
+@layer utilities {
+  .sidebar-transition {
+    @apply duration-200 ease-[cubic-bezier(0.25,0.46,0.45,0.94)];
   }
 }
 

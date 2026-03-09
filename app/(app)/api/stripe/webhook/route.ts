@@ -122,6 +122,6 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   }
 
   // revalidate caches
-  revalidateTag(`enrollment:${userId}:${courseId}`);
-  revalidateTag(`enrollments:${userId}`);
+  revalidateTag(`enrollment:${userId}:${courseId}`, "max");
+  revalidateTag(`enrollments:${userId}`, "max");
 }

@@ -20,7 +20,7 @@ export const generateBlurhash: CollectionBeforeValidateHook = async ({
         };
       }
     } catch (error) {
-      payload.logger.error("Error generating blurhash:", error);
+      payload.logger.error(`Error generating blurhash: ${error}`);
       throw new CustomAPIError("Failed to generate blur data url.");
     }
   }

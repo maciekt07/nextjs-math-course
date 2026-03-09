@@ -10,7 +10,6 @@ jiti.import("./env/server");
 jiti.import("./env/client");
 
 const nextConfig: NextConfig = {
-  reactStrictMode: true,
   images: {
     remotePatterns: [
       {
@@ -20,9 +19,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-
+  reactStrictMode: true,
+  reactCompiler: true,
   experimental: {
-    reactCompiler: true,
     serverMinification: true,
     authInterrupts: true,
   },

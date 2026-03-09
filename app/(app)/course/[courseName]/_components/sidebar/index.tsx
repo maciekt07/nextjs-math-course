@@ -227,7 +227,7 @@ export function CourseSidebar({
           variant={open ? "ghost" : "outline"}
           size="icon"
           aria-label="Toggle Sidebar"
-          onClick={() => toggle()}
+          onClick={() => startTransition(() => toggle())}
           className={cn(
             "cursor-pointer bg-background",
             !open && "backdrop-blur-md",
@@ -289,17 +289,18 @@ export function CourseSidebar({
         }
         transition={{ duration: 0.2 }}
         onClick={() => setOpen(false)}
-        className="fixed inset-0 bg-black/50 backdrop-blur-xs z-40 md:hidden"
+        className="fixed inset-0 h-dvh bg-black/50 backdrop-blur-xs z-40 md:hidden"
       />
 
-      <motion.aside
+      <aside
         data-open={open}
-        initial={false}
-        layout={false}
-        animate={open ? { x: 0 } : { x: -320 }}
-        transition={{ type: "tween", duration: prefersReducedMotion ? 0 : 0.2 }}
-        className="fixed flex flex-col h-dvh w-80 border-r bg-background z-40 shadow-2xl md:shadow-none overflow-y-auto will-change-transform"
-        style={{ transform: "translateZ(0)" }}
+        className={cn(
+          "fixed flex flex-col h-dvh w-80 border-r bg-background z-40 shadow-2xl md:shadow-none overflow-y-auto",
+          "transform-gpu will-change-transform",
+          !prefersReducedMotion &&
+            "transition-[transform, opacity] sidebar-transition",
+          open ? "translate-x-0 opacity-100" : "-translate-x-full opacity-60",
+        )}
       >
         <div className="pt-14 sm:pt-16 px-4 border-b">
           <Button asChild variant="ghost" className="absolute top-4 right-4">
@@ -464,7 +465,7 @@ export function CourseSidebar({
             pathname={pathname}
           />
         </div>
-      </motion.aside>
+      </aside>
     </>
   );
 }

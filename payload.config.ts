@@ -1,3 +1,5 @@
+import "server-only";
+
 import { Courses } from "@cms/collections/Courses";
 import { Feedbacks } from "@cms/collections/Feedbacks";
 import { Lessons } from "@cms/collections/Lessons";

@@ -1,3 +1,5 @@
+import "server-only";
+
 import { AUTH_LIMITS } from "@lib/constants/limits";
 import type { Session } from "better-auth";
 import { redis } from "@/lib/redis";

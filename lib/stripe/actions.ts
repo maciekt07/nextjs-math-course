@@ -1,3 +1,5 @@
+"use server";
+
 import { Ratelimit } from "@upstash/ratelimit";
 import type { User } from "better-auth";
 import { and, eq } from "drizzle-orm";
