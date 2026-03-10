@@ -1,15 +1,21 @@
+import "server-only";
+
+import type { JSX } from "react";
 import { Resend } from "resend";
-import VerificationEmailTemplate from "@/email/templates/verification-template";
 import { serverEnv } from "@/env/server";
-import type { Session } from "@/lib/auth/auth-client";
 
 const resend = new Resend(serverEnv.RESEND_API_KEY);
 
-export const sendEmail = async (url: string, user: Session) => {
+interface SendEmailOptions {
+  subject: string;
+  react: JSX.Element;
+}
+
+export async function sendEmail({ subject, react }: SendEmailOptions) {
   await resend.emails.send({
     from: "onboarding@resend.dev",
     to: ["delivered@resend.dev"],
-    subject: "Verify your email",
-    react: VerificationEmailTemplate({ url, name: user.name }),
+    subject,
+    react,
   });
-};
+}

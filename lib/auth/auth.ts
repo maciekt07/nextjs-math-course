@@ -7,6 +7,8 @@ import { nextCookies } from "better-auth/next-js";
 import { emailHarmony } from "better-auth-harmony";
 import { db } from "@/drizzle/db";
 import { sendEmail } from "@/email/send-email";
+import ResetPasswordEmailTemplate from "@/email/templates/reset-password-template";
+import VerificationEmailTemplate from "@/email/templates/verification-template";
 import { serverEnv } from "@/env/server";
 import { passwordSchema } from "@/lib/auth/auth-validation";
 import { secondaryStorage } from "@/lib/auth/secondary-storage";
@@ -26,8 +28,11 @@ export const auth = betterAuth({
   emailVerification: {
     expiresIn: AUTH_LIMITS.verificationTokenTTL,
     sendOnSignUp: false,
-    sendVerificationEmail: async ({ url, user }) => {
-      void sendEmail(url, user);
+    sendVerificationEmail: async ({ user, url }) => {
+      void sendEmail({
+        subject: "Verify Your Email",
+        react: VerificationEmailTemplate({ name: user.name, url }),
+      });
     },
   },
 
@@ -37,6 +42,13 @@ export const auth = betterAuth({
     requireEmailVerification: false,
     minPasswordLength: AUTH_LIMITS.passwordMin,
     maxPasswordLength: AUTH_LIMITS.passwordMax,
+    resetPasswordTokenExpiresIn: AUTH_LIMITS.resetPasswordTokenTTL,
+    async sendResetPassword({ user, url }) {
+      void sendEmail({
+        subject: "Reset your password",
+        react: ResetPasswordEmailTemplate({ name: user.name, url }),
+      });
+    },
   },
 
   session: {
@@ -54,6 +66,10 @@ export const auth = betterAuth({
     max: 100,
     customRules: {
       "/send-verification-email": {
+        window: 60,
+        max: 2,
+      },
+      "/request-password-reset": {
         window: 60,
         max: 2,
       },
