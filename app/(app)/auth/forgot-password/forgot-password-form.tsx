@@ -61,7 +61,7 @@ export function ForgotPasswordForm() {
 
   if (isSubmitted) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-5">
         <Alert variant="default">
           <Mail />
           <AlertTitle>
@@ -81,7 +81,7 @@ export function ForgotPasswordForm() {
         </Alert>
 
         <p className="text-xs text-muted-foreground text-center">
-          If you don’t receive anything, check your spam folder or try again.
+          If you don't receive anything, check your spam folder or try again.
         </p>
 
         <Button

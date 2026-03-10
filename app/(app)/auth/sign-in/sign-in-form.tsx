@@ -53,7 +53,7 @@ export function SignInForm({ returnTo }: { returnTo?: string }) {
 
   return (
     <Form {...form}>
-      <form className="space-y-4" onSubmit={form.handleSubmit(handleSignIn)}>
+      <form onSubmit={form.handleSubmit(handleSignIn)}>
         <FormField
           control={form.control}
           name="email"
@@ -105,7 +105,7 @@ export function SignInForm({ returnTo }: { returnTo?: string }) {
           control={form.control}
           name="rememberMe"
           render={({ field }) => (
-            <FormItem className="flex items-center mt-5">
+            <FormItem className="flex items-center">
               <FormControl>
                 <Checkbox
                   checked={field.value}

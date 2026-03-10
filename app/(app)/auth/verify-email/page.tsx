@@ -1,14 +1,8 @@
 import { Mail } from "lucide-react";
 import type { Metadata } from "next";
 import { redirect, unauthorized } from "next/navigation";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { getServerSession } from "@/lib/auth/get-session";
+import { AuthIconCard } from "../_components/auth-card";
 import { SendVerificationButton } from "./_components/send-verification-button";
 
 export const dynamic = "force-dynamic";
@@ -34,23 +28,20 @@ export default async function VerifyEmailPage() {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto">
-      <CardHeader className="space-y-3 text-center">
-        <div className="bg-primary/10 p-6 rounded-full mx-auto">
-          <Mail className="h-12 w-12 text-primary" />
-        </div>
-        <CardTitle className="text-2xl">Verify your email</CardTitle>
-        <CardDescription>
+    <AuthIconCard
+      icon={Mail}
+      title="Verify your email"
+      description={
+        <>
           We will send a verification link to your email address ({user?.email}
           ). Please check your inbox or{" "}
           <strong className="text-foreground/80">your spam folder</strong> and
           click the link to continue.
-        </CardDescription>
-      </CardHeader>
-
-      <CardContent className="pt-0 flex flex-col items-center space-y-4 w-full">
-        <SendVerificationButton email={user?.email || ""} />
-      </CardContent>
-    </Card>
+        </>
+      }
+      variant="default"
+    >
+      <SendVerificationButton email={user?.email || ""} />
+    </AuthIconCard>
   );
 }

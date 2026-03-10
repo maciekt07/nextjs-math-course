@@ -90,7 +90,7 @@ export function ResetPasswordForm({ token }: { token?: string }) {
 
   if (isSuccess) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-5">
         <Alert variant="success">
           <CircleCheck />
           <AlertTitle>
@@ -115,7 +115,7 @@ export function ResetPasswordForm({ token }: { token?: string }) {
 
   if (!token) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-5">
         <Alert variant="destructive">
           <AlertTitle>Invalid link</AlertTitle>
           <AlertDescription>
@@ -135,10 +135,7 @@ export function ResetPasswordForm({ token }: { token?: string }) {
 
   return (
     <Form {...form}>
-      <form
-        className="space-y-4"
-        onSubmit={form.handleSubmit(handleResetPassword)}
-      >
+      <form onSubmit={form.handleSubmit(handleResetPassword)}>
         <FormField
           control={form.control}
           name="password"

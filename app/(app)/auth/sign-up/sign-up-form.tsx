@@ -52,7 +52,7 @@ export function SignUpForm() {
 
   return (
     <Form {...form}>
-      <form className="space-y-4" onSubmit={form.handleSubmit(handleSignUp)}>
+      <form onSubmit={form.handleSubmit(handleSignUp)}>
         <FormField
           control={form.control}
           name="name"
