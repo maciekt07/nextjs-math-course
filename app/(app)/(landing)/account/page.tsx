@@ -6,6 +6,7 @@ import { Send } from "@/components/animate-ui/icons/send";
 import { Button } from "@/components/ui/button";
 import {
   Card,
+  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
@@ -13,7 +14,10 @@ import {
 } from "@/components/ui/card";
 import type { Session } from "@/lib/auth/auth-client";
 import { getServerSession } from "@/lib/auth/get-session";
+import { AUTH_LIMITS } from "@/lib/constants/limits";
+import ActiveSessions from "./_components/active-sessions";
 import { LogOutButton } from "./_components/logout-button";
+import { LogoutEverywhereButton } from "./_components/logout-everywhere-button";
 
 function formatDate(date: string | Date) {
   return new Intl.DateTimeFormat("en-US", {
@@ -30,22 +34,16 @@ const items = [
     icon: User,
     label: "Name",
     getValue: (user: Session) => user.name,
-    bg: "bg-blue-100/70 dark:bg-blue-800/30",
-    text: "text-blue-600 dark:text-blue-400",
   },
   {
     icon: Mail,
     label: "Email",
     getValue: (user: Session) => user.email,
-    bg: "bg-green-100/70 dark:bg-green-800/30",
-    text: "text-green-600 dark:text-green-400",
   },
   {
     icon: Calendar,
     label: "Joined",
     getValue: (user: Session) => formatDate(user.createdAt),
-    bg: "bg-purple-100/70 dark:bg-purple-800/30",
-    text: "text-purple-600 dark:text-purple-400",
   },
 ];
 
@@ -78,7 +76,7 @@ export default async function AccountPage() {
   const user = session.user;
 
   return (
-    <div className="max-w-xl mx-auto mt-0 sm:mt-16 px-6 pb-8 space-y-8">
+    <div className="max-w-2xl mx-auto mt-0 sm:mt-16 px-6 pb-8 space-y-6">
       <header className="space-y-2 text-center">
         <h1 className="sm:text-4xl text-3xl font-bold">Your Account</h1>
         <p className="sm:text-lg text-md text-muted-foreground">
@@ -108,24 +106,50 @@ export default async function AccountPage() {
         </Card>
       )}
 
-      {/* Account info */}
-      <div className="space-y-6">
-        {items.map(({ icon: Icon, label, getValue, bg, text }) => (
-          <div key={label} className="flex items-center gap-4">
-            <div
-              className={`flex-shrink-0 w-14 h-14 flex items-center justify-center rounded-full ${bg}`}
-            >
-              <Icon className={text} size={28} />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-sm text-muted-foreground">{label}</span>
-              <span className="text-lg font-medium">{getValue(user)}</span>
-            </div>
-          </div>
-        ))}
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Account Information</CardTitle>
+          <CardDescription>Your personal account details.</CardDescription>
+        </CardHeader>
 
-      <LogOutButton />
+        <CardContent className="divide-y">
+          {items.map(({ icon: Icon, label, getValue }) => (
+            <div
+              key={label}
+              className="flex items-center justify-between py-4 first:pt-0 last:pb-0"
+            >
+              <div className="flex items-center gap-3 text-muted-foreground">
+                <Icon size={18} />
+                <span className="text-sm">{label}</span>
+              </div>
+
+              <span className="text-sm font-medium text-right">
+                {getValue(user)}
+              </span>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle>Session Management</CardTitle>
+          <CardDescription>
+            Manage your account sessions and sign out when needed.
+          </CardDescription>
+        </CardHeader>
+
+        <CardContent className="flex flex-col gap-4">
+          <ActiveSessions currentSession={session.session} />
+          <p className="text-xs text-muted-foreground">
+            You can have a maximum of {AUTH_LIMITS.maxSessions} active sessions
+            at a time to prevent account sharing.
+          </p>
+          <div className="flex gap-4">
+            <LogOutButton />
+            <LogoutEverywhereButton />
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
