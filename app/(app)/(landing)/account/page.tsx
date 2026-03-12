@@ -1,6 +1,16 @@
-import { Calendar, Mail, MailWarning, User } from "lucide-react";
+import {
+  Calendar,
+  CircleUser,
+  ClockFading,
+  LockKeyhole,
+  Mail,
+  MailWarning,
+  User,
+} from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
+import { PasswordChangeButton } from "@/app/(app)/(landing)/account/_components/password-change-button";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { Send } from "@/components/animate-ui/icons/send";
 import { Button } from "@/components/ui/button";
@@ -12,6 +22,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { Session } from "@/lib/auth/auth-client";
 import { getServerSession } from "@/lib/auth/get-session";
 import { AUTH_LIMITS } from "@/lib/constants/limits";
@@ -85,10 +96,10 @@ export default async function AccountPage() {
       </header>
 
       {!user.emailVerified && (
-        <Card>
+        <Card className="border-yellow-600/50 dark:border-yellow-400/50">
           <CardHeader>
-            <CardTitle className="text-yellow-600 dark:text-yellow-400 flex items-center justify-start gap-2">
-              <MailWarning /> Verify your email
+            <CardTitle className="text-yellow-600 dark:text-yellow-400 flex items-center justify-start gap-2 text-lg">
+              <MailWarning className="size-6" /> Verify your email
             </CardTitle>
             <CardDescription>
               Please verify your email address to unlock all features.
@@ -108,7 +119,9 @@ export default async function AccountPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Account Information</CardTitle>
+          <CardTitle className="flex items-center justify-start gap-2">
+            <CircleUser className="size-5" /> Account Information
+          </CardTitle>
           <CardDescription>Your personal account details.</CardDescription>
         </CardHeader>
 
@@ -130,16 +143,46 @@ export default async function AccountPage() {
           ))}
         </CardContent>
       </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center justify-start gap-2">
+            <LockKeyhole className="size-5" /> Password
+          </CardTitle>
+          <CardDescription>
+            Request a password change. We will send a confirmation email to your
+            account.
+          </CardDescription>
+        </CardHeader>
+        <CardFooter>
+          <PasswordChangeButton
+            email={session.user.email}
+            isVerified={session.user.emailVerified}
+          />
+        </CardFooter>
+      </Card>
+
       <Card className="w-full">
         <CardHeader>
-          <CardTitle>Session Management</CardTitle>
+          <CardTitle className="flex items-center justify-start gap-2">
+            <ClockFading className="size-5" /> Session Management
+          </CardTitle>
           <CardDescription>
             Manage your account sessions and sign out when needed.
           </CardDescription>
         </CardHeader>
 
         <CardContent className="flex flex-col gap-4">
-          <ActiveSessions currentSession={session.session} />
+          <Suspense
+            fallback={
+              <div className="flex flex-col gap-2">
+                <Skeleton className="h-[72px] rounded-md" />
+                <Skeleton className="h-[72px] rounded-md" />
+              </div>
+            }
+          >
+            <ActiveSessions />
+          </Suspense>
           <p className="text-xs text-muted-foreground">
             You can have a maximum of {AUTH_LIMITS.maxSessions} active sessions
             at a time to prevent account sharing.

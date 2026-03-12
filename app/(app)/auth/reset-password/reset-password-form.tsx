@@ -1,9 +1,9 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { Session } from "better-auth";
 import { CircleCheck } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -41,9 +41,14 @@ const resetPasswordSchema = z
 
 type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>;
 
-export function ResetPasswordForm({ token }: { token?: string }) {
-  const router = useRouter();
-  const [isSuccess, setIsSuccess] = useState(false);
+export function ResetPasswordForm({
+  token,
+  session,
+}: {
+  token?: string;
+  session: Session | null;
+}) {
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
   const form = useForm<ResetPasswordSchema>({
     resolver: zodResolver(resetPasswordSchema),
@@ -80,6 +85,9 @@ export function ResetPasswordForm({ token }: { token?: string }) {
           onSuccess: () => {
             setIsSuccess(true);
             toast.success("Password reset successfully!");
+            if (session) {
+              authClient.revokeOtherSessions();
+            }
           },
         },
       );
@@ -97,18 +105,24 @@ export function ResetPasswordForm({ token }: { token?: string }) {
             <strong>Success!</strong>
           </AlertTitle>
           <AlertDescription>
-            Your password has been reset. You can now sign in with your new
-            password.
+            Your password has been reset
+            {!session && ". You can now sign in with your new password"}.
           </AlertDescription>
         </Alert>
 
-        <AnimateIcon animateOnHover>
+        {!session ? (
+          <AnimateIcon animateOnHover>
+            <Button className="w-full" asChild>
+              <Link href="/auth/sign-in">
+                <LogIn /> Go to Sign In
+              </Link>
+            </Button>
+          </AnimateIcon>
+        ) : (
           <Button className="w-full" asChild>
-            <Link href="/auth/sign-in">
-              <LogIn /> Go to Sign In
-            </Link>
+            <Link href="/">Back to home</Link>
           </Button>
-        </AnimateIcon>
+        )}
       </div>
     );
   }
@@ -123,11 +137,10 @@ export function ResetPasswordForm({ token }: { token?: string }) {
             new one.
           </AlertDescription>
         </Alert>
-        <Button
-          onClick={() => router.push("/auth/forgot-password")}
-          className="w-full"
-        >
-          Request New Reset Link
+        <Button className="w-full" asChild>
+          <Link href={session ? "/account" : "/auth/forgot-password"}>
+            Request New Reset Link
+          </Link>
         </Button>
       </div>
     );

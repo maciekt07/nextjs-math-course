@@ -13,6 +13,7 @@ export async function limitUserSessions({
   userId,
   token,
 }: Session): Promise<void> {
+  // disable in dev
   if (process.env.NODE_ENV === "development") return;
 
   try {

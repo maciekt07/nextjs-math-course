@@ -5,6 +5,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -29,14 +30,14 @@ export default function AccountPageSkeleton() {
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="mt-1.5 space-y-4">
+        <CardContent className="mt-1 space-y-4">
           {[...Array(3)].map((_, i) => (
             <div
               key={i}
               className="flex items-center justify-between py-2 first:pt-0 last:pb-0"
             >
-              <Skeleton className="h-5 w-16 rounded-md" />
-              <Skeleton className="h-5 w-36 rounded-md" />
+              <Skeleton className="h-5.5 w-16 rounded-md" />
+              <Skeleton className="h-5.5 w-36 rounded-md" />
             </div>
           ))}
         </CardContent>
@@ -45,10 +46,24 @@ export default function AccountPageSkeleton() {
       <Card>
         <CardHeader>
           <CardTitle>
-            <Skeleton className="h-5 w-40 rounded-md" />
+            <Skeleton className="h-5.5 w-26 rounded-md" />
           </CardTitle>
           <CardDescription>
-            <Skeleton className="h-3 w-96 rounded-md" />
+            <Skeleton className="h-3.5 w-128 rounded-md" />
+          </CardDescription>
+        </CardHeader>
+        <CardFooter>
+          <Skeleton className="h-10 w-full rounded-md" />
+        </CardFooter>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            <Skeleton className="h-5.5 w-40 rounded-md" />
+          </CardTitle>
+          <CardDescription>
+            <Skeleton className="h-3.5 w-96 rounded-md" />
           </CardDescription>
         </CardHeader>
 

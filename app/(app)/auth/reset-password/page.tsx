@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { getServerSession } from "@/lib/auth/get-session";
 import { AuthCard } from "../_components/auth-card";
 import { AuthFooter } from "../_components/auth-footer";
@@ -27,21 +26,19 @@ export default async function ResetPasswordPage({
     },
   });
 
-  if (session) {
-    redirect("/");
-  }
-
   return (
     <AuthCard
       title="New Password"
       description="Create a strong password to secure your account"
     >
-      <ResetPasswordForm token={token} />
-      <AuthFooter
-        message="Remember your password?"
-        linkText="Back to Sign In"
-        linkHref="/auth/sign-in"
-      />
+      <ResetPasswordForm token={token} session={session?.session ?? null} />
+      {!session && (
+        <AuthFooter
+          message="Remember your password?"
+          linkText="Back to Sign In"
+          linkHref="/auth/sign-in"
+        />
+      )}
     </AuthCard>
   );
 }

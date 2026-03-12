@@ -1,6 +1,6 @@
 import "server-only";
 
-import { betterAuth } from "better-auth";
+import { betterAuth, type User } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { APIError, createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
@@ -10,7 +10,7 @@ import { sendEmail } from "@/email/send-email";
 import ResetPasswordEmailTemplate from "@/email/templates/reset-password-template";
 import VerificationEmailTemplate from "@/email/templates/verification-template";
 import { serverEnv } from "@/env/server";
-import { passwordSchema } from "@/lib/auth/auth-validation";
+import { passwordSchema, signUpSchema } from "@/lib/auth/auth-validation";
 import { secondaryStorage } from "@/lib/auth/secondary-storage";
 import { limitUserSessions } from "@/lib/auth/session-limit";
 import { AUTH_LIMITS } from "@/lib/constants/limits";
@@ -70,7 +70,11 @@ export const auth = betterAuth({
         max: 2,
       },
       "/request-password-reset": {
-        window: 60,
+        window: 15 * 60,
+        max: 2,
+      },
+      "/reset-password": {
+        window: 15 * 60,
         max: 2,
       },
     },
@@ -80,6 +84,7 @@ export const auth = betterAuth({
 
   hooks: {
     before: createAuthMiddleware(async (ctx) => {
+      // vaildate password
       if (
         ctx.path === "/sign-up/email" ||
         ctx.path === "/reset-password" ||
@@ -91,6 +96,42 @@ export const auth = betterAuth({
           throw new APIError("BAD_REQUEST", {
             message: "Password not strong enough",
           });
+        }
+      }
+
+      // validate name
+      if (ctx.path === "/sign-up/email") {
+        const { error } = signUpSchema.pick({ name: true }).safeParse({
+          name: ctx.body.name,
+        });
+
+        if (error) {
+          throw new APIError("BAD_REQUEST", {
+            message: "Invalid name.",
+          });
+        }
+      }
+
+      // block unverified users from changing password
+      if (
+        ctx.path === "/reset-password" ||
+        ctx.path === "/change-password" ||
+        ctx.path === "/request-password-reset"
+      ) {
+        const session = ctx.context.session;
+        const email = session?.user?.email ?? ctx.body?.email;
+
+        if (email) {
+          const user = (await ctx.context.adapter.findOne({
+            model: "user",
+            where: [{ field: "email", value: email }],
+          })) as User;
+
+          if (user && !user.emailVerified) {
+            throw new APIError("FORBIDDEN", {
+              message: "Please verify your email before performing this action",
+            });
+          }
         }
       }
     }),
