@@ -66,16 +66,20 @@ export const auth = betterAuth({
     max: 100,
     customRules: {
       "/send-verification-email": {
-        window: 60,
-        max: 2,
+        window: 15 * 60,
+        max: 4,
       },
       "/request-password-reset": {
-        window: 15 * 60,
-        max: 2,
+        window: 20 * 60,
+        max: 3,
       },
       "/reset-password": {
-        window: 15 * 60,
-        max: 2,
+        window: 20 * 60,
+        max: 3,
+      },
+      "/update-user": {
+        window: 20 * 60,
+        max: 3,
       },
     },
   },
@@ -101,9 +105,7 @@ export const auth = betterAuth({
 
       // validate name
       if (ctx.path === "/sign-up/email") {
-        const { error } = signUpSchema.pick({ name: true }).safeParse({
-          name: ctx.body.name,
-        });
+        const { error } = signUpSchema.shape.name.safeParse(ctx.body.name);
 
         if (error) {
           throw new APIError("BAD_REQUEST", {

@@ -1,18 +1,19 @@
 import {
-  Calendar,
   CircleUser,
   ClockFading,
   LockKeyhole,
   Mail,
   MailWarning,
-  User,
+  SettingsIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
-import { PasswordChangeButton } from "@/app/(app)/(landing)/account/_components/password-change-button";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { Send } from "@/components/animate-ui/icons/send";
+import { Settings } from "@/components/settings";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,41 +23,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Session } from "@/lib/auth/auth-client";
 import { getServerSession } from "@/lib/auth/get-session";
 import { AUTH_LIMITS } from "@/lib/constants/limits";
 import ActiveSessions from "./_components/active-sessions";
 import { LogOutButton } from "./_components/logout-button";
 import { LogoutEverywhereButton } from "./_components/logout-everywhere-button";
-
-function formatDate(date: string | Date) {
-  return new Intl.DateTimeFormat("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(date));
-}
-
-const items = [
-  {
-    icon: User,
-    label: "Name",
-    getValue: (user: Session) => user.name,
-  },
-  {
-    icon: Mail,
-    label: "Email",
-    getValue: (user: Session) => user.email,
-  },
-  {
-    icon: Calendar,
-    label: "Joined",
-    getValue: (user: Session) => formatDate(user.createdAt),
-  },
-];
+import { PasswordChangeButton } from "./_components/password-change-button";
+import { UpdateNameForm } from "./_components/update-name-form";
 
 export async function generateMetadata() {
   const session = await getServerSession();
@@ -119,28 +95,82 @@ export default async function AccountPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center justify-start gap-2">
-            <CircleUser className="size-5" /> Account Information
+          <CardTitle className="flex items-center gap-2">
+            <CircleUser className="size-5" />
+            Account Information
           </CardTitle>
-          <CardDescription>Your personal account details.</CardDescription>
+          <CardDescription>
+            Manage your personal account details.
+          </CardDescription>
         </CardHeader>
 
-        <CardContent className="divide-y">
-          {items.map(({ icon: Icon, label, getValue }) => (
-            <div
-              key={label}
-              className="flex items-center justify-between py-4 first:pt-0 last:pb-0"
-            >
-              <div className="flex items-center gap-3 text-muted-foreground">
-                <Icon size={18} />
-                <span className="text-sm">{label}</span>
-              </div>
+        <CardContent className="space-y-6">
+          <div className="flex items-center gap-4">
+            <Avatar className="size-12">
+              <AvatarFallback className="bg-primary text-primary-foreground text-2xl font-semibold">
+                {session.user.name?.charAt(0).toUpperCase() ||
+                  session.user.email?.charAt(0).toUpperCase() ||
+                  "U"}
+              </AvatarFallback>
+            </Avatar>
 
-              <span className="text-sm font-medium text-right">
-                {getValue(user)}
-              </span>
+            <div className="flex-1 min-w-0">
+              <p className="font-medium truncate">{user.name}</p>
+              <p className="text-sm text-muted-foreground truncate">
+                {user.email}
+              </p>
             </div>
-          ))}
+
+            <Badge
+              variant="outline"
+              className="text-xs text-muted-foreground px-3 py-1"
+            >
+              Joined{" "}
+              {new Intl.DateTimeFormat("en-US", {
+                month: "short",
+                year: "numeric",
+              }).format(new Date(user.createdAt))}{" "}
+            </Badge>
+          </div>
+
+          <Separator />
+
+          <UpdateNameForm name={user.name} />
+
+          <Separator />
+
+          {/* Email */}
+          <div className="space-y-2">
+            <Label>Email address</Label>
+
+            <div className="flex items-center justify-start gap-2">
+              <p className="text-md font-bold flex items-center gap-2">
+                <Mail className="size-[15px] shrink-0 text-muted-foreground" />
+                {user.email}
+              </p>
+
+              {user.emailVerified ? (
+                <Badge variant="success" className="gap-1">
+                  Verified
+                </Badge>
+              ) : (
+                <Badge variant="destructive" className="gap-1">
+                  Unverified
+                </Badge>
+              )}
+            </div>
+
+            <p className="text-xs text-muted-foreground">
+              Used for login and notifications.
+            </p>
+          </div>
+
+          <AnimateIcon animateOnHover>
+            <Button variant="outline" className="w-full cursor-pointer">
+              <Send />
+              Request Email change
+            </Button>
+          </AnimateIcon>
         </CardContent>
       </Card>
 
@@ -184,13 +214,31 @@ export default async function AccountPage() {
             <ActiveSessions />
           </Suspense>
           <p className="text-xs text-muted-foreground">
-            You can have a maximum of {AUTH_LIMITS.maxSessions} active sessions
-            at a time to prevent account sharing.
+            You can have a maximum of{" "}
+            <span className="font-semibold text-foreground/80">
+              {AUTH_LIMITS.maxSessions}
+            </span>{" "}
+            active sessions at a time to prevent account sharing.
           </p>
+          <Separator />
           <div className="flex gap-4">
             <LogOutButton />
             <LogoutEverywhereButton />
           </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center justify-start gap-2">
+            <SettingsIcon className="size-5" /> Course settings
+          </CardTitle>
+          <CardDescription>
+            Manage your course view preferences.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Settings />
         </CardContent>
       </Card>
     </div>

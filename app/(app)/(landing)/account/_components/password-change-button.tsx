@@ -1,6 +1,6 @@
 "use client";
 
-import { MailCheck, MailWarning } from "lucide-react";
+import { MailCheck, MailWarning, MailX } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
@@ -22,6 +22,7 @@ export function PasswordChangeButton({
   const [status, setStatus] = useState<
     "idle" | "loading" | "success" | "error"
   >("idle");
+  const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
   const handleRequest = async () => {
     setStatus("loading");
@@ -32,8 +33,10 @@ export function PasswordChangeButton({
       });
 
       if (error) {
-        toast.error(error.message || "Failed to request password change");
         setStatus("error");
+        setErrorMessage(error.message);
+        if (error.status === 429) return;
+        toast.error(error.message || "Failed to request password change");
       } else {
         setStatus("success");
       }
@@ -50,6 +53,16 @@ export function PasswordChangeButton({
         <AlertDescription>
           Check your email to reset your password.
         </AlertDescription>
+      </Alert>
+    );
+  }
+
+  if (status === "error") {
+    return (
+      <Alert variant="destructive">
+        <MailX />
+        <AlertTitle>Failed to send confirmation email.</AlertTitle>
+        <AlertDescription>{errorMessage}</AlertDescription>
       </Alert>
     );
   }
@@ -73,6 +86,7 @@ export function PasswordChangeButton({
         className="w-full cursor-pointer"
         onClick={handleRequest}
         disabled={status === "loading"}
+        variant="outline"
       >
         <LoadingSwap
           isLoading={status === "loading"}
