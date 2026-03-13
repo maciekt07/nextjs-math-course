@@ -2,11 +2,16 @@ import "server-only";
 
 import { betterAuth, type User } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { APIError, createAuthMiddleware } from "better-auth/api";
+import {
+  APIError,
+  createAuthMiddleware,
+  getSessionFromCtx,
+} from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
 import { emailHarmony } from "better-auth-harmony";
 import { db } from "@/drizzle/db";
 import { sendEmail } from "@/email/send-email";
+import ChangeEmailEmailTemplate from "@/email/templates/change-email-template";
 import ResetPasswordEmailTemplate from "@/email/templates/reset-password-template";
 import VerificationEmailTemplate from "@/email/templates/verification-template";
 import { serverEnv } from "@/env/server";
@@ -28,6 +33,7 @@ export const auth = betterAuth({
   emailVerification: {
     expiresIn: AUTH_LIMITS.verificationTokenTTL,
     sendOnSignUp: false,
+
     sendVerificationEmail: async ({ user, url }) => {
       void sendEmail({
         subject: "Verify Your Email",
@@ -51,6 +57,19 @@ export const auth = betterAuth({
     },
   },
 
+  user: {
+    changeEmail: {
+      enabled: true,
+
+      sendChangeEmailConfirmation: async ({ user, newEmail, url }) => {
+        void sendEmail({
+          subject: "Approve email change",
+          react: ChangeEmailEmailTemplate({ name: user.name, newEmail, url }),
+        });
+      },
+    },
+  },
+
   session: {
     cookieCache: {
       enabled: true,
@@ -70,15 +89,19 @@ export const auth = betterAuth({
         max: 4,
       },
       "/request-password-reset": {
-        window: 20 * 60,
+        window: 30 * 60,
         max: 3,
       },
       "/reset-password": {
-        window: 20 * 60,
+        window: 30 * 60,
         max: 3,
       },
       "/update-user": {
-        window: 20 * 60,
+        window: 30 * 60,
+        max: 3,
+      },
+      "/change-email": {
+        window: 30 * 60,
         max: 3,
       },
     },
@@ -114,13 +137,15 @@ export const auth = betterAuth({
         }
       }
 
-      // block unverified users from changing password
+      // block unverified users
       if (
         ctx.path === "/reset-password" ||
         ctx.path === "/change-password" ||
-        ctx.path === "/request-password-reset"
+        ctx.path === "/request-password-reset" ||
+        ctx.path === "/update-user" ||
+        ctx.path === "/change-email"
       ) {
-        const session = ctx.context.session;
+        const session = await getSessionFromCtx(ctx);
         const email = session?.user?.email ?? ctx.body?.email;
 
         if (email) {

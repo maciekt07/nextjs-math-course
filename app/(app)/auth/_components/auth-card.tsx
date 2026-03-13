@@ -37,6 +37,8 @@ const iconWrapperVariants = cva(
       variant: {
         default: "bg-primary/10 text-primary",
         destructive: "bg-destructive/10 text-destructive",
+        success:
+          "bg-green-100 text-green-600 dark:bg-green-950 dark:text-green-400",
       },
     },
     defaultVariants: {
@@ -45,10 +47,10 @@ const iconWrapperVariants = cva(
   },
 );
 
-interface AuthIconCardProps {
-  icon: LucideIcon;
+interface AuthIconCardProps extends React.ComponentProps<"div"> {
+  icon?: LucideIcon;
   title: string;
-  description: React.ReactNode;
+  description?: React.ReactNode;
   children?: React.ReactNode;
   variant?: VariantProps<typeof iconWrapperVariants>["variant"];
 }
@@ -59,15 +61,18 @@ export function AuthIconCard({
   description,
   children,
   variant = "default",
+  className,
 }: AuthIconCardProps) {
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className={cn("w-full max-w-md mx-auto", className)}>
       <CardHeader className="space-y-3 text-center">
-        <div className={cn(iconWrapperVariants({ variant }))}>
-          <Icon className="h-12 w-12" />
-        </div>
+        {Icon && (
+          <div className={cn(iconWrapperVariants({ variant }))}>
+            <Icon className="h-12 w-12" />
+          </div>
+        )}
         <CardTitle className="text-2xl">{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
+        {description && <CardDescription>{description}</CardDescription>}
       </CardHeader>
 
       {children && (

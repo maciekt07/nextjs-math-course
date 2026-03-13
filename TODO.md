@@ -3,7 +3,8 @@
 ## Auth
 
 - [ ] Integrate OAuth login with Google
-- [ ] Implement forgot password and reset password functionality
+- [x] Implement forgot password, reset password and change email functionality
+- [x] Display active sessions
 - [x] Limit simultaneous logins per account
 
 ## Payments

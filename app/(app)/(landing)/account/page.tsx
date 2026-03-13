@@ -32,6 +32,7 @@ import ActiveSessions from "./_components/active-sessions";
 import { LogOutButton } from "./_components/logout-button";
 import { LogoutEverywhereButton } from "./_components/logout-everywhere-button";
 import { PasswordChangeButton } from "./_components/password-change-button";
+import { RequestEmailChangeButton } from "./_components/request-email-change-button";
 import { UpdateNameForm } from "./_components/update-name-form";
 
 export async function generateMetadata() {
@@ -165,12 +166,10 @@ export default async function AccountPage() {
             </p>
           </div>
 
-          <AnimateIcon animateOnHover>
-            <Button variant="outline" className="w-full cursor-pointer">
-              <Send />
-              Request Email change
-            </Button>
-          </AnimateIcon>
+          <RequestEmailChangeButton
+            currentEmail={user.email}
+            isVerified={user.emailVerified}
+          />
         </CardContent>
       </Card>
 

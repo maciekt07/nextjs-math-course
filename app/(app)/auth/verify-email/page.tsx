@@ -33,8 +33,9 @@ export default async function VerifyEmailPage() {
       title="Verify your email"
       description={
         <>
-          We will send a verification link to your email address ({user?.email}
-          ). Please check your inbox or{" "}
+          We will send a verification link to your email address{" "}
+          <strong className="text-foreground/80">{user?.email}</strong>. Please
+          check your inbox or{" "}
           <strong className="text-foreground/80">your spam folder</strong> and
           click the link to continue.
         </>
