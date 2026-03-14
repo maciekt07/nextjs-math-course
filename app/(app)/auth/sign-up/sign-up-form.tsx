@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "nextjs-toploader/app";
 import { useForm } from "react-hook-form";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,12 +16,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 import { PasswordInput } from "@/components/ui/password-input";
+import { Separator } from "@/components/ui/separator";
 import { authClient } from "@/lib/auth/auth-client";
 import {
   PASSWORD_REQUIREMENTS,
   type SignUpSchema,
   signUpSchema,
 } from "@/lib/auth/auth-validation";
+import { GoogleAuthButton } from "../_components/google-auth-button";
 
 export function SignUpForm() {
   const router = useRouter();
@@ -52,6 +53,14 @@ export function SignUpForm() {
 
   return (
     <Form {...form}>
+      <GoogleAuthButton title="Continue with Google" />
+
+      <div className="relative my-6">
+        <Separator />
+        <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-2 text-xs text-muted-foreground">
+          Or continue with
+        </span>
+      </div>
       <form onSubmit={form.handleSubmit(handleSignUp)}>
         <FormField
           control={form.control}

@@ -20,6 +20,19 @@ import { AUTH_LIMITS } from "@/lib/constants/limits";
 export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: "pg" }),
 
+  socialProviders: {
+    google: {
+      clientId: serverEnv.GOOGLE_CLIENT_ID,
+      clientSecret: serverEnv.GOOGLE_CLIENT_SECRET,
+      mapProfileToUser: (profile) => {
+        return {
+          name: profile.given_name,
+          image: undefined,
+        };
+      },
+    },
+  },
+
   plugins: [emailHarmony(), nextCookies()],
 
   trustedOrigins: [serverEnv.NGROK_URL, "http://localhost:3000"].filter(
