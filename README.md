@@ -29,7 +29,7 @@ A modern full-stack Next.js 16 platform with CMS, auth, and Stripe integration -
 
 ## Features
 
-- **Full Authentication** - powered by **BetterAuth**, featuring email verification via **Resend**, block for disposable emails, session limits and rate limiting with **Redis** to prevent account sharing and abuse.
+- **Full Authentication** - powered by **BetterAuth**, featuring Google OAuth, email verification & password reset via **Resend**. Includes block for disposable emails, last used method badge, session limits and rate limiting with **Redis** to prevent account sharing and abuse.
 - **Admin CMS Dashboard** - manage courses, lessons, and media directly through an integrated headless **Payload CMS** interface.
 - **Stripe Payments** - sell courses with one-time payments using Stripe Checkout.
 - **Hybrid Lesson Delivery (SSR + SSG)** - free lessons are pre-rendered for speed and SEO, while paid lessons use server-side rendering for secure, on-demand access.
