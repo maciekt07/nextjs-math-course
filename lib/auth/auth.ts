@@ -34,6 +34,10 @@ export const auth = betterAuth({
     },
   },
 
+  onAPIError: {
+    errorURL: "/auth/error",
+  },
+
   plugins: [emailHarmony(), lastLoginMethod(), nextCookies()],
 
   trustedOrigins: [serverEnv.NGROK_URL, "http://localhost:3000"].filter(
