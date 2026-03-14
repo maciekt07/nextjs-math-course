@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "nextjs-toploader/app";
 import { useForm } from "react-hook-form";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -24,6 +25,8 @@ import { GoogleAuthButton } from "../_components/google-auth-button";
 
 export function SignInForm({ returnTo }: { returnTo?: string }) {
   const router = useRouter();
+  // https://better-auth.com/docs/plugins/last-login-method
+  const wasEmail = authClient.isLastUsedLoginMethod("email");
 
   const form = useForm<SignInSchema>({
     resolver: zodResolver(signInSchema),
@@ -70,7 +73,14 @@ export function SignInForm({ returnTo }: { returnTo?: string }) {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>E-mail</FormLabel>
+              <FormLabel>
+                E-mail{" "}
+                {wasEmail && (
+                  <Badge variant="outline" className="ml-1">
+                    Last used
+                  </Badge>
+                )}
+              </FormLabel>
               <FormControl>
                 <Input
                   required

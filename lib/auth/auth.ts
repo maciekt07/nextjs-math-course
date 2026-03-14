@@ -3,6 +3,7 @@ import "server-only";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
+import { lastLoginMethod } from "better-auth/plugins";
 import { emailHarmony } from "better-auth-harmony";
 import { db } from "@/drizzle/db";
 import { sendEmail } from "@/email/send-email";
@@ -33,7 +34,7 @@ export const auth = betterAuth({
     },
   },
 
-  plugins: [emailHarmony(), nextCookies()],
+  plugins: [emailHarmony(), lastLoginMethod(), nextCookies()],
 
   trustedOrigins: [serverEnv.NGROK_URL, "http://localhost:3000"].filter(
     (o): o is string => Boolean(o),

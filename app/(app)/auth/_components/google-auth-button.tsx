@@ -1,3 +1,6 @@
+"use client";
+
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth/auth-client";
 import { cn } from "@/lib/ui";
@@ -11,6 +14,8 @@ export function GoogleAuthButton({
   className,
   ...props
 }: GoogleAuthButtonProps) {
+  const wasGoogle = authClient.isLastUsedLoginMethod("google");
+
   const handleSignInWithGoogle = async () => {
     await authClient.signIn.social({
       provider: "google",
@@ -21,7 +26,7 @@ export function GoogleAuthButton({
   return (
     <Button
       className={cn(
-        "w-full rounded-full cursor-pointer font-[14px]",
+        "relative w-full rounded-full cursor-pointer font-[14px]",
         className,
       )}
       onClick={handleSignInWithGoogle}
@@ -55,7 +60,12 @@ export function GoogleAuthButton({
         <path fill="none" d="M0 0h48v48H0z"></path>
       </svg>
       {/* no loading because google doesn't like that */}
-      {title}
+      {title}{" "}
+      {wasGoogle && (
+        <Badge variant="outline" className="ml-2 absolute right-2">
+          Last used
+        </Badge>
+      )}
     </Button>
   );
 }
