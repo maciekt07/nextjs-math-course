@@ -31,6 +31,12 @@ const PATH_RULES: Record<string, ReadonlySet<AuthPath>> = {
     PATHS.UPDATE_USER,
     PATHS.CHANGE_EMAIL,
   ]),
+  credentialsOnly: new Set<AuthPath>([
+    PATHS.RESET_PASSWORD,
+    PATHS.CHANGE_PASSWORD,
+    PATHS.REQUEST_PASSWORD_RESET,
+    PATHS.CHANGE_EMAIL,
+  ]),
 };
 
 const AUTH_PATH_SET = new Set(Object.values(PATHS));
@@ -70,6 +76,26 @@ const validators = {
     if (user && !user.emailVerified) {
       throw new APIError("FORBIDDEN", {
         message: "Please verify your email before performing this action",
+      });
+    }
+  },
+
+  async credentialsOnly(ctx: CTX) {
+    const session = await getSessionFromCtx(ctx);
+    if (!session?.user?.id) return;
+
+    const accounts = (await ctx.context.adapter.findMany({
+      model: "account",
+      where: [{ field: "userId", value: session.user.id }],
+    })) as Array<{ providerId: string }>;
+
+    const hasCredentials = accounts.some(
+      (acc) => acc.providerId === "credential",
+    );
+
+    if (!hasCredentials) {
+      throw new APIError("FORBIDDEN", {
+        message: "This action requires a credentials account.",
       });
     }
   },

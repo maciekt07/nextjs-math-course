@@ -80,6 +80,12 @@ export const auth = betterAuth({
     },
   },
 
+  account: {
+    accountLinking: {
+      enabled: false,
+    },
+  },
+
   session: {
     cookieCache: {
       enabled: true,

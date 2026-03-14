@@ -62,7 +62,7 @@ export function GoogleAuthButton({
       {/* no loading because google doesn't like that */}
       {title}{" "}
       {wasGoogle && (
-        <Badge variant="outline" className="ml-2 absolute right-2">
+        <Badge variant="outline" className="absolute right-2">
           Last used
         </Badge>
       )}
