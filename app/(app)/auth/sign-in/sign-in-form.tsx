@@ -19,14 +19,17 @@ import { Input } from "@/components/ui/input";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Separator } from "@/components/ui/separator";
+import { useMounted } from "@/hooks/use-mounted";
 import { authClient } from "@/lib/auth/auth-client";
 import { type SignInSchema, signInSchema } from "@/lib/auth/auth-validation";
 import { GoogleAuthButton } from "../_components/google-auth-button";
 
 export function SignInForm({ returnTo }: { returnTo?: string }) {
   const router = useRouter();
+  const mounted = useMounted();
+
   // https://better-auth.com/docs/plugins/last-login-method
-  const wasEmail = authClient.isLastUsedLoginMethod("email");
+  const wasEmail = mounted && authClient.isLastUsedLoginMethod("email");
 
   const form = useForm<SignInSchema>({
     resolver: zodResolver(signInSchema),

@@ -2,6 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useMounted } from "@/hooks/use-mounted";
 import { authClient } from "@/lib/auth/auth-client";
 import { cn } from "@/lib/ui";
 
@@ -14,7 +15,9 @@ export function GoogleAuthButton({
   className,
   ...props
 }: GoogleAuthButtonProps) {
-  const wasGoogle = authClient.isLastUsedLoginMethod("google");
+  const mounted = useMounted();
+
+  const wasGoogle = mounted && authClient.isLastUsedLoginMethod("google");
 
   const handleSignInWithGoogle = async () => {
     await authClient.signIn.social({
