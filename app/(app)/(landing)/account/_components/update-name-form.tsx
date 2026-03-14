@@ -43,9 +43,8 @@ export function UpdateNameForm({ name }: { name: string }) {
     const { error } = await authClient.updateUser({ name: values.name });
 
     if (error) {
-      if (error.status !== 429) {
-        toast.error(error.message ?? "Failed to update name.");
-      }
+      if (error.status === 429) return;
+      // toast.error(error.message ?? "Failed to update name.");
       form.setError("name", {
         message: error.message,
       });

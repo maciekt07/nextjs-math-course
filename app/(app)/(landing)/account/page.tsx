@@ -79,7 +79,7 @@ export default async function AccountPage() {
               <MailWarning className="size-6" /> Verify your email
             </CardTitle>
             <CardDescription>
-              Please verify your email address to unlock all features.
+              Please verify your email address to be able to purchase a course.
             </CardDescription>
           </CardHeader>
           <CardFooter>
