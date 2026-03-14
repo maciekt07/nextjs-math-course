@@ -2,7 +2,7 @@
 
 ## Auth
 
-- [ ] Integrate OAuth login with Google
+- [x] Integrate OAuth login with Google
 - [x] Implement forgot password, reset password and change email functionality
 - [x] Display active sessions
 - [x] Limit simultaneous logins per account
