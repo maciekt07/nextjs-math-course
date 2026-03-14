@@ -2,18 +2,18 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "@/lib/auth/get-session";
 import { AuthCard } from "../_components/auth-card";
 import { AuthFooter } from "../_components/auth-footer";
-import { SignUpForm } from "./sign-up-form";
+import { ForgotPasswordForm } from "./forgot-password-form";
 
 export const metadata = {
-  title: "Sign Up",
-  description: "Create your Math Course Online account to start learning.",
+  title: "Forgot Password",
+  description: "Reset your password by entering your email address.",
   robots: {
     index: false,
     follow: false,
   },
 };
 
-export default async function SignUpPage({
+export default async function ForgotPasswordPage({
   searchParams,
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -34,13 +34,13 @@ export default async function SignUpPage({
 
   return (
     <AuthCard
-      title="Sign Up"
-      description="Create an account and start learning"
+      title="Reset Password"
+      description="Enter your email address to receive a password reset link"
     >
-      <SignUpForm />
+      <ForgotPasswordForm />
       <AuthFooter
-        message="Already have an account?"
-        linkText="Sign in"
+        message="Remember your password?"
+        linkText="Back to Sign In"
         linkHref="/auth/sign-in"
         returnTo={returnTo}
       />

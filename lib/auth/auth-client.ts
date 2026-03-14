@@ -1,5 +1,6 @@
 import { createAuthClient } from "better-auth/react";
 import { toast } from "sonner";
+import { formatSeconds } from "@/lib/format";
 
 export const authClient = createAuthClient({
   fetchOptions: {
@@ -7,8 +8,11 @@ export const authClient = createAuthClient({
       // rate limit
       if (response?.status === 429) {
         const retryAfter = response.headers.get("X-Retry-After");
+        const formattedRetryAfter = retryAfter
+          ? formatSeconds(Number(retryAfter))
+          : null;
         toast.error(
-          `Rate limit exceeded. Retry after ${retryAfter ?? "a few"} seconds`,
+          `Rate limit exceeded. Retry after ${formattedRetryAfter ?? "a few seconds"}.`,
         );
         return;
       }

@@ -2,13 +2,16 @@ import "server-only";
 
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { APIError, createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
 import { emailHarmony } from "better-auth-harmony";
 import { db } from "@/drizzle/db";
 import { sendEmail } from "@/email/send-email";
+import ChangeEmailEmailTemplate from "@/email/templates/change-email-template";
+import ResetPasswordEmailTemplate from "@/email/templates/reset-password-template";
+import VerificationEmailTemplate from "@/email/templates/verification-template";
 import { serverEnv } from "@/env/server";
-import { passwordSchema } from "@/lib/auth/auth-validation";
+import { authBeforeHook } from "@/lib/auth/auth-before-hook";
+import { rateLimit } from "@/lib/auth/auth-rate-limit";
 import { secondaryStorage } from "@/lib/auth/secondary-storage";
 import { limitUserSessions } from "@/lib/auth/session-limit";
 import { AUTH_LIMITS } from "@/lib/constants/limits";
@@ -26,8 +29,12 @@ export const auth = betterAuth({
   emailVerification: {
     expiresIn: AUTH_LIMITS.verificationTokenTTL,
     sendOnSignUp: false,
-    sendVerificationEmail: async ({ url, user }) => {
-      void sendEmail(url, user);
+
+    sendVerificationEmail: async ({ user, url }) => {
+      void sendEmail({
+        subject: "Verify Your Email",
+        react: VerificationEmailTemplate({ name: user.name, url }),
+      });
     },
   },
 
@@ -37,6 +44,26 @@ export const auth = betterAuth({
     requireEmailVerification: false,
     minPasswordLength: AUTH_LIMITS.passwordMin,
     maxPasswordLength: AUTH_LIMITS.passwordMax,
+    resetPasswordTokenExpiresIn: AUTH_LIMITS.resetPasswordTokenTTL,
+    async sendResetPassword({ user, url }) {
+      void sendEmail({
+        subject: "Reset your password",
+        react: ResetPasswordEmailTemplate({ name: user.name, url }),
+      });
+    },
+  },
+
+  user: {
+    changeEmail: {
+      enabled: true,
+
+      sendChangeEmailConfirmation: async ({ user, newEmail, url }) => {
+        void sendEmail({
+          subject: "Approve email change",
+          react: ChangeEmailEmailTemplate({ name: user.name, newEmail, url }),
+        });
+      },
+    },
   },
 
   session: {
@@ -46,38 +73,12 @@ export const auth = betterAuth({
     },
   },
 
-  rateLimit: {
-    storage: "secondary-storage",
-    // enable in dev
-    // enabled: true,
-    window: 10,
-    max: 100,
-    customRules: {
-      "/send-verification-email": {
-        window: 60,
-        max: 2,
-      },
-    },
-  },
+  rateLimit,
 
   secondaryStorage,
 
   hooks: {
-    before: createAuthMiddleware(async (ctx) => {
-      if (
-        ctx.path === "/sign-up/email" ||
-        ctx.path === "/reset-password" ||
-        ctx.path === "/change-password"
-      ) {
-        const password = ctx.body.password || ctx.body.newPassword;
-        const { error } = passwordSchema.safeParse(password);
-        if (error) {
-          throw new APIError("BAD_REQUEST", {
-            message: "Password not strong enough",
-          });
-        }
-      }
-    }),
+    before: authBeforeHook,
   },
 
   databaseHooks: {

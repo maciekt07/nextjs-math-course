@@ -8,7 +8,8 @@ export const AUTH_LIMITS = {
   passwordMax: 72,
   passwordMin: 8,
   maxSessions: 2,
-  verificationTokenTTL: 24 * 60 * 60,
+  verificationTokenTTL: 2 * 60 * 60,
+  resetPasswordTokenTTL: 15 * 60,
 } as const satisfies LimitTree;
 
 export const FEEDBACK_LIMITS = {

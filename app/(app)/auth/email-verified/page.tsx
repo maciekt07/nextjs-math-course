@@ -4,14 +4,8 @@ import Link from "next/link";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { LogIn } from "@/components/animate-ui/icons/log-in";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { getServerSession } from "@/lib/auth/get-session";
+import { AuthIconCard } from "../_components/auth-card";
 
 export const dynamic = "force-dynamic";
 
@@ -35,67 +29,54 @@ export default async function EmailVerifiedPage({
 
   if (tokenExpired) {
     return (
-      <Card className="w-full max-w-md mx-auto">
-        <CardHeader className="space-y-3 text-center">
-          <div className="bg-destructive/10 p-6 rounded-full mx-auto">
-            <AlertCircle className="h-12 w-12 text-destructive" />
-          </div>
-          <CardTitle className="text-2xl">Link expired</CardTitle>
-          <CardDescription>
-            Your verification link has expired. Please request a new one.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="pt-0 flex flex-col items-center w-full">
-          {user ? (
-            <Button asChild className="w-full">
-              <Link href="/auth/verify-email">Request new link</Link>
-            </Button>
-          ) : (
-            <AnimateIcon animateOnHover className="w-full">
-              <Button asChild className="w-full">
-                <Link
-                  href={{
-                    pathname: "/auth/sign-in",
-                    query: { returnTo: "/auth/verify-email" },
-                  }}
-                >
-                  <LogIn /> Sign in
-                </Link>
-              </Button>
-            </AnimateIcon>
-          )}
-        </CardContent>
-      </Card>
-    );
-  }
-
-  return (
-    <Card className="w-full max-w-md mx-auto">
-      <CardHeader className="space-y-3 text-center">
-        <div className="bg-primary/10 p-6 rounded-full mx-auto">
-          <Check className="h-12 w-12 text-primary" />
-        </div>
-        <CardTitle className="text-2xl">Email verified</CardTitle>
-        <CardDescription>
-          Your email has been verified successfully. You can now continue to the
-          app.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="pt-0 flex flex-col items-center space-y-4 w-full">
+      <AuthIconCard
+        icon={AlertCircle}
+        title="Link expired"
+        description="Your verification link has expired. Please request a new one."
+        variant="destructive"
+      >
         {user ? (
           <Button asChild className="w-full">
-            <Link href="/">Go to home</Link>
+            <Link href="/auth/verify-email">Request new link</Link>
           </Button>
         ) : (
           <AnimateIcon animateOnHover className="w-full">
             <Button asChild className="w-full">
-              <Link href="/auth/sign-in">
+              <Link
+                href={{
+                  pathname: "/auth/sign-in",
+                  query: { returnTo: "/auth/verify-email" },
+                }}
+              >
                 <LogIn /> Sign in
               </Link>
             </Button>
           </AnimateIcon>
         )}
-      </CardContent>
-    </Card>
+      </AuthIconCard>
+    );
+  }
+
+  return (
+    <AuthIconCard
+      icon={Check}
+      title="Email verified"
+      description="Your email has been verified successfully. You can now continue to the app."
+      variant="default"
+    >
+      {user ? (
+        <Button asChild className="w-full">
+          <Link href="/">Go to home</Link>
+        </Button>
+      ) : (
+        <AnimateIcon animateOnHover className="w-full">
+          <Button asChild className="w-full">
+            <Link href="/auth/sign-in">
+              <LogIn /> Sign in
+            </Link>
+          </Button>
+        </AnimateIcon>
+      )}
+    </AuthIconCard>
   );
 }

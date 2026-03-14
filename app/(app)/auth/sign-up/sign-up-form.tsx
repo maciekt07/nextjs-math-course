@@ -18,8 +18,11 @@ import { Input } from "@/components/ui/input";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 import { PasswordInput } from "@/components/ui/password-input";
 import { authClient } from "@/lib/auth/auth-client";
-import { type SignUpSchema, signUpSchema } from "@/lib/auth/auth-validation";
-import { AUTH_LIMITS } from "@/lib/constants/limits";
+import {
+  PASSWORD_REQUIREMENTS,
+  type SignUpSchema,
+  signUpSchema,
+} from "@/lib/auth/auth-validation";
 
 export function SignUpForm() {
   const router = useRouter();
@@ -49,7 +52,7 @@ export function SignUpForm() {
 
   return (
     <Form {...form}>
-      <form className="space-y-4" onSubmit={form.handleSubmit(handleSignUp)}>
+      <form onSubmit={form.handleSubmit(handleSignUp)}>
         <FormField
           control={form.control}
           name="name"
@@ -96,10 +99,7 @@ export function SignUpForm() {
                   {...field}
                 />
               </FormControl>
-              <FormDescription>
-                Password must be at least {AUTH_LIMITS.passwordMin} characters,
-                include at least one uppercase letter and one number
-              </FormDescription>
+              <FormDescription>{PASSWORD_REQUIREMENTS}</FormDescription>
               <FormMessage />
             </FormItem>
           )}

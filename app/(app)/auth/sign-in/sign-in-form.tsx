@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { useRouter } from "nextjs-toploader/app";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -52,7 +53,7 @@ export function SignInForm({ returnTo }: { returnTo?: string }) {
 
   return (
     <Form {...form}>
-      <form className="space-y-4" onSubmit={form.handleSubmit(handleSignIn)}>
+      <form onSubmit={form.handleSubmit(handleSignIn)}>
         <FormField
           control={form.control}
           name="email"
@@ -77,7 +78,16 @@ export function SignInForm({ returnTo }: { returnTo?: string }) {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <div className="flex items-center justify-between">
+                <FormLabel>Password</FormLabel>
+                <Link
+                  href="/auth/forgot-password"
+                  className="text-xs text-muted-foreground hover:text-primary transition-colors"
+                >
+                  Forgot password?
+                </Link>
+              </div>
+
               <FormControl>
                 <PasswordInput
                   required
@@ -85,6 +95,7 @@ export function SignInForm({ returnTo }: { returnTo?: string }) {
                   {...field}
                 />
               </FormControl>
+
               <FormMessage />
             </FormItem>
           )}
@@ -102,7 +113,7 @@ export function SignInForm({ returnTo }: { returnTo?: string }) {
                   className="cursor-pointer"
                 />
               </FormControl>
-              <FormLabel className="m-0 cursor-pointer">Remember me</FormLabel>
+              <FormLabel className="cursor-pointer">Remember me</FormLabel>
             </FormItem>
           )}
         />

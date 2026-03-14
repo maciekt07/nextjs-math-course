@@ -1,64 +1,67 @@
-import {
-  Body,
-  Container,
-  Head,
-  Heading,
-  Hr,
-  Html,
-  Link,
-  Preview,
-  Section,
-  Tailwind,
-  Text,
-} from "@react-email/components";
+import { Heading, Hr, Text } from "@react-email/components";
 import { AUTH_LIMITS } from "@/lib/constants/limits";
+import { formatSeconds } from "@/lib/format";
+import EmailButton from "../components/email-button";
+import EmailLayout from "../components/email-layout";
 
-interface VerificationEmailProps {
+export interface VerificationEmailProps {
   url: string;
   name: string;
 }
 
-const hours = AUTH_LIMITS.verificationTokenTTL / 3600;
+export default function VerificationEmailTemplate({
+  url,
+  name,
+}: VerificationEmailProps) {
+  const parsedUrl = new URL(url);
 
-const VerificationEmailTemplate = ({ url, name }: VerificationEmailProps) => (
-  <Html>
-    <Head />
-    <Preview>Verify your email</Preview>
+  const callback = parsedUrl.searchParams.get("callbackURL");
 
-    <Tailwind>
-      <Body className="bg-gray-50 font-sans py-10">
-        <Container className="mx-auto max-w-md rounded-2xl bg-white p-8 shadow-sm">
-          <Heading className="text-2xl font-semibold text-gray-900 mb-4">
-            Hi, {name} 👋
-          </Heading>
+  // better auth reuses the same callback for request email change and verify new email with no control over it
+  const isEmailChange = callback === "/auth/verify-email-change";
 
-          <Text className="text-gray-600 leading-relaxed mb-6">
-            Welcome to <strong>Math Course Online</strong>. Please verify your
-            email address to finish creating your account.
-          </Text>
+  if (isEmailChange) {
+    parsedUrl.searchParams.set("callbackURL", `${callback}?success=true`);
+  }
 
-          <Section className="text-center my-8">
-            <Link
-              href={url}
-              className="inline-block rounded-xl bg-black px-6 py-3 text-white text-sm font-medium no-underline"
-            >
-              Verify email
-            </Link>
-          </Section>
+  const finalUrl = parsedUrl.toString();
+  return (
+    <EmailLayout preview="Verify your email">
+      <Heading className="text-2xl font-semibold text-gray-900 mb-4">
+        Hi, {name}
+      </Heading>
 
-          <Hr className="border-gray-200 my-6" />
+      {isEmailChange ? (
+        <Text className="text-gray-600 leading-relaxed mb-6">
+          You recently requested to change your email address. Please verify
+          your new email by clicking the button below to complete the update.
+        </Text>
+      ) : (
+        <Text className="text-gray-600 leading-relaxed mb-6">
+          Welcome to <strong>Math Course Online</strong>. Please verify your
+          email.
+        </Text>
+      )}
 
-          <Text className="text-xs text-gray-500 text-center">
-            This link expires in {hours} hours.
-          </Text>
+      <EmailButton url={finalUrl}>
+        {isEmailChange ? "Confirm Email Change" : "Verify email"}
+      </EmailButton>
 
-          <Text className="text-xs text-gray-400 text-center mt-2">
-            If you didn't create an account, you can safely ignore this email.
-          </Text>
-        </Container>
-      </Body>
-    </Tailwind>
-  </Html>
-);
+      <Hr className="border-gray-200 my-6" />
 
-export default VerificationEmailTemplate;
+      <Text className="text-xs text-gray-600 text-center">
+        This link expires in {formatSeconds(AUTH_LIMITS.verificationTokenTTL)}.
+      </Text>
+
+      {isEmailChange ? (
+        <Text className="text-gray-600 leading-relaxed mb-6">
+          If you didn't request this change, you can safely ignore this email.
+        </Text>
+      ) : (
+        <Text className="text-xs text-gray-500 text-center">
+          If you didn't create an account, you can safely ignore this email.
+        </Text>
+      )}
+    </EmailLayout>
+  );
+}
