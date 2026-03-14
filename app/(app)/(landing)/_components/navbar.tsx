@@ -145,6 +145,7 @@ export function Navbar({ user }: { user: User | null }) {
           "w-full py-4 sm:py-5 fixed z-50 border-b bg-background/30 backdrop-blur-2xl transition-colors duration-250 motion-reduce:transition-none motion-reduce:duration-0",
           !showBorder && "border-transparent bg-transparent backdrop-blur-none",
           open && "bg-background",
+          "safari:backdrop-blur-none! safari:bg-background!",
         )}
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4">

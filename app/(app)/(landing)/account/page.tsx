@@ -106,31 +106,33 @@ export default async function AccountPage() {
         </CardHeader>
 
         <CardContent className="space-y-6">
-          <div className="flex items-center gap-4">
-            <Avatar className="size-12">
-              <AvatarFallback className="bg-primary text-primary-foreground text-2xl font-semibold">
-                {session.user.name?.charAt(0).toUpperCase() ||
-                  session.user.email?.charAt(0).toUpperCase() ||
-                  "U"}
-              </AvatarFallback>
-            </Avatar>
+          <div className="flex flex-col md:flex-row md:items-center gap-4">
+            <div className="flex items-center gap-4 flex-1 min-w-0 order-2 md:order-1">
+              <Avatar className="size-12">
+                <AvatarFallback className="bg-primary text-primary-foreground text-2xl font-semibold">
+                  {session.user.name?.charAt(0).toUpperCase() ||
+                    session.user.email?.charAt(0).toUpperCase() ||
+                    "U"}
+                </AvatarFallback>
+              </Avatar>
 
-            <div className="flex-1 min-w-0">
-              <p className="font-medium truncate">{user.name}</p>
-              <p className="text-sm text-muted-foreground truncate">
-                {user.email}
-              </p>
+              <div className="flex-1 min-w-0">
+                <p className="font-medium truncate">{user.name}</p>
+                <p className="text-sm text-muted-foreground truncate">
+                  {user.email}
+                </p>
+              </div>
             </div>
 
             <Badge
               variant="outline"
-              className="text-xs text-muted-foreground px-3 py-1"
+              className="text-xs text-muted-foreground px-3 py-1 order-1 md:order-2 self-start"
             >
               Joined{" "}
               {new Intl.DateTimeFormat("en-US", {
                 month: "short",
                 year: "numeric",
-              }).format(new Date(user.createdAt))}{" "}
+              }).format(new Date(user.createdAt))}
             </Badge>
           </div>
 

@@ -11,6 +11,7 @@ export const metadata: Metadata = {
     template: "%s | Math Course Online",
     default: "Math Course Online",
   },
+  authors: [{ name: "Maciej Twaróg", url: "https://github.com/maciekt07" }],
   description: "Learn math online",
   robots: {
     index: true,

@@ -1,7 +1,6 @@
 "use client";
 import { ChevronLeft, PanelLeft, PanelLeftClose } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -26,17 +25,15 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
+import { useMounted } from "@/hooks/use-mounted";
 import { useScrollShadows } from "@/hooks/use-scroll-shadows";
 import { authClient } from "@/lib/auth/auth-client";
 import { cn } from "@/lib/ui";
 import { useSidebarStore } from "@/stores/sidebar-store";
 import type { Chapter, Course, Lesson, Poster } from "@/types/payload-types";
 import { LessonItem } from "./lesson-item";
+import { SettingsDialogContent } from "./settings-dialog-content";
 import { SidebarAccount } from "./sidebar-account";
-
-const SettingsDialogContent = dynamic(() =>
-  import("./settings-dialog-content").then((mod) => mod.SettingsDialogContent),
-);
 
 interface ChapterLessonsGroup {
   chapter: Chapter;
@@ -100,6 +97,7 @@ export function CourseSidebar({
   const [expandedChapters, setExpandedChapters] = useState<string[]>([]);
   const [animate, setAnimate] = useState<boolean>(false);
   const prefersReducedMotion = useReducedMotion();
+  const mounted = useMounted();
 
   const {
     ref: scrollRef,
@@ -261,7 +259,6 @@ export function CourseSidebar({
         </AnimatePresence>
       </div>
 
-      {/* top bar */}
       <AnimatePresence>
         {!open && (
           <motion.div
@@ -271,26 +268,39 @@ export function CourseSidebar({
             transition={{ duration: prefersReducedMotion ? 0 : 0.2 }}
             className={cn(
               "fixed top-0 left-0 right-0 z-40 h-17 hidden max-[1450px]:flex max-[1450px]:backdrop-blur-xl max-[1450px]:bg-background/60 max-[1450px]:border-b items-center mb-4 gap-3 transition-[border-color] duration-300",
+              "safari:bg-background! safari:backdrop-blur-none!",
             )}
           />
         )}
       </AnimatePresence>
+
+      {/*
+          fix ios 26 safari drop support for meta theme-color
+          https://github.com/andesco/safari-color-tinting
+      */}
+      <div className="fixed top-0 left-0 right-0 z-41 h-[12px] bg-background hidden safari:block md:hidden" />
 
       {/* settings dialog */}
       <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
         <SettingsDialogContent />
       </Dialog>
       {/* FIXME: disable content scroll on Safari */}
-      <motion.div
-        animate={
-          open
-            ? { opacity: 1, pointerEvents: "auto" }
-            : { opacity: 0, pointerEvents: "none" }
-        }
-        transition={{ duration: 0.2 }}
-        onClick={() => setOpen(false)}
-        className="fixed inset-0 h-dvh bg-black/50 backdrop-blur-xs z-40 md:hidden"
-      />
+      {mounted ? (
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: animate ? 0.2 : 0 }}
+              onClick={() => setOpen(false)}
+              className="fixed inset-0 h-dvh bg-black/50 backdrop-blur-xs z-40 md:hidden"
+            />
+          )}
+        </AnimatePresence>
+      ) : (
+        <div className="fixed inset-0 h-dvh bg-black/50 backdrop-blur-xs z-40 md:hidden" />
+      )}
 
       <aside
         data-open={open}

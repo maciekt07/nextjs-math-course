@@ -1,6 +1,5 @@
 "use client";
 
-import Bowser from "bowser";
 import { Check, Frown, type LucideIcon, Meh, Smile, Star } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
@@ -13,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useMounted } from "@/hooks/use-mounted";
 import { authClient } from "@/lib/auth/auth-client";
 import { FEEDBACK_LIMITS } from "@/lib/constants/limits";
+import { system } from "@/lib/system";
 import { cn } from "@/lib/ui";
 import type { Lesson } from "@/types/payload-types";
 
@@ -44,11 +44,6 @@ export default function FeedbackWidget({
   const isMounted = useMounted();
   const commentRef = useRef<string>(comment);
   const prefersReducedMotion = useReducedMotion();
-
-  function isFirefox() {
-    if (typeof window === "undefined") return false;
-    return Bowser.getParser(window.navigator.userAgent).is("firefox");
-  }
 
   const toggleReaction = (value: number) => {
     setSelectedReaction((prev) => (prev === value ? null : value));
@@ -163,12 +158,12 @@ export default function FeedbackWidget({
                       : "bg-secondary text-foreground border-border hover:bg-secondary/80",
                   )}
                   whileHover={
-                    !isFirefox() && !prefersReducedMotion
+                    !system.isFirefox() && !prefersReducedMotion
                       ? { scale: 1.05 }
                       : undefined
                   }
                   whileTap={
-                    !isFirefox() && !prefersReducedMotion
+                    !system.isFirefox() && !prefersReducedMotion
                       ? { scale: 0.95 }
                       : undefined
                   }

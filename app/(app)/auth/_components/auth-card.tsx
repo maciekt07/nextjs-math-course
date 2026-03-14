@@ -25,7 +25,7 @@ export function AuthCard({ title, description, children }: AuthCardProps) {
           <CardDescription className="mt-2">{description}</CardDescription>
         </div>
       </CardHeader>
-      <CardContent>{children}</CardContent>
+      <CardContent className="auth-form">{children}</CardContent>
     </Card>
   );
 }
