@@ -6,6 +6,7 @@ import {
   MailWarning,
   SettingsIcon,
 } from "lucide-react";
+import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
@@ -26,6 +27,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { auth } from "@/lib/auth/auth";
 import { getServerSession } from "@/lib/auth/get-session";
 import { AUTH_LIMITS } from "@/lib/constants/limits";
 import ActiveSessions from "./_components/active-sessions";
@@ -57,6 +59,13 @@ export default async function AccountPage() {
     },
   });
 
+  const accounts = await auth.api.listUserAccounts({
+    headers: await headers(),
+  });
+
+  const isGoogle = accounts.some((acc) => acc.providerId === "google");
+  const isCredentials = accounts.some((acc) => acc.providerId === "credential");
+
   if (!session) {
     redirect("/auth/sign-in");
   }
@@ -72,7 +81,7 @@ export default async function AccountPage() {
         </p>
       </header>
 
-      {!user.emailVerified && (
+      {!user.emailVerified && isCredentials && (
         <Card className="border-yellow-600/50 dark:border-yellow-400/50">
           <CardHeader>
             <CardTitle className="text-yellow-600 dark:text-yellow-400 flex items-center justify-start gap-2 text-lg">
@@ -121,6 +130,11 @@ export default async function AccountPage() {
                 <p className="text-sm text-muted-foreground truncate">
                   {user.email}
                 </p>
+                {isGoogle && (
+                  <p className="text-sm text-muted-foreground truncate">
+                    Signed in with Google
+                  </p>
+                )}
               </div>
             </div>
 
@@ -167,32 +181,34 @@ export default async function AccountPage() {
               Used for login and notifications.
             </p>
           </div>
-
-          <RequestEmailChangeButton
-            currentEmail={user.email}
-            isVerified={user.emailVerified}
-          />
+          {isCredentials && (
+            <RequestEmailChangeButton
+              currentEmail={user.email}
+              isVerified={user.emailVerified}
+            />
+          )}
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-start gap-2">
-            <LockKeyhole className="size-5" /> Password
-          </CardTitle>
-          <CardDescription>
-            Request a password change. We will send a confirmation email to your
-            account.
-          </CardDescription>
-        </CardHeader>
-        <CardFooter>
-          <PasswordChangeButton
-            email={session.user.email}
-            isVerified={session.user.emailVerified}
-          />
-        </CardFooter>
-      </Card>
-
+      {isCredentials && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-start gap-2">
+              <LockKeyhole className="size-5" /> Password
+            </CardTitle>
+            <CardDescription>
+              Request a password change. We will send a confirmation email to
+              your account.
+            </CardDescription>
+          </CardHeader>
+          <CardFooter>
+            <PasswordChangeButton
+              email={session.user.email}
+              isVerified={session.user.emailVerified}
+            />
+          </CardFooter>
+        </Card>
+      )}
       <Card className="w-full">
         <CardHeader>
           <CardTitle className="flex items-center justify-start gap-2">

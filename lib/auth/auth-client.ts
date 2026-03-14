@@ -1,8 +1,10 @@
+import { lastLoginMethodClient } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 import { toast } from "sonner";
 import { formatSeconds } from "@/lib/format";
 
 export const authClient = createAuthClient({
+  plugins: [lastLoginMethodClient()],
   fetchOptions: {
     onError: ({ response, error }) => {
       // rate limit

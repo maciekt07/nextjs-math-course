@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "nextjs-toploader/app";
 import { useForm } from "react-hook-form";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -17,11 +18,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 import { PasswordInput } from "@/components/ui/password-input";
+import { Separator } from "@/components/ui/separator";
 import { authClient } from "@/lib/auth/auth-client";
 import { type SignInSchema, signInSchema } from "@/lib/auth/auth-validation";
+import { GoogleAuthButton } from "../_components/google-auth-button";
 
 export function SignInForm({ returnTo }: { returnTo?: string }) {
   const router = useRouter();
+  // https://better-auth.com/docs/plugins/last-login-method
+  const wasEmail = authClient.isLastUsedLoginMethod("email");
 
   const form = useForm<SignInSchema>({
     resolver: zodResolver(signInSchema),
@@ -53,13 +58,29 @@ export function SignInForm({ returnTo }: { returnTo?: string }) {
 
   return (
     <Form {...form}>
+      <GoogleAuthButton title="Sign in with Google" />
+
+      <div className="relative my-6">
+        <Separator />
+        <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-2 text-xs text-muted-foreground">
+          Or continue with
+        </span>
+      </div>
+
       <form onSubmit={form.handleSubmit(handleSignIn)}>
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>E-mail</FormLabel>
+              <FormLabel>
+                E-mail{" "}
+                {wasEmail && (
+                  <Badge variant="outline" className="ml-1">
+                    Last used
+                  </Badge>
+                )}
+              </FormLabel>
               <FormControl>
                 <Input
                   required

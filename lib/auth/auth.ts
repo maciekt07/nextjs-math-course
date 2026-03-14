@@ -3,6 +3,7 @@ import "server-only";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
+import { lastLoginMethod } from "better-auth/plugins";
 import { emailHarmony } from "better-auth-harmony";
 import { db } from "@/drizzle/db";
 import { sendEmail } from "@/email/send-email";
@@ -20,7 +21,24 @@ import { AUTH_LIMITS } from "@/lib/constants/limits";
 export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: "pg" }),
 
-  plugins: [emailHarmony(), nextCookies()],
+  socialProviders: {
+    google: {
+      clientId: serverEnv.GOOGLE_CLIENT_ID,
+      clientSecret: serverEnv.GOOGLE_CLIENT_SECRET,
+      mapProfileToUser: (profile) => {
+        return {
+          name: profile.given_name,
+          image: undefined,
+        };
+      },
+    },
+  },
+
+  onAPIError: {
+    errorURL: "/auth/error",
+  },
+
+  plugins: [emailHarmony(), lastLoginMethod(), nextCookies()],
 
   trustedOrigins: [serverEnv.NGROK_URL, "http://localhost:3000"].filter(
     (o): o is string => Boolean(o),
@@ -63,6 +81,12 @@ export const auth = betterAuth({
           react: ChangeEmailEmailTemplate({ name: user.name, newEmail, url }),
         });
       },
+    },
+  },
+
+  account: {
+    accountLinking: {
+      enabled: false,
     },
   },
 
