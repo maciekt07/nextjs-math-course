@@ -43,12 +43,13 @@ export function UpdateNameForm({ name }: { name: string }) {
     const { error } = await authClient.updateUser({ name: values.name });
 
     if (error) {
+      setLoading(false);
       if (error.status === 429) return;
       // toast.error(error.message ?? "Failed to update name.");
       form.setError("name", {
         message: error.message,
       });
-      setLoading(false);
+
       return;
     }
 
@@ -73,7 +74,7 @@ export function UpdateNameForm({ name }: { name: string }) {
                 <Button
                   type="submit"
                   variant="outline"
-                  className="shrink-0"
+                  className="shrink-0 cursor-pointer"
                   disabled={!hasChanged || loading}
                 >
                   <LoadingSwap isLoading={loading}>Update</LoadingSwap>

@@ -16,17 +16,25 @@ export function LogoutEverywhereButton({
 
   const handleLogoutEverywhere = async () => {
     setIsLoading(true);
-
-    try {
-      await authClient.revokeSessions();
-
-      toast.success("Logged out from all devices");
-      router.push("/");
-      router.refresh();
-    } catch {
-      setIsLoading(false);
-      toast.error("Failed to revoke sessions");
-    }
+    await authClient.revokeSessions({
+      fetchOptions: {
+        onSuccess: async () => {
+          await authClient.signOut({
+            fetchOptions: {
+              onSuccess: () => {
+                router.push("/");
+                toast.success("Logged out from all devices");
+                router.refresh();
+              },
+            },
+          });
+        },
+        onError: () => {
+          setIsLoading(false);
+          toast.error("Failed to revoke sessions");
+        },
+      },
+    });
   };
 
   return (

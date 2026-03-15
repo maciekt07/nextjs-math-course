@@ -1,3 +1,5 @@
+import "server-only";
+
 import {
   APIError,
   createAuthMiddleware,
@@ -64,7 +66,7 @@ const validators = {
   },
 
   async emailVerified(ctx: CTX) {
-    const session = await getSessionFromCtx(ctx);
+    const session = await getSessionFromCtx(ctx, { disableCookieCache: true });
     const email = session?.user?.email ?? ctx.body?.email;
     if (!email) return;
 
@@ -81,7 +83,7 @@ const validators = {
   },
 
   async credentialsOnly(ctx: CTX) {
-    const session = await getSessionFromCtx(ctx);
+    const session = await getSessionFromCtx(ctx, { disableCookieCache: true });
     if (!session?.user?.id) return;
 
     const accounts = (await ctx.context.adapter.findMany({

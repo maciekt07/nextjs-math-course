@@ -55,7 +55,7 @@ export function SignUpForm() {
     <Form {...form}>
       <GoogleAuthButton title="Continue with Google" />
 
-      <div className="relative my-6">
+      <div className="relative my-7">
         <Separator />
         <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-2 text-xs text-muted-foreground">
           Or continue with

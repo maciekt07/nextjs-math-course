@@ -63,7 +63,7 @@ export function SignInForm({ returnTo }: { returnTo?: string }) {
     <Form {...form}>
       <GoogleAuthButton title="Sign in with Google" />
 
-      <div className="relative my-6">
+      <div className="relative my-7">
         <Separator />
         <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-2 text-xs text-muted-foreground">
           Or continue with
@@ -76,10 +76,10 @@ export function SignInForm({ returnTo }: { returnTo?: string }) {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
+              <FormLabel className="relative">
                 E-mail{" "}
                 {wasEmail && (
-                  <Badge variant="outline" className="ml-1">
+                  <Badge variant="outline" className="absolute right-0">
                     Last used
                   </Badge>
                 )}

@@ -38,6 +38,10 @@ export const auth = betterAuth({
     errorURL: "/auth/error",
   },
 
+  advanced: {
+    cookiePrefix: "math-course",
+  },
+
   plugins: [emailHarmony(), lastLoginMethod(), nextCookies()],
 
   trustedOrigins: [serverEnv.NGROK_URL, "http://localhost:3000"].filter(
