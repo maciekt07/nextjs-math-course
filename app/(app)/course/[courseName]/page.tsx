@@ -1,42 +1,45 @@
 import { BookX, ChevronLeft } from "lucide-react";
-import { unstable_cache } from "next/cache";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { EmptyState, EmptyStateCenterWrapper } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { getPayloadClient } from "@/lib/payload-client";
 
+export const dynamic = "force-static";
 export const revalidate = 3600;
 
-const getCourseWithFirstLesson = unstable_cache(
-  async (courseSlug: string) => {
-    const payload = await getPayloadClient();
+async function getCourseWithFirstLesson(courseSlug: string) {
+  const payload = await getPayloadClient();
 
-    const { docs: courses } = await payload.find({
-      collection: "courses",
-      where: { slug: { equals: courseSlug } },
-      select: { slug: true, id: true },
-      limit: 1,
-    });
+  const { docs: courses } = await payload.find({
+    collection: "courses",
+    where: { slug: { equals: courseSlug } },
+    select: { slug: true, id: true },
+    limit: 1,
+  });
 
-    const course = courses[0];
-    if (!course) return null;
+  const course = courses[0];
+  if (!course) return null;
 
-    const { docs: lessons } = await payload.find({
-      collection: "lessons",
-      where: { course: { equals: course.id } },
-      select: { slug: true },
-      limit: 1,
-    });
+  const { docs: lessons } = await payload.find({
+    collection: "lessons",
+    where: { course: { equals: course.id } },
+    select: { slug: true },
+    limit: 1,
+  });
 
-    return { course, firstLesson: lessons[0] || null };
-  },
-  [],
-  {
-    tags: ["courses-list"],
-    revalidate: 3600,
-  },
-);
+  return { course, firstLesson: lessons[0] ?? null };
+}
+
+export async function generateStaticParams() {
+  const payload = await getPayloadClient();
+  const { docs: courses } = await payload.find({
+    collection: "courses",
+    select: { slug: true },
+    limit: 1000,
+  });
+  return courses.map((c) => ({ courseName: c.slug }));
+}
 
 type Args = {
   params: Promise<{ courseName: string }>;

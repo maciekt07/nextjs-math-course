@@ -8,11 +8,13 @@ import { cn } from "@/lib/ui";
 
 interface GoogleAuthButtonProps extends React.ComponentProps<typeof Button> {
   title: "Sign in with Google" | "Continue with Google";
+  returnTo?: string;
 }
 
 export function GoogleAuthButton({
   title,
   className,
+  returnTo,
   ...props
 }: GoogleAuthButtonProps) {
   const mounted = useMounted();
@@ -22,7 +24,7 @@ export function GoogleAuthButton({
   const handleSignInWithGoogle = async () => {
     await authClient.signIn.social({
       provider: "google",
-      callbackURL: "/",
+      callbackURL: returnTo ?? "/",
     });
   };
 

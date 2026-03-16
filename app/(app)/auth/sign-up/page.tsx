@@ -37,7 +37,7 @@ export default async function SignUpPage({
       title="Sign Up"
       description="Create an account and start learning"
     >
-      <SignUpForm />
+      <SignUpForm returnTo={returnTo} />
       <AuthFooter
         message="Already have an account?"
         linkText="Sign in"

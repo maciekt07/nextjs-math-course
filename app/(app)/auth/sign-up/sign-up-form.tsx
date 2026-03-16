@@ -25,7 +25,7 @@ import {
 } from "@/lib/auth/auth-validation";
 import { GoogleAuthButton } from "../_components/google-auth-button";
 
-export function SignUpForm() {
+export function SignUpForm({ returnTo }: { returnTo?: string }) {
   const router = useRouter();
   const form = useForm<SignUpSchema>({
     resolver: zodResolver(signUpSchema),
@@ -53,7 +53,7 @@ export function SignUpForm() {
 
   return (
     <Form {...form}>
-      <GoogleAuthButton title="Continue with Google" />
+      <GoogleAuthButton title="Continue with Google" returnTo={returnTo} />
 
       <div className="relative my-7">
         <Separator />

@@ -61,7 +61,7 @@ export function SignInForm({ returnTo }: { returnTo?: string }) {
 
   return (
     <Form {...form}>
-      <GoogleAuthButton title="Sign in with Google" />
+      <GoogleAuthButton title="Sign in with Google" returnTo={returnTo} />
 
       <div className="relative my-7">
         <Separator />
