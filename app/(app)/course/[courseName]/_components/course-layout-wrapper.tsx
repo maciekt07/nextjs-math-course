@@ -1,8 +1,7 @@
 "use client";
 
-import { useReducedMotion } from "motion/react";
+import { motion, useReducedMotion } from "framer-motion";
 import { useEffect } from "react";
-import { cn } from "@/lib/ui";
 import { useCourseStore } from "@/stores/course-store";
 import { useSidebarStore } from "@/stores/sidebar-store";
 import type { Chapter, Course, Lesson } from "@/types/payload-types";
@@ -40,13 +39,15 @@ export function CourseLayoutWrapper({
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen relative overflow-x-hidden">
-      <div
+      <motion.div
         data-open={open}
-        className={cn(
-          "hidden md:block shrink-0 w-80 overflow-hidden",
-          !prefersReducedMotion && "transition-[width] sidebar-transition",
-          open ? "w-80" : "w-0",
-        )}
+        className="hidden md:block shrink-0 overflow-hidden"
+        animate={{ width: open ? 320 : 0 }}
+        transition={{
+          type: "tween",
+          duration: prefersReducedMotion ? 0 : 0.2,
+          ease: [0.25, 0.46, 0.45, 0.94],
+        }}
       />
 
       <CourseSidebar
@@ -56,19 +57,20 @@ export function CourseLayoutWrapper({
         owned={owned}
       />
 
-      <div className="flex-1 flex flex-col min-w-0">
-        <main
+      <motion.div className="flex-1 flex flex-col min-w-0">
+        <motion.main
           data-open={open}
-          className={cn(
-            "flex-1 w-full min-w-0",
-            !prefersReducedMotion &&
-              "transition-[padding-top] sidebar-transition",
-            open ? "pt-0" : "pt-[68px]",
-          )}
+          className="flex-1 w-full min-w-0"
+          animate={{ paddingTop: open ? 0 : 68 }}
+          transition={{
+            type: "tween",
+            duration: prefersReducedMotion ? 0 : 0.2,
+            ease: [0.25, 0.46, 0.45, 0.94],
+          }}
         >
           {children}
-        </main>
-      </div>
+        </motion.main>
+      </motion.div>
     </div>
   );
 }

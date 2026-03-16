@@ -4,7 +4,8 @@
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
-@custom-variant safari (@supports (-webkit-touch-callout: none));
+@custom-variant safari (@supports (-webkit-touch-callout: none) and
+  (display-mode: browser));
 
 @theme inline {
   --color-background: var(--background);

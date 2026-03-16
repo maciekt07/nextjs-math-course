@@ -280,6 +280,13 @@ export function CourseSidebar({
       */}
       <div className="fixed top-0 left-0 right-0 z-41 h-[12px] bg-background hidden safari:block md:hidden" />
 
+      <div
+        className={cn(
+          "fixed bottom-0 left-0 right-0 z-41 h-[12px] bg-background hidden safari:block md:hidden",
+          !open && "hidden!",
+        )}
+      />
+
       {/* settings dialog */}
       <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
         <SettingsDialogContent />
@@ -302,15 +309,18 @@ export function CourseSidebar({
         <div className="fixed inset-0 h-dvh bg-black/50 backdrop-blur-xs z-40 md:hidden" />
       )}
 
-      <aside
+      <motion.aside
         data-open={open}
-        className={cn(
-          "fixed flex flex-col h-dvh w-80 border-r bg-background z-40 shadow-2xl md:shadow-none overflow-y-auto",
-          "transform-gpu will-change-transform",
-          !prefersReducedMotion &&
-            "transition-[transform, opacity] sidebar-transition",
-          open ? "translate-x-0 opacity-100" : "-translate-x-full opacity-60",
-        )}
+        initial={false}
+        layout={false}
+        animate={open ? { x: 0, opacity: 1 } : { x: -320, opacity: 0 }}
+        transition={{
+          type: "tween",
+          duration: prefersReducedMotion ? 0 : 0.2,
+          ease: [0.25, 0.46, 0.45, 0.94],
+        }}
+        className="fixed flex flex-col h-dvh w-80 border-r bg-background z-40 shadow-2xl md:shadow-none overflow-y-auto will-change-transform transform-gpu"
+        style={{ transform: "translateZ(0)" }}
       >
         <div className="pt-14 sm:pt-16 px-4 border-b">
           <Button asChild variant="ghost" className="absolute top-4 right-4">
@@ -475,7 +485,7 @@ export function CourseSidebar({
             pathname={pathname}
           />
         </div>
-      </aside>
+      </motion.aside>
     </>
   );
 }
