@@ -19,7 +19,7 @@ export default function EmailLayout({ preview, children }: EmailLayoutProps) {
       <Preview>{preview}</Preview>
 
       <Tailwind>
-        <Body className="bg-gray-50 font-sans py-10">
+        <Body className="bg-gray-50 font-sans py-10 text-center">
           <Container className="mx-auto max-w-md rounded-2xl bg-white p-8 shadow-sm">
             {children}
           </Container>

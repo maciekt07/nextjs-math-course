@@ -7,6 +7,28 @@ export const Users: CollectionConfig = {
   admin: {
     useAsTitle: "email",
   },
+  // auth: {
+  //   forgotPassword: {
+  //     expiration: forgotPasswordTokenTTL,
+  //     generateEmailHTML: async (args) => {
+  //       const { token, user } = args ?? {};
+  //       const resetUrl = `${clientEnv.NEXT_PUBLIC_APP_URL}/admin/reset/${token}`;
+  //       const html = `
+  //       <p>Hello,</p>
+  //       <p>Click the link below to reset your password:</p>
+  //       <a href="${resetUrl}">${resetUrl}</a>
+  //       <p>This link will expire in ${formatSeconds(forgotPasswordTokenTTL / 1000)}.</p>
+  //     `;
+  //       await resend.emails.send({
+  //         from: `Math Course Online <${serverEnv.RESEND_FROM_EMAIL}>`,
+  //         to: user?.email as string,
+  //         subject: "Reset your admin password",
+  //         html,
+  //       });
+  //       return html;
+  //     },
+  //   },
+  // },
   access: {
     // only admins can read all users but each user can read their own record
     read: ({ req }) => {

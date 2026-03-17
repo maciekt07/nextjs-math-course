@@ -50,7 +50,8 @@ export const auth = betterAuth({
 
     sendVerificationEmail: async ({ user, url }) => {
       void sendEmail({
-        subject: "Verify Your Email",
+        to: user.email,
+        subject: "Confirm Your Email Address - Math Course Online",
         react: VerificationEmailTemplate({ name: user.name, url }),
       });
     },
@@ -65,7 +66,8 @@ export const auth = betterAuth({
     resetPasswordTokenExpiresIn: AUTH_LIMITS.resetPasswordTokenTTL,
     async sendResetPassword({ user, url }) {
       void sendEmail({
-        subject: "Reset your password",
+        to: user.email,
+        subject: "Reset Your Password - Math Course Online",
         react: ResetPasswordEmailTemplate({ name: user.name, url }),
       });
     },
@@ -77,7 +79,8 @@ export const auth = betterAuth({
 
       sendChangeEmailConfirmation: async ({ user, newEmail, url }) => {
         void sendEmail({
-          subject: "Approve email change",
+          to: user.email,
+          subject: "Please Confirm Your New Email Address - Math Course Online",
           react: ChangeEmailEmailTemplate({ name: user.name, newEmail, url }),
         });
       },

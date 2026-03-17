@@ -25,6 +25,9 @@ export const serverEnv = createEnv({
       .refine((val) => val.startsWith("re"), {
         message: "RESEND_API_KEY must start with 're'",
       }),
+    RESEND_FROM_EMAIL: z.email(
+      "RESEND_FROM_EMAIL must be a valid email address",
+    ),
 
     PAYLOAD_SECRET: z.string().min(16),
     MONGO_URL: z

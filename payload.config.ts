@@ -35,8 +35,8 @@ export default buildConfig({
     outputFile: "types/payload-types.ts",
   },
   email: resendAdapter({
-    defaultFromAddress: "hello@resend.dev",
-    defaultFromName: "Math Course Online",
+    defaultFromAddress: serverEnv.RESEND_FROM_EMAIL,
+    defaultFromName: serverEnv.RESEND_FROM_EMAIL,
     apiKey: serverEnv.RESEND_API_KEY,
   }),
   plugins: [

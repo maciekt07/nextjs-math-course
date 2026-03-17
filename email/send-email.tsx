@@ -1,20 +1,24 @@
 import "server-only";
 
 import type { JSX } from "react";
-import { Resend } from "resend";
-import { serverEnv } from "@/env/server";
 
-const resend = new Resend(serverEnv.RESEND_API_KEY);
+import { serverEnv } from "@/env/server";
+import { resend } from "@/lib/resend";
+
+const FROM_EMAIL = `Maciej at Math Course Online <${serverEnv.RESEND_FROM_EMAIL}>`;
 
 interface SendEmailOptions {
+  to: string | string[];
   subject: string;
   react: JSX.Element;
 }
 
-export async function sendEmail({ subject, react }: SendEmailOptions) {
+export async function sendEmail({ to, subject, react }: SendEmailOptions) {
+  const isDev = process.env.NODE_ENV === "development";
+
   await resend.emails.send({
-    from: "onboarding@resend.dev",
-    to: ["delivered@resend.dev"],
+    from: FROM_EMAIL,
+    to: isDev ? ["delivered@resend.dev"] : to,
     subject,
     react,
   });
