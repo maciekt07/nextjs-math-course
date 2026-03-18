@@ -1,6 +1,6 @@
 {
-  "typescript.preferences.importModuleSpecifier": "non-relative",
-  "javascript.preferences.importModuleSpecifier": "non-relative",
+  "js/ts.preferences.importModuleSpecifier": "non-relative",
+  "tailwindCSS.lint.suggestCanonicalClasses": "ignore",
   "editor.codeActionsOnSave": {
     "source.organizeImports.biome": "explicit",
     "source.fixAll.biome": "explicit"

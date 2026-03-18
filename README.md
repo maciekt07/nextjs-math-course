@@ -50,7 +50,7 @@ cd nextjs-math-course
 ### 2. Install Dependencies
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### 3. Set Up Environment Variables
@@ -70,19 +70,19 @@ docker compose up -d
 > View Database with Drizzle Studio
 >
 > ```bash
-> npm run db:studio
+> pnpm run db:studio
 > ```
 
 ### 5. Apply Database Migrations
 
 ```bash
-npm run db:push
+pnpm run db:push
 ```
 
 ### 6. Run the Stripe webhook listener
 
 ```bash
-npm run stripe:webhook
+pnpm run stripe:webhook
 ```
 
 #### Testing Payments
@@ -98,13 +98,13 @@ Use these Stripe test card details to simulate a successful payment:
 Development mode:
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 Production preview:
 
 ```bash
-npm run preview
+pnpm run preview
 ```
 
 The application should now be running at [http://localhost:3000](http://localhost:3000)
