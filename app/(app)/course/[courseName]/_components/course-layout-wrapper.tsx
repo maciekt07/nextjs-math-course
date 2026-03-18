@@ -42,6 +42,7 @@ export function CourseLayoutWrapper({
       <motion.div
         data-open={open}
         className="hidden md:block shrink-0 overflow-hidden"
+        initial={false}
         animate={{ width: open ? 320 : 0 }}
         transition={{
           type: "tween",
@@ -61,6 +62,7 @@ export function CourseLayoutWrapper({
         <motion.main
           data-open={open}
           className="flex-1 w-full min-w-0"
+          initial={false}
           animate={{ paddingTop: open ? 0 : 68 }}
           transition={{
             type: "tween",
