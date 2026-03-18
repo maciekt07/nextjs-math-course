@@ -278,11 +278,11 @@ export function CourseSidebar({
           fix ios 26 safari drop support for meta theme-color
           https://github.com/andesco/safari-color-tinting
       */}
-      <div className="fixed top-0 left-0 right-0 z-41 h-[12px] bg-background hidden safari:block md:hidden" />
+      <div className="fixed top-0 left-0 right-0 z-41 h-3 bg-background hidden safari:block md:hidden" />
 
       <div
         className={cn(
-          "fixed bottom-0 left-0 right-0 z-41 h-[12px] bg-background hidden safari:block md:hidden",
+          "fixed bottom-0 left-0 right-0 z-41 h-3 bg-background hidden safari:block md:hidden",
           !open && "hidden!",
         )}
       />
@@ -392,7 +392,7 @@ export function CourseSidebar({
             )}
           </div>
         </div>
-        <div className="relative flex-1 min-h-[128px] overflow-hidden">
+        <div className="relative flex-1 min-h-32 overflow-hidden">
           <div
             className="h-full overflow-y-auto overscroll-none"
             ref={scrollRef}

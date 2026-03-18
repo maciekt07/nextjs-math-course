@@ -40,7 +40,7 @@ export function HeroBadge() {
               ease: "linear",
             }}
           >
-            <div className="w-full h-full bg-gradient-to-r from-transparent via-black/5 dark:via-white/10 to-transparent" />
+            <div className="w-full h-full bg-linear-to-r from-transparent via-black/5 dark:via-white/10 to-transparent" />
           </motion.div>
           <motion.div
             className="relative"

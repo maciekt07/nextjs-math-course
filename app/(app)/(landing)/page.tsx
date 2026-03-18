@@ -93,12 +93,12 @@ export default async function Home() {
                 </div>
               </div>
             </div>
-            <HeroImage className="h-[450px] -my-8 rounded-2xl sm:h-128 lg:h-[600px] max-w-md lg:max-w-none mx-auto order-3 lg:order-2" />
+            <HeroImage className="h-[450px] -my-8 rounded-2xl sm:h-128 lg:h-150 max-w-md lg:max-w-none mx-auto order-3 lg:order-2" />
           </div>
         </div>
       </section>
       {courses.length > 0 ? (
-        <div className="mt-24 pb-16 bg-gradient-to-b from-background to-neutral-100 dark:to-neutral-900">
+        <div className="mt-24 pb-16 bg-linear-to-b from-background to-neutral-100 dark:to-neutral-900">
           <div className="px-4 sm:px-6 max-w-7xl mx-auto text-center">
             <h2
               className="text-3xl sm:text-4xl font-bold text-foreground scroll-mt-24"

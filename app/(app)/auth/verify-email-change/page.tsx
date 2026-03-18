@@ -1,11 +1,12 @@
 import { AlertCircle, MailCheck, MailWarning } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
-
 import { Button } from "@/components/ui/button";
-
 import { AuthIconCard } from "../_components/auth-card";
 
-export const metadata = {
+export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
   title: "Verify Email Change",
   robots: { index: false, follow: false },
 };

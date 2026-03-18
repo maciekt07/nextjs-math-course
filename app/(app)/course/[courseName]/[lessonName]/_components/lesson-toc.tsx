@@ -119,7 +119,7 @@ export function LessonTOC({ headings }: { headings: Heading[] }) {
         <Accordion
           type="single"
           collapsible
-          className="bg-card rounded-2xl px-6 border-1"
+          className="bg-card rounded-2xl px-6 border"
         >
           <AccordionItem value="toc">
             <AccordionTrigger className="cursor-pointer">
@@ -175,7 +175,7 @@ export function LessonTOC({ headings }: { headings: Heading[] }) {
                 >
                   <span
                     className={cn(
-                      "mt-1 w-2 h-2 flex-shrink-0 rounded-full transition-all",
+                      "mt-1 w-2 h-2 shrink-0 rounded-full transition-colors",
                       activeId === h.id
                         ? "bg-primary"
                         : "bg-muted-foreground/40 group-hover:bg-muted-foreground/70",

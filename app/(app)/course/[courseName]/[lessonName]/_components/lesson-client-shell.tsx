@@ -42,7 +42,7 @@ export function LessonClientShell({ children, type }: Props) {
   return (
     <article
       className={cn(
-        "mx-auto pb-8 mt-10 px-4 sm:px-6",
+        "mx-auto pb-8 mt-8 px-4 sm:px-6",
         type === "video" ? "max-w-6xl" : "max-w-4xl",
         fontClass,
         fontStyle === "dyslexic" && openDyslexic.variable,

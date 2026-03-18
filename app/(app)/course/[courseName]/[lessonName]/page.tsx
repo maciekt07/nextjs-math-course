@@ -137,7 +137,7 @@ export default async function LessonPage({
   if (!allowed) {
     return (
       <EmptyStateCenterWrapper className="px-8">
-        <div className="flex flex-col items-center text-center space-y-6 max-w-[600px]">
+        <div className="flex flex-col items-center text-center space-y-6 max-w-130">
           <div className="mx-auto w-24 h-24 flex items-center justify-center bg-orange-600/10 dark:bg-orange-500/10 rounded-full">
             <AnimateIcon animate animation="path">
               <Lock
@@ -189,7 +189,7 @@ export default async function LessonPage({
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="flex-grow">
+      <div className="grow">
         <LessonLayout lesson={lesson}>
           <FeedbackWidget lessonId={lesson.id} type={lesson.type} />
           {/* FIXME: CLS */}

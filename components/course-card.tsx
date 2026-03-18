@@ -105,10 +105,10 @@ export function CourseCard({
           )}
 
           <div className="flex-1 min-w-0 relative">
-            <CardTitle className="text-xl md:text-2xl text-left text-shadow-xs">
+            <CardTitle className="text-xl md:text-2xl text-left text-shadow-sm">
               {course.title}
             </CardTitle>
-            <CardDescription className="mt-1 text-left">
+            <CardDescription className="mt-1 text-left text-shadow-2xs">
               {course.description}
             </CardDescription>
           </div>
@@ -124,7 +124,7 @@ export function CourseCard({
           {course.totalReadingTimeSeconds > 0 ||
           course.totalVideoSeconds > 0 ? (
             <>
-              <Separator orientation="vertical" />
+              <Separator orientation="vertical" className="bg-foreground/10" />
 
               <div className="flex items-center gap-1.5">
                 <Clock size={15} />{" "}
@@ -135,12 +135,15 @@ export function CourseCard({
               </div>
 
               {course.totalQuizQuestions > 0 && (
-                <Separator orientation="vertical" />
+                <Separator
+                  orientation="vertical"
+                  className="bg-foreground/10"
+                />
               )}
             </>
           ) : (
             course.totalQuizQuestions > 0 && (
-              <Separator orientation="vertical" />
+              <Separator orientation="vertical" className="bg-foreground/10" />
             )
           )}
 
@@ -165,7 +168,11 @@ export function CourseCard({
             asChild
             className="bg-background/20 hover:bg-background/50 border-foreground/10 shadow-sm"
           >
-            <Link prefetch href={`/course/${course.slug}`}>
+            <Link
+              prefetch
+              href={`/course/${course.slug}`}
+              className="text-shadow-sm"
+            >
               See Free Lessons
             </Link>
           </Button>

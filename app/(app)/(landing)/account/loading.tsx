@@ -49,7 +49,7 @@ export default function AccountPageSkeleton() {
             <Skeleton className="h-5.5 w-26 rounded-md" />
           </CardTitle>
           <CardDescription>
-            <Skeleton className="h-3.5 w-128 rounded-md" />
+            <Skeleton className="h-3.5 w-lg rounded-md" />
           </CardDescription>
         </CardHeader>
         <CardFooter>

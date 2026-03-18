@@ -18,7 +18,7 @@ interface AuthCardProps {
 
 export function AuthCard({ title, description, children }: AuthCardProps) {
   return (
-    <Card className="w-full flex-shrink-0 gap-5">
+    <Card className="w-full shrink-0 gap-5">
       <CardHeader className="space-y-1">
         <div>
           <CardTitle className="text-2xl">{title}</CardTitle>

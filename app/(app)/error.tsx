@@ -14,7 +14,7 @@ export default function GlobalError({ reset }: { reset: () => void }) {
         <p className="text-muted-foreground mb-6">
           We encountered an unexpected error. Please try again.
         </p>
-        <div className="flex flex-col items-center justify-center gap-3 w-full max-w-[250px] mx-auto mt-6">
+        <div className="flex flex-col items-center justify-center gap-3 w-full max-w-62.5 mx-auto mt-6">
           <Button onClick={reset} size="lg" className="w-full cursor-pointer">
             <RefreshCw size={18} />
             Try Again

@@ -11,7 +11,7 @@ export function MarkdownWrapper({ children }: { children: React.ReactNode }) {
   return (
     <div
       className={cn(
-        "prose dark:prose-invert max-w-none break-words",
+        "prose dark:prose-invert max-w-none wrap-break-word",
         coloredMarkdown && "colored-markdown marker:text-primary",
         largeMath && "large-math",
       )}

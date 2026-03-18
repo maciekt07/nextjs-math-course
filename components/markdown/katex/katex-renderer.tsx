@@ -61,10 +61,7 @@ export const KatexRenderer = memo(
     }, [content, block, cacheKey]);
 
     return block ? (
-      <div
-        ref={divRef}
-        className="flex items-center justify-center min-h-[56px]"
-      />
+      <div ref={divRef} className="flex items-center justify-center min-h-14" />
     ) : (
       <span ref={spanRef} />
     );

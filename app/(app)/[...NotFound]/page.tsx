@@ -17,7 +17,7 @@ export default function NotFoundPage() {
       <h1
         className="
     text-7xl sm:text-8xl font-black tracking-tight
-    bg-gradient-to-b from-primary to-primary/60
+    bg-linear-to-b from-primary to-primary/60
     bg-clip-text text-transparent
     drop-shadow-[0_4px_20px_hsl(var(--primary)/0.25)]
   "
@@ -34,7 +34,7 @@ export default function NotFoundPage() {
           unoptimized
           priority
         />
-        <div className="absolute bottom-0 left-0 w-full h-14 sm:h-18 bg-gradient-to-t from-background" />
+        <div className="absolute bottom-0 left-0 w-full h-14 sm:h-18 bg-linear-to-t from-background" />
       </div>
 
       <p className="text-xl mb-2 font-medium text-foreground/80">
