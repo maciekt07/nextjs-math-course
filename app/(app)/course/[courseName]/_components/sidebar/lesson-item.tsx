@@ -1,11 +1,28 @@
 "use client";
 
-import { Calculator, FileText, Lock, Video } from "lucide-react";
+import {
+  Calculator,
+  FileText,
+  Lock,
+  type LucideIcon,
+  Video,
+} from "lucide-react";
 import Link from "next/link";
 import { memo } from "react";
 import { formatDuration, formatReadingTime } from "@/lib/format";
 import { cn } from "@/lib/ui";
 import type { Lesson } from "@/types/payload-types";
+
+type LessonTypeConfig = Record<
+  string,
+  {
+    icon: LucideIcon;
+    color: {
+      base: string;
+      hover: string;
+    };
+  }
+>;
 
 const lessonTypeConfig = {
   quiz: {
@@ -29,7 +46,7 @@ const lessonTypeConfig = {
       hover: "group-hover:bg-primary/20",
     },
   },
-};
+} as const satisfies LessonTypeConfig;
 
 interface LessonItemProps {
   lesson: Lesson;

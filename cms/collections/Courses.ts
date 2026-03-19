@@ -43,5 +43,60 @@ export const Courses: CollectionConfig = {
       type: "upload",
       relationTo: "posters",
     },
+    {
+      type: "collapsible",
+      label: "Metadata",
+      admin: {
+        initCollapsed: true,
+      },
+      fields: [
+        {
+          name: "lessonCount",
+          type: "number",
+          admin: {
+            readOnly: true,
+          },
+          defaultValue: 0,
+        },
+        {
+          name: "totalQuizQuestions",
+          type: "number",
+          admin: {
+            readOnly: true,
+          },
+          defaultValue: 0,
+        },
+        {
+          name: "totalReadingTimeSeconds",
+          type: "number",
+          admin: {
+            readOnly: true,
+          },
+          defaultValue: 0,
+        },
+        {
+          name: "totalVideoSeconds",
+          type: "number",
+          admin: {
+            readOnly: true,
+          },
+          defaultValue: 0,
+        },
+        {
+          name: "firstLessonSlug",
+          type: "text",
+          admin: {
+            readOnly: true,
+          },
+        },
+        {
+          name: "firstFreeLessonSlug",
+          type: "text",
+          admin: {
+            readOnly: true,
+          },
+        },
+      ],
+    },
   ],
 };

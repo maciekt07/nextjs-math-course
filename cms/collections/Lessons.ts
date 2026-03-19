@@ -3,6 +3,10 @@ import { createSlugField } from "@fields/factories/createSlugField";
 import createBlurUp from "@mux/blurup";
 import type { CollectionConfig } from "payload";
 import { revalidateLesson } from "@/cms/hooks/revalidateLesson";
+import {
+  syncLessonCourseMetadataAfterChange,
+  syncLessonCourseMetadataAfterDelete,
+} from "@/cms/hooks/syncCourseMetadata";
 
 interface LessonData {
   course?: string | { id: string };
@@ -79,7 +83,9 @@ export const Lessons: CollectionConfig = {
         }
       },
       revalidateLesson,
+      syncLessonCourseMetadataAfterChange,
     ],
+    afterDelete: [syncLessonCourseMetadataAfterDelete],
   },
 
   fields: [

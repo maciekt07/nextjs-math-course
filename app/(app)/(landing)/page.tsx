@@ -26,6 +26,12 @@ export default async function Home() {
   const ownedSet = new Set(ownedIds);
 
   const formattedUserCount = Math.max(10, Math.floor(userCount / 10) * 10);
+  const featuredCourse = courses[0];
+  const featuredPreviewLink =
+    featuredCourse?.slug &&
+    (featuredCourse.firstFreeLessonSlug ?? featuredCourse.firstLessonSlug)
+      ? `/course/${featuredCourse.slug}/${featuredCourse.firstFreeLessonSlug ?? featuredCourse.firstLessonSlug}`
+      : "#";
 
   return (
     <div className="w-full flex flex-col ">
@@ -66,11 +72,7 @@ export default async function Home() {
                     asChild
                     className="backdrop-blur-2xl"
                   >
-                    <Link
-                      href={
-                        courses[0].slug ? `/course/${courses[0].slug}` : "#"
-                      }
-                    >
+                    <Link href={featuredPreviewLink}>
                       <BookOpen className="size-4" /> Watch Free Demo
                     </Link>
                   </Button>
@@ -140,9 +142,7 @@ export default async function Home() {
       <CTASection
         userCount={formattedUserCount}
         courseCount={courses.length}
-        previewLink={
-          courses.length > 0 ? `/course/${courses[0].slug}` : undefined
-        }
+        previewLink={courses.length > 0 ? featuredPreviewLink : undefined}
       />
     </div>
   );

@@ -141,6 +141,12 @@ export interface Course {
   price: number;
   description?: string | null;
   poster?: (string | null) | Poster;
+  lessonCount?: number | null;
+  totalQuizQuestions?: number | null;
+  totalReadingTimeSeconds?: number | null;
+  totalVideoSeconds?: number | null;
+  firstLessonSlug?: string | null;
+  firstFreeLessonSlug?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -458,6 +464,12 @@ export interface CoursesSelect<T extends boolean = true> {
   price?: T;
   description?: T;
   poster?: T;
+  lessonCount?: T;
+  totalQuizQuestions?: T;
+  totalReadingTimeSeconds?: T;
+  totalVideoSeconds?: T;
+  firstLessonSlug?: T;
+  firstFreeLessonSlug?: T;
   updatedAt?: T;
   createdAt?: T;
 }

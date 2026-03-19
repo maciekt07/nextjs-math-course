@@ -5,71 +5,8 @@ import { unstable_cache } from "next/cache";
 import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
 import { getPayloadClient } from "@/lib/payload-client";
-import type { Course } from "@/types/payload-types";
-
-export interface LessonStats {
-  lessonCount: number;
-  totalQuizQuestions: number;
-  totalReadingTimeSeconds: number;
-  totalVideoSeconds: number;
-}
 
 const payloadPromise = getPayloadClient();
-
-function getId(value: Course | string): string {
-  if (!value) return "";
-  return typeof value === "string" ? value : value.id;
-}
-
-async function getLessonStatsBatch(courseIds: string[]) {
-  if (courseIds.length === 0) return {};
-
-  const payload = await payloadPromise;
-
-  const { docs } = await payload.find({
-    collection: "lessons",
-    where: {
-      course: { in: courseIds },
-    },
-    select: {
-      course: true,
-      quiz: true,
-      readingTimeSeconds: true,
-      videoDurationSeconds: true,
-      type: true,
-    },
-    limit: 10000,
-  });
-
-  const statsMap: Record<string, LessonStats> = {};
-
-  for (const id of courseIds) {
-    statsMap[id] = {
-      lessonCount: 0,
-      totalQuizQuestions: 0,
-      totalReadingTimeSeconds: 0,
-      totalVideoSeconds: 0,
-    };
-  }
-
-  for (const lesson of docs) {
-    const courseId = getId(lesson.course);
-    const stats = statsMap[courseId];
-
-    if (!stats) continue;
-
-    stats.lessonCount++;
-
-    if (lesson.type === "quiz") {
-      stats.totalQuizQuestions += lesson.quiz?.length ?? 0;
-    }
-
-    stats.totalReadingTimeSeconds += lesson.readingTimeSeconds ?? 0;
-    stats.totalVideoSeconds += lesson.videoDurationSeconds ?? 0;
-  }
-
-  return statsMap;
-}
 
 export const getCourses = unstable_cache(
   async () => {
@@ -78,16 +15,24 @@ export const getCourses = unstable_cache(
     const { docs } = await payload.find({
       collection: "courses",
       limit: 10,
+      select: {
+        title: true,
+        slug: true,
+        price: true,
+        description: true,
+        poster: true,
+        lessonCount: true,
+        totalQuizQuestions: true,
+        totalReadingTimeSeconds: true,
+        totalVideoSeconds: true,
+        firstLessonSlug: true,
+        firstFreeLessonSlug: true,
+        updatedAt: true,
+        createdAt: true,
+      },
     });
 
-    const courses = docs ?? [];
-
-    const statsMap = await getLessonStatsBatch(courses.map((c) => c.id));
-
-    return courses.map((c) => ({
-      ...c,
-      ...statsMap[c.id],
-    }));
+    return docs ?? [];
   },
   ["courses-list"],
   {
@@ -107,16 +52,24 @@ export function getCoursesByIds(ids: string[]) {
         collection: "courses",
         where: { id: { in: ids } },
         limit: 100,
+        select: {
+          title: true,
+          slug: true,
+          price: true,
+          description: true,
+          poster: true,
+          lessonCount: true,
+          totalQuizQuestions: true,
+          totalReadingTimeSeconds: true,
+          totalVideoSeconds: true,
+          firstLessonSlug: true,
+          firstFreeLessonSlug: true,
+          updatedAt: true,
+          createdAt: true,
+        },
       });
 
-      const courses = docs ?? [];
-
-      const statsMap = await getLessonStatsBatch(ids);
-
-      return courses.map((c) => ({
-        ...c,
-        ...statsMap[c.id],
-      }));
+      return docs ?? [];
     },
     ["courses-by-ids", ...ids],
     {

@@ -60,6 +60,30 @@ const groupLessonsByChapter = (
     .filter(({ lessons }) => lessons.length > 0);
 };
 
+const findActiveChapterId = ({
+  groupedChapters,
+  pathname,
+  optimisticPath,
+  courseSlug,
+}: {
+  groupedChapters: ChapterLessonsGroup[];
+  pathname: string;
+  optimisticPath: string | null;
+  courseSlug: string;
+}): string | null => {
+  for (const { chapter, lessons } of groupedChapters) {
+    if (
+      lessons.some((lesson) =>
+        getActiveLessonPath(pathname, optimisticPath, courseSlug, lesson),
+      )
+    ) {
+      return chapter.id;
+    }
+  }
+
+  return null;
+};
+
 const getActiveLessonPath = (
   pathname: string,
   optimisticPath: string | null,
@@ -91,10 +115,22 @@ export function CourseSidebar({
   const toggle = useSidebarStore((state) => state.toggle);
   const optimisticPath = useSidebarStore((state) => state.optimisticPath);
   const setOptimisticPath = useSidebarStore((state) => state.setOptimisticPath);
+  const groupedChapters = useMemo(
+    () => groupLessonsByChapter(lessons, chapters),
+    [lessons, chapters],
+  );
+  const initialActiveChapterId = findActiveChapterId({
+    groupedChapters,
+    pathname,
+    optimisticPath,
+    courseSlug: course.slug!,
+  });
   const { data: session, isPending } = authClient.useSession();
   const [_isTransitionLoading, startTransition] = useTransition();
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
-  const [expandedChapters, setExpandedChapters] = useState<string[]>([]);
+  const [expandedChapters, setExpandedChapters] = useState<string[]>(() =>
+    initialActiveChapterId ? [initialActiveChapterId] : [],
+  );
   const [animate, setAnimate] = useState<boolean>(false);
   const prefersReducedMotion = useReducedMotion();
   const mounted = useMounted();
@@ -112,11 +148,6 @@ export function CourseSidebar({
     [lessons],
   );
 
-  const groupedChapters = useMemo(
-    () => groupLessonsByChapter(lessons, chapters),
-    [lessons, chapters],
-  );
-
   useEffect(() => {
     const t = setTimeout(() => {
       setAnimate(true);
@@ -125,16 +156,12 @@ export function CourseSidebar({
   }, []);
 
   const activeChapterId = useMemo(() => {
-    for (const { chapter, lessons } of groupedChapters) {
-      if (
-        lessons.some((lesson) =>
-          getActiveLessonPath(pathname, optimisticPath, course.slug!, lesson),
-        )
-      ) {
-        return chapter.id;
-      }
-    }
-    return null;
+    return findActiveChapterId({
+      groupedChapters,
+      pathname,
+      optimisticPath,
+      courseSlug: course.slug!,
+    });
   }, [groupedChapters, pathname, optimisticPath, course.slug]);
 
   useEffect(() => {

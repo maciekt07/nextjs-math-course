@@ -5,6 +5,8 @@ import { EmptyState, EmptyStateCenterWrapper } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { getPayloadClient } from "@/lib/payload-client";
 
+// fallback page - not actively used in normal flow
+
 export const dynamic = "force-static";
 export const revalidate = 3600;
 

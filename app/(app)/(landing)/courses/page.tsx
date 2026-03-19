@@ -51,7 +51,14 @@ export default async function CoursesPage() {
             owned={true}
             customContent={
               <Button asChild size="lg" className="w-full">
-                <Link prefetch href={`/course/${c.slug}`}>
+                <Link
+                  prefetch
+                  href={
+                    c.slug && c.firstLessonSlug
+                      ? `/course/${c.slug}/${c.firstLessonSlug}`
+                      : `/course/${c.slug}`
+                  }
+                >
                   Open
                 </Link>
               </Button>

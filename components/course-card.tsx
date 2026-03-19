@@ -19,12 +19,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import type { LessonStats } from "@/lib/data/courses";
 import { cn } from "@/lib/ui";
 import type { Course, Poster } from "@/types/payload-types";
 
 interface CourseCardProps extends React.ComponentProps<"div"> {
-  course: Course & LessonStats;
+  course: Course;
   owned: boolean;
   customContent?: React.ReactNode;
 }
@@ -42,6 +41,15 @@ export function CourseCard({
       : {};
 
   const dominant = palette?.dominant ?? "#8f8f8f";
+  const defaultCourseHref = course.slug ? `/course/${course.slug}` : "#";
+  const ownedCourseHref =
+    course.slug && course.firstLessonSlug
+      ? `/course/${course.slug}/${course.firstLessonSlug}`
+      : defaultCourseHref;
+  const previewCourseHref =
+    course.slug && (course.firstFreeLessonSlug ?? course.firstLessonSlug)
+      ? `/course/${course.slug}/${course.firstFreeLessonSlug ?? course.firstLessonSlug}`
+      : defaultCourseHref;
 
   return (
     <Card
@@ -118,23 +126,24 @@ export function CourseCard({
       <CardContent className="flex flex-col gap-4 flex-1 px-4 md:px-5 -mt-4 relative">
         <div className="flex items-center gap-3 mb-1 text-xs sm:text-sm text-muted-foreground">
           <div className="flex items-center gap-1.5">
-            <BookOpen size={15} /> {course.lessonCount} Lessons
+            <BookOpen size={15} /> {course.lessonCount ?? 0} Lessons
           </div>
 
-          {course.totalReadingTimeSeconds > 0 ||
-          course.totalVideoSeconds > 0 ? (
+          {(course.totalReadingTimeSeconds ?? 0) > 0 ||
+          (course.totalVideoSeconds ?? 0) > 0 ? (
             <>
               <Separator orientation="vertical" className="bg-foreground/10" />
 
               <div className="flex items-center gap-1.5">
                 <Clock size={15} />{" "}
                 {getHoursDisplay(
-                  course.totalReadingTimeSeconds + course.totalVideoSeconds,
+                  (course.totalReadingTimeSeconds ?? 0) +
+                    (course.totalVideoSeconds ?? 0),
                 )}{" "}
                 hours
               </div>
 
-              {course.totalQuizQuestions > 0 && (
+              {(course.totalQuizQuestions ?? 0) > 0 && (
                 <Separator
                   orientation="vertical"
                   className="bg-foreground/10"
@@ -142,12 +151,12 @@ export function CourseCard({
               )}
             </>
           ) : (
-            course.totalQuizQuestions > 0 && (
+            (course.totalQuizQuestions ?? 0) > 0 && (
               <Separator orientation="vertical" className="bg-foreground/10" />
             )
           )}
 
-          {course.totalQuizQuestions > 0 && (
+          {(course.totalQuizQuestions ?? 0) > 0 && (
             <div className="flex items-center gap-1.5">
               <HelpCircle size={15} /> {course.totalQuizQuestions} Exercises
             </div>
@@ -157,7 +166,7 @@ export function CourseCard({
           customContent
         ) : owned ? (
           <Button size="lg" asChild>
-            <Link prefetch href={`/course/${course.slug}`}>
+            <Link prefetch href={ownedCourseHref}>
               See All Lessons
             </Link>
           </Button>
@@ -168,11 +177,7 @@ export function CourseCard({
             asChild
             className="bg-background/20 hover:bg-background/50 border-foreground/10 shadow-sm"
           >
-            <Link
-              prefetch
-              href={`/course/${course.slug}`}
-              className="text-shadow-sm"
-            >
+            <Link prefetch href={previewCourseHref} className="text-shadow-sm">
               See Free Lessons
             </Link>
           </Button>
