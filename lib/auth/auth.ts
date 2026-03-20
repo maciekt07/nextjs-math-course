@@ -3,27 +3,34 @@ import "server-only";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { lastLoginMethod } from "better-auth/plugins";
+import { lastLoginMethod, oneTap } from "better-auth/plugins";
 import { emailHarmony } from "better-auth-harmony";
 import { db } from "@/drizzle/db";
 import { sendEmail } from "@/email/send-email";
 import ChangeEmailEmailTemplate from "@/email/templates/change-email-template";
 import ResetPasswordEmailTemplate from "@/email/templates/reset-password-template";
 import VerificationEmailTemplate from "@/email/templates/verification-template";
+import { clientEnv } from "@/env/client";
 import { serverEnv } from "@/env/server";
 import { authBeforeHook } from "@/lib/auth/auth-before-hook";
 import { rateLimit } from "@/lib/auth/auth-rate-limit";
+import {
+  GOOGLE_ONE_TAP_PATH,
+  handleGoogleOneTapUser,
+} from "@/lib/auth/google-profile";
 import { secondaryStorage } from "@/lib/auth/secondary-storage";
 import { limitUserSessions } from "@/lib/auth/session-limit";
 import { AUTH_LIMITS } from "@/lib/constants/limits";
 
 // https://www.better-auth.com/docs/reference/options
 export const auth = betterAuth({
+  appName: "Math Course",
+
   database: drizzleAdapter(db, { provider: "pg" }),
 
   socialProviders: {
     google: {
-      clientId: serverEnv.GOOGLE_CLIENT_ID,
+      clientId: clientEnv.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
       clientSecret: serverEnv.GOOGLE_CLIENT_SECRET,
       mapProfileToUser: (profile) => {
         return {
@@ -38,7 +45,20 @@ export const auth = betterAuth({
     errorURL: "/auth/error",
   },
 
-  plugins: [emailHarmony(), lastLoginMethod(), nextCookies()],
+  plugins: [
+    emailHarmony(),
+    lastLoginMethod({
+      customResolveMethod: (ctx) => {
+        if (ctx.path === GOOGLE_ONE_TAP_PATH) {
+          return "google";
+        }
+        // default resolution
+        return null;
+      },
+    }),
+    oneTap(),
+    nextCookies(),
+  ],
 
   trustedOrigins: [serverEnv.NGROK_URL, "http://localhost:3000"].filter(
     (o): o is string => Boolean(o),
@@ -109,6 +129,10 @@ export const auth = betterAuth({
   },
 
   databaseHooks: {
+    user: {
+      create: { before: handleGoogleOneTapUser },
+      update: { before: handleGoogleOneTapUser },
+    },
     session: {
       create: {
         after: limitUserSessions,

@@ -1,10 +1,29 @@
-import { lastLoginMethodClient } from "better-auth/client/plugins";
+import {
+  lastLoginMethodClient,
+  oneTapClient,
+} from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 import { toast } from "sonner";
+import { clientEnv } from "@/env/client";
 import { formatSeconds } from "@/lib/format";
 
 export const authClient = createAuthClient({
-  plugins: [lastLoginMethodClient()],
+  plugins: [
+    lastLoginMethodClient(),
+    oneTapClient({
+      clientId: clientEnv.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+      cancelOnTapOutside: false,
+      context: "use",
+      uxMode: "popup",
+      promptOptions: {
+        baseDelay: 3000,
+        maxAttempts: 2,
+      },
+      additionalOptions: {
+        use_fedcm_for_prompt: true,
+      },
+    }),
+  ],
   fetchOptions: {
     onError: ({ response, error }) => {
       // rate limit

@@ -3,6 +3,7 @@
 ## Auth
 
 - [x] Integrate OAuth login with Google
+- [x] Add Google One Tap
 - [x] Implement forgot password, reset password and change email functionality
 - [x] Display active sessions
 - [x] Limit simultaneous logins per account

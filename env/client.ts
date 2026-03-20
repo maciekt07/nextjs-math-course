@@ -6,6 +6,7 @@ const durationRegex = /^\d+(s|m|h|d|w)$/;
 export const clientEnv = createEnv({
   client: {
     NEXT_PUBLIC_APP_URL: z.url().default("http://localhost:3000"),
+    NEXT_PUBLIC_GOOGLE_CLIENT_ID: z.string().min(1),
     NEXT_PUBLIC_STRIPE_PK: z
       .string()
       .min(10)
@@ -20,6 +21,7 @@ export const clientEnv = createEnv({
   },
   experimental__runtimeEnv: {
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL!,
+    NEXT_PUBLIC_GOOGLE_CLIENT_ID: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
     NEXT_PUBLIC_STRIPE_PK: process.env.NEXT_PUBLIC_STRIPE_PK!,
 
     NEXT_PUBLIC_MUX_SIGNED_URL_EXPIRATION:

@@ -35,7 +35,11 @@ export function UpdateNameForm({ name }: { name: string }) {
     defaultValues: { name },
   });
 
-  const hasChanged = form.watch("name").trim() !== name;
+  const [submittedName, setSubmittedName] = useState(name);
+
+  const hasChanged =
+    form.watch("name").trim() !== name &&
+    form.watch("name").trim() !== submittedName;
 
   async function onSubmit(values: UpdateNameSchema) {
     setLoading(true);
@@ -44,15 +48,11 @@ export function UpdateNameForm({ name }: { name: string }) {
 
     if (error) {
       setLoading(false);
-      if (error.status === 429) return;
-      // toast.error(error.message ?? "Failed to update name.");
-      form.setError("name", {
-        message: error.message,
-      });
-
+      form.setError("name", { message: error.message });
       return;
     }
 
+    setSubmittedName(values.name);
     router.refresh();
     toast.success("Name updated successfully.");
     setLoading(false);

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Compass } from "@/components/animate-ui/icons/compass";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { CourseCard } from "@/components/course-card";
+import { OneTap } from "@/components/one-tap";
 import { Button } from "@/components/ui/button";
 import { getServerSession } from "@/lib/auth/get-session";
 import { getCourses, getOwnedCourseIds } from "@/lib/data/courses";
@@ -35,6 +36,7 @@ export default async function Home() {
 
   return (
     <div className="w-full flex flex-col ">
+      <OneTap />
       <GridBackground />
       <section className="mt-0 sm:mt-2">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

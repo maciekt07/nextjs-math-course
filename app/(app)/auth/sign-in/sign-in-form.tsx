@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "nextjs-toploader/app";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -54,6 +55,7 @@ export function SignInForm({ returnTo }: { returnTo?: string }) {
         onSuccess: () => {
           router.push(returnTo || "/");
           router.refresh();
+          toast.success("Signed in successfully");
         },
       },
     );

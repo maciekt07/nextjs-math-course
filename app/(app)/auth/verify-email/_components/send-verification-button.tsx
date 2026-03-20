@@ -50,10 +50,7 @@ export function SendVerificationButton({
         callbackURL: "/auth/email-verified",
       });
 
-      if (error) {
-        if (error.status === 429) return;
-        toast.error(error.message || "Failed to send verification email");
-      } else {
+      if (!error) {
         toast.success(
           firstSent
             ? "Verification email sent again"
