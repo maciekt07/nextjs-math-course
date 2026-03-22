@@ -14,7 +14,7 @@ export default async function AuthLayout({
       <div className="flex viewport-smooth-scroll">
         <Navbar user={session?.user || null} />
       </div>
-      <main>
+      <main className="px-4">
         <div className="min-h-[calc(100dvh-100px)] flex items-start md:items-center justify-center">
           <div className="w-full max-w-md flex flex-col items-center">
             {children}

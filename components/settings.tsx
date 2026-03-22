@@ -37,6 +37,7 @@ const switchSettings: ReadonlyArray<{
     description: "Increase the font size of LaTeX math expressions.",
   },
 ] as const;
+
 export function Settings() {
   const {
     desmosForceDarkMode,

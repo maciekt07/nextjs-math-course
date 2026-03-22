@@ -73,7 +73,7 @@ export default async function AccountPage() {
   const user = session.user;
 
   return (
-    <div className="max-w-2xl mx-auto mt-0 sm:mt-16 px-6 pb-8 space-y-6">
+    <div className="max-w-2xl mx-auto mt-0 sm:mt-16 px-4 pb-8 space-y-6">
       <header className="space-y-2 text-center">
         <h1 className="sm:text-4xl text-3xl font-bold">Your Account</h1>
         <p className="sm:text-lg text-md text-muted-foreground">
@@ -223,8 +223,7 @@ export default async function AccountPage() {
           <Suspense
             fallback={
               <div className="flex flex-col gap-2">
-                <Skeleton className="h-[72px] rounded-md" />
-                <Skeleton className="h-[72px] rounded-md" />
+                <Skeleton className="h-[72px] rounded-lg border" />
               </div>
             }
           >

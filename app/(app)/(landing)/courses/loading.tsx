@@ -10,7 +10,7 @@ export default function CoursesPageSkeleton() {
       {[...Array(2)].map((_, i) => (
         <Card
           key={i}
-          className="group relative flex flex-col py-4 md:py-5 rounded-3xl overflow-hidden bg-background dark:bg-card"
+          className="group relative flex flex-col py-4 md:py-5 border rounded-3xl overflow-hidden bg-background dark:bg-card"
         >
           <div className="px-4 md:px-5 relative">
             <div className="flex flex-col sm:flex-row items-start gap-4">

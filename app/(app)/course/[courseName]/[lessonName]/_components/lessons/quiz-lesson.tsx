@@ -119,7 +119,10 @@ export function QuizLesson({ quiz }: QuizLessonProps) {
                     setSelectedOption(submittedAnswers[idx] ?? null);
                     window.scrollTo({ top: 0, behavior: "instant" });
                   }}
-                  className="size-10 cursor-pointer"
+                  className={cn(
+                    "size-10 cursor-pointer border-[1.5px] transition-none",
+                    isCurrent && "border-none",
+                  )}
                 >
                   {idx + 1}
                 </Button>

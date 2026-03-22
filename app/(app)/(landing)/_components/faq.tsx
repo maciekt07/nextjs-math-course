@@ -1,6 +1,11 @@
 "use client";
 
-import { motion, useInView } from "motion/react";
+import {
+  type HTMLMotionProps,
+  motion,
+  useInView,
+  useReducedMotion,
+} from "motion/react";
 import { useRef } from "react";
 import {
   Accordion,
@@ -35,6 +40,16 @@ const faqs: { question: string; answer: string }[] = [
 export function FAQ() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const prefersReducedMotion = useReducedMotion();
+
+  const accordionContentMotionProps: HTMLMotionProps<"div"> =
+    prefersReducedMotion
+      ? {}
+      : {
+          initial: { opacity: 0, y: 12 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.2 },
+        };
 
   return (
     <section
@@ -68,7 +83,9 @@ export function FAQ() {
                 <span className="font-medium">{faq.question}</span>
               </AccordionTrigger>
               <AccordionContent className="pb-4 text-muted-foreground">
-                {faq.answer}
+                <motion.div {...accordionContentMotionProps}>
+                  {faq.answer}
+                </motion.div>
               </AccordionContent>
             </AccordionItem>
           </motion.div>

@@ -13,12 +13,19 @@ const Toaster = ({ ...props }: ToasterProps) => {
     <Sonner
       theme={theme as ToasterProps["theme"]}
       className="toaster group"
+      mobileOffset={20}
+      toastOptions={{
+        classNames: {
+          icon: "size-5!",
+        },
+      }}
+      richColors
       icons={{
-        success: <CircleCheck animate className="size-4" />,
-        info: <InfoIcon className="size-4" />,
-        warning: <TriangleAlertIcon className="size-4" />,
-        error: <CircleX animate className="size-4" />,
-        loading: <Loader2Icon className="size-4 animate-spin" />,
+        success: <CircleCheck animate className="size-5" />,
+        info: <InfoIcon className="size-5" />,
+        warning: <TriangleAlertIcon className="size-5" />,
+        error: <CircleX animate className="size-5" />,
+        loading: <Loader2Icon className="size-5 animate-spin" />,
       }}
       style={{
         "--normal-bg": "var(--popover)",

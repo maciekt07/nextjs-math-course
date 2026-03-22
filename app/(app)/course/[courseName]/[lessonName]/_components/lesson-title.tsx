@@ -1,3 +1,5 @@
+"use client";
+
 import { Calendar, CheckCircle, Clock, Film, Gem, List } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import {

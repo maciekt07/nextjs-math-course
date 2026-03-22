@@ -4,8 +4,15 @@
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
-@custom-variant safari (@supports (-webkit-touch-callout: none) and
-  (display-mode: browser));
+@custom-variant safari {
+  @supports (hanging-punctuation: first) and
+    (font: -apple-system-body) and
+    (-webkit-appearance: none) {
+    @media (display-mode: standalone) {
+      @slot;
+    }
+  }
+}
 
 @theme inline {
   --color-background: var(--background);
@@ -47,6 +54,9 @@
 }
 
 :root {
+  --font-system:
+    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   --radius: 0.8rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -82,9 +92,6 @@
   --sidebar-ring: oklch(0.708 0 0);
   --scrollbar-thumb: rgba(0, 0, 0, 0.3);
   --scrollbar-thumb-hover: rgba(0, 0, 0, 0.5);
-  --font-system:
-    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 .dark {
@@ -186,6 +193,78 @@
 }
 
 @layer utilities {
+  .button-sheen {
+    --btn-highlight: rgba(255, 255, 255, 0.22);
+    overflow: hidden;
+    color: var(--color-primary-foreground);
+    text-shadow: 0 -1px 0 rgb(0 0 0 / 0.25);
+    transition:
+      filter 0.15s ease-out,
+      box-shadow 0.15s ease-out,
+      transform 0.15s ease-out;
+    background:
+      radial-gradient(ellipse at -20px top, var(--btn-highlight), transparent),
+      linear-gradient(180deg, var(--btn-top), var(--btn-bottom));
+    box-shadow:
+      inset 0 1px rgb(255 255 255 / 0.22),
+      0 1px 2px rgb(0 0 0 / 0.18),
+      0 10px 24px rgb(0 0 0 / 0.12);
+    transform: translateZ(0);
+  }
+
+  .button-sheen::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    border: 1.5px solid transparent;
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.02),
+        rgb(0 0 0 / 0.16) 41% 75%,
+        rgb(255 255 255 / 0.28)
+      )
+      border-box;
+    -webkit-mask:
+      linear-gradient(#000 0 0) padding-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) padding-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    mix-blend-mode: overlay;
+  }
+
+  .button-sheen:hover {
+    filter: brightness(1.06);
+  }
+
+  .dark .button-sheen {
+    background:
+      radial-gradient(
+        ellipse at -20px top,
+        rgb(255 255 255 / 0.22),
+        transparent
+      ),
+      linear-gradient(180deg, var(--btn-top-dark), var(--btn-bottom-dark));
+    box-shadow:
+      inset 0 1px rgb(255 255 255 / 0.22),
+      0 1px 2px rgb(0 0 0 / 0.24),
+      0 10px 24px rgb(0 0 0 / 0.18);
+  }
+
+  .dark .button-sheen::after {
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.14),
+        rgb(0 0 0 / 0.24) 41% 75%,
+        rgb(255 255 255 / 0.28)
+      )
+      border-box;
+  }
+
   .sidebar-transition {
     @apply duration-200 ease-[cubic-bezier(0.25,0.46,0.45,0.94)];
   }

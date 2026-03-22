@@ -172,7 +172,7 @@ export function CourseCard({
           </Button>
         ) : (
           <Button
-            variant="outline"
+            variant="green"
             size="lg"
             asChild
             className="bg-background/20 hover:bg-background/50 border-foreground/10 shadow-sm"

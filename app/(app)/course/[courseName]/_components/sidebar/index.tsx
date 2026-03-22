@@ -131,7 +131,6 @@ export function CourseSidebar({
   const [expandedChapters, setExpandedChapters] = useState<string[]>(() =>
     initialActiveChapterId ? [initialActiveChapterId] : [],
   );
-  const [animate, setAnimate] = useState<boolean>(false);
   const prefersReducedMotion = useReducedMotion();
   const mounted = useMounted();
 
@@ -147,13 +146,6 @@ export function CourseSidebar({
     () => lessons.filter((lesson) => !lesson.chapter),
     [lessons],
   );
-
-  useEffect(() => {
-    const t = setTimeout(() => {
-      setAnimate(true);
-    }, 1500);
-    return () => clearTimeout(t);
-  }, []);
 
   const activeChapterId = useMemo(() => {
     return findActiveChapterId({
@@ -202,21 +194,6 @@ export function CourseSidebar({
     },
     [router, optimisticPath, setOpen, setOptimisticPath, pathname],
   );
-
-  // useEffect(() => {
-  //   const lessonRegex = /^\/course\/[^/]+\/[^/]+$/;
-  //   if (!lessonRegex.test(pathname) || !animate.current) return;
-
-  //   if (window.innerWidth < 768) {
-  //     const close = () => setOpen(false);
-
-  //     if ("requestIdleCallback" in window) {
-  //       requestIdleCallback(close, { timeout: 500 });
-  //     } else {
-  //       setTimeout(close, 50);
-  //     }
-  //   }
-  // }, [pathname, setOpen]);
 
   return (
     <>
@@ -320,13 +297,13 @@ export function CourseSidebar({
       </Dialog>
       {/* FIXME: disable content scroll on Safari */}
       {mounted ? (
-        <AnimatePresence>
+        <AnimatePresence initial={false}>
           {open && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: animate ? 0.2 : 0 }}
+              transition={{ duration: 0.2 }}
               onClick={() => setOpen(false)}
               className="fixed inset-0 h-dvh bg-black/50 backdrop-blur-xs z-40 md:hidden"
             />
@@ -438,13 +415,13 @@ export function CourseSidebar({
                       <AccordionItem key={chapter.id} value={chapter.id}>
                         <AccordionTrigger
                           className="px-4 sm:py-4 py-6 font-medium text-sm hover:no-underline cursor-pointer rounded-none transition-none hover:bg-muted/70"
-                          data-animate={animate && !prefersReducedMotion}
+                          data-animate={mounted && !prefersReducedMotion}
                         >
                           <span>{chapter.title}</span>
                         </AccordionTrigger>
                         <AccordionContent
                           className="px-0 py-0"
-                          data-animate={animate && !prefersReducedMotion}
+                          data-animate={mounted && !prefersReducedMotion}
                         >
                           <nav className="px-2 pb-2 mt-2">
                             {chapterLessons.map((lesson) => (

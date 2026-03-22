@@ -1,13 +1,14 @@
 "use client";
 
 import type { User } from "better-auth";
-import { BookOpen, Calculator, LogIn, Menu, UserPlus, X } from "lucide-react";
+import { BookOpen, LogIn, Menu, UserPlus, X } from "lucide-react";
 import {
   AnimatePresence,
   type HTMLMotionProps,
   motion,
   useReducedMotion,
 } from "motion/react";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ThemeSelect } from "@/components/theme-select";
@@ -156,7 +157,14 @@ export function Navbar({ user }: { user: User | null }) {
               className="flex items-center gap-3"
               onClick={() => setOpen(false)}
             >
-              <Calculator className="size-6 text-primary" />
+              <Image
+                alt="Logo"
+                src="/logo.svg"
+                width={34}
+                height={34}
+                fetchPriority="high"
+                preload
+              />
               <span className="text-xl font-bold">Math Course Online</span>
             </Link>
 

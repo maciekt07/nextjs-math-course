@@ -1,4 +1,5 @@
-import { Calculator, Github } from "lucide-react";
+import { Github, Mail } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { getServerSession } from "@/lib/auth/get-session";
 
@@ -14,7 +15,7 @@ export default async function Footer() {
               href="/"
               className="flex items-center gap-2 font-semibold text-base hover:text-primary transition-colors"
             >
-              <Calculator className="w-5 h-5 text-primary" />
+              <Image src="/logo.svg" alt="Logo" width={26} height={26} />
               <span>Math Course Online</span>
             </Link>
             <p className="text-sm text-foreground/60 max-w-xs">
@@ -90,6 +91,13 @@ export default async function Footer() {
                 <Github size={18} />
                 <span>GitHub</span>
               </Link>
+              <a
+                href="mailto:contact@maciejtwarog.dev"
+                className="flex items-center gap-2 text-sm text-foreground/70 hover:text-primary transition-colors w-fit"
+              >
+                <Mail size={18} />
+                <span>Contact</span>
+              </a>
             </div>
           </div>
         </div>

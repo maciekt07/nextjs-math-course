@@ -72,7 +72,7 @@ export default async function Home() {
                     variant="outline"
                     size="xl"
                     asChild
-                    className="backdrop-blur-2xl"
+                    className="backdrop-blur-2xl shadow-sm"
                   >
                     <Link href={featuredPreviewLink}>
                       <BookOpen className="size-4" /> Watch Free Demo

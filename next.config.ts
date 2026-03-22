@@ -19,8 +19,10 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+
   reactStrictMode: true,
   reactCompiler: true,
+
   experimental: {
     serverMinification: true,
     authInterrupts: true,

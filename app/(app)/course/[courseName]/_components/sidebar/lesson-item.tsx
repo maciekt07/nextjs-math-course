@@ -80,7 +80,7 @@ export const LessonItem = memo(
           className={cn(
             "group flex items-center gap-3 px-3 py-2.5 rounded-md",
             isActive
-              ? "bg-primary text-primary-foreground"
+              ? "button-sheen text-primary-foreground hover:brightness-100! [--btn-top:var(--primary)] [--btn-bottom:color-mix(in_oklab,var(--primary)_72%,black_28%)] [--btn-top-dark:color-mix(in_oklab,var(--primary)_80%,var(--background)_20%)] [--btn-bottom-dark:color-mix(in_oklab,var(--primary)_62%,var(--background)_38%)]"
               : "hover:bg-secondary/80 text-muted-foreground hover:text-foreground",
           )}
         >
@@ -120,7 +120,12 @@ export const LessonItem = memo(
             )}
           </div>
           {!lesson.free && !owned && (
-            <Lock className="w-4 h-4 shrink-0 text-orange-600 dark:text-orange-500" />
+            <Lock
+              className={cn(
+                "w-4 h-4 shrink-0 text-orange-600 dark:text-orange-500",
+                isActive && "text-primary-foreground!",
+              )}
+            />
           )}
         </div>
       </Link>
