@@ -1,0 +1,11 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "ignore": [
+    "types/payload-types.ts",
+    "components/ui/**",
+    "components/animate-ui/**"
+  ],
+  "payload": {
+    "config": []
+  }
+}
