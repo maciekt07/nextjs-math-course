@@ -5,18 +5,27 @@
 
 @custom-variant dark (&:is(.dark *));
 @custom-variant safari {
-  @supports (hanging-punctuation: first) and
-    (font: -apple-system-body) and
-    (-webkit-appearance: none) {
-    @media (display-mode: standalone) {
-      @slot;
-    }
+  @supports (hanging-punctuation: first) and (font: -apple-system-body) {
+    @slot;
   }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  --color-success-background: var(--success-background);
+  --color-success-foreground: var(--success-foreground);
+
+  --color-info-background: var(--info-background);
+  --color-info-foreground: var(--info-foreground);
+
+  --color-warning-background: var(--warning-background);
+  --color-warning-foreground: var(--warning-foreground);
+
+  --color-error-background: var(--error-background);
+  --color-error-foreground: var(--error-foreground);
+
   --font-main: var(--font-inter);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -60,6 +69,19 @@
   --radius: 0.8rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
+
+  --success-background: oklch(98.05% 0.01 174.28);
+  --success-foreground: oklch(51.28% 0.11 163.56);
+
+  --info-background: oklch(97.81% 0.01 261.79);
+  --info-foreground: oklch(48.78% 0.243 264.4);
+
+  --warning-background: oklch(98.1% 0.011 54.5);
+  --warning-foreground: oklch(55.7% 0.158 45.36);
+
+  --error-background: oklch(97.6% 0.012 10.99);
+  --error-foreground: oklch(50.95% 0.209 28.51);
+
   --card: oklch(0.98 0.0025 245);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -97,6 +119,19 @@
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
+
+  --success-background: oklch(17.19% 0.015 171.77);
+  --success-foreground: oklch(70.19% 0.158 160.44);
+
+  --info-background: oklch(16.77% 0.016 261.49);
+  --info-foreground: oklch(61.87% 0.207 259.23);
+
+  --warning-background: oklch(17.27% 0.017 53.44);
+  --warning-foreground: oklch(77.24% 0.173 65.37);
+
+  --error-background: oklch(16.58% 0.019 13.41);
+  --error-foreground: oklch(70.22% 0.189 22.23);
+
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);

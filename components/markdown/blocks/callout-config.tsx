@@ -16,26 +16,26 @@ export type CalloutConfig = {
 export const BLOCK_CONFIG = {
   note: {
     label: "Note",
-    bg: "bg-blue-500/5",
-    title: "text-blue-700 dark:text-blue-500",
+    bg: "bg-info-background",
+    title: "text-info-foreground",
     Icon: Info,
   },
   tip: {
     label: "Tip",
-    bg: "bg-emerald-500/5",
-    title: "text-emerald-700 dark:text-emerald-500",
+    bg: "bg-success-background",
+    title: "text-success-foreground",
     Icon: Lightbulb,
   },
   important: {
     label: "Important",
-    bg: "bg-orange-500/5",
-    title: "text-amber-700 dark:text-amber-500",
+    bg: "bg-warning-background",
+    title: "text-warning-foreground",
     Icon: MessageCircleWarning,
   },
   warning: {
     label: "Warning",
-    bg: "bg-red-500/5",
-    title: "text-red-700 dark:text-red-400",
+    bg: "bg-error-background",
+    title: "text-error-foreground",
     Icon: AlertTriangle,
   },
   card: {

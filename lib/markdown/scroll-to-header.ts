@@ -160,7 +160,7 @@ function cancelOnUserScroll(runId: number) {
   };
 
   events.forEach((event) => {
-    window.addEventListener(event, cancel, { passive: true });
+    window.addEventListener(event, cancel, { passive: false });
   });
 }
 

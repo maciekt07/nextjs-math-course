@@ -8,7 +8,7 @@ import {
   Video,
   VideoOff,
 } from "lucide-react";
-import { type HTMLMotionProps, motion, useReducedMotion } from "motion/react";
+import { useReducedMotion } from "motion/react";
 import type React from "react";
 import { useCallback, useEffect, useReducer, useRef } from "react";
 import { toast } from "sonner";
@@ -211,20 +211,25 @@ export function VideoPlayer({
       );
     }
 
-    const playerMotionProps: HTMLMotionProps<"div"> = {
-      initial: {
-        opacity: 0.6,
-        ...(prefersReducedMotion ? {} : { scale: 0.94 }),
-      },
-      animate: {
-        opacity: 1,
-        ...(prefersReducedMotion ? {} : { scale: 1 }),
-      },
-      transition: { duration: 0.2 },
-    };
+    // const playerMotionProps: HTMLMotionProps<"div"> = {
+    //   initial: {
+    //     opacity: 0.6,
+    //     ...(prefersReducedMotion ? {} : { scale: 0.94 }),
+    //   },
+    //   animate: {
+    //     opacity: 1,
+    //     ...(prefersReducedMotion ? {} : { scale: 1 }),
+    //   },
+    //   transition: { duration: 0.2 },
+    // };
 
     return (
-      <motion.div {...playerMotionProps}>
+      <div
+        className={cn(
+          "animate-in fade-in duration-200",
+          !prefersReducedMotion && "zoom-in-94",
+        )}
+      >
         <MuxPlayer
           ref={muxPlayerCallback}
           playbackId={playbackId || undefined}
@@ -246,7 +251,7 @@ export function VideoPlayer({
           autoPlay={false}
           className="rounded-xl w-full overflow-hidden bg-background aspect-video"
         />
-      </motion.div>
+      </div>
     );
   };
 

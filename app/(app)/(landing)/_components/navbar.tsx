@@ -6,6 +6,7 @@ import {
   AnimatePresence,
   type HTMLMotionProps,
   motion,
+  useAnimation,
   useReducedMotion,
 } from "motion/react";
 import Image from "next/image";
@@ -95,19 +96,53 @@ function AuthButtons({
 export function Navbar({ user }: { user: User | null }) {
   const [open, setOpen] = useState<boolean>(false);
   const [atTop, setAtTop] = useState<boolean>(true);
+
   const prefersReducedMotion = useReducedMotion();
   const mounted = useMounted();
+  const controls = useAnimation();
 
-  useEffect(() => {
-    const handleScroll = () => setAtTop(window.scrollY < 10);
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const isTouchDevice =
+    typeof window !== "undefined" &&
+    ("ontouchstart" in window || navigator.maxTouchPoints > 0);
 
-  useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-  }, [open]);
+  const handleLogoHoverStart = () => {
+    if (!isTouchDevice) {
+      controls.start({
+        rotate: -10,
+        scale: 1.2,
+        transition: { type: "spring", stiffness: 300, damping: 15 },
+      });
+    }
+  };
+
+  const handleLogoHoverEnd = () => {
+    if (!isTouchDevice) {
+      controls.start({
+        rotate: 0,
+        scale: 1,
+        transition: { type: "spring", stiffness: 300, damping: 15 },
+      });
+    }
+  };
+
+  const handleLogoClick = () => {
+    if (isTouchDevice) {
+      controls
+        .start({
+          rotate: [0, -10, 10, 0],
+          scale: [1, 1.2, 1.2, 1],
+          transition: { duration: 0.4, ease: "easeOut" },
+        })
+        .then(() =>
+          controls.start({
+            rotate: 0,
+            scale: 1,
+            transition: { duration: 0.2 },
+          }),
+        );
+    }
+    setOpen(false);
+  };
 
   const showBorder = !atTop || open;
 
@@ -138,6 +173,17 @@ export function Navbar({ user }: { user: User | null }) {
         transition: { duration: 0.2 },
       };
 
+  useEffect(() => {
+    const handleScroll = () => setAtTop(window.scrollY < 10);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+  }, [open]);
+
   return (
     <div className="mb-24">
       <header
@@ -155,19 +201,22 @@ export function Navbar({ user }: { user: User | null }) {
             <Link
               href="/"
               className="flex items-center gap-3"
-              onClick={() => setOpen(false)}
+              onMouseEnter={handleLogoHoverStart}
+              onMouseLeave={handleLogoHoverEnd}
+              onClick={handleLogoClick}
             >
-              <Image
-                alt="Logo"
-                src="/logo.svg"
-                width={34}
-                height={34}
-                fetchPriority="high"
-                preload
-              />
+              <motion.div animate={controls}>
+                <Image
+                  alt="Logo"
+                  src="/logo.svg"
+                  width={34}
+                  height={34}
+                  fetchPriority="high"
+                  preload
+                />
+              </motion.div>
               <span className="text-xl font-bold">Math Course Online</span>
             </Link>
-
             <div className="hidden md:flex items-center ml-2 gap-5 font-medium text-muted-foreground">
               {navLinks.map((link) => (
                 <Link

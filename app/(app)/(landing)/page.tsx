@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { getServerSession } from "@/lib/auth/get-session";
 import { getCourses, getOwnedCourseIds } from "@/lib/data/courses";
 import { getUserCount } from "@/lib/data/users";
+import { cn } from "@/lib/ui";
 import { CTASection } from "./_components/cta";
 import { FAQ } from "./_components/faq";
 import { GridBackground } from "./_components/grid-background";
@@ -47,7 +48,20 @@ export default async function Home() {
               </div>
               <h1 className="text-3xl sm:text-5xl text-center md:text-left font-bold text-foreground leading-tight text-balance text-shadow-md">
                 Master{" "}
-                <span className="text-primary text-shadow-lg">Mathematics</span>{" "}
+                <span
+                  className={cn(
+                    "bg-clip-text",
+                    "text-transparent",
+                    "text-shadow-lg",
+                    "bg-gradient-to-b",
+                    "from-[color-mix(in_oklab,var(--primary)_96%,white_12%)]",
+                    "to-[color-mix(in_oklab,var(--primary)_82%,black_5%)]",
+                    "dark:from-[color-mix(in_oklab,var(--primary)_86%,white_40%)]",
+                    "dark:to-[color-mix(in_oklab,var(--primary)_85%,var(--background)_10%)]",
+                  )}
+                >
+                  Mathematics
+                </span>{" "}
                 with Engaging Courses
               </h1>
               <p className="text-md sm:text-lg text-center md:text-left text-muted-foreground max-w-xl">

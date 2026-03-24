@@ -179,16 +179,12 @@ export function CourseSidebar({
         setOpen(false);
         setTimeout(() => {
           if (!isSameLesson) {
-            startTransition(() => {
-              router.push(nextPath);
-            });
+            router.push(nextPath);
           }
         }, 200);
       } else {
         if (!isSameLesson) {
-          startTransition(() => {
-            router.push(nextPath);
-          });
+          router.push(nextPath);
         }
       }
     },
@@ -305,12 +301,12 @@ export function CourseSidebar({
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
               onClick={() => setOpen(false)}
-              className="fixed inset-0 h-dvh bg-black/50 backdrop-blur-xs z-40 md:hidden"
+              className="fixed inset-0 h-dvh bg-white/50 dark:bg-black/50 backdrop-blur-xs z-40 md:hidden"
             />
           )}
         </AnimatePresence>
       ) : (
-        <div className="fixed inset-0 h-dvh bg-black/50 backdrop-blur-xs z-40 md:hidden" />
+        <div className="fixed inset-0 h-dvh bg-white/50 dark:bg-black/50 backdrop-blur-xs z-40 md:hidden" />
       )}
 
       <motion.aside

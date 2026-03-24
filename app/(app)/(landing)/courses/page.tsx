@@ -25,6 +25,7 @@ export default async function CoursesPage() {
         icon={BookOpen}
         title="No courses yet"
         description="Start learning by exploring available courses. Once you purchase one, it will appear here in your library."
+        className="mb-24"
         action={
           <AnimateIcon animateOnHover>
             <Button asChild size="xl">

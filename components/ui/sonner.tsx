@@ -16,7 +16,12 @@ const Toaster = ({ ...props }: ToasterProps) => {
       mobileOffset={20}
       toastOptions={{
         classNames: {
+          toast: "border-border!",
           icon: "size-5!",
+          success: "bg-success-background! text-success-foreground!",
+          error: "bg-error-background! text-error-foreground!",
+          warning: "bg-warning-background! text-warning-foreground!",
+          info: "bg-info-background! text-info-foreground!",
         },
       }}
       richColors
