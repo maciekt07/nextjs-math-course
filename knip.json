@@ -5,6 +5,8 @@
     "components/ui/**",
     "components/animate-ui/**"
   ],
+  "ignoreDependencies": ["client-only", "postcss"],
+  "ignoreBinaries": ["ngrok", "stripe"],
   "payload": {
     "config": []
   }

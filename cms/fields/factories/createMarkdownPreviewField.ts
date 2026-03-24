@@ -1,7 +1,7 @@
 import type { MarkdownPreviewFieldProps } from "@fields/markdown-preview-field";
 import type { TextareaField } from "payload";
 
-export type MarkdownFieldOptions = Omit<TextareaField, "type" | "admin"> & {
+type MarkdownFieldOptions = Omit<TextareaField, "type" | "admin"> & {
   admin?: Partial<TextareaField["admin"]> & {
     clientProps?: MarkdownPreviewFieldProps;
   };

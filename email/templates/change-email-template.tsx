@@ -2,7 +2,7 @@ import { Heading, Hr, Text } from "@react-email/components";
 import EmailButton from "../components/email-button";
 import EmailLayout from "../components/email-layout";
 
-export interface ChangeEmailEmailProps {
+interface ChangeEmailEmailProps {
   url: string;
   name: string;
   newEmail: string;

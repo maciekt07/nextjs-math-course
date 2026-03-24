@@ -6,7 +6,7 @@ import {
   MessageCircleWarning,
 } from "lucide-react";
 
-export type CalloutConfig = {
+type CalloutConfig = {
   label: string;
   bg: string;
   title: string;

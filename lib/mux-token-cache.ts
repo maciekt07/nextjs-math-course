@@ -3,7 +3,7 @@ import type { MuxTokens } from "@/types/mux";
 
 // client-side cache for Mux signed tokens with automatic expiration
 
-export class MuxTokenError extends Error {
+class MuxTokenError extends Error {
   constructor(
     message: string,
     public statusCode?: number,

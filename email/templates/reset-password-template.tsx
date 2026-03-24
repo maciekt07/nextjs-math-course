@@ -1,12 +1,10 @@
-// email/templates/reset-password-email.tsx
-
 import { Heading, Hr, Text } from "@react-email/components";
 import { AUTH_LIMITS } from "@/lib/constants/limits";
 import { formatSeconds } from "@/lib/format";
 import EmailButton from "../components/email-button";
 import EmailLayout from "../components/email-layout";
 
-export interface ResetPasswordEmailProps {
+interface ResetPasswordEmailProps {
   url: string;
   name: string;
 }

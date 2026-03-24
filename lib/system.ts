@@ -16,7 +16,7 @@ function getParser() {
   return parser;
 }
 
-export function isBrowser(name: BrowserName) {
+function isBrowser(name: BrowserName) {
   const p = getParser();
   return p ? p.is(name) : false;
 }

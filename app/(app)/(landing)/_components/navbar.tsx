@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { useMounted } from "@/hooks/use-mounted";
 import { cn } from "@/lib/ui";
 
-export const navLinks = [
+const navLinks = [
   { label: "Courses", href: "/#courses" },
   { label: "FAQ", href: "/#faq" },
 ] as const satisfies readonly { label: string; href: string }[];

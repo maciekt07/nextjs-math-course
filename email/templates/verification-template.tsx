@@ -4,7 +4,7 @@ import { formatSeconds } from "@/lib/format";
 import EmailButton from "../components/email-button";
 import EmailLayout from "../components/email-layout";
 
-export interface VerificationEmailProps {
+interface VerificationEmailProps {
   url: string;
   name: string;
 }

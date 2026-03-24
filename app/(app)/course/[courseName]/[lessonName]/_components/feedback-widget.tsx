@@ -22,7 +22,7 @@ interface Reaction {
   label: string;
 }
 
-export const reactions = [
+const reactions = [
   { value: 1, icon: Frown, label: "Poor" },
   { value: 2, icon: Meh, label: "Fair" },
   { value: 3, icon: Smile, label: "Good" },

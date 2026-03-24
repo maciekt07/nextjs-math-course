@@ -144,7 +144,7 @@ async function calculateCourseMetadata(
   return metadata;
 }
 
-export async function syncCourseMetadata(payload: Payload, courseId: string) {
+async function syncCourseMetadata(payload: Payload, courseId: string) {
   const [course, metadata] = await Promise.all([
     payload.findByID({
       collection: "courses",
