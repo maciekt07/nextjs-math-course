@@ -186,7 +186,7 @@ export default function UploadImageHelper({ path }: UploadImageHelperProps) {
 
   return (
     <div className="rounded-[var(--style-radius-s)] border border-[var(--theme-elevation-150)] bg-[var(--theme-elevation-50)] p-4 mt-2">
-      <div className="mb-4 text-sm font-medium">Uploaded images</div>
+      <div className="mb-4 text-sm text-[13px]">Uploaded images</div>
 
       <div className="flex flex-col gap-2">
         {mediaItems.map((item, index) => {
