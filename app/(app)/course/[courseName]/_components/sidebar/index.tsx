@@ -268,7 +268,7 @@ export function CourseSidebar({
             transition={{ duration: prefersReducedMotion ? 0 : 0.2 }}
             className={cn(
               "fixed top-0 left-0 right-0 z-40 h-17 hidden max-[1450px]:flex max-[1450px]:backdrop-blur-xl max-[1450px]:bg-background/60 max-[1450px]:border-b items-center mb-4 gap-3 transition-[border-color] duration-300",
-              "safari:bg-background! safari:backdrop-blur-none!",
+              "safari-ios:bg-background! safari-ios:backdrop-blur-none!",
             )}
           />
         )}
@@ -278,11 +278,11 @@ export function CourseSidebar({
           fix ios 26 safari drop support for meta theme-color
           https://github.com/andesco/safari-color-tinting
       */}
-      <div className="fixed top-0 left-0 right-0 z-41 h-3 bg-background hidden safari:block md:hidden" />
+      <div className="fixed top-0 left-0 right-0 z-41 h-3 bg-background hidden safari-ios:block md:hidden" />
 
       <div
         className={cn(
-          "fixed bottom-0 left-0 right-0 z-41 h-3 bg-background hidden safari:block md:hidden",
+          "fixed bottom-0 left-0 right-0 z-41 h-3 bg-background hidden safari-ios:block md:hidden",
           !open && "hidden!",
         )}
       />

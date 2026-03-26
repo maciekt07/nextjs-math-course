@@ -4,9 +4,13 @@
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
-@custom-variant safari {
-  @supports (hanging-punctuation: first) and (font: -apple-system-body) {
-    @slot;
+
+/* WebKit on touch Apple devices */
+@custom-variant safari-ios {
+  @media (pointer: coarse) {
+    @supports (hanging-punctuation: first) and (font: -apple-system-body) {
+      @slot;
+    }
   }
 }
 
@@ -326,4 +330,21 @@ https://github.com/TheSGJ/nextjs-toploader/issues/131
 #nprogress {
   position: relative;
   z-index: 10000;
+}
+
+/* non-native google one tap iframe is not transparent by default in scheme dark
+https://stackoverflow.com/questions/75226935/white-background-issue-around-sign-in-with-google-button-and-one-tap-popup
+*/
+.dark #credential_picker_container {
+  color-scheme: normal !important;
+  background: transparent !important;
+}
+
+.dark #credential_picker_iframe,
+.dark #credential_picker_container iframe {
+  color-scheme: normal !important;
+  background: transparent !important;
+  &:focus-visible {
+    outline: none !important;
+  }
 }

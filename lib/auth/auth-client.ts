@@ -13,12 +13,14 @@ export const authClient = createAuthClient({
     oneTapClient({
       clientId: clientEnv.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
       cancelOnTapOutside: false,
+      autoSelect: false,
       context: "use",
       uxMode: "popup",
       promptOptions: {
         baseDelay: 3000,
         maxAttempts: 2,
       },
+      // https://developers.google.com/identity/gsi/web/reference/js-reference
       additionalOptions: {
         use_fedcm_for_prompt: true,
       },

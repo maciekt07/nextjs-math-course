@@ -319,7 +319,7 @@ export function QuizLesson({ quiz }: QuizLessonProps) {
               <Button
                 onClick={handleSubmit}
                 disabled={hasOptions && selectedOption === null}
-                className="w-full cursor-pointer"
+                className="w-full cursor-pointer transition-all!"
                 size="lg"
               >
                 {hasOptions ? (

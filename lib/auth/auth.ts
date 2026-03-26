@@ -30,6 +30,7 @@ export const auth = betterAuth({
 
   socialProviders: {
     google: {
+      // prompt: "select_account",
       clientId: clientEnv.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
       clientSecret: serverEnv.GOOGLE_CLIENT_SECRET,
       mapProfileToUser: (profile) => {
