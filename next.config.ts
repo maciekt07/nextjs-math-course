@@ -22,7 +22,7 @@ const nextConfig: NextConfig = {
 
   reactStrictMode: true,
   reactCompiler: true,
-
+  allowedDevOrigins: ["basidiomycetous-leandro-noninstructive.ngrok-free.dev"],
   experimental: {
     serverMinification: true,
     authInterrupts: true,
@@ -35,6 +35,7 @@ const nextConfig: NextConfig = {
     };
     return webpackConfig;
   },
+
   // enable statically typed links
   // @see https://nextjs.org/docs/app/api-reference/config/typescript#statically-typed-links
   // typedRoutes: true,

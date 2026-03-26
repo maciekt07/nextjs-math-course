@@ -1,4 +1,5 @@
-import { Github, Mail } from "lucide-react";
+import { SiGithub } from "@icons-pack/react-simple-icons";
+import { Mail } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { getServerSession } from "@/lib/auth/get-session";
@@ -88,7 +89,7 @@ export default async function Footer() {
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-sm text-foreground/70 hover:text-primary transition-colors w-fit"
               >
-                <Github size={18} />
+                <SiGithub size={18} />
                 <span>GitHub</span>
               </Link>
               <a
