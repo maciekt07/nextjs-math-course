@@ -23,9 +23,9 @@
 - [x] Add different lesson types:
   - [x] Video lessons (Mux Video Payload Plugin)
   - [x] Quizzes
-- [ ] Redesign custom fields
+- [x] Redesign custom fields
   - [x] Markdown preview
-  - [ ] Lesson image upload
+  - [x] Lesson image upload
 - [x] Integrate Desmos graphs support
 - [x] Protect media for premium lessons
   - [x] Optimize static images
