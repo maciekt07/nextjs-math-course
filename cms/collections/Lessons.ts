@@ -157,10 +157,12 @@ export const Lessons: CollectionConfig = {
               name: "uploadImage",
               type: "upload",
               relationTo: "media",
-              label:
-                "Upload images for this lesson (/api/media/file/uuid.filetype)", // TODO: create custom field with md copy and quick delete
+              label: "Upload images for this lesson",
               hasMany: true,
               admin: {
+                components: {
+                  afterInput: ["@fields/upload-image-helper"],
+                },
                 condition: (data) => data.type === "text",
               },
             },

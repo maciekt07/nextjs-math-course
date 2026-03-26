@@ -1,4 +1,5 @@
 import { default as default_df61bc795ed44bc39fa38d91d9356f6d } from '@fields/slug-field'
+import { default as default_00c1433fbd51b0415764332e0c6f3e98 } from '@fields/upload-image-helper'
 import { default as default_0bd408f3134d3fa98ef792be1985d6d7 } from '@fields/markdown-preview-field'
 import { MuxUploaderField as MuxUploaderField_c369a797e256de625eba826a6acb8608 } from '@oversightstudio/mux-video/elements'
 import { MuxVideoGifCell as MuxVideoGifCell_c369a797e256de625eba826a6acb8608 } from '@oversightstudio/mux-video/elements'
@@ -7,6 +8,7 @@ import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } f
 
 export const importMap = {
   "@fields/slug-field#default": default_df61bc795ed44bc39fa38d91d9356f6d,
+  "@fields/upload-image-helper#default": default_00c1433fbd51b0415764332e0c6f3e98,
   "@fields/markdown-preview-field#default": default_0bd408f3134d3fa98ef792be1985d6d7,
   "@oversightstudio/mux-video/elements#MuxUploaderField": MuxUploaderField_c369a797e256de625eba826a6acb8608,
   "@oversightstudio/mux-video/elements#MuxVideoGifCell": MuxVideoGifCell_c369a797e256de625eba826a6acb8608,
