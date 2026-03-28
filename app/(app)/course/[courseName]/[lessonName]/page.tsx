@@ -3,6 +3,7 @@ import { unstable_cache } from "next/cache";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { publishedStatusWhere } from "@/cms/access/contentAccess";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { Lock } from "@/components/animate-ui/icons/lock";
 import { LogIn } from "@/components/animate-ui/icons/log-in";
@@ -33,8 +34,10 @@ async function getLesson({
     collection: "lessons",
     limit: 1,
     depth: 1,
+    overrideAccess: true,
     where: {
       and: [
+        publishedStatusWhere,
         { "course.slug": { equals: courseSlug } },
         { slug: { equals: lessonSlug } },
       ],
@@ -58,8 +61,10 @@ export async function generateStaticParams() {
 
   const lessons = await payload.find({
     collection: "lessons",
+    overrideAccess: true,
     pagination: false,
     select: { slug: true, course: true, free: true },
+    where: publishedStatusWhere,
   });
 
   return lessons.docs
@@ -81,8 +86,10 @@ export async function generateMetadata({
   const { docs } = await payload.find({
     collection: "lessons",
     limit: 1,
+    overrideAccess: true,
     where: {
       and: [
+        publishedStatusWhere,
         { "course.slug": { equals: courseName } },
         { slug: { equals: lessonName } },
       ],

@@ -1,18 +1,26 @@
 import { createSlugField } from "@fields/factories/createSlugField";
 import type { Access, CollectionConfig } from "payload";
+import {
+  isPayloadAdmin,
+  publicPublishedReadAccess,
+} from "@/cms/access/contentAccess";
 import { revalidateCourse } from "@/cms/hooks/revalidateCourse";
 
-const isAdmin: Access = ({ req: { user } }) => user?.role === "admin";
+const isAdmin: Access = ({ req: { user } }) => isPayloadAdmin(user);
 
 export const Courses: CollectionConfig = {
   slug: "courses",
   orderable: true,
 
   access: {
-    read: () => true,
+    read: publicPublishedReadAccess,
+    readVersions: isAdmin,
     create: isAdmin,
     update: isAdmin,
     delete: isAdmin,
+  },
+  versions: {
+    drafts: true,
   },
   hooks: {
     afterChange: [revalidateCourse],
