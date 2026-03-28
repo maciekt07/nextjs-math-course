@@ -1,7 +1,11 @@
 import { createMarkdownField } from "@fields/factories/createMarkdownPreviewField";
 import { createSlugField } from "@fields/factories/createSlugField";
 import createBlurUp from "@mux/blurup";
-import type { CollectionConfig } from "payload";
+import type { Access, CollectionConfig } from "payload";
+import {
+  canManageCourseContent,
+  privilegedContentReadAccess,
+} from "@/cms/access/contentAccess";
 import { revalidateLesson } from "@/cms/hooks/revalidateLesson";
 import {
   syncLessonCourseMetadataAfterChange,
@@ -13,12 +17,24 @@ interface LessonData {
   [key: string]: unknown;
 }
 
+const canManageLessons: Access = ({ req }) => canManageCourseContent(req.user);
+
 export const Lessons: CollectionConfig = {
   slug: "lessons",
+  access: {
+    read: privilegedContentReadAccess,
+    readVersions: canManageLessons,
+    create: canManageLessons,
+    update: canManageLessons,
+    delete: canManageLessons,
+  },
   admin: {
     useAsTitle: "title",
   },
   orderable: true,
+  versions: {
+    drafts: true,
+  },
   hooks: {
     beforeChange: [
       async ({ data, req }) => {

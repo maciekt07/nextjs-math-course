@@ -4,6 +4,7 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { and, eq } from "drizzle-orm";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { publishedStatusWhere } from "@/cms/access/contentAccess";
 import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
 import { clientEnv } from "@/env/client";
@@ -87,6 +88,7 @@ export async function POST(request: NextRequest) {
     const payload = await getPayloadClient();
     const found = await payload.find({
       collection: "mux-video",
+      overrideAccess: true,
       where: { "playbackOptions.playbackId": { equals: playbackId } },
       limit: 1,
     });
@@ -97,7 +99,10 @@ export async function POST(request: NextRequest) {
 
     const lessons = await payload.find({
       collection: "lessons",
-      where: { video: { equals: video.id } },
+      overrideAccess: true,
+      where: {
+        and: [publishedStatusWhere, { video: { equals: video.id } }],
+      },
       limit: 1,
       select: { course: true },
     });

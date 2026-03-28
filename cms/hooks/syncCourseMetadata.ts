@@ -3,6 +3,7 @@ import type {
   CollectionAfterDeleteHook,
   Payload,
 } from "payload";
+import { buildPublishedStatusWhere } from "@/cms/access/contentAccess";
 
 type CourseMetadata = {
   lessonCount: number;
@@ -40,6 +41,7 @@ async function calculateCourseMetadata(
   const [{ docs: chapters }, { docs: lessons }] = await Promise.all([
     payload.find({
       collection: "chapters",
+      overrideAccess: true,
       where: { course: { equals: courseId } },
       select: {
         id: true,
@@ -49,7 +51,10 @@ async function calculateCourseMetadata(
     }),
     payload.find({
       collection: "lessons",
-      where: { course: { equals: courseId } },
+      overrideAccess: true,
+      where: {
+        and: [buildPublishedStatusWhere(), { course: { equals: courseId } }],
+      },
       select: {
         chapter: true,
         slug: true,
@@ -149,6 +154,7 @@ async function syncCourseMetadata(payload: Payload, courseId: string) {
     payload.findByID({
       collection: "courses",
       id: courseId,
+      overrideAccess: true,
       select: {
         lessonCount: true,
         totalQuizQuestions: true,
@@ -174,6 +180,7 @@ async function syncCourseMetadata(payload: Payload, courseId: string) {
   await payload.update({
     collection: "courses",
     id: courseId,
+    overrideAccess: true,
     data: metadata,
   });
 }

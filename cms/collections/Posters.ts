@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { posterReadAccess } from "@/cms/access/posterAccess";
 import { extractPalette } from "@/cms/hooks/extractPalette";
 import { generateBlurhash } from "@/cms/hooks/generateBlurhash";
 import { renameFile } from "../hooks/renameFile";
@@ -6,7 +7,7 @@ import { renameFile } from "../hooks/renameFile";
 export const Posters: CollectionConfig = {
   slug: "posters",
   access: {
-    read: () => true,
+    read: posterReadAccess,
   },
   hooks: {
     beforeOperation: [renameFile],
