@@ -1,45 +1,36 @@
-import type { Access } from "payload";
-import {
-  buildPublishedStatusWhere,
-  canManageCourseContent,
-} from "@/cms/access/contentAccess";
+import type { Access, Where } from "payload";
+import { isAdminOrEditor } from "@/cms/access/roles";
+import { getRequestedFilename } from "@/cms/utils/get-requested-filename";
 
-// TODO: reverese relation to reduce query
-
-function getRequestedFilename(pathname?: string | null): string | null {
-  if (!pathname?.includes("/file/")) return null;
-
-  const filename = pathname.split("/").filter(Boolean).pop();
-
-  return filename ? decodeURIComponent(filename) : null;
-}
-
-export const posterReadAccess: Access = async ({ id, req }) => {
-  if (canManageCourseContent(req.user)) return true;
+export const posterReadAccess: Access = ({ id, req }) => {
+  if (isAdminOrEditor(req.user)) return true;
 
   const filename = getRequestedFilename(req.pathname);
-  const where = filename
-    ? {
-        and: [
-          buildPublishedStatusWhere(),
-          { "poster.filename": { equals: filename } },
-        ],
-      }
-    : id
-      ? {
-          and: [buildPublishedStatusWhere(), { poster: { equals: id } }],
-        }
-      : null;
+  const and: Where[] = [
+    {
+      isPublic: {
+        equals: true,
+      },
+    },
+  ];
 
-  if (!where) return false;
+  if (filename) {
+    and.push({
+      filename: {
+        equals: filename,
+      },
+    });
+  }
 
-  const { docs } = await req.payload.find({
-    collection: "courses",
-    depth: 0,
-    limit: 1,
-    overrideAccess: true,
-    where,
-  });
+  if (id) {
+    and.push({
+      id: {
+        equals: id,
+      },
+    });
+  }
 
-  return docs.length > 0;
+  return {
+    and,
+  };
 };

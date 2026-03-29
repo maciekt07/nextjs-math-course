@@ -4,6 +4,7 @@ import type {
   Payload,
 } from "payload";
 import { buildPublishedStatusWhere } from "@/cms/access/contentAccess";
+import { getId } from "@/cms/utils/get-id";
 
 type CourseMetadata = {
   lessonCount: number;
@@ -13,19 +14,6 @@ type CourseMetadata = {
   firstLessonSlug: string | null;
   firstFreeLessonSlug: string | null;
 };
-
-function getId(
-  value:
-    | string
-    | null
-    | undefined
-    | {
-        id: string;
-      },
-) {
-  if (!value) return null;
-  return typeof value === "string" ? value : value.id;
-}
 
 function compareOrder(
   aOrder: string | null | undefined,

@@ -24,6 +24,16 @@ export const Posters: CollectionConfig = {
       type: "text",
     },
     {
+      name: "isPublic",
+      type: "checkbox",
+      defaultValue: false,
+      admin: {
+        readOnly: true,
+        description:
+          "Managed automatically. Public posters are attached to at least one published course.",
+      },
+    },
+    {
       name: "palette",
       type: "group",
       admin: {

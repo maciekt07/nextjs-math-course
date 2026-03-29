@@ -159,6 +159,10 @@ export interface Poster {
   id: string;
   alt?: string | null;
   /**
+   * Managed automatically. Public posters are attached to at least one published course.
+   */
+  isPublic?: boolean | null;
+  /**
    * Auto-generated color palette
    */
   palette?: {
@@ -482,6 +486,7 @@ export interface CoursesSelect<T extends boolean = true> {
  */
 export interface PostersSelect<T extends boolean = true> {
   alt?: T;
+  isPublic?: T;
   palette?:
     | T
     | {

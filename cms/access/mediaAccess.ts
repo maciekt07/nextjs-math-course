@@ -1,22 +1,13 @@
 import type { Access } from "payload";
-import {
-  buildPublishedStatusWhere,
-  canManageCourseContent,
-} from "@/cms/access/contentAccess";
+import { buildPublishedStatusWhere } from "@/cms/access/contentAccess";
+import { isAdminOrEditor } from "@/cms/access/roles";
+import { getRequestedFilename } from "@/cms/utils/get-requested-filename";
 import { getServerSession } from "@/lib/auth/get-session";
 import { hasEnrollment } from "@/lib/data/enrollment";
 
-function getRequestedFilename(pathname?: string | null): string | null {
-  if (!pathname?.includes("/file/")) return null;
-
-  const filename = pathname.split("/").filter(Boolean).pop();
-
-  return filename ? decodeURIComponent(filename) : null;
-}
-
 export const mediaReadAccess: Access = async ({ req }): Promise<boolean> => {
   try {
-    if (canManageCourseContent(req.user)) return true;
+    if (isAdminOrEditor(req.user)) return true;
 
     const filename = getRequestedFilename(req.pathname);
     if (!filename) return false;

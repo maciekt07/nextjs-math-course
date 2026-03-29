@@ -1,12 +1,14 @@
 import { createSlugField } from "@fields/factories/createSlugField";
 import type { Access, CollectionConfig } from "payload";
-import {
-  isPayloadAdmin,
-  publicPublishedReadAccess,
-} from "@/cms/access/contentAccess";
+import { publicPublishedReadAccess } from "@/cms/access/contentAccess";
+import { isAdmin } from "@/cms/access/roles";
 import { revalidateCourse } from "@/cms/hooks/revalidateCourse";
+import {
+  syncCoursePosterVisibilityAfterChange,
+  syncCoursePosterVisibilityAfterDelete,
+} from "@/cms/hooks/syncPosterVisibility";
 
-const isAdmin: Access = ({ req: { user } }) => isPayloadAdmin(user);
+const canManageCourses: Access = ({ req: { user } }) => isAdmin(user);
 
 export const Courses: CollectionConfig = {
   slug: "courses",
@@ -14,16 +16,17 @@ export const Courses: CollectionConfig = {
 
   access: {
     read: publicPublishedReadAccess,
-    readVersions: isAdmin,
-    create: isAdmin,
-    update: isAdmin,
-    delete: isAdmin,
+    readVersions: canManageCourses,
+    create: canManageCourses,
+    update: canManageCourses,
+    delete: canManageCourses,
   },
   versions: {
     drafts: true,
   },
   hooks: {
-    afterChange: [revalidateCourse],
+    afterChange: [syncCoursePosterVisibilityAfterChange, revalidateCourse],
+    afterDelete: [syncCoursePosterVisibilityAfterDelete],
   },
   admin: {
     useAsTitle: "title",
