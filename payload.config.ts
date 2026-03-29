@@ -74,4 +74,34 @@ export default buildConfig({
       },
     }),
   ],
+  //  onInit: async (payload) => {
+  //   await Promise.all([
+  //     payload.update({
+  //       collection: "courses",
+  //       data: {
+  //         _status: "published",
+  //       },
+  //       limit: 0,
+  //       overrideAccess: true,
+  //       where: {
+  //         _status: {
+  //           exists: false,
+  //         },
+  //       },
+  //     }),
+  //     payload.update({
+  //       collection: "lessons",
+  //       data: {
+  //         _status: "published",
+  //       },
+  //       limit: 0,
+  //       overrideAccess: true,
+  //       where: {
+  //         _status: {
+  //           exists: false,
+  //         },
+  //       },
+  //     }),
+  //   ]);
+  // },
 });

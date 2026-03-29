@@ -1,6 +1,7 @@
 import { Ratelimit } from "@upstash/ratelimit";
 import { and, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { publishedStatusWhere } from "@/cms/access/contentAccess";
 import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
 import { auth } from "@/lib/auth/auth";
@@ -86,11 +87,16 @@ export async function POST(req: Request) {
     }
 
     const payload = await getPayloadClient();
-    const course = await payload.findByID({
-      id: courseId,
+    const { docs } = await payload.find({
       collection: "courses",
+      limit: 1,
+      overrideAccess: true,
       select: { title: true, description: true, price: true, slug: true },
+      where: {
+        and: [publishedStatusWhere, { id: { equals: courseId } }],
+      },
     });
+    const course = docs[0];
 
     if (!course) {
       return NextResponse.json(

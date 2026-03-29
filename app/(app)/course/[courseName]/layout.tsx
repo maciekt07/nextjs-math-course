@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { cache } from "react";
+import { publishedStatusWhere } from "@/cms/access/contentAccess";
 import { getServerSession } from "@/lib/auth/get-session";
 import { hasEnrollment } from "@/lib/data/enrollment";
 import { getPayloadClient } from "@/lib/payload-client";
@@ -10,7 +11,10 @@ const getCourseWithLessons = cache(async (courseSlug: string) => {
 
   const { docs: courseDocs } = await payload.find({
     collection: "courses",
-    where: { slug: { equals: courseSlug } },
+    overrideAccess: true,
+    where: {
+      and: [publishedStatusWhere, { slug: { equals: courseSlug } }],
+    },
     limit: 1,
   });
 
@@ -21,13 +25,17 @@ const getCourseWithLessons = cache(async (courseSlug: string) => {
   const [{ docs: chapters }, { docs: lessons }] = await Promise.all([
     payload.find({
       collection: "chapters",
+      overrideAccess: true,
       where: { course: { equals: course.id } },
       depth: 0,
       limit: 100,
     }),
     payload.find({
       collection: "lessons",
-      where: { course: { equals: course.id } },
+      overrideAccess: true,
+      where: {
+        and: [publishedStatusWhere, { course: { equals: course.id } }],
+      },
       limit: 100,
       select: {
         title: true,

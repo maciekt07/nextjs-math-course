@@ -1,6 +1,7 @@
 import { BookX, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { publishedStatusWhere } from "@/cms/access/contentAccess";
 import { EmptyState, EmptyStateCenterWrapper } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { getPayloadClient } from "@/lib/payload-client";
@@ -15,7 +16,10 @@ async function getCourseWithFirstLesson(courseSlug: string) {
 
   const { docs: courses } = await payload.find({
     collection: "courses",
-    where: { slug: { equals: courseSlug } },
+    overrideAccess: true,
+    where: {
+      and: [publishedStatusWhere, { slug: { equals: courseSlug } }],
+    },
     select: { slug: true, id: true },
     limit: 1,
   });
@@ -25,7 +29,10 @@ async function getCourseWithFirstLesson(courseSlug: string) {
 
   const { docs: lessons } = await payload.find({
     collection: "lessons",
-    where: { course: { equals: course.id } },
+    overrideAccess: true,
+    where: {
+      and: [publishedStatusWhere, { course: { equals: course.id } }],
+    },
     select: { slug: true },
     limit: 1,
   });
@@ -37,8 +44,10 @@ export async function generateStaticParams() {
   const payload = await getPayloadClient();
   const { docs: courses } = await payload.find({
     collection: "courses",
+    overrideAccess: true,
     select: { slug: true },
     limit: 1000,
+    where: publishedStatusWhere,
   });
   return courses.map((c) => ({ courseName: c.slug }));
 }

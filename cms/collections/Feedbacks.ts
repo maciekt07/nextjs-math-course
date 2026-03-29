@@ -1,7 +1,9 @@
 import type { Access, CollectionConfig } from "payload";
+import { isAdmin } from "@/cms/access/roles";
 import { AUTH_LIMITS, FEEDBACK_LIMITS } from "@/lib/constants/limits";
 
-const isAdmin: Access = ({ req: { user } }) => user?.role === "admin";
+const canManageFeedbacks: Access = ({ req: { user } }) => isAdmin(user);
+
 export const Feedbacks: CollectionConfig = {
   slug: "feedback",
   defaultSort: "seen",
@@ -19,9 +21,9 @@ export const Feedbacks: CollectionConfig = {
   },
   access: {
     create: () => false,
-    read: isAdmin,
-    update: isAdmin,
-    delete: isAdmin,
+    read: canManageFeedbacks,
+    update: canManageFeedbacks,
+    delete: canManageFeedbacks,
   },
   fields: [
     {

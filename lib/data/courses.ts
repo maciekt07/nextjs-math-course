@@ -2,6 +2,7 @@ import "server-only";
 
 import { and, eq } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
+import { publishedStatusWhere } from "@/cms/access/contentAccess";
 import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
 import { getPayloadClient } from "@/lib/payload-client";
@@ -15,6 +16,7 @@ export const getCourses = unstable_cache(
     const { docs } = await payload.find({
       collection: "courses",
       limit: 10,
+      overrideAccess: true,
       select: {
         title: true,
         slug: true,
@@ -30,6 +32,7 @@ export const getCourses = unstable_cache(
         updatedAt: true,
         createdAt: true,
       },
+      where: publishedStatusWhere,
     });
 
     return docs ?? [];
@@ -50,8 +53,8 @@ export function getCoursesByIds(ids: string[]) {
 
       const { docs } = await payload.find({
         collection: "courses",
-        where: { id: { in: ids } },
         limit: 100,
+        overrideAccess: true,
         select: {
           title: true,
           slug: true,
@@ -66,6 +69,9 @@ export function getCoursesByIds(ids: string[]) {
           firstFreeLessonSlug: true,
           updatedAt: true,
           createdAt: true,
+        },
+        where: {
+          and: [publishedStatusWhere, { id: { in: ids } }],
         },
       });
 

@@ -1,7 +1,8 @@
 import { createMarkdownField } from "@fields/factories/createMarkdownPreviewField";
 import { createSlugField } from "@fields/factories/createSlugField";
 import createBlurUp from "@mux/blurup";
-import type { CollectionConfig } from "payload";
+import type { Access, CollectionConfig } from "payload";
+import { isAdminOrEditor } from "@/cms/access/roles";
 import { revalidateLesson } from "@/cms/hooks/revalidateLesson";
 import {
   syncLessonCourseMetadataAfterChange,
@@ -13,12 +14,24 @@ interface LessonData {
   [key: string]: unknown;
 }
 
+const canManageLessons: Access = ({ req: { user } }) => isAdminOrEditor(user);
+
 export const Lessons: CollectionConfig = {
   slug: "lessons",
+  access: {
+    read: canManageLessons,
+    readVersions: canManageLessons,
+    create: canManageLessons,
+    update: canManageLessons,
+    delete: canManageLessons,
+  },
   admin: {
     useAsTitle: "title",
   },
   orderable: true,
+  versions: {
+    drafts: true,
+  },
   hooks: {
     beforeChange: [
       async ({ data, req }) => {

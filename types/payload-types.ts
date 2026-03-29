@@ -149,6 +149,7 @@ export interface Course {
   firstFreeLessonSlug?: string | null;
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -157,6 +158,10 @@ export interface Course {
 export interface Poster {
   id: string;
   alt?: string | null;
+  /**
+   * Managed automatically. Public posters are attached to at least one published course.
+   */
+  isPublic?: boolean | null;
   /**
    * Auto-generated color palette
    */
@@ -237,6 +242,7 @@ export interface Lesson {
   videoBlurDataURL?: string | null;
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -472,6 +478,7 @@ export interface CoursesSelect<T extends boolean = true> {
   firstFreeLessonSlug?: T;
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -479,6 +486,7 @@ export interface CoursesSelect<T extends boolean = true> {
  */
 export interface PostersSelect<T extends boolean = true> {
   alt?: T;
+  isPublic?: T;
   palette?:
     | T
     | {
@@ -545,6 +553,7 @@ export interface LessonsSelect<T extends boolean = true> {
   videoBlurDataURL?: T;
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
