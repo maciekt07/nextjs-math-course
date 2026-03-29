@@ -1,6 +1,8 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
+const isProd = process.env.NODE_ENV === "production";
+
 export const serverEnv = createEnv({
   server: {
     NGROK_URL: z.url().optional().or(z.literal("")),
@@ -10,11 +12,13 @@ export const serverEnv = createEnv({
       .refine((val) => val.startsWith("postgresql://"), {
         message: "DATABASE_URL must start with 'postgresql://'",
       }),
-    DB_HOST: z.string().min(1),
-    DB_PORT: z.coerce.number().int().positive(),
-    DB_PASSWORD: z.string().min(1),
-    DB_USER: z.string().min(1),
-    DB_NAME: z.string().min(1),
+    DB_HOST: isProd ? z.string().optional() : z.string().min(1),
+    DB_PORT: isProd
+      ? z.coerce.number().optional()
+      : z.coerce.number().int().positive(),
+    DB_PASSWORD: isProd ? z.string().optional() : z.string().min(1),
+    DB_USER: isProd ? z.string().optional() : z.string().min(1),
+    DB_NAME: isProd ? z.string().optional() : z.string().min(1),
 
     BETTER_AUTH_SECRET: z.string().min(16),
     BETTER_AUTH_URL: z.url().min(1),
