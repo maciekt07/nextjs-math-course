@@ -1,12 +1,12 @@
 import "server-only";
 
 import { and, eq } from "drizzle-orm";
-import { unstable_cache } from "next/cache";
 import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
+import { withCache } from "@/lib/cache/withCache";
 
 export const hasEnrollment = (userId: string, courseId: string) =>
-  unstable_cache(
+  withCache(
     async () => {
       const rows = await db
         .select()

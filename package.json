@@ -14,6 +14,8 @@
   "scripts": {
     "dev": "next dev",
     "ngrok": "ngrok http 3000",
+    "docker:dev": "docker compose --env-file .env.development up -d",
+    "docker:down": "docker compose down",
     "build": "next build",
     "start": "next start",
     "preview": "pnpm build && pnpm start",

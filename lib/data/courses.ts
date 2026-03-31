@@ -1,22 +1,24 @@
 import "server-only";
 
 import { and, eq } from "drizzle-orm";
-import { unstable_cache } from "next/cache";
 import { publishedStatusWhere } from "@/cms/access/contentAccess";
 import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
+import { getIsDraftMode, withCache } from "@/lib/cache/withCache";
 import { getPayloadClient } from "@/lib/payload-client";
 
 const payloadPromise = getPayloadClient();
 
-export const getCourses = unstable_cache(
+export const getCourses = withCache(
   async () => {
     const payload = await payloadPromise;
+    const isDraftMode = await getIsDraftMode();
 
     const { docs } = await payload.find({
       collection: "courses",
       limit: 10,
       overrideAccess: true,
+      draft: isDraftMode,
       select: {
         title: true,
         slug: true,
@@ -32,7 +34,7 @@ export const getCourses = unstable_cache(
         updatedAt: true,
         createdAt: true,
       },
-      where: publishedStatusWhere,
+      where: isDraftMode ? undefined : publishedStatusWhere,
     });
 
     return docs ?? [];
@@ -45,16 +47,18 @@ export const getCourses = unstable_cache(
 );
 
 export function getCoursesByIds(ids: string[]) {
-  return unstable_cache(
+  return withCache(
     async () => {
       if (ids.length === 0) return [];
 
       const payload = await payloadPromise;
+      const isDraftMode = await getIsDraftMode();
 
       const { docs } = await payload.find({
         collection: "courses",
         limit: 100,
         overrideAccess: true,
+        draft: isDraftMode,
         select: {
           title: true,
           slug: true,
@@ -71,7 +75,10 @@ export function getCoursesByIds(ids: string[]) {
           createdAt: true,
         },
         where: {
-          and: [publishedStatusWhere, { id: { in: ids } }],
+          and: [
+            ...(isDraftMode ? [] : [publishedStatusWhere]),
+            { id: { in: ids } },
+          ],
         },
       });
 
@@ -86,7 +93,7 @@ export function getCoursesByIds(ids: string[]) {
 }
 
 export function getOwnedCourseIds(userId: string) {
-  return unstable_cache(
+  return withCache(
     async () => {
       const rows = await db
         .select({ courseId: enrollment.courseId })

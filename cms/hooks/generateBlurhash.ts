@@ -7,7 +7,7 @@ export const generateBlurhash: CollectionBeforeValidateHook = async ({
   operation,
   req: { payload, file },
 }) => {
-  if (operation === "create" || operation === "update") {
+  if (operation === "create") {
     try {
       payload.logger.info(`Generating blurhash for operation: ${operation}`);
       const buffer = file?.data;

@@ -1,74 +1,64 @@
 import type {
   CollectionAfterChangeHook,
   CollectionAfterDeleteHook,
-  Payload,
+  PayloadRequest,
 } from "payload";
 import { buildPublishedStatusWhere } from "@/cms/access/contentAccess";
 import { getId } from "@/cms/utils/get-id";
 
 async function syncPosterVisibility(
-  payload: Payload,
+  req: PayloadRequest,
   posterIds: (string | null)[],
 ) {
-  const uniquePosterIds = [...new Set(posterIds.filter(Boolean))] as string[];
+  const uniqueIds = [...new Set(posterIds.filter(Boolean))] as string[];
+  if (!uniqueIds.length) return;
 
-  if (!uniquePosterIds.length) return;
+  const { payload } = req;
 
-  const [posters, publishedCourses] = await Promise.all([
-    payload.find({
-      collection: "posters",
-      depth: 0,
-      limit: 0,
-      overrideAccess: true,
-      select: {
-        isPublic: true,
-      },
-      where: {
-        id: {
-          in: uniquePosterIds,
-        },
-      },
-    }),
-    payload.find({
-      collection: "courses",
-      depth: 0,
-      limit: 0,
-      overrideAccess: true,
-      select: {
-        poster: true,
-      },
-      where: {
-        and: [
-          buildPublishedStatusWhere(),
-          {
-            poster: {
-              in: uniquePosterIds,
-            },
-          },
-        ],
-      },
-    }),
-  ]);
+  const publishedCourses = await payload.find({
+    req,
+    collection: "courses",
+    depth: 0,
+    limit: 0,
+    overrideAccess: true,
+    select: { poster: true },
+    where: {
+      and: [buildPublishedStatusWhere(), { poster: { in: uniqueIds } }],
+    },
+  });
 
-  const publicPosterIds = new Set(
+  const usedByPublished = new Set(
     publishedCourses.docs
-      .map((course) => getId(course.poster))
-      .filter((posterId): posterId is string => Boolean(posterId)),
+      .map((c) => getId(c.poster))
+      .filter((id): id is string => Boolean(id)),
   );
 
   await Promise.all(
-    posters.docs.map((poster) => {
-      const shouldBePublic = publicPosterIds.has(poster.id);
+    uniqueIds.map(async (posterId) => {
+      const shouldBePublic = usedByPublished.has(posterId);
 
-      if (poster.isPublic === shouldBePublic) return Promise.resolve();
+      const poster = await payload.findByID({
+        req,
+        collection: "posters",
+        id: posterId,
+        depth: 0,
+        overrideAccess: true,
+        select: { isPublic: true },
+      });
+
+      if (poster.isPublic === shouldBePublic) return;
+
+      payload.logger.info(
+        `Setting poster ${posterId} isPublic: ${shouldBePublic}`,
+      );
 
       return payload.update({
+        req,
         collection: "posters",
-        id: poster.id,
+        id: posterId,
         overrideAccess: true,
-        data: {
-          isPublic: shouldBePublic,
-        },
+        context: { disableRevalidate: true },
+        data: { isPublic: shouldBePublic },
       });
     }),
   );
@@ -76,17 +66,15 @@ async function syncPosterVisibility(
 
 export const syncCoursePosterVisibilityAfterChange: CollectionAfterChangeHook =
   async ({ doc, previousDoc, req }) => {
-    await syncPosterVisibility(req.payload, [
-      getId(doc.poster),
-      getId(previousDoc?.poster),
-    ]);
+    const posterIds = [getId(doc.poster), getId(previousDoc?.poster)];
+    if (posterIds.every((id) => !id)) return doc;
 
+    await syncPosterVisibility(req, posterIds);
     return doc;
   };
 
 export const syncCoursePosterVisibilityAfterDelete: CollectionAfterDeleteHook =
   async ({ doc, req }) => {
-    await syncPosterVisibility(req.payload, [getId(doc.poster)]);
-
+    await syncPosterVisibility(req, [getId(doc.poster)]);
     return doc;
   };

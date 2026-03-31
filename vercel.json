@@ -1,0 +1,4 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "ignoreCommand": "git log -1 --pretty=%B | grep -qE '^(chore|test|tests|docs|refactor)' && exit 0 || exit 1"
+}

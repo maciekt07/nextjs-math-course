@@ -1,84 +1,105 @@
 import { notFound } from "next/navigation";
-import { cache } from "react";
 import { publishedStatusWhere } from "@/cms/access/contentAccess";
 import { getServerSession } from "@/lib/auth/get-session";
+import { getIsDraftMode, withCache } from "@/lib/cache/withCache";
 import { hasEnrollment } from "@/lib/data/enrollment";
 import { getPayloadClient } from "@/lib/payload-client";
 import { CourseLayoutWrapper } from "./_components/course-layout-wrapper";
 
-const getCourseWithLessons = cache(async (courseSlug: string) => {
-  const payload = await getPayloadClient();
+const getCourseWithLessons = (courseSlug: string) =>
+  withCache(
+    async () => {
+      const payload = await getPayloadClient();
 
-  const { docs: courseDocs } = await payload.find({
-    collection: "courses",
-    overrideAccess: true,
-    where: {
-      and: [publishedStatusWhere, { slug: { equals: courseSlug } }],
+      const isDraftMode = await getIsDraftMode();
+
+      const { docs: courseDocs } = await payload.find({
+        collection: "courses",
+        overrideAccess: true,
+        draft: isDraftMode,
+        where: {
+          and: [
+            ...(isDraftMode ? [] : [publishedStatusWhere]),
+            { slug: { equals: courseSlug } },
+          ],
+        },
+        limit: 1,
+      });
+
+      if (!courseDocs.length) return null;
+
+      const course = courseDocs[0];
+
+      const [{ docs: chapters }, { docs: lessons }] = await Promise.all([
+        payload.find({
+          collection: "chapters",
+          overrideAccess: true,
+          draft: isDraftMode,
+          where: { course: { equals: course.id } },
+          depth: 0,
+          limit: 100,
+        }),
+        payload.find({
+          collection: "lessons",
+          overrideAccess: true,
+          draft: isDraftMode,
+          where: {
+            and: [
+              ...(isDraftMode ? [] : [publishedStatusWhere]),
+              { course: { equals: course.id } },
+            ],
+          },
+          limit: 100,
+          select: {
+            title: true,
+            slug: true,
+            free: true,
+            id: true,
+            type: true,
+            chapter: true,
+            quiz: { id: true },
+            videoDurationSeconds: true,
+            readingTimeSeconds: true,
+          },
+        }),
+      ]);
+      // sort lessons so that lessons with chapters follow the chapters' order,
+      //  and lessons without a chapter go at the end
+      const lessonsByChapter: Record<string, typeof lessons> = {};
+      chapters.forEach((chapter) => {
+        lessonsByChapter[chapter.id] = [];
+      });
+
+      const ungroupedLessons: typeof lessons = [];
+
+      lessons.forEach((lesson) => {
+        const chapterId =
+          typeof lesson.chapter === "string"
+            ? lesson.chapter
+            : lesson.chapter?.id;
+
+        if (chapterId && lessonsByChapter[chapterId]) {
+          lessonsByChapter[chapterId].push(lesson);
+        } else {
+          ungroupedLessons.push(lesson);
+        }
+      });
+
+      const sortedLessons: typeof lessons = [];
+      chapters.forEach((chapter) => {
+        sortedLessons.push(...lessonsByChapter[chapter.id]);
+      });
+
+      sortedLessons.push(...ungroupedLessons);
+
+      return { course, lessons: sortedLessons, chapters };
     },
-    limit: 1,
-  });
-
-  if (!courseDocs.length) return null;
-
-  const course = courseDocs[0];
-
-  const [{ docs: chapters }, { docs: lessons }] = await Promise.all([
-    payload.find({
-      collection: "chapters",
-      overrideAccess: true,
-      where: { course: { equals: course.id } },
-      depth: 0,
-      limit: 100,
-    }),
-    payload.find({
-      collection: "lessons",
-      overrideAccess: true,
-      where: {
-        and: [publishedStatusWhere, { course: { equals: course.id } }],
-      },
-      limit: 100,
-      select: {
-        title: true,
-        slug: true,
-        free: true,
-        id: true,
-        type: true,
-        chapter: true,
-        quiz: { id: true },
-        videoDurationSeconds: true,
-        readingTimeSeconds: true,
-      },
-    }),
-  ]);
-  // sort lessons so that lessons with chapters follow the chapters' order,
-  //  and lessons without a chapter go at the end
-  const lessonsByChapter: Record<string, typeof lessons> = {};
-  chapters.forEach((chapter) => {
-    lessonsByChapter[chapter.id] = [];
-  });
-
-  const ungroupedLessons: typeof lessons = [];
-
-  lessons.forEach((lesson) => {
-    const chapterId =
-      typeof lesson.chapter === "string" ? lesson.chapter : lesson.chapter?.id;
-
-    if (chapterId && lessonsByChapter[chapterId]) {
-      lessonsByChapter[chapterId].push(lesson);
-    } else {
-      ungroupedLessons.push(lesson);
-    }
-  });
-
-  const sortedLessons: typeof lessons = [];
-  chapters.forEach((chapter) => {
-    sortedLessons.push(...lessonsByChapter[chapter.id]);
-  });
-
-  sortedLessons.push(...ungroupedLessons);
-
-  return { course, lessons: sortedLessons, chapters };
-});
+    ["course-layout", courseSlug],
+    {
+      revalidate: 3600,
+      tags: [`course-slug:${courseSlug}`],
+    },
+  )();
 
 type Args = {
   params: Promise<{ courseName: string }>;
@@ -100,7 +121,6 @@ export default async function CourseLayout({
   if (session) {
     owned = await hasEnrollment(session.user.id, data.course.id);
   }
-  // console.log(data.lessons.map((lesson) => lesson.title));
 
   return (
     <CourseLayoutWrapper

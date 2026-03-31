@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { unstable_cache } from "next/cache";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -12,6 +11,7 @@ import { EmptyStateCenterWrapper } from "@/components/empty-state";
 import Footer from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth/auth";
+import { getIsDraftMode, withCache } from "@/lib/cache/withCache";
 import { hasEnrollment } from "@/lib/data/enrollment";
 import { getPayloadClient } from "@/lib/payload-client";
 import type { Course } from "@/types/payload-types";
@@ -30,14 +30,17 @@ async function getLesson({
 }) {
   const payload = await getPayloadClient();
 
+  const isDraftMode = await getIsDraftMode();
+
   const { docs } = await payload.find({
     collection: "lessons",
     limit: 1,
     depth: 1,
     overrideAccess: true,
+    draft: isDraftMode,
     where: {
       and: [
-        publishedStatusWhere,
+        ...(isDraftMode ? [] : [publishedStatusWhere]),
         { "course.slug": { equals: courseSlug } },
         { slug: { equals: lessonSlug } },
       ],
@@ -46,14 +49,12 @@ async function getLesson({
 
   const lesson = docs?.[0] || null;
 
-  return unstable_cache(
-    async () => lesson,
-    ["lesson", courseSlug, lessonSlug],
-    {
-      revalidate: 3600,
-      tags: lesson ? [`lesson:${lesson.id}`] : [],
-    },
-  )();
+  return withCache(async () => lesson, ["lesson", courseSlug, lessonSlug], {
+    revalidate: 3600,
+    tags: lesson
+      ? [`lesson:${lesson.id}`, `course-slug:${courseSlug}`]
+      : [`course-slug:${courseSlug}`],
+  })();
 }
 
 export async function generateStaticParams() {
@@ -70,7 +71,8 @@ export async function generateStaticParams() {
   return lessons.docs
     .filter((l) => l.free)
     .map((lesson) => ({
-      courseName: typeof lesson.course === "string" ? "" : lesson.course.slug,
+      courseName:
+        typeof lesson.course === "string" ? "" : lesson.course?.slug || "",
       lessonName: lesson.slug,
     }));
 }
@@ -101,7 +103,7 @@ export async function generateMetadata({
   if (!lesson) return { title: "Lesson not found" };
 
   const courseTitle =
-    typeof lesson.course === "string" ? "" : lesson.course.title;
+    typeof lesson.course === "string" ? "" : lesson.course?.title || "";
 
   return {
     title: `${lesson.title}${courseTitle ? ` | ${courseTitle}` : ""}`,

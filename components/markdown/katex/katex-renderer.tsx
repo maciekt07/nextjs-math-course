@@ -6,12 +6,13 @@ import { memo, useEffect, useRef } from "react";
 interface KatexRendererProps {
   content: string;
   block?: boolean;
+  shouldLazy?: boolean;
 }
 
 const katexCache = new Map<string, string>();
 
 export const KatexRenderer = memo(
-  ({ content, block = false }: KatexRendererProps) => {
+  ({ content, block = false, shouldLazy = true }: KatexRendererProps) => {
     const divRef = useRef<HTMLDivElement>(null);
     const spanRef = useRef<HTMLSpanElement>(null);
     const cacheKey = `${block ? "block" : "inline"}:${content}`;
@@ -40,7 +41,13 @@ export const KatexRenderer = memo(
         el.dataset.value = content;
       };
 
-      // lazy render only when visible
+      if (!shouldLazy) {
+        // Render immediately for first 10 elements (SSR optimization)
+        renderFormula();
+        return;
+      }
+
+      // lazy render only when visible for remaining elements
       const observer = new IntersectionObserver(
         (entries) => {
           if (!entries[0].isIntersecting) return;
@@ -58,7 +65,7 @@ export const KatexRenderer = memo(
 
       observer.observe(el);
       return () => observer.disconnect();
-    }, [content, block, cacheKey]);
+    }, [content, block, cacheKey, shouldLazy]);
 
     return block ? (
       <div ref={divRef} className="flex items-center justify-center min-h-14" />
@@ -66,7 +73,10 @@ export const KatexRenderer = memo(
       <span ref={spanRef} />
     );
   },
-  (prev, next) => prev.content === next.content && prev.block === next.block,
+  (prev, next) =>
+    prev.content === next.content &&
+    prev.block === next.block &&
+    prev.shouldLazy === next.shouldLazy,
 );
 
 KatexRenderer.displayName = "KatexRenderer";

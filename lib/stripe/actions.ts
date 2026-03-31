@@ -91,9 +91,10 @@ export async function createPaymentIntent(
       userId: user.id,
       courseId: course.id,
       courseTitle: course.title,
+      courseSlug: String(course.slug || ""),
       amount: String(course.price ?? 0),
     },
-    success_url: `${successBase}/course/${(course.slug as string) || ""}?session_id={CHECKOUT_SESSION_ID}`,
+    success_url: `${successBase}/api/stripe/checkout-success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${successBase}/course/${(course.slug as string) || ""}?canceled=true`,
     // prevent duplicate checkouts
     client_reference_id: `${user.id}_${course.id}`,

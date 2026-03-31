@@ -1,10 +1,11 @@
 import type {
   CollectionAfterChangeHook,
   CollectionAfterDeleteHook,
-  Payload,
+  PayloadRequest,
 } from "payload";
 import { buildPublishedStatusWhere } from "@/cms/access/contentAccess";
 import { getId } from "@/cms/utils/get-id";
+import { revalidateCourseCache } from "./revalidate";
 
 type CourseMetadata = {
   lessonCount: number;
@@ -23,11 +24,12 @@ function compareOrder(
 }
 
 async function calculateCourseMetadata(
-  payload: Payload,
+  req: PayloadRequest,
   courseId: string,
 ): Promise<CourseMetadata> {
   const [{ docs: chapters }, { docs: lessons }] = await Promise.all([
-    payload.find({
+    req.payload.find({
+      req,
       collection: "chapters",
       overrideAccess: true,
       where: { course: { equals: courseId } },
@@ -37,7 +39,8 @@ async function calculateCourseMetadata(
       },
       limit: 1000,
     }),
-    payload.find({
+    req.payload.find({
+      req,
       collection: "lessons",
       overrideAccess: true,
       where: {
@@ -137,13 +140,16 @@ async function calculateCourseMetadata(
   return metadata;
 }
 
-async function syncCourseMetadata(payload: Payload, courseId: string) {
+async function syncCourseMetadata(req: PayloadRequest, courseId: string) {
   const [course, metadata] = await Promise.all([
-    payload.findByID({
+    req.payload.findByID({
+      req,
       collection: "courses",
       id: courseId,
       overrideAccess: true,
       select: {
+        id: true,
+        slug: true,
         lessonCount: true,
         totalQuizQuestions: true,
         totalReadingTimeSeconds: true,
@@ -152,7 +158,7 @@ async function syncCourseMetadata(payload: Payload, courseId: string) {
         firstFreeLessonSlug: true,
       },
     }),
-    calculateCourseMetadata(payload, courseId),
+    calculateCourseMetadata(req, courseId),
   ]);
 
   const changed =
@@ -163,54 +169,76 @@ async function syncCourseMetadata(payload: Payload, courseId: string) {
     course.firstLessonSlug !== metadata.firstLessonSlug ||
     course.firstFreeLessonSlug !== metadata.firstFreeLessonSlug;
 
-  if (!changed) return;
+  if (!changed) {
+    req.payload.logger.info(
+      `Course metadata unchanged for ${courseId}, skipping update`,
+    );
+    return;
+  }
 
-  await payload.update({
+  req.payload.logger.info(
+    `Updating course metadata for ${courseId}: ${JSON.stringify(metadata)}`,
+  );
+
+  await req.payload.update({
+    req,
     collection: "courses",
     id: courseId,
     overrideAccess: true,
+    context: { disableRevalidate: true },
     data: metadata,
   });
+
+  await revalidateCourseCache(req.payload, courseId, course.slug);
 }
 
-async function syncCourseIds(payload: Payload, courseIds: (string | null)[]) {
+async function syncCourseIds(
+  req: PayloadRequest,
+  courseIds: (string | null)[],
+) {
   const uniqueCourseIds = [...new Set(courseIds.filter(Boolean))] as string[];
 
   await Promise.all(
-    uniqueCourseIds.map((courseId) => syncCourseMetadata(payload, courseId)),
+    uniqueCourseIds.map((courseId) => syncCourseMetadata(req, courseId)),
   );
 }
 
 export const syncLessonCourseMetadataAfterChange: CollectionAfterChangeHook =
   async ({ doc, previousDoc, req }) => {
-    await syncCourseIds(req.payload, [
-      getId(doc.course),
-      getId(previousDoc?.course),
-    ]);
+    req.payload.logger.info(
+      `Syncing course metadata after lesson change: ${doc.id}`,
+    );
+    await syncCourseIds(req, [getId(doc.course), getId(previousDoc?.course)]);
 
     return doc;
   };
 
 export const syncLessonCourseMetadataAfterDelete: CollectionAfterDeleteHook =
   async ({ doc, req }) => {
-    await syncCourseIds(req.payload, [getId(doc.course)]);
+    req.payload.logger.info(
+      `Syncing course metadata after lesson delete: ${doc.id}`,
+    );
+    await syncCourseIds(req, [getId(doc.course)]);
 
     return doc;
   };
 
 export const syncChapterCourseMetadataAfterChange: CollectionAfterChangeHook =
   async ({ doc, previousDoc, req }) => {
-    await syncCourseIds(req.payload, [
-      getId(doc.course),
-      getId(previousDoc?.course),
-    ]);
+    req.payload.logger.info(
+      `Syncing course metadata after chapter change: ${doc.id}`,
+    );
+    await syncCourseIds(req, [getId(doc.course), getId(previousDoc?.course)]);
 
     return doc;
   };
 
 export const syncChapterCourseMetadataAfterDelete: CollectionAfterDeleteHook =
   async ({ doc, req }) => {
-    await syncCourseIds(req.payload, [getId(doc.course)]);
+    req.payload.logger.info(
+      `Syncing course metadata after chapter delete: ${doc.id}`,
+    );
+    await syncCourseIds(req, [getId(doc.course)]);
 
     return doc;
   };

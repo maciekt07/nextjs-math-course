@@ -1,18 +1,23 @@
-import type { CollectionConfig } from "payload";
+import type { Access, CollectionConfig } from "payload";
 import { posterReadAccess } from "@/cms/access/posterAccess";
+import { isAdminOrEditor } from "@/cms/access/roles";
 import { extractPalette } from "@/cms/hooks/extractPalette";
 import { generateBlurhash } from "@/cms/hooks/generateBlurhash";
 import { renameFile } from "../hooks/renameFile";
+
+const canManagePosters: Access = ({ req: { user } }) => isAdminOrEditor(user);
 
 export const Posters: CollectionConfig = {
   slug: "posters",
   access: {
     read: posterReadAccess,
+    create: canManagePosters,
+    update: canManagePosters,
+    delete: canManagePosters,
   },
   hooks: {
     beforeOperation: [renameFile],
-    beforeValidate: [generateBlurhash],
-    afterChange: [extractPalette],
+    beforeValidate: [generateBlurhash, extractPalette],
   },
   upload: {
     mimeTypes: ["image/*"],

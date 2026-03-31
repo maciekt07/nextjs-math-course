@@ -1,5 +1,9 @@
 import type { CollectionConfig } from "payload";
 import {
+  revalidateChapter,
+  revalidateChapterAfterDelete,
+} from "@/cms/hooks/revalidateChapter";
+import {
   syncChapterCourseMetadataAfterChange,
   syncChapterCourseMetadataAfterDelete,
 } from "@/cms/hooks/syncCourseMetadata";
@@ -7,8 +11,11 @@ import {
 export const Chapters: CollectionConfig = {
   slug: "chapters",
   hooks: {
-    afterChange: [syncChapterCourseMetadataAfterChange],
-    afterDelete: [syncChapterCourseMetadataAfterDelete],
+    afterChange: [syncChapterCourseMetadataAfterChange, revalidateChapter],
+    afterDelete: [
+      syncChapterCourseMetadataAfterDelete,
+      revalidateChapterAfterDelete,
+    ],
   },
   admin: {
     useAsTitle: "title",

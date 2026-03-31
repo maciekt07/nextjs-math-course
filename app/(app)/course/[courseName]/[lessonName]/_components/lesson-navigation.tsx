@@ -41,13 +41,13 @@ export function LessonNavigation({ currentSlug }: LessonNavigationProps) {
         <LessonCard
           lesson={previousLesson}
           isPrevious
-          courseSlug={course?.slug!}
+          courseSlug={course?.slug}
           setOptimisticPath={setOptimisticPath}
         />
         <LessonCard
           lesson={nextLesson}
           isPrevious={false}
-          courseSlug={course?.slug!}
+          courseSlug={course?.slug}
           setOptimisticPath={setOptimisticPath}
         />
       </div>
@@ -58,7 +58,7 @@ export function LessonNavigation({ currentSlug }: LessonNavigationProps) {
 interface LessonCardProps {
   lesson: Lesson | null;
   isPrevious: boolean;
-  courseSlug?: string;
+  courseSlug?: string | null;
   setOptimisticPath: (path: string) => void;
 }
 

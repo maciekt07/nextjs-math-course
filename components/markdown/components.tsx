@@ -21,11 +21,14 @@ interface CreateMarkdownComponentsOptions {
   optimizeImages?: boolean;
 }
 
+const MATH_SSR_THRESHOLD = 15;
+
 export function createMarkdownComponents({
   media,
   optimizeMath = false,
   optimizeImages = false,
 }: CreateMarkdownComponentsOptions): Components {
+  let mathElementCount = 0;
   return {
     a: ({ node, ...props }) => (
       <a
@@ -91,7 +94,15 @@ export function createMarkdownComponents({
         className === "math-display" &&
         typeof props["data-content"] === "string"
       ) {
-        return <KatexRenderer content={props["data-content"]} block />;
+        const shouldLazy = mathElementCount >= MATH_SSR_THRESHOLD;
+        mathElementCount++;
+        return (
+          <KatexRenderer
+            content={props["data-content"]}
+            block
+            shouldLazy={shouldLazy}
+          />
+        );
       }
 
       return <div className={className}>{children}</div>;
@@ -104,8 +115,14 @@ export function createMarkdownComponents({
               className === "math-inline" &&
               typeof props["data-content"] === "string"
             ) {
+              const shouldLazy = mathElementCount >= MATH_SSR_THRESHOLD;
+              mathElementCount++;
               return (
-                <KatexRenderer content={props["data-content"]} block={false} />
+                <KatexRenderer
+                  content={props["data-content"]}
+                  block={false}
+                  shouldLazy={shouldLazy}
+                />
               );
             }
             return <span className={className}>{children}</span>;

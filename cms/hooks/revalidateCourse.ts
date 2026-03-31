@@ -1,22 +1,25 @@
-import { revalidateTag } from "next/cache";
-import type { CollectionAfterChangeHook } from "payload";
+import type {
+  CollectionAfterChangeHook,
+  CollectionAfterDeleteHook,
+} from "payload";
 import type { Course } from "@/types/payload-types";
+import { revalidateCourseCache } from "./revalidate";
 
 export const revalidateCourse: CollectionAfterChangeHook<Course> = async ({
   doc,
-  previousDoc,
   req: { payload, context },
 }) => {
   if (context.disableRevalidate) return doc;
+  if (doc.id && doc.slug)
+    await revalidateCourseCache(payload, doc.id, doc.slug);
+  return doc;
+};
 
-  const tag = "courses-list";
-
-  if (doc._status === "draft" && previousDoc._status === "draft") {
-    return doc;
-  }
-
-  payload.logger.info(`Revalidating tag: ${tag} for course: ${doc.slug}`);
-  revalidateTag(tag, "max");
-
+export const revalidateCourseAfterDelete: CollectionAfterDeleteHook<
+  Course
+> = async ({ doc, req: { payload, context } }) => {
+  if (context.disableRevalidate) return doc;
+  if (doc.id && doc.slug)
+    await revalidateCourseCache(payload, doc.id, doc.slug);
   return doc;
 };

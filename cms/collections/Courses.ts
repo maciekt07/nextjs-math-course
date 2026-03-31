@@ -2,7 +2,11 @@ import { createSlugField } from "@fields/factories/createSlugField";
 import type { Access, CollectionConfig } from "payload";
 import { publicPublishedReadAccess } from "@/cms/access/contentAccess";
 import { isAdmin } from "@/cms/access/roles";
-import { revalidateCourse } from "@/cms/hooks/revalidateCourse";
+import { cascadeDeleteCourse } from "@/cms/hooks/cascadeDeleteCourse";
+import {
+  revalidateCourse,
+  revalidateCourseAfterDelete,
+} from "@/cms/hooks/revalidateCourse";
 import {
   syncCoursePosterVisibilityAfterChange,
   syncCoursePosterVisibilityAfterDelete,
@@ -25,8 +29,12 @@ export const Courses: CollectionConfig = {
     drafts: true,
   },
   hooks: {
-    afterChange: [syncCoursePosterVisibilityAfterChange, revalidateCourse],
-    afterDelete: [syncCoursePosterVisibilityAfterDelete],
+    afterChange: [revalidateCourse, syncCoursePosterVisibilityAfterChange],
+    afterDelete: [
+      syncCoursePosterVisibilityAfterDelete,
+      cascadeDeleteCourse,
+      revalidateCourseAfterDelete,
+    ],
   },
   admin: {
     useAsTitle: "title",

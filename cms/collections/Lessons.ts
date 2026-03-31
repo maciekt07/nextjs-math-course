@@ -3,7 +3,10 @@ import { createSlugField } from "@fields/factories/createSlugField";
 import createBlurUp from "@mux/blurup";
 import type { Access, CollectionConfig } from "payload";
 import { isAdminOrEditor } from "@/cms/access/roles";
-import { revalidateLesson } from "@/cms/hooks/revalidateLesson";
+import {
+  revalidateLesson,
+  revalidateLessonAfterDelete,
+} from "@/cms/hooks/revalidateLesson";
 import {
   syncLessonCourseMetadataAfterChange,
   syncLessonCourseMetadataAfterDelete,
@@ -95,10 +98,13 @@ export const Lessons: CollectionConfig = {
           console.warn("Blur generation failed:", err);
         }
       },
-      revalidateLesson,
       syncLessonCourseMetadataAfterChange,
+      revalidateLesson,
     ],
-    afterDelete: [syncLessonCourseMetadataAfterDelete],
+    afterDelete: [
+      syncLessonCourseMetadataAfterDelete,
+      revalidateLessonAfterDelete,
+    ],
   },
 
   fields: [
