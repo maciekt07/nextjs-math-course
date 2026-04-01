@@ -8,7 +8,6 @@ import {
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useRef, useState } from "react";
-import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { Moon } from "@/components/animate-ui/icons/moon";
 import { Sun } from "@/components/animate-ui/icons/sun";
 import { Button } from "@/components/ui/button";
@@ -65,27 +64,25 @@ export function ThemeSelect() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <AnimateIcon animateOnHover>
-          <Button
-            variant="outline"
-            size="icon"
-            className="cursor-pointer backdrop-blur-md focus-visible:ring-0"
-          >
-            <Sun
-              key={`sun-${sunKey}`}
-              animate={sunKey > 0}
-              initialOnAnimateEnd
-              className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 dark:scale-0 dark:-rotate-90"
-            />
-            <Moon
-              key={`moon-${moonKey}`}
-              animate={moonKey > 0}
-              initialOnAnimateEnd
-              className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 dark:scale-100 dark:rotate-0"
-            />
-            <span className="sr-only">Toggle theme</span>
-          </Button>
-        </AnimateIcon>
+        <Button
+          variant="outline"
+          size="icon"
+          className="cursor-pointer backdrop-blur-md focus-visible:ring-0"
+        >
+          <Sun
+            key={`sun-${sunKey}`}
+            animate={sunKey > 0}
+            initialOnAnimateEnd
+            className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 dark:scale-0 dark:-rotate-90"
+          />
+          <Moon
+            key={`moon-${moonKey}`}
+            animate={moonKey > 0}
+            initialOnAnimateEnd
+            className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 dark:scale-100 dark:rotate-0"
+          />
+          <span className="sr-only">Toggle theme</span>
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {items.map(({ key, label, icon: Icon }) => (
