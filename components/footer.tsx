@@ -1,6 +1,5 @@
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { Mail } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { getServerSession } from "@/lib/auth/get-session";
 
@@ -16,7 +15,8 @@ export default async function Footer() {
               href="/"
               className="flex items-center gap-2 font-semibold text-base hover:text-primary transition-colors"
             >
-              <Image src="/logo.svg" alt="Logo" width={26} height={26} />
+              {/** biome-ignore lint/performance/noImgElement: svg */}
+              <img src="/logo.svg" alt="Logo" width={26} height={26} />
               <span>Math Course Online</span>
             </Link>
             <p className="text-sm text-foreground/60 max-w-xs">

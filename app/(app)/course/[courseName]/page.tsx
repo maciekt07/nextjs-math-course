@@ -2,12 +2,14 @@ import { BookX, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { publishedStatusWhere } from "@/cms/access/contentAccess";
+import { ArrowRight } from "@/components/animate-ui/icons/arrow-right";
+import { AnimateIcon } from "@/components/animate-ui/icons/icon";
+import { PartyPopper } from "@/components/animate-ui/icons/party-popper";
+import BuyCourseButton from "@/components/buy-course-button";
 import { EmptyState, EmptyStateCenterWrapper } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { getIsDraftMode, withCache } from "@/lib/cache/withCache";
 import { getPayloadClient } from "@/lib/payload-client";
-
-// fallback page - not actively used in normal flow
 
 const getCourseWithFirstLesson = (courseSlug: string) =>
   withCache(
@@ -25,7 +27,7 @@ const getCourseWithFirstLesson = (courseSlug: string) =>
             { slug: { equals: courseSlug } },
           ],
         },
-        select: { slug: true, id: true },
+        select: { slug: true, id: true, title: true },
         limit: 1,
       });
 
@@ -79,15 +81,83 @@ export default async function CoursePage({
   const { courseName } = await paramsPromise;
   const searchParams = await searchParamsPromise;
 
-  if (searchParams?.session_id) {
-    redirect(
-      `/api/stripe/checkout-success?session_id=${searchParams.session_id}`,
-    );
-  }
-
   const data = await getCourseWithFirstLesson(courseName);
 
   if (!data) notFound();
+
+  // handle payment success or canceled params
+  const hasPaymentParam = searchParams.payment_success || searchParams.canceled;
+  if (hasPaymentParam) {
+    const isSuccess = !!searchParams.payment_success;
+    const courseTitle = data.course.title ?? "this course";
+
+    if (isSuccess) {
+      return (
+        <EmptyStateCenterWrapper>
+          <div className="flex flex-col items-center gap-6 text-center ">
+            <div className="mx-auto flex h-24 w-24 items-center justify-center">
+              <PartyPopper
+                size={64}
+                animate
+                loop
+                loopDelay={1000}
+                className="text-green-600"
+              />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold">Payment Successful!</h1>
+              <p className="mt-2 text-muted-foreground">
+                You now have full access to {courseTitle}. Enjoy learning!
+              </p>
+            </div>
+            {data.firstLesson && (
+              <AnimateIcon animateOnHover className="w-full">
+                <Button size="lg" className="w-full" variant="green" asChild>
+                  <Link href={`/course/${courseName}/${data.firstLesson.slug}`}>
+                    Start Learning <ArrowRight />
+                  </Link>
+                </Button>
+              </AnimateIcon>
+            )}
+            <p className="text-sm text-muted-foreground -mt-2">
+              {data.firstLesson
+                ? "Or select a lesson from the sidebar to continue."
+                : "Select a lesson from the sidebar to continue."}
+            </p>
+          </div>
+        </EmptyStateCenterWrapper>
+      );
+    } else {
+      return (
+        <EmptyStateCenterWrapper>
+          <div className="flex flex-col items-center gap-6 text-center">
+            <div>
+              <h1 className="text-2xl font-bold">Payment Canceled</h1>
+              <p className="mt-2 text-muted-foreground">
+                Your payment for {courseTitle} was canceled. <br /> You can try
+                again anytime.
+              </p>
+            </div>
+            <div className="flex flex-col items-center gap-2 w-full">
+              <BuyCourseButton
+                size="lg"
+                courseId={data.course.id}
+                className="w-full"
+              >
+                Continue Checkout
+              </BuyCourseButton>
+              <Button asChild size="lg" className="w-full" variant="outline">
+                <Link href="/">
+                  <ChevronLeft />
+                  Go Back Home
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </EmptyStateCenterWrapper>
+      );
+    }
+  }
 
   if (!data.firstLesson) {
     return (
@@ -97,7 +167,7 @@ export default async function CoursePage({
           title="No Lessons Available"
           description="This course doesn't have any lessons yet."
           action={
-            <Button asChild size="xl">
+            <Button asChild size="lg">
               <Link href="/">
                 <ChevronLeft />
                 Go Back Home
@@ -109,5 +179,5 @@ export default async function CoursePage({
     );
   }
 
-  redirect(`/course/${courseName}/${data.firstLesson.slug}`);
+  redirect(`/course/${courseName}/${data.firstLesson.slug ?? "not-found"}`);
 }

@@ -59,7 +59,7 @@ export function EmptyStateCenterWrapper({
   return (
     <div
       className={cn(
-        "flex min-h-[calc(100dvh-68px)] items-center justify-center overflow-hidden pb-18 sm:pb-0",
+        "flex min-h-[calc(100dvh-68px)] items-center justify-center overflow-hidden pb-18 sm:pb-0 px-6",
         className,
       )}
       {...props}

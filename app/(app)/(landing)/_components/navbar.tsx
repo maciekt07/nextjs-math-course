@@ -8,7 +8,6 @@ import {
   motion,
   useReducedMotion,
 } from "motion/react";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ThemeSelect } from "@/components/theme-select";
@@ -154,13 +153,13 @@ export function Navbar({ user }: { user: User | null }) {
           {/* LEFT */}
           <div className="flex items-center gap-6 ml-1">
             <Link href="/" className="flex items-center gap-3">
-              <Image
+              {/** biome-ignore lint/performance/noImgElement: svg */}
+              <img
                 alt="Logo"
                 src="/logo.svg"
                 width={34}
                 height={34}
                 fetchPriority="high"
-                preload
               />
               <span className="text-xl font-bold">Math Course Online</span>
             </Link>

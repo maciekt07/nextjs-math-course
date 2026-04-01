@@ -111,6 +111,7 @@ export default async function CourseLayout({
   children,
 }: Args) {
   const { courseName } = await paramsPromise;
+
   const data = await getCourseWithLessons(courseName);
 
   if (!data) notFound();

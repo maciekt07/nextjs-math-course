@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
+import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useCourseStore } from "@/stores/course-store";
 import { useSidebarStore } from "@/stores/sidebar-store";
@@ -25,6 +26,7 @@ export function CourseLayoutWrapper({
   const setOptimisticPath = useSidebarStore((state) => state.setOptimisticPath);
   const initialize = useCourseStore((state) => state.initialize);
   const prefersReducedMotion = useReducedMotion();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     initialize(course, lessons);
@@ -36,6 +38,19 @@ export function CourseLayoutWrapper({
       setOpen(true);
     };
   }, [setOptimisticPath, setOpen]);
+
+  useEffect(() => {
+    const paymentSuccess = searchParams.get("payment_success");
+    const canceled = searchParams.get("canceled");
+
+    // clean URL if either param is present
+    if (paymentSuccess || canceled) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete("payment_success");
+      url.searchParams.delete("canceled");
+      window.history.replaceState(window.history.state, "", url.toString());
+    }
+  }, [searchParams]);
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen relative overflow-x-hidden">

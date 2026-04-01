@@ -115,7 +115,7 @@ export function LessonTOC({ headings }: { headings: Heading[] }) {
   return (
     <>
       {/* accordion for mobile */}
-      <div className="hidden max-[1704px]:block mb-6 font-inter">
+      <div className="hidden max-[1704px]:block mb-10 font-inter">
         <Accordion
           type="single"
           collapsible

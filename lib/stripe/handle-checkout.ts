@@ -21,6 +21,7 @@ export async function handleCheckoutCompleted(
 
   const userId = metadata?.userId;
   const courseId = metadata?.courseId;
+  const courseSlug = metadata?.courseSlug;
   const amount = metadata?.amount;
 
   if (!userId || !courseId) {
@@ -84,4 +85,8 @@ export async function handleCheckoutCompleted(
 
   revalidateTag(`enrollment:${userId}:${courseId}`, "max");
   revalidateTag(`enrollments:${userId}`, "max");
+
+  if (courseSlug) {
+    revalidateTag(`course-slug:${courseSlug}`, "max");
+  }
 }
