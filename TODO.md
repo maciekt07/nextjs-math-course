@@ -16,7 +16,6 @@
   - [x] Use hybrid SSR + SSG:
     - Free lessons: static pages
     - Paid/protected lessons: SSR
-- [ ] Implement course bundles
 
 ## CMS
 
@@ -34,9 +33,8 @@
 - [x] Improve caching and add on-demand revalidation
 - [x] Add video chapters [docs](https://www.mux.com/docs/guides/player-advanced-usage#chapters-example)
 - [x] Add lesson feedback form
-- [ ] Add course-release email notifications
 - [x] Add custom Markdown callout blocks
-- [ ] Add drafts [docs](https://payloadcms.com/docs/versions/drafts)
+- [x] Add drafts [docs](https://payloadcms.com/docs/versions/drafts)
 - [x] Add lesson groups
 
 ## UI / UX
@@ -44,7 +42,6 @@
 - [x] Improve sidebar animations
 - [x] Add settings dialog for course view
 - [x] Animate hero svg [video](https://www.youtube.com/watch?v=SrmTDrN1lkU)
-- [ ] Add ambient light effect for video [demo](https://codesandbox.io/p/sandbox/ambient-mode-vv63e9)
 - [x] Add top loading bar
 - [x] Add TOC to markdown
 - [x] Add OpenDyslexic font for lessons
@@ -58,3 +55,4 @@
 - [ ] Track lesson completion and quiz progress per user in DB
 - [ ] Update Next.js caching [payload/pull/14456](https://github.com/payloadcms/payload/pull/14456)
 - [x] Add Upstash Redis rate limiting
+- [x] use waitUntil from @vercel/functions for emails
