@@ -1,7 +1,7 @@
 import "server-only";
 
+import { waitUntil } from "@vercel/functions";
 import type { JSX } from "react";
-
 import { serverEnv } from "@/env/server";
 import { resend } from "@/lib/resend";
 
@@ -16,10 +16,12 @@ interface SendEmailOptions {
 export async function sendEmail({ to, subject, react }: SendEmailOptions) {
   const isDev = process.env.NODE_ENV === "development";
 
-  await resend.emails.send({
+  const promise = resend.emails.send({
     from: FROM_EMAIL,
     to: isDev ? ["delivered@resend.dev"] : to,
     subject,
     react,
   });
+
+  waitUntil(promise);
 }
