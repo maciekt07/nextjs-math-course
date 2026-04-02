@@ -73,6 +73,7 @@ export const LessonItem = memo(
         key={lesson.id}
         href={lessonPath}
         title={lesson.title}
+        // chapter accordion doesn't mount closed sections
         prefetch
         onClick={(e) => onClick(e, lessonPath)}
       >

@@ -81,7 +81,10 @@ export function SignInForm({ returnTo }: { returnTo?: string }) {
               <FormLabel className="relative">
                 E-mail{" "}
                 {wasEmail && (
-                  <Badge variant="outline" className="absolute right-0">
+                  <Badge
+                    variant="outline"
+                    className="absolute right-0 animate-in zoom-in duration-200"
+                  >
                     Last used
                   </Badge>
                 )}

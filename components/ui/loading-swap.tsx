@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Spinner } from "@/components/ui/spinner";
+import { Loader } from "@/components/animate-ui/icons/loader";
 import { cn } from "@/lib/ui";
 
 export function LoadingSwap({
@@ -33,7 +33,7 @@ export function LoadingSwap({
           className,
         )}
       >
-        <Spinner />
+        <Loader animate loop />
       </div>
     </div>
   );

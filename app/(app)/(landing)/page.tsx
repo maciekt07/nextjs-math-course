@@ -88,6 +88,7 @@ export default async function Home() {
                     asChild
                     className="backdrop-blur-2xl shadow-sm"
                   >
+                    {/* already prefetched */}
                     <Link href={featuredPreviewLink}>
                       <BookOpen className="size-4" /> Watch Free Demo
                     </Link>

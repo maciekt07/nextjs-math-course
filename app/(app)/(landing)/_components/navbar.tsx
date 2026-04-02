@@ -42,7 +42,7 @@ function AuthButtons({
           onClick={onNavigate}
           {...props}
         >
-          <Link href="/courses">
+          <Link href="/courses" prefetch>
             <BookOpen /> My Courses
           </Link>
         </Button>
@@ -77,13 +77,13 @@ function AuthButtons({
         className="backdrop-blur-md"
         onClick={onNavigate}
       >
-        <Link href="/auth/sign-in">
+        <Link href="/auth/sign-in" prefetch>
           <LogIn /> Log In
         </Link>
       </Button>
 
       <Button asChild onClick={onNavigate}>
-        <Link href="/auth/sign-up">
+        <Link href="/auth/sign-up" prefetch>
           <UserPlus /> Sign Up
         </Link>
       </Button>
@@ -152,7 +152,7 @@ export function Navbar({ user }: { user: User | null }) {
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4">
           {/* LEFT */}
           <div className="flex items-center gap-6 ml-1">
-            <Link href="/" className="flex items-center gap-3">
+            <Link href="/" prefetch className="flex items-center gap-3">
               {/** biome-ignore lint/performance/noImgElement: svg */}
               <img
                 alt="Logo"

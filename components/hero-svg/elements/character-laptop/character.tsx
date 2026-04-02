@@ -44,6 +44,7 @@ export default function Character() {
   return (
     <motion.g
       id="Character"
+      //FIXME: scale svg animation is broken on firefox
       initial={{ scale: 0.5, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{
