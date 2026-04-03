@@ -12,6 +12,8 @@ jiti.import("./env/client");
 const nextConfig: NextConfig = {
   images: {
     minimumCacheTTL: 31536000, // 1 year
+    qualities: [100, 75],
+
     remotePatterns: [
       {
         protocol: "https",
