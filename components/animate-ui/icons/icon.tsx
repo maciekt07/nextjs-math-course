@@ -645,14 +645,14 @@ function getVariants<
 }
 
 export {
-  pathClassName,
-  staticAnimations,
   AnimateIcon,
-  IconWrapper,
-  useAnimateIconContext,
+  type AnimateIconContextValue,
+  type AnimateIconProps,
   getVariants,
   type IconProps,
+  IconWrapper,
   type IconWrapperProps,
-  type AnimateIconProps,
-  type AnimateIconContextValue,
+  pathClassName,
+  staticAnimations,
+  useAnimateIconContext,
 };

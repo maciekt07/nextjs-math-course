@@ -15,6 +15,10 @@ export const Media: CollectionConfig = {
   upload: {
     mimeTypes: ["image/*"],
     staticDir: "media",
+    modifyResponseHeaders: ({ headers }) => {
+      headers.set("Cache-Control", "public, max-age=31536000, immutable");
+      return headers;
+    },
   },
   fields: [
     {

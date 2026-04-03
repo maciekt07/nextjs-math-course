@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import { Navbar } from "@/app/(app)/(landing)/_components/navbar";
 import Footer from "@/components/footer";
 import { getServerSession } from "@/lib/auth/get-session";
+import { buildNoIndexMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = buildNoIndexMetadata({
+  description: "Securely sign in, sign up, and manage account access.",
+});
 
 export default async function AuthLayout({
   children,

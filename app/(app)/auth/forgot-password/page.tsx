@@ -1,17 +1,14 @@
 import { redirect } from "next/navigation";
 import { getServerSession } from "@/lib/auth/get-session";
+import { buildNoIndexMetadata } from "@/lib/seo";
 import { AuthCard } from "../_components/auth-card";
 import { AuthFooter } from "../_components/auth-footer";
 import { ForgotPasswordForm } from "./forgot-password-form";
 
-export const metadata = {
+export const metadata = buildNoIndexMetadata({
   title: "Forgot Password",
   description: "Reset your password by entering your email address.",
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
+});
 
 export default async function ForgotPasswordPage({
   searchParams,

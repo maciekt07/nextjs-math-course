@@ -2,14 +2,14 @@ import { AlertCircle, MailCheck, MailWarning } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { buildNoIndexMetadata } from "@/lib/seo";
 import { AuthIconCard } from "../_components/auth-card";
 
-export const dynamic = "force-dynamic";
-
-export const metadata: Metadata = {
+export const metadata: Metadata = buildNoIndexMetadata({
   title: "Verify Email Change",
-  robots: { index: false, follow: false },
-};
+  description:
+    "Confirm your new email address to finish updating your account details.",
+});
 
 export default async function VerifyEmailChangePage({
   searchParams,

@@ -1,19 +1,16 @@
 import { redirect } from "next/navigation";
 import { getServerSession } from "@/lib/auth/get-session";
+import { buildNoIndexMetadata } from "@/lib/seo";
 import { AuthCard } from "../_components/auth-card";
 import { AuthFooter } from "../_components/auth-footer";
 
 import { SignInForm } from "./sign-in-form";
 
-export const metadata = {
+export const metadata = buildNoIndexMetadata({
   title: "Sign In",
   description:
     "Access your Math Course Online account to continue learning and manage your courses.",
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
+});
 
 export default async function SignInPage({
   searchParams,

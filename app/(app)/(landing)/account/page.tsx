@@ -30,6 +30,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { auth } from "@/lib/auth/auth";
 import { getServerSession } from "@/lib/auth/get-session";
 import { AUTH_LIMITS } from "@/lib/constants/limits";
+import { buildNoIndexMetadata } from "@/lib/seo";
 import ActiveSessions from "./_components/active-sessions";
 import { LogOutButton } from "./_components/logout-button";
 import { LogoutEverywhereButton } from "./_components/logout-everywhere-button";
@@ -37,20 +38,10 @@ import { PasswordChangeButton } from "./_components/password-change-button";
 import { RequestEmailChangeButton } from "./_components/request-email-change-button";
 import { UpdateNameForm } from "./_components/update-name-form";
 
-export async function generateMetadata() {
-  const session = await getServerSession();
-
-  if (!session) {
-    return {
-      title: "Your Account",
-      robots: { index: false, follow: false },
-    };
-  }
-
-  return {
-    title: `Your Account (${session.user.name})`,
-  };
-}
+export const metadata = buildNoIndexMetadata({
+  title: "Your Account",
+  description: "Manage your account settings and personal information.",
+});
 
 export default async function AccountPage() {
   const session = await getServerSession({

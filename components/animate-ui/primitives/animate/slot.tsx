@@ -88,9 +88,9 @@ function Slot<T extends HTMLElement = HTMLElement>({
 }
 
 export {
+  type AnyProps,
+  type DOMMotionProps,
   Slot,
   type SlotProps,
   type WithAsChild,
-  type DOMMotionProps,
-  type AnyProps,
 };

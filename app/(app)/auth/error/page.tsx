@@ -1,6 +1,7 @@
 import { AlertTriangle, Link2Off, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { buildNoIndexMetadata } from "@/lib/seo";
 import { AuthIconCard } from "../_components/auth-card";
 
 interface PageProps {
@@ -14,6 +15,12 @@ type ErrorConfig = {
   title: string;
   description: React.ReactNode;
 };
+
+export const metadata = buildNoIndexMetadata({
+  title: "Authentication Error",
+  description:
+    "There was a problem completing authentication. Please try again.",
+});
 
 const ERROR_MAP = {
   account_not_linked: {

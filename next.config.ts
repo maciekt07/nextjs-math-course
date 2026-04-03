@@ -11,6 +11,7 @@ jiti.import("./env/client");
 
 const nextConfig: NextConfig = {
   images: {
+    minimumCacheTTL: 31536000, // 1 year
     remotePatterns: [
       {
         protocol: "https",
@@ -22,7 +23,6 @@ const nextConfig: NextConfig = {
 
   reactStrictMode: true,
   reactCompiler: true,
-  allowedDevOrigins: ["basidiomycetous-leandro-noninstructive.ngrok-free.dev"],
   experimental: {
     serverMinification: true,
     authInterrupts: true,

@@ -1,4 +1,5 @@
 import { BookX, ChevronLeft } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { publishedStatusWhere } from "@/cms/access/contentAccess";
@@ -9,7 +10,14 @@ import BuyCourseButton from "@/components/buy-course-button";
 import { EmptyState, EmptyStateCenterWrapper } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { getIsDraftMode, withCache } from "@/lib/cache/withCache";
+import { getCourseSeoData } from "@/lib/data/seo";
 import { getPayloadClient } from "@/lib/payload-client";
+import {
+  buildNoIndexMetadata,
+  buildPublicMetadata,
+  getCourseDescription,
+  getCourseSocialImage,
+} from "@/lib/seo";
 
 const getCourseWithFirstLesson = (courseSlug: string) =>
   withCache(
@@ -73,6 +81,29 @@ type Args = {
   params: Promise<{ courseName: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ courseName: string }>;
+}): Promise<Metadata> {
+  const { courseName } = await params;
+  const course = await getCourseSeoData(courseName);
+
+  if (!course) {
+    return buildNoIndexMetadata({
+      title: "Course Not Found",
+      description: "The course you are looking for does not exist.",
+    });
+  }
+
+  return buildPublicMetadata({
+    title: course.title,
+    description: getCourseDescription(course.description, course.title),
+    path: `/course/${courseName}`,
+    images: [getCourseSocialImage(course.slug, course.posterAlt)],
+  });
+}
 
 export default async function CoursePage({
   params: paramsPromise,

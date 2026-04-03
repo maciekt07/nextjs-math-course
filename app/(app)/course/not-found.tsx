@@ -2,12 +2,12 @@ import { BookX, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { EmptyState, EmptyStateCenterWrapper } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
+import { buildNoIndexMetadata } from "@/lib/seo";
 
-export const metadata = {
+export const metadata = buildNoIndexMetadata({
   title: "Course Not Found",
   description: "Oops! The course you are looking for doesn't exist.",
-  robots: "noindex",
-};
+});
 
 export default function NotFoundPage() {
   return (

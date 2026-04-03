@@ -5,36 +5,9 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { META_THEME_COLORS } from "@/hooks/use-meta-color";
 import { inter } from "@/lib/fonts";
+import { buildSiteMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: {
-    template: "%s | Math Course Online",
-    default: "Math Course Online",
-  },
-  authors: [{ name: "Maciej Twaróg", url: "https://github.com/maciekt07" }],
-  description: "Learn math online",
-  robots: {
-    index: true,
-    follow: true,
-  },
-  appleWebApp: {
-    capable: true,
-    title: "Math Course",
-    statusBarStyle: "default",
-  },
-  openGraph: {
-    type: "website",
-    siteName: "Math Course Online",
-    title: "Math Course Online",
-    description: "Learn math online",
-    locale: "en_US",
-  },
-  twitter: {
-    card: "summary",
-    title: "Math Course Online",
-    description: "Learn math online",
-  },
-};
+export const metadata: Metadata = buildSiteMetadata();
 
 export const viewport: Viewport = {
   width: "device-width",

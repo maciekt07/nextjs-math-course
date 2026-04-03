@@ -8,6 +8,11 @@ import { Button } from "@/components/ui/button";
 import { getServerSession } from "@/lib/auth/get-session";
 import { getCourses, getOwnedCourseIds } from "@/lib/data/courses";
 import { getUserCount } from "@/lib/data/users";
+import {
+  buildPublicMetadata,
+  getLandingSocialImage,
+  SITE_DESCRIPTION,
+} from "@/lib/seo";
 import { cn } from "@/lib/ui";
 import { CTASection } from "./_components/cta";
 import { FAQ } from "./_components/faq";
@@ -15,6 +20,12 @@ import { GridBackground } from "./_components/grid-background";
 import { HeroBadge } from "./_components/hero-badge";
 import { HeroImage } from "./_components/hero-image";
 import { WhyChoose } from "./_components/why-choose";
+
+export const metadata = buildPublicMetadata({
+  description: SITE_DESCRIPTION,
+  path: "/",
+  images: [getLandingSocialImage()],
+});
 
 export default async function Home() {
   const session = await getServerSession();

@@ -1,17 +1,14 @@
 import { redirect } from "next/navigation";
 import { getServerSession } from "@/lib/auth/get-session";
+import { buildNoIndexMetadata } from "@/lib/seo";
 import { AuthCard } from "../_components/auth-card";
 import { AuthFooter } from "../_components/auth-footer";
 import { SignUpForm } from "./sign-up-form";
 
-export const metadata = {
+export const metadata = buildNoIndexMetadata({
   title: "Sign Up",
   description: "Create your Math Course Online account to start learning.",
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
+});
 
 export default async function SignUpPage({
   searchParams,

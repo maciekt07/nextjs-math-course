@@ -2,12 +2,12 @@ import { ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { buildNoIndexMetadata } from "@/lib/seo";
 
-export const metadata = {
+export const metadata = buildNoIndexMetadata({
   title: "Page Not Found",
   description: "Oops! The page you are looking for doesn't exist.",
-  robots: "noindex",
-};
+});
 
 // catch-all page as a workaround for route groups because not-found.tsx inside a route group doesn't trigger
 

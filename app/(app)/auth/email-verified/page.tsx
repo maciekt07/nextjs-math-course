@@ -5,14 +5,16 @@ import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { LogIn } from "@/components/animate-ui/icons/log-in";
 import { Button } from "@/components/ui/button";
 import { getServerSession } from "@/lib/auth/get-session";
+import { buildNoIndexMetadata } from "@/lib/seo";
 import { AuthIconCard } from "../_components/auth-card";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildNoIndexMetadata({
   title: "Email Verified",
-  robots: { index: false, follow: false },
-};
+  description:
+    "Your email address has been verified and your account is ready to use.",
+});
 
 export default async function EmailVerifiedPage({
   searchParams,

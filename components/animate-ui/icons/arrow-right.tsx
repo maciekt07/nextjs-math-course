@@ -145,9 +145,9 @@ function ArrowRight(props: ArrowRightProps) {
 }
 
 export {
-  animations,
   ArrowRight,
   ArrowRight as ArrowRightIcon,
   type ArrowRightProps,
   type ArrowRightProps as ArrowRightIconProps,
+  animations,
 };

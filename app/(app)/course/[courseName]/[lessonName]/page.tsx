@@ -13,7 +13,16 @@ import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth/auth";
 import { getIsDraftMode, withCache } from "@/lib/cache/withCache";
 import { hasEnrollment } from "@/lib/data/enrollment";
+import { getLessonSeoData } from "@/lib/data/seo";
 import { getPayloadClient } from "@/lib/payload-client";
+import {
+  APP_NAME,
+  buildNoIndexMetadata,
+  buildPublicMetadata,
+  getCourseDescription,
+  getCourseSocialImage,
+  NO_INDEX_ROBOTS,
+} from "@/lib/seo";
 import type { Course } from "@/types/payload-types";
 import FeedbackWidget from "./_components/feedback-widget";
 import { LessonLayout } from "./_components/lesson-layout";
@@ -83,31 +92,26 @@ export async function generateMetadata({
   params: Promise<{ courseName: string; lessonName: string }>;
 }): Promise<Metadata> {
   const { courseName, lessonName } = await params;
-  const payload = await getPayloadClient();
+  const lesson = await getLessonSeoData(courseName, lessonName);
 
-  const { docs } = await payload.find({
-    collection: "lessons",
-    limit: 1,
-    overrideAccess: true,
-    where: {
-      and: [
-        publishedStatusWhere,
-        { "course.slug": { equals: courseName } },
-        { slug: { equals: lessonName } },
-      ],
-    },
-    select: { title: true, course: true },
+  if (!lesson) {
+    return buildNoIndexMetadata({
+      title: "Lesson Not Found",
+      description: "The lesson you are looking for does not exist.",
+    });
+  }
+
+  return buildPublicMetadata({
+    absoluteTitle: `${lesson.title} | ${lesson.course.title} | ${APP_NAME}`,
+    description: getCourseDescription(
+      lesson.course.description,
+      lesson.course.title,
+    ),
+    path: `/course/${courseName}/${lessonName}`,
+    images: [getCourseSocialImage(lesson.course.slug, lesson.course.posterAlt)],
+    type: "article",
+    robots: lesson.free ? undefined : NO_INDEX_ROBOTS,
   });
-
-  const lesson = docs?.[0];
-  if (!lesson) return { title: "Lesson not found" };
-
-  const courseTitle =
-    typeof lesson.course === "string" ? "" : lesson.course?.title || "";
-
-  return {
-    title: `${lesson.title}${courseTitle ? ` | ${courseTitle}` : ""}`,
-  };
 }
 
 export default async function LessonPage({

@@ -7,10 +7,12 @@ import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { getServerSession } from "@/lib/auth/get-session";
 import { getCoursesByIds, getOwnedCourseIds } from "@/lib/data/courses";
+import { buildNoIndexMetadata } from "@/lib/seo";
 
-export const metadata = {
+export const metadata = buildNoIndexMetadata({
   title: "Your Courses",
-};
+  description: "Browse and open the courses you have already purchased.",
+});
 
 export default async function CoursesPage() {
   const session = await getServerSession();
