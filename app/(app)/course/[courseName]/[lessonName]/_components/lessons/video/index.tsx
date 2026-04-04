@@ -7,16 +7,20 @@ interface VideoLessonProps {
 
 export async function VideoLesson({ lesson }: VideoLessonProps) {
   const muxVideo = lesson.video as MuxVideo;
+
   const playbackOptions = muxVideo?.playbackOptions ?? [];
 
-  // 0 for signed, 1 for public
-  const index = lesson.free ? 1 : 0;
+  const policy = lesson.free ? "public" : "signed";
+
+  const selectedOption =
+    playbackOptions.find((opt) => opt.playbackPolicy === policy) ??
+    playbackOptions.find(Boolean);
 
   const {
     playbackId = null,
     playbackPolicy = "public",
     posterUrl = "",
-  } = playbackOptions[index] ?? {};
+  } = selectedOption ?? {};
 
   // https://www.mux.com/docs/guides/player-customize-look-and-feel#provide-a-placeholder-while-the-poster-image-loads
   const blurDataURL = lesson.videoBlurDataURL ?? undefined;
