@@ -1,4 +1,4 @@
-import { stripMarkdown } from "@/components/markdown/utils";
+import { stripBasicMarkdown } from "@/lib/markdown/strip-markdown";
 import { slug } from "../slugify";
 
 export interface Heading {
@@ -20,7 +20,7 @@ export function extractHeadings(
   while (match !== null) {
     const level = match[1].length; // ## -> 2, ### -> 3
     const rawText = match[2].trim();
-    const text = stripMarkdown(rawText);
+    const text = stripBasicMarkdown(rawText);
 
     let id = "";
     if (level === 2) {

@@ -2,6 +2,7 @@ import Image from "next/image";
 import type { Components } from "react-markdown";
 import { CalloutBlock } from "@/components/markdown/blocks/callout-block";
 import type { BlockType } from "@/components/markdown/blocks/callout-config";
+import { stripBasicMarkdown } from "@/lib/markdown/strip-markdown";
 import { slug } from "@/lib/slugify";
 import type { Media } from "@/types/payload-types";
 import { ImageZoom } from "../ui/shadcn-io/image-zoom";
@@ -11,7 +12,7 @@ import type { DesmosDivProps } from "./desmos/desmos-plugin";
 import { Heading } from "./heading";
 import { KatexRenderer } from "./katex/katex-renderer";
 import type { MathElementProps } from "./types";
-import { getText, stripMarkdown } from "./utils";
+import { getText } from "./utils";
 
 let currentH2Text = "";
 
@@ -132,7 +133,7 @@ export function createMarkdownComponents({
     // generate stable IDs for h2/h3 for TOC
     // h3 IDs are namespaced under the last h2 to avoid collisions
     h2: ({ node, ...props }) => {
-      const text = stripMarkdown(getText(props.children));
+      const text = stripBasicMarkdown(getText(props.children));
       currentH2Text = text;
       const id = slug(text);
 
@@ -143,7 +144,7 @@ export function createMarkdownComponents({
       );
     },
     h3: ({ node, ...props }) => {
-      const text = stripMarkdown(getText(props.children));
+      const text = stripBasicMarkdown(getText(props.children));
       const parent = currentH2Text || "section";
       const id = slug(`${parent}-${text}`);
 

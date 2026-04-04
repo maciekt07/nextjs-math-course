@@ -1,12 +1,5 @@
 import React from "react";
 
-export function stripMarkdown(md: string): string {
-  return md
-    .replace(/[*_~`]/g, "") //basic markdown symbols
-    .replace(/\[(.*?)\]\(.*?\)/g, "$1") // links
-    .trim();
-}
-
 // extract readable text from ReactMarkdown AST children
 export function getText(children: React.ReactNode): string {
   if (!children) return "";
