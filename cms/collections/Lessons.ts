@@ -65,38 +65,35 @@ export const Lessons: CollectionConfig = {
     afterChange: [
       async ({ doc, req }) => {
         if (doc.type !== "video") return;
-
         if (doc.videoBlurDataURL) return;
-
         if (!doc.video) return;
 
-        try {
-          const videoId =
-            typeof doc.video === "string" ? doc.video : doc.video.id;
+        setImmediate(async () => {
+          try {
+            const videoId =
+              typeof doc.video === "string" ? doc.video : doc.video.id;
+            const muxVideo = await req.payload.findByID({
+              collection: "mux-video",
+              id: videoId,
+            });
 
-          const muxVideo = await req.payload.findByID({
-            collection: "mux-video",
-            id: videoId,
-          });
+            const playback = muxVideo.playbackOptions?.find(
+              (p) => p.playbackPolicy === "public",
+            );
+            if (!playback?.playbackId) return;
 
-          const playback = muxVideo.playbackOptions?.find(
-            (p) => p.playbackPolicy === "public",
-          );
+            const { blurDataURL } = await createBlurUp(playback.playbackId);
 
-          if (!playback?.playbackId) return;
-
-          const { blurDataURL } = await createBlurUp(playback.playbackId);
-
-          await req.payload.update({
-            collection: "lessons",
-            id: doc.id,
-            data: {
-              videoBlurDataURL: blurDataURL,
-            },
-          });
-        } catch (err) {
-          console.warn("Blur generation failed:", err);
-        }
+            await req.payload.update({
+              collection: "lessons",
+              id: doc.id,
+              data: { videoBlurDataURL: blurDataURL },
+              req: { ...req, transactionID: undefined } as typeof req,
+            });
+          } catch (err) {
+            console.warn("Blur generation failed:", err);
+          }
+        });
       },
       syncLessonCourseMetadataAfterChange,
       revalidateLesson,

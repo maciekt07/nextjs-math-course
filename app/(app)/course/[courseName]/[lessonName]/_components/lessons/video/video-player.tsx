@@ -8,7 +8,6 @@ import {
   Video,
   VideoOff,
 } from "lucide-react";
-import { useReducedMotion } from "motion/react";
 import type React from "react";
 import { useCallback, useEffect, useReducer, useRef } from "react";
 import { toast } from "sonner";
@@ -58,7 +57,6 @@ export function VideoPlayer({
   const mounted = useMounted();
   const playerRef = useRef<HTMLDivElement>(null);
   const playerElementRef = useRef<MuxPlayerRefAttributes | null>(null);
-  const prefersReducedMotion = useReducedMotion();
 
   type MuxState = {
     tokens: Partial<MuxTokens>;
@@ -224,41 +222,34 @@ export function VideoPlayer({
     // };
 
     return (
-      <div
-        className={cn(
-          "animate-in fade-in duration-200",
-          !prefersReducedMotion && "zoom-in-94",
-        )}
-      >
-        <MuxPlayer
-          ref={muxPlayerCallback}
-          playbackId={playbackId || undefined}
-          tokens={playbackPolicy === "signed" ? state.tokens : undefined}
-          poster={posterUrl ?? undefined}
-          placeholder={placeholder}
-          title=""
-          videoTitle={videoTitle || title}
-          accentColor="#4E65FF"
-          proudlyDisplayMuxBadge
-          metadata={{
-            video_title: videoTitle,
-            video_id: videoId,
-            lesson_id: id,
-          }}
-          onError={(e) => console.log(e)}
-          preload="metadata"
-          streamType="on-demand"
-          autoPlay={false}
-          className="rounded-xl w-full overflow-hidden bg-background aspect-video"
-        />
-      </div>
+      <MuxPlayer
+        ref={muxPlayerCallback}
+        playbackId={playbackId || undefined}
+        tokens={playbackPolicy === "signed" ? state.tokens : undefined}
+        poster={posterUrl ?? undefined}
+        placeholder={placeholder}
+        title=""
+        videoTitle={videoTitle || title}
+        accentColor="#4E65FF"
+        proudlyDisplayMuxBadge
+        metadata={{
+          video_title: videoTitle,
+          video_id: videoId,
+          lesson_id: id,
+        }}
+        onError={(e) => console.log(e)}
+        preload="metadata"
+        streamType="on-demand"
+        autoPlay={false}
+        className="rounded-xl w-full overflow-hidden bg-background aspect-video shadow-xl"
+      />
     );
   };
 
   return (
     <div className="flex flex-col gap-4" ref={playerRef}>
       {mounted ? renderVideoArea() : <EmptyState className="bg-transparent" />}
-      <Card className="mt-2 bg-card/40 shadow-none">
+      <Card className="mt-6 bg-card/40 shadow-none">
         <CardHeader className="border-b font-inter">
           <CardTitle className="flex items-center gap-3 -mb-2">
             <Video className="size-5 text-primary" />
