@@ -169,7 +169,7 @@ export default async function AccountPage() {
             </div>
 
             <p className="text-xs text-muted-foreground">
-              Used for login and notifications.
+              Used for {isCredentials && "login and "}notifications.
             </p>
           </div>
           {isCredentials && (

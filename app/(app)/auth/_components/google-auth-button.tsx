@@ -78,7 +78,10 @@ export function GoogleAuthButton({
       {wasGoogle && !loading && (
         <Badge
           variant="outline"
-          className="absolute right-2 top-1/2 -translate-y-1/2 animate-in zoom-in duration-200"
+          className={cn(
+            "absolute right-2 top-1/2 -translate-y-1/2 animate-in zoom-in duration-200",
+            "max-[430px]:right-[-8px] max-[430px]:top-[-1px] max-[430px]:bg-card",
+          )}
         >
           Last used
         </Badge>
