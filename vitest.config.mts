@@ -13,10 +13,6 @@ export default defineConfig({
       SKIP_ENV_VALIDATION: "1",
     },
     setupFiles: ["./vitest.setup.ts"],
-    include: [
-      "**/*.test.{ts,tsx}",
-      "**/*.spec.{ts,tsx}",
-      "tests/int/**/*.int.spec.ts",
-    ],
+    include: ["**/*.test.{ts,tsx}", "tests/int/**/*.spec.ts"],
   },
 });
