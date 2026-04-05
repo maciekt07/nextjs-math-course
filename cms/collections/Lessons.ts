@@ -61,43 +61,34 @@ export const Lessons: CollectionConfig = {
 
         return data;
       },
-    ],
-    afterChange: [
-      async ({ doc, req }) => {
-        if (doc.type !== "video") return;
-        if (doc.videoBlurDataURL) return;
-        if (!doc.video) return;
+      async ({ data, req }) => {
+        if (data.type !== "video") return data;
+        if (data.videoBlurDataURL) return data;
+        if (!data.video) return data;
 
-        setImmediate(async () => {
-          try {
-            const videoId =
-              typeof doc.video === "string" ? doc.video : doc.video.id;
-            const muxVideo = await req.payload.findByID({
-              collection: "mux-video",
-              id: videoId,
-            });
+        try {
+          const videoId =
+            typeof data.video === "string" ? data.video : data.video.id;
+          const muxVideo = await req.payload.findByID({
+            collection: "mux-video",
+            id: videoId,
+          });
 
-            const playback = muxVideo.playbackOptions?.find(
-              (p) => p.playbackPolicy === "public",
-            );
-            if (!playback?.playbackId) return;
+          const playback = muxVideo.playbackOptions?.find(
+            (p) => p.playbackPolicy === "public",
+          );
+          if (!playback?.playbackId) return data;
 
-            const { blurDataURL } = await createBlurUp(playback.playbackId);
+          const { blurDataURL } = await createBlurUp(playback.playbackId);
+          data.videoBlurDataURL = blurDataURL;
+        } catch (err) {
+          console.warn("Blur generation failed:", err);
+        }
 
-            await req.payload.update({
-              collection: "lessons",
-              id: doc.id,
-              data: { videoBlurDataURL: blurDataURL },
-              req: { ...req, transactionID: undefined } as typeof req,
-            });
-          } catch (err) {
-            console.warn("Blur generation failed:", err);
-          }
-        });
+        return data;
       },
-      syncLessonCourseMetadataAfterChange,
-      revalidateLesson,
     ],
+    afterChange: [syncLessonCourseMetadataAfterChange, revalidateLesson],
     afterDelete: [
       syncLessonCourseMetadataAfterDelete,
       revalidateLessonAfterDelete,
