@@ -5,6 +5,13 @@ interface ReadingTimeConfig {
   desmosTimePerGraph?: number;
 }
 
+export const READING_TIME_DEFAULTS = {
+  wordsPerMinute: 180,
+  mathTimePerExpression: 8,
+  imageTimePerImage: 12,
+  desmosTimePerGraph: 12,
+} as const;
+
 /**
  * Calculate reading time for markdown document with LaTeX math and graphs
  *
@@ -20,10 +27,15 @@ export function getReadingTime(
   markdown: string,
   config?: ReadingTimeConfig,
 ): number {
-  const wordsPerMinute = config?.wordsPerMinute ?? 180;
-  const mathTimePerExpression = config?.mathTimePerExpression ?? 8;
-  const imageTimePerImage = config?.imageTimePerImage ?? 12;
-  const desmosTimePerGraph = config?.desmosTimePerGraph ?? 12;
+  const wordsPerMinute =
+    config?.wordsPerMinute ?? READING_TIME_DEFAULTS.wordsPerMinute;
+  const mathTimePerExpression =
+    config?.mathTimePerExpression ??
+    READING_TIME_DEFAULTS.mathTimePerExpression;
+  const imageTimePerImage =
+    config?.imageTimePerImage ?? READING_TIME_DEFAULTS.imageTimePerImage;
+  const desmosTimePerGraph =
+    config?.desmosTimePerGraph ?? READING_TIME_DEFAULTS.desmosTimePerGraph;
 
   let content = markdown;
   let totalSeconds = 0;

@@ -5,7 +5,7 @@ import { getIsDraftMode, withCache } from "@/lib/cache/withCache";
 import { getPayloadClient } from "@/lib/payload-client";
 import type { Course, Poster } from "@/types/payload-types";
 
-export type CourseSeoData = {
+type CourseSeoData = {
   id: string;
   slug: string;
   title: string;
@@ -15,7 +15,7 @@ export type CourseSeoData = {
   updatedAt: string;
 };
 
-export type LessonSeoData = {
+type LessonSeoData = {
   id: string;
   slug: string;
   title: string;

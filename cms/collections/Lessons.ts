@@ -62,8 +62,8 @@ export const Lessons: CollectionConfig = {
         return data;
       },
       async ({ data, req }) => {
+        //TODO: update only when needed
         if (data.type !== "video") return data;
-        if (data.videoBlurDataURL) return data;
         if (!data.video) return data;
 
         try {

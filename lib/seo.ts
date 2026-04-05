@@ -12,7 +12,8 @@ export const SITE_LOCALE = "en_US";
 export const SITE_CATEGORY = "education";
 export const SEO_IMAGE_WIDTH = 1200;
 export const SEO_IMAGE_HEIGHT = 630;
-export const LANDING_SOCIAL_IMAGE_PATH = "/og-image";
+
+const LANDING_SOCIAL_IMAGE_PATH = "/og-image";
 
 type PageTitleInput = {
   title?: string;
@@ -38,7 +39,7 @@ type NoIndexMetadataInput = PageTitleInput & {
   description?: string | null;
 };
 
-export const INDEXABLE_ROBOTS: Metadata["robots"] = {
+const INDEXABLE_ROBOTS: Metadata["robots"] = {
   index: true,
   follow: true,
   googleBot: {
@@ -106,11 +107,11 @@ function getDefaultSocialImages() {
   return resolveImages([getLandingSocialImage()]);
 }
 
-export function getMetadataBase() {
+function getMetadataBase() {
   return new URL(clientEnv.NEXT_PUBLIC_APP_URL);
 }
 
-export function absoluteUrl(path = "/") {
+function absoluteUrl(path = "/") {
   return new URL(path, getMetadataBase()).toString();
 }
 

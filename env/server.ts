@@ -2,6 +2,8 @@ import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
 export const serverEnv = createEnv({
+  skipValidation:
+    !!process.env.SKIP_ENV_VALIDATION || process.env.NODE_ENV === "test",
   server: {
     NGROK_URL: z.url().optional().or(z.literal("")),
     DATABASE_URL: z

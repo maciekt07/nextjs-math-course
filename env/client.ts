@@ -4,6 +4,8 @@ import { z } from "zod";
 const durationRegex = /^\d+(s|m|h|d|w)$/;
 
 export const clientEnv = createEnv({
+  skipValidation:
+    !!process.env.SKIP_ENV_VALIDATION || process.env.NODE_ENV === "test",
   client: {
     NEXT_PUBLIC_APP_URL: z.url().default("http://localhost:3000"),
     NEXT_PUBLIC_GOOGLE_CLIENT_ID: z.string().min(1),

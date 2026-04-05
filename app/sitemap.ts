@@ -5,6 +5,13 @@ import { stripMarkdown } from "@/lib/markdown/strip-markdown";
 import { getPayloadClient } from "@/lib/payload-client";
 import type { Media, MuxVideo } from "@/types/payload-types";
 
+/**
+ * sitemap covers landing page + free published lessons
+ * for lessons:
+ * - text: include attached images (if any)
+ * - video: include full video metadata (thumbnail, duration, playback URL, stripped description etc.)
+ */
+
 type SitemapEntry = MetadataRoute.Sitemap[number];
 type SitemapVideo = NonNullable<SitemapEntry["videos"]>[number];
 
@@ -91,7 +98,6 @@ function getVideoMetadata(
   ];
 }
 
-// landing page and free lessons
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const payload = await getPayloadClient();
   const siteUrl = new URL(clientEnv.NEXT_PUBLIC_APP_URL);
