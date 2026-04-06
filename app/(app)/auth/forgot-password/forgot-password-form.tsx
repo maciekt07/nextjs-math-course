@@ -50,10 +50,7 @@ export function ForgotPasswordForm() {
       redirectTo: "/auth/reset-password",
     });
 
-    if (error) {
-      if (error.status === 429) return;
-      toast.error(error.message);
-    } else {
+    if (!error) {
       toast.success(data.message);
       setIsSubmitted(true);
     }

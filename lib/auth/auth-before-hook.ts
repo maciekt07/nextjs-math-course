@@ -34,10 +34,12 @@ const PATH_RULES: Record<string, ReadonlySet<AuthPath>> = {
     PATHS.CHANGE_EMAIL,
   ]),
   credentialsOnly: new Set<AuthPath>([
-    PATHS.RESET_PASSWORD,
     PATHS.CHANGE_PASSWORD,
-    PATHS.REQUEST_PASSWORD_RESET,
     PATHS.CHANGE_EMAIL,
+  ]),
+  credentialsOnlyByEmail: new Set<AuthPath>([
+    PATHS.REQUEST_PASSWORD_RESET,
+    PATHS.RESET_PASSWORD,
   ]),
 };
 
@@ -91,11 +93,30 @@ const validators = {
       where: [{ field: "userId", value: session.user.id }],
     })) as Array<{ providerId: string }>;
 
-    const hasCredentials = accounts.some(
-      (acc) => acc.providerId === "credential",
-    );
+    if (!accounts.some((acc) => acc.providerId === "credential")) {
+      throw new APIError("FORBIDDEN", {
+        message: "This action requires a credentials account.",
+      });
+    }
+  },
 
-    if (!hasCredentials) {
+  async credentialsOnlyByEmail(ctx: CTX) {
+    const email = ctx.body?.email;
+    if (!email) return;
+
+    const user = (await ctx.context.adapter.findOne({
+      model: "user",
+      where: [{ field: "email", value: email }],
+    })) as User | null;
+
+    if (!user) return;
+
+    const accounts = (await ctx.context.adapter.findMany({
+      model: "account",
+      where: [{ field: "userId", value: user.id }],
+    })) as Array<{ providerId: string }>;
+
+    if (!accounts.some((acc) => acc.providerId === "credential")) {
       throw new APIError("FORBIDDEN", {
         message: "This action requires a credentials account.",
       });
