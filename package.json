@@ -36,7 +36,7 @@
     "stripe:webhook": "stripe listen --forward-to localhost:3000/api/stripe/webhook",
     "cms:gen-types": "payload generate:types",
     "cms:gen-map": "payload generate:importmap",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -119,7 +119,6 @@
     "@biomejs/biome": "2.4.9",
     "@playwright/test": "^1.59.1",
     "@tailwindcss/postcss": "^4",
-    "@testing-library/react": "^16.3.2",
     "@types/mdast": "^4.0.4",
     "@types/node": "^25",
     "@types/pg": "^8.20.0",
