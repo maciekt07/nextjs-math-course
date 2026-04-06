@@ -1,5 +1,6 @@
 "use client";
 
+import { track } from "@vercel/analytics";
 import type React from "react";
 import { useState } from "react";
 
@@ -18,6 +19,7 @@ export function useBuyCourse(): UseBuyCourseReturn {
   const [loading, setLoading] = useState<boolean>(false);
 
   async function buy(courseId: string): Promise<BuyResult> {
+    track("checkout_started", { courseId });
     setLoading(true);
 
     try {

@@ -68,6 +68,7 @@
     "@tailwindcss/typography": "^0.5.19",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.37.0",
+    "@vercel/analytics": "^2.0.1",
     "@vercel/functions": "^3.4.3",
     "babel-plugin-react-compiler": "^1.0.0",
     "better-auth": "^1.5.6",
