@@ -1,8 +1,8 @@
 "use client";
 
-import { track } from "@vercel/analytics";
 import type React from "react";
 import { useState } from "react";
+import { trackEvent } from "@/lib/analytics";
 
 const CHECKOUT_ENDPOINT = "/api/stripe/create-checkout";
 const FALLBACK_ERROR = "Something went wrong. Please try again.";
@@ -19,7 +19,7 @@ export function useBuyCourse(): UseBuyCourseReturn {
   const [loading, setLoading] = useState<boolean>(false);
 
   async function buy(courseId: string): Promise<BuyResult> {
-    track("checkout_started", { courseId });
+    trackEvent("checkout_started", { courseId });
     setLoading(true);
 
     try {

@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "@styles/globals.css";
-import { Analytics } from "@vercel/analytics/next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import NextTopLoader from "nextjs-toploader";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -45,7 +45,6 @@ export default function RootLayout({
         <meta name="theme-color" content={META_THEME_COLORS.light} />
       </head>
       <body className={`${inter.className} ${inter.variable} antialiased`}>
-        <Analytics />
         <ThemeProvider>
           <NextTopLoader
             color="#4e65ff"
@@ -55,6 +54,7 @@ export default function RootLayout({
           />
           {children}
           <Toaster />
+          <GoogleAnalytics gaId="G-SYM2633LQY" />
         </ThemeProvider>
       </body>
     </html>

@@ -1,3 +1,5 @@
+/// <reference types="@types/gtag.js" />
+
 import "react";
 
 declare module "react" {

@@ -165,8 +165,8 @@ export default async function CoursePage({
             <div>
               <h1 className="text-2xl font-bold">Payment Canceled</h1>
               <p className="mt-2 text-muted-foreground">
-                Your payment for {courseTitle} was canceled. <br /> You can try
-                again anytime.
+                Your payment for {courseTitle} was canceled. You can try again
+                anytime.
               </p>
             </div>
             <div className="flex flex-col items-center gap-2 w-full">
