@@ -61,3 +61,7 @@
 
 - [ ] Prevent email enumeration on `/forgot-password` and `/sign-up` [better-auth/issues/7972](https://github.com/better-auth/better-auth/issues/7972),
       [OWASP](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#authentication-and-error-messages)
+
+## CI
+
+- [ ] Cancel Vercel deployment on fail

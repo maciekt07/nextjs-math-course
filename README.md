@@ -2,6 +2,10 @@
 
 A modern full-stack Next.js 16 platform with CMS, auth, and Stripe integration - built to manage and sell online math courses with videos, quizzes, LaTeX, and interactive graphs.
 
+### **Live Demo: [https://nextjs-math-course.vercel.app/](https://nextjs-math-course.vercel.app/)**
+
+</br>
+
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/maciekt07/nextjs-math-course?color=4e65ff&labelColor=0A0A0A)
 ![GitHub created at](https://img.shields.io/github/created-at/maciekt07/nextjs-math-course?color=4e65ff&labelColor=0A0A0A)
 ![GitHub last commit](https://img.shields.io/github/last-commit/maciekt07/nextjs-math-course?color=4e65ff&labelColor=0A0A0A)
@@ -35,8 +39,9 @@ A modern full-stack Next.js 16 platform with CMS, auth, and Stripe integration -
 - **Hybrid Lesson Delivery (SSR + SSG)** - free lessons are pre-rendered for speed and SEO, while paid lessons use server-side rendering for secure, on-demand access.
 - **Caching & Revalidation** - lesson and enrollment data are cached for performance and automatically refreshed via Payload CMS hooks or Stripe webhook when content or access changes.
 - **Protected media** - paid lesson images restricted to enrolled users, with auto-generated blur placeholders and optional AWS S3 / Cloudflare R2 storage.
-- **Mux Video Integration** - video uploads through CMS and streaming, with signed URLs ensuring only enrolled users can access paid video lessons.
-- **LaTeX and Interactive Desmos Graphs** - lessons feature interactive graphs and clean LaTeX formatting, with settings like larger math font or colored symbols.
+- **Mux Video Integration** - video uploads through CMS and streaming; paid lessons use signed URLs restricted to enrolled users, free lessons stream publicly.
+- **Rich Lesson Content** - lessons are authored in Markdown with LaTeX math, interactive Desmos graphs, and custom elements like callout blocks, with settings like larger math font or colored symbols.
+- **SEO Optimization** - OG image generation, XML sitemap with per-lesson metadata (images, video thumbnails, duration, descriptions) for published free lessons.
 
 ## Installation Steps
 
