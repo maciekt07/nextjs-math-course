@@ -33,7 +33,7 @@ export const serverEnv = createEnv({
 
     PAYLOAD_SECRET: z.string().min(16),
     MONGO_URL: z
-      .url()
+      .string()
       .min(1)
       .refine(
         (val) =>

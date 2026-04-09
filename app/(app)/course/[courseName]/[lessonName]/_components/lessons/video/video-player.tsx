@@ -61,18 +61,27 @@ export function VideoPlayer({
   type MuxState = {
     tokens: Partial<MuxTokens>;
     isRateLimited: boolean;
+    error: string | null;
   };
 
   type Action =
     | { type: "SET_TOKENS"; tokens: Partial<MuxTokens> }
-    | { type: "SET_RATE_LIMITED"; value: boolean };
+    | { type: "SET_RATE_LIMITED"; value: boolean }
+    | { type: "SET_ERROR"; error: string };
 
   function reducer(state: MuxState, action: Action): MuxState {
     switch (action.type) {
       case "SET_TOKENS":
-        return { ...state, tokens: action.tokens, isRateLimited: false };
+        return {
+          ...state,
+          tokens: action.tokens,
+          isRateLimited: false,
+          error: null,
+        };
       case "SET_RATE_LIMITED":
-        return { ...state, isRateLimited: action.value };
+        return { ...state, isRateLimited: action.value, error: null };
+      case "SET_ERROR":
+        return { ...state, isRateLimited: false, error: action.error };
       default:
         return state;
     }
@@ -81,6 +90,7 @@ export function VideoPlayer({
   const [state, dispatch] = useReducer(reducer, {
     tokens: {},
     isRateLimited: false,
+    error: null,
   });
 
   const muxPlayerCallback = useCallback(
@@ -164,7 +174,8 @@ export function VideoPlayer({
           dispatch({ type: "SET_RATE_LIMITED", value: true });
           toast.error("Rate limit exceeded. Please try again later.");
         } else {
-          toast.error(`Failed to fetch token: ${err.message}`);
+          dispatch({ type: "SET_ERROR", error: err.message });
+          toast.error(`Failed to fetch video token: ${err.message}`);
         }
         console.error("Error fetching mux token:", err);
       });
@@ -196,6 +207,17 @@ export function VideoPlayer({
           icon={AlertCircle}
           title="Rate Limited"
           description="Too many requests. Please wait a minute and try again."
+          variant="destructive"
+        />
+      );
+    }
+
+    if (state.error) {
+      return (
+        <EmptyState
+          icon={AlertCircle}
+          title="Video Error"
+          description={state.error}
           variant="destructive"
         />
       );

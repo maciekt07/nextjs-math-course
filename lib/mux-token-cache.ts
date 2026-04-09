@@ -74,7 +74,16 @@ async function requestToken(playbackId: string): Promise<MuxTokens> {
   });
 
   if (res.status === 429) throw new RateLimitError();
-  if (!res.ok) throw new MuxTokenError("Failed to fetch Mux token", res.status);
+  if (!res.ok) {
+    let errorMessage = "Failed to fetch Mux token";
+    try {
+      const data = await res.json();
+      if (data.error) errorMessage = data.error;
+    } catch {
+      // ignore JSON parse errors
+    }
+    throw new MuxTokenError(errorMessage, res.status);
+  }
 
   return res.json();
 }
