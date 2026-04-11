@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { Navbar } from "@/app/(app)/(landing)/_components/navbar";
 import Footer from "@/components/footer";
+import { Navbar } from "@/components/navbar";
 import { getServerSession } from "@/lib/auth/get-session";
 import { buildNoIndexMetadata } from "@/lib/seo";
 

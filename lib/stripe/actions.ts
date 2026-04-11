@@ -22,7 +22,10 @@ const limiter = new Ratelimit({
  * returns the checkout URL for the client to redirect to.
  */
 export async function createPaymentIntent(
-  course: Pick<Course, "title" | "description" | "id" | "price" | "slug">,
+  course: Pick<
+    Course,
+    "title" | "description" | "id" | "price" | "slug" | "poster"
+  >,
   user: User,
 ) {
   const { success, reset } = await limiter.limit(`user:${user.id}`);
@@ -71,6 +74,11 @@ export async function createPaymentIntent(
     mode: "payment",
     payment_method_types: ["card"],
     customer: customer.id,
+    branding_settings: {
+      font_family: "inter",
+      button_color: "#4e65ff",
+    },
+    ui_mode: "hosted",
     custom_text: {
       submit: {
         message: "Test card: 4242 4242 4242 4242 · Any future date · Any CVC",
@@ -83,6 +91,10 @@ export async function createPaymentIntent(
           product_data: {
             name: course.title,
             description: course.description || undefined,
+            images:
+              typeof course.poster === "object" && course.poster?.url
+                ? [`${clientEnv.NEXT_PUBLIC_APP_URL}/${course.poster.url}`]
+                : undefined,
             metadata: {
               courseId: course.id,
             },

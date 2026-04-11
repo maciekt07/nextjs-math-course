@@ -91,7 +91,13 @@ export async function POST(req: Request) {
       collection: "courses",
       limit: 1,
       overrideAccess: true,
-      select: { title: true, description: true, price: true, slug: true },
+      select: {
+        title: true,
+        description: true,
+        price: true,
+        slug: true,
+        poster: true,
+      },
       where: {
         and: [publishedStatusWhere, { id: { equals: courseId } }],
       },

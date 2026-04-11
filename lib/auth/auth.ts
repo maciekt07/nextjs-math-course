@@ -30,7 +30,6 @@ export const auth = betterAuth({
 
   socialProviders: {
     google: {
-      // prompt: "select_account",
       clientId: clientEnv.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
       clientSecret: serverEnv.GOOGLE_CLIENT_SECRET,
       mapProfileToUser: (profile) => {
@@ -115,9 +114,10 @@ export const auth = betterAuth({
   },
 
   session: {
+    expiresIn: AUTH_LIMITS.sessionExpiresIn,
     cookieCache: {
       enabled: true,
-      maxAge: 60 * 3, // 3 minutes
+      maxAge: AUTH_LIMITS.cookieCacheMaxAge,
     },
   },
 
