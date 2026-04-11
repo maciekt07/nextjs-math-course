@@ -74,6 +74,10 @@ export const SidebarAccount = memo(
     );
   },
   (prev, next) => {
-    return prev.isPending === next.isPending && prev.session === next.session;
+    return (
+      prev.isPending === next.isPending &&
+      prev.pathname === next.pathname &&
+      prev.session === next.session
+    );
   },
 );

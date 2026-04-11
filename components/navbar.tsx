@@ -216,11 +216,11 @@ export function Navbar({ user }: { user: User | null }) {
             {/* BACKDROP */}
             <motion.div
               onClick={() => setOpen(false)}
-              className="fixed inset-x-0 bottom-0 top-16 sm:top-18 z-30 bg-black/30 backdrop-blur-xs"
+              className="fixed inset-x-0 bottom-0 top-16 sm:top-18 z-30 bg-white/30 dark:bg-black/30 backdrop-blur-xs"
               {...backdropMotionProps}
             />
             <motion.div
-              className="fixed left-0 right-0 top-16 sm:top-18 z-40 border-b bg-background p-6 space-y-4"
+              className="fixed left-0 right-0 top-16 sm:top-18 z-40 border-b bg-background p-6 space-y-4 shadow-md"
               {...menuMotionProps}
             >
               <nav className="flex flex-col gap-3">

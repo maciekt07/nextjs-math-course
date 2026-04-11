@@ -26,10 +26,10 @@ export default function RootLayout({
   return (
     <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
-        {/* <script
+        <script
           crossOrigin="anonymous"
           src="//unpkg.com/react-scan/dist/auto.global.js"
-        /> */}
+        />
         <script
           // biome-ignore lint/security/noDangerouslySetInnerHtml: safe here
           dangerouslySetInnerHTML={{
