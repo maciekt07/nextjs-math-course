@@ -1,11 +1,11 @@
 import type { Chapter, Lesson } from "@/types/payload-types";
 
-export interface ChapterLessonsGroup {
+interface ChapterLessonsGroup {
   chapter: Chapter;
   lessons: Lesson[];
 }
 
-export const getChapterId = (chapter: Lesson["chapter"]): string => {
+const getChapterId = (chapter: Lesson["chapter"]): string => {
   if (!chapter) return "";
   return typeof chapter === "object" ? chapter.id : chapter;
 };
@@ -28,7 +28,7 @@ export const groupLessonsByChapter = (
     .filter(({ lessons: chapterLessons }) => chapterLessons.length > 0);
 };
 
-export const getActiveLessonPath = (
+const getActiveLessonPath = (
   pathname: string,
   optimisticPath: string | null,
   courseSlug: string,
