@@ -1,4 +1,4 @@
-import { BookX, ChevronLeft } from "lucide-react";
+import { BanknoteX, BookX, ChevronLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
@@ -161,7 +161,10 @@ export default async function CoursePage({
     } else {
       return (
         <EmptyStateCenterWrapper>
-          <div className="flex flex-col items-center gap-6 text-center">
+          <div className="flex flex-col items-center gap-6 text-center max-w-lg">
+            <div className="mx-auto flex h-24 w-24 items-center justify-center bg-foreground/8 rounded-full">
+              <BanknoteX size={64} />
+            </div>
             <div>
               <h1 className="text-2xl font-bold">Payment Canceled</h1>
               <p className="mt-2 text-muted-foreground">

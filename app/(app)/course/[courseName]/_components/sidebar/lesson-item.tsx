@@ -54,10 +54,18 @@ interface LessonItemProps {
   isActive: boolean;
   owned?: boolean;
   onClick: (e: React.MouseEvent<HTMLAnchorElement>, lessonPath: string) => void;
+  registerRef?: (lessonPath: string, node: HTMLAnchorElement | null) => void;
 }
 
 export const LessonItem = memo(
-  ({ lesson, courseSlug, isActive, owned, onClick }: LessonItemProps) => {
+  ({
+    lesson,
+    courseSlug,
+    isActive,
+    owned,
+    onClick,
+    registerRef,
+  }: LessonItemProps) => {
     const lessonPath = `/course/${courseSlug}/${lesson.slug}`;
 
     const typeConfig =
@@ -73,10 +81,13 @@ export const LessonItem = memo(
         key={lesson.id}
         href={lessonPath}
         title={lesson.title}
+        ref={(node) => registerRef?.(lessonPath, node)}
         // intentionally enabling prefetch here because lesson items inside a collapsed accordion
         // are not mounted in the DOM until the chapter is expanded
         prefetch
         onClick={(e) => onClick(e, lessonPath)}
+        data-lesson-path={lessonPath}
+        data-active={isActive}
       >
         <div
           className={cn(

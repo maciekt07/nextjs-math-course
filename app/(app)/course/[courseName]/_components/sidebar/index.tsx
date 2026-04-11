@@ -9,6 +9,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
   useTransition,
 } from "react";
@@ -131,8 +132,12 @@ export function CourseSidebar({
   const [expandedChapters, setExpandedChapters] = useState<string[]>(() =>
     initialActiveChapterId ? [initialActiveChapterId] : [],
   );
+  const [pendingScrollTarget, setPendingScrollTarget] = useState<string | null>(
+    null,
+  );
   const prefersReducedMotion = useReducedMotion();
   const mounted = useMounted();
+  const lessonRefs = useRef<Map<string, HTMLAnchorElement>>(new Map());
 
   const {
     ref: scrollRef,
@@ -156,6 +161,42 @@ export function CourseSidebar({
     });
   }, [groupedChapters, pathname, optimisticPath, course.slug]);
 
+  const activeLessonPath = useMemo(() => {
+    const activeLesson = lessons.find((lesson) =>
+      getActiveLessonPath(pathname, optimisticPath, course.slug!, lesson),
+    );
+
+    return activeLesson ? `/course/${course.slug}/${activeLesson.slug}` : null;
+  }, [lessons, pathname, optimisticPath, course.slug]);
+
+  const registerLessonRef = useCallback(
+    (lessonPath: string, node: HTMLAnchorElement | null) => {
+      if (node) {
+        lessonRefs.current.set(lessonPath, node);
+        return;
+      }
+
+      lessonRefs.current.delete(lessonPath);
+    },
+    [],
+  );
+
+  const scrollLessonIntoView = useCallback(
+    (lessonPath: string) => {
+      const lessonElement = lessonRefs.current.get(lessonPath);
+      if (!lessonElement) return false;
+
+      lessonElement.scrollIntoView({
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+        block: "center",
+        inline: "nearest",
+      });
+
+      return true;
+    },
+    [prefersReducedMotion],
+  );
+
   useEffect(() => {
     if (!open || !activeChapterId) return;
     startTransition(() => {
@@ -164,6 +205,48 @@ export function CourseSidebar({
       );
     });
   }, [activeChapterId, open]);
+
+  useEffect(() => {
+    if (!activeLessonPath) return;
+    setPendingScrollTarget(activeLessonPath);
+  }, [activeLessonPath]);
+
+  useEffect(() => {
+    if (!open || !activeLessonPath) return;
+    setPendingScrollTarget(activeLessonPath);
+  }, [open, activeLessonPath]);
+
+  useEffect(() => {
+    if (!open || !pendingScrollTarget) return;
+
+    if (activeChapterId && !expandedChapters.includes(activeChapterId)) {
+      return;
+    }
+
+    let firstFrame = 0;
+    let secondFrame = 0;
+
+    firstFrame = window.requestAnimationFrame(() => {
+      secondFrame = window.requestAnimationFrame(() => {
+        if (!scrollLessonIntoView(pendingScrollTarget)) return;
+
+        setPendingScrollTarget((currentTarget) =>
+          currentTarget === pendingScrollTarget ? null : currentTarget,
+        );
+      });
+    });
+
+    return () => {
+      window.cancelAnimationFrame(firstFrame);
+      window.cancelAnimationFrame(secondFrame);
+    };
+  }, [
+    activeChapterId,
+    expandedChapters,
+    open,
+    pendingScrollTarget,
+    scrollLessonIntoView,
+  ]);
 
   const handleLessonClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>, nextPath: string) => {
@@ -184,11 +267,20 @@ export function CourseSidebar({
         }, 200);
       } else {
         if (!isSameLesson) {
+          scrollLessonIntoView(nextPath);
+          setPendingScrollTarget(nextPath);
           router.push(nextPath);
         }
       }
     },
-    [router, optimisticPath, setOpen, setOptimisticPath, pathname],
+    [
+      router,
+      optimisticPath,
+      pathname,
+      scrollLessonIntoView,
+      setOpen,
+      setOptimisticPath,
+    ],
   );
 
   return (
@@ -433,6 +525,7 @@ export function CourseSidebar({
                                 )}
                                 owned={owned}
                                 onClick={handleLessonClick}
+                                registerRef={registerLessonRef}
                               />
                             ))}
                           </nav>
@@ -458,6 +551,7 @@ export function CourseSidebar({
                         )}
                         owned={owned}
                         onClick={handleLessonClick}
+                        registerRef={registerLessonRef}
                       />
                     ))}
                   </div>
