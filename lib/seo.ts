@@ -128,6 +128,9 @@ export function buildSiteMetadata(): Metadata {
     description: SITE_DESCRIPTION,
     authors: [{ name: "Maciej Twaróg", url: "https://github.com/maciekt07" }],
     robots: INDEXABLE_ROBOTS,
+    verification: {
+      google: "ckzSSA2XcguRbHoX5MuHbjvLoAVGRpmDg2ncejq_NWA",
+    },
     appleWebApp: {
       capable: true,
       title: APP_SHORT_NAME,
