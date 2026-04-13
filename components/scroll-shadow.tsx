@@ -23,7 +23,7 @@ export function ScrollShadow({
   return (
     <div
       className={cn(
-        "pointer-events-none absolute left-0 right-0 transition-opacity duration-200 h-8",
+        "pointer-events-none absolute left-0 right-0 transition-opacity duration-200 h-8 z-1",
         `${position}-0`,
         gradientClass,
         show ? "opacity-100" : "opacity-0",

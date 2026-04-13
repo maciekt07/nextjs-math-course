@@ -37,33 +37,37 @@ async function getLesson({
   courseSlug: string;
   lessonSlug: string;
 }) {
-  const payload = await getPayloadClient();
+  return withCache(
+    async () => {
+      const payload = await getPayloadClient();
+      const isDraftMode = await getIsDraftMode();
 
-  const isDraftMode = await getIsDraftMode();
+      const { docs } = await payload.find({
+        collection: "lessons",
+        limit: 1,
+        depth: 1,
+        overrideAccess: true,
+        draft: isDraftMode,
+        where: {
+          and: [
+            ...(isDraftMode ? [] : [publishedStatusWhere]),
+            { "course.slug": { equals: courseSlug } },
+            { slug: { equals: lessonSlug } },
+          ],
+        },
+      });
 
-  const { docs } = await payload.find({
-    collection: "lessons",
-    limit: 1,
-    depth: 1,
-    overrideAccess: true,
-    draft: isDraftMode,
-    where: {
-      and: [
-        ...(isDraftMode ? [] : [publishedStatusWhere]),
-        { "course.slug": { equals: courseSlug } },
-        { slug: { equals: lessonSlug } },
+      return docs?.[0] || null;
+    },
+    ["lesson", courseSlug, lessonSlug],
+    {
+      revalidate: 3600,
+      tags: [
+        `course-slug:${courseSlug}`,
+        `lesson-slug:${courseSlug}:${lessonSlug}`,
       ],
     },
-  });
-
-  const lesson = docs?.[0] || null;
-
-  return withCache(async () => lesson, ["lesson", courseSlug, lessonSlug], {
-    revalidate: 3600,
-    tags: lesson
-      ? [`lesson:${lesson.id}`, `course-slug:${courseSlug}`]
-      : [`course-slug:${courseSlug}`],
-  })();
+  )();
 }
 
 export async function generateStaticParams() {

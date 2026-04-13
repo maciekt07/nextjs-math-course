@@ -4,7 +4,6 @@ import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { Link } from "@/components/animate-ui/icons/link";
 import { scrollToHeader } from "@/lib/markdown/scroll-to-header";
 import { cn } from "@/lib/ui";
-import { useSidebarStore } from "@/stores/sidebar-store";
 
 type HeadingProps = {
   as: "h2" | "h3";
@@ -13,16 +12,12 @@ type HeadingProps = {
 };
 
 export function Heading({ as: Tag, id, children }: HeadingProps) {
-  const sidebarOpen = useSidebarStore((s) => s.open);
   const iconSize = Tag === "h2" ? 18 : 16;
 
   return (
     <Tag
       id={id}
-      className={cn(
-        "group relative",
-        sidebarOpen ? "scroll-mt-6" : "max-[1450px]:scroll-mt-23 scroll-mt-6",
-      )}
+      className="group relative scroll-mt-6 max-[1450px]:[main[data-open='false']_&]:scroll-mt-23"
     >
       <AnimateIcon animateOnTap completeOnStop className="mt-0! pt-0!">
         <span className="inline">
