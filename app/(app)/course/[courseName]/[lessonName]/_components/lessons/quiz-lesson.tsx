@@ -67,7 +67,7 @@ export function QuizLesson({ quiz }: QuizLessonProps) {
   const handleOptionSelect = (optionIdx: number) => {
     if (!isSubmitted) {
       setSelectedOption(optionIdx);
-      trigger(defaultPatterns.light);
+      trigger(defaultPatterns.selection);
     }
   };
 
@@ -97,23 +97,25 @@ export function QuizLesson({ quiz }: QuizLessonProps) {
     }
   };
 
-  const navigateToPrevious = () => {
+  const navigate = (direction: 1 | -1) => {
     setActiveQuestionIdx((prev) => {
-      const nextIdx = Math.max(0, prev - 1);
-      setSelectedOption(submittedAnswers[nextIdx] ?? null);
-      window.scrollTo({ top: 0, behavior: "instant" });
+      const nextIdx = Math.min(
+        questions.length - 1,
+        Math.max(0, prev + direction),
+      );
+
+      if (nextIdx !== prev) {
+        setSelectedOption(submittedAnswers[nextIdx] ?? null);
+        window.scrollTo({ top: 0, behavior: "instant" });
+        trigger(defaultPatterns.light);
+      }
+
       return nextIdx;
     });
   };
 
-  const navigateToNext = () => {
-    setActiveQuestionIdx((prev) => {
-      const nextIdx = Math.min(questions.length - 1, prev + 1);
-      setSelectedOption(submittedAnswers[nextIdx] ?? null);
-      window.scrollTo({ top: 0, behavior: "instant" });
-      return nextIdx;
-    });
-  };
+  const navigateToPrevious = () => navigate(-1);
+  const navigateToNext = () => navigate(1);
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 -mt-3">
@@ -131,6 +133,7 @@ export function QuizLesson({ quiz }: QuizLessonProps) {
                   onClick={() => {
                     setActiveQuestionIdx(idx);
                     setSelectedOption(submittedAnswers[idx] ?? null);
+                    trigger(defaultPatterns.light);
                     window.scrollTo({ top: 0, behavior: "instant" });
                   }}
                   className={cn(
@@ -183,6 +186,7 @@ export function QuizLesson({ quiz }: QuizLessonProps) {
                 <Button
                   variant="outline"
                   onClick={() => {
+                    trigger(defaultPatterns.light);
                     setHintsVisible((prev) => ({
                       ...prev,
                       [activeQuestionIdx]: true,

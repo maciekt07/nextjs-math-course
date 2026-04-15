@@ -11,6 +11,7 @@ import {
 import type React from "react";
 import { useCallback, useEffect, useReducer, useRef } from "react";
 import { toast } from "sonner";
+import { useWebHaptics } from "web-haptics/react";
 import { MarkdownRenderer } from "@/components/markdown";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -55,6 +56,7 @@ export function VideoPlayer({
   course,
 }: VideoPlayerProps) {
   const mounted = useMounted();
+  const { trigger } = useWebHaptics();
   const playerRef = useRef<HTMLDivElement>(null);
   const playerElementRef = useRef<MuxPlayerRefAttributes | null>(null);
 
@@ -188,6 +190,7 @@ export function VideoPlayer({
   const handleTimestampClick = (startTime: number) => {
     const player = playerElementRef.current;
     if (player && "currentTime" in player) {
+      trigger();
       player.currentTime = startTime;
       player.play();
       requestAnimationFrame(() => {
