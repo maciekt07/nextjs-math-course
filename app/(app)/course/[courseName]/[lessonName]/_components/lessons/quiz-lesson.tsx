@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
+import { defaultPatterns } from "web-haptics";
+import { useWebHaptics } from "web-haptics/react";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { Lightbulb } from "@/components/animate-ui/icons/lightbulb";
 import { MarkdownRenderer } from "@/components/markdown";
@@ -26,6 +28,7 @@ interface QuizLessonProps {
 }
 
 export function QuizLesson({ quiz }: QuizLessonProps) {
+  const { trigger } = useWebHaptics();
   const [activeQuestionIdx, setActiveQuestionIdx] = useState<number>(0);
   const [submittedAnswers, setSubmittedAnswers] = useState<
     Record<number, number>
@@ -64,42 +67,55 @@ export function QuizLesson({ quiz }: QuizLessonProps) {
   const handleOptionSelect = (optionIdx: number) => {
     if (!isSubmitted) {
       setSelectedOption(optionIdx);
+      trigger(defaultPatterns.selection);
     }
   };
 
   const handleSubmit = () => {
-    if (!isSubmitted) {
-      if (hasOptions && selectedOption !== null) {
-        setSubmittedAnswers((prev) => ({
-          ...prev,
-          [activeQuestionIdx]: selectedOption,
-        }));
-      } else if (!hasOptions) {
-        setSubmittedAnswers((prev) => ({
-          ...prev,
-          [activeQuestionIdx]: -1,
-        }));
+    if (isSubmitted) return;
+
+    if (hasOptions && selectedOption !== null) {
+      const isCorrect = activeQuestion.options?.[selectedOption]?.isCorrect;
+
+      setSubmittedAnswers((prev) => ({
+        ...prev,
+        [activeQuestionIdx]: selectedOption,
+      }));
+
+      if (isCorrect) {
+        trigger(defaultPatterns.success);
+      } else {
+        trigger(defaultPatterns.error);
       }
+    } else if (!hasOptions) {
+      setSubmittedAnswers((prev) => ({
+        ...prev,
+        [activeQuestionIdx]: -1,
+      }));
+
+      trigger(defaultPatterns.light);
     }
   };
 
-  const navigateToPrevious = () => {
+  const navigate = (direction: 1 | -1) => {
     setActiveQuestionIdx((prev) => {
-      const nextIdx = Math.max(0, prev - 1);
-      setSelectedOption(submittedAnswers[nextIdx] ?? null);
-      window.scrollTo({ top: 0, behavior: "instant" });
+      const nextIdx = Math.min(
+        questions.length - 1,
+        Math.max(0, prev + direction),
+      );
+
+      if (nextIdx !== prev) {
+        setSelectedOption(submittedAnswers[nextIdx] ?? null);
+        window.scrollTo({ top: 0, behavior: "instant" });
+        trigger(defaultPatterns.light);
+      }
+
       return nextIdx;
     });
   };
 
-  const navigateToNext = () => {
-    setActiveQuestionIdx((prev) => {
-      const nextIdx = Math.min(questions.length - 1, prev + 1);
-      setSelectedOption(submittedAnswers[nextIdx] ?? null);
-      window.scrollTo({ top: 0, behavior: "instant" });
-      return nextIdx;
-    });
-  };
+  const navigateToPrevious = () => navigate(-1);
+  const navigateToNext = () => navigate(1);
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 -mt-3">
@@ -117,6 +133,7 @@ export function QuizLesson({ quiz }: QuizLessonProps) {
                   onClick={() => {
                     setActiveQuestionIdx(idx);
                     setSelectedOption(submittedAnswers[idx] ?? null);
+                    trigger(defaultPatterns.light);
                     window.scrollTo({ top: 0, behavior: "instant" });
                   }}
                   className={cn(
@@ -169,6 +186,7 @@ export function QuizLesson({ quiz }: QuizLessonProps) {
                 <Button
                   variant="outline"
                   onClick={() => {
+                    trigger(defaultPatterns.light);
                     setHintsVisible((prev) => ({
                       ...prev,
                       [activeQuestionIdx]: true,

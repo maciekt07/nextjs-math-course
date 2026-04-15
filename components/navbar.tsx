@@ -11,6 +11,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useWebHaptics } from "web-haptics/react";
 import { ThemeSelect } from "@/components/theme-select";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -93,6 +94,7 @@ function AuthButtons({
 }
 
 export function Navbar({ user }: { user: User | null }) {
+  const { trigger } = useWebHaptics();
   const [open, setOpen] = useState<boolean>(false);
   const [atTop, setAtTop] = useState<boolean>(true);
 
@@ -190,7 +192,10 @@ export function Navbar({ user }: { user: User | null }) {
               variant="outline"
               size="icon"
               className="cursor-pointer backdrop-blur-md overflow-hidden"
-              onClick={() => setOpen((v) => !v)}
+              onClick={() => {
+                trigger();
+                setOpen((v) => !v);
+              }}
             >
               {!mounted ? (
                 /* SSR */

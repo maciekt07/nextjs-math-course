@@ -10,6 +10,8 @@ import {
   useState,
   useTransition,
 } from "react";
+import { defaultPatterns } from "web-haptics";
+import { useWebHaptics } from "web-haptics/react";
 import { ScrollShadow } from "@/components/scroll-shadow";
 import {
   Accordion,
@@ -50,6 +52,7 @@ export function CourseSidebar({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { trigger } = useWebHaptics();
   const open = useSidebarStore((state) => state.open);
   const setOpen = useSidebarStore((state) => state.setOpen);
   const toggle = useSidebarStore((state) => state.toggle);
@@ -131,7 +134,7 @@ export function CourseSidebar({
   const handleLessonClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>, nextPath: string) => {
       e.preventDefault();
-
+      trigger(defaultPatterns.light);
       const isMobile = window.innerWidth < 768;
       const current = optimisticPath ?? pathname;
       const isSameLesson = nextPath === current;
@@ -163,6 +166,7 @@ export function CourseSidebar({
       scrollLessonIntoView,
       setOpen,
       setOptimisticPath,
+      trigger,
     ],
   );
 
@@ -172,7 +176,10 @@ export function CourseSidebar({
         open={open}
         prefersReducedMotion={reducedMotion}
         onOpenSettings={() => setSettingsOpen(true)}
-        onToggleSidebar={toggle}
+        onToggleSidebar={() => {
+          toggle();
+          trigger();
+        }}
       />
 
       <AnimatePresence>
@@ -257,6 +264,7 @@ export function CourseSidebar({
                     ({ chapter, lessons: chapterLessons }) => (
                       <AccordionItem key={chapter.id} value={chapter.id}>
                         <AccordionTrigger
+                          onClick={() => trigger(defaultPatterns.light)}
                           className="px-4 sm:py-4 py-6 font-medium text-sm hover:no-underline cursor-pointer rounded-none transition-none hover:bg-muted/70"
                           data-animate={mounted && !reducedMotion}
                         >

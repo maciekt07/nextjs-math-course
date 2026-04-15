@@ -1,5 +1,6 @@
 "use client";
 
+import { useWebHaptics } from "web-haptics/react";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { Link } from "@/components/animate-ui/icons/link";
 import { scrollToHeader } from "@/lib/markdown/scroll-to-header";
@@ -12,6 +13,7 @@ type HeadingProps = {
 };
 
 export function Heading({ as: Tag, id, children }: HeadingProps) {
+  const { trigger } = useWebHaptics();
   const iconSize = Tag === "h2" ? 18 : 16;
 
   return (
@@ -39,6 +41,7 @@ export function Heading({ as: Tag, id, children }: HeadingProps) {
           onClick={(e) => {
             e.preventDefault();
             scrollToHeader(id, { behavior: "smooth" });
+            trigger();
           }}
           aria-label={`Link to ${id}`}
           className={cn(
