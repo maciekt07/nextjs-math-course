@@ -6,7 +6,7 @@ export function GridBackground({ className, ...props }: ComponentProps<"div">) {
     <div
       aria-hidden
       className={cn(
-        "absolute inset-x-0 top-0 -z-10 bg-background",
+        "absolute inset-x-0 top-0 bg-background",
         "h-245 sm:h-270 md:h-270 lg:h-180",
         "bg-[linear-gradient(to_right,rgba(0,0,0,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.06)_1px,transparent_1px)]",
         "bg-size-[32px_32px] bg-position-[16px_16px]",

@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
+import { defaultPatterns } from "web-haptics";
+import { useWebHaptics } from "web-haptics/react";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { Lightbulb } from "@/components/animate-ui/icons/lightbulb";
 import { MarkdownRenderer } from "@/components/markdown";
@@ -26,6 +28,7 @@ interface QuizLessonProps {
 }
 
 export function QuizLesson({ quiz }: QuizLessonProps) {
+  const { trigger } = useWebHaptics();
   const [activeQuestionIdx, setActiveQuestionIdx] = useState<number>(0);
   const [submittedAnswers, setSubmittedAnswers] = useState<
     Record<number, number>
@@ -64,22 +67,33 @@ export function QuizLesson({ quiz }: QuizLessonProps) {
   const handleOptionSelect = (optionIdx: number) => {
     if (!isSubmitted) {
       setSelectedOption(optionIdx);
+      trigger(defaultPatterns.light);
     }
   };
 
   const handleSubmit = () => {
-    if (!isSubmitted) {
-      if (hasOptions && selectedOption !== null) {
-        setSubmittedAnswers((prev) => ({
-          ...prev,
-          [activeQuestionIdx]: selectedOption,
-        }));
-      } else if (!hasOptions) {
-        setSubmittedAnswers((prev) => ({
-          ...prev,
-          [activeQuestionIdx]: -1,
-        }));
+    if (isSubmitted) return;
+
+    if (hasOptions && selectedOption !== null) {
+      const isCorrect = activeQuestion.options?.[selectedOption]?.isCorrect;
+
+      setSubmittedAnswers((prev) => ({
+        ...prev,
+        [activeQuestionIdx]: selectedOption,
+      }));
+
+      if (isCorrect) {
+        trigger(defaultPatterns.success);
+      } else {
+        trigger(defaultPatterns.error);
       }
+    } else if (!hasOptions) {
+      setSubmittedAnswers((prev) => ({
+        ...prev,
+        [activeQuestionIdx]: -1,
+      }));
+
+      trigger(defaultPatterns.light);
     }
   };
 

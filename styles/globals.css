@@ -214,7 +214,7 @@
   }
 
   html {
-    @apply overscroll-y-none;
+    @apply bg-background overscroll-y-none;
     scrollbar-gutter: stable;
   }
 

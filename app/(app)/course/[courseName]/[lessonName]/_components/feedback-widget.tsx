@@ -4,6 +4,8 @@ import { Check, Frown, type LucideIcon, Meh, Smile, Star } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { defaultPatterns } from "web-haptics";
+import { useWebHaptics } from "web-haptics/react";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { Send } from "@/components/animate-ui/icons/send";
 import { Button } from "@/components/ui/button";
@@ -37,6 +39,7 @@ export default function FeedbackWidget({
   type: Lesson["type"];
 }) {
   const { data: session, isPending } = authClient.useSession();
+  const { trigger } = useWebHaptics();
   const [selectedReaction, setSelectedReaction] = useState<number | null>(null);
   const [comment, setComment] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -47,6 +50,7 @@ export default function FeedbackWidget({
 
   const toggleReaction = (value: number) => {
     setSelectedReaction((prev) => (prev === value ? null : value));
+    trigger(defaultPatterns.light);
   };
 
   const handleSubmit = async () => {
@@ -75,6 +79,11 @@ export default function FeedbackWidget({
     }
 
     setIsSubmitted(true);
+    // trigger([
+    //   { delay: 400, duration: 15, intensity: 1 },
+    //   { delay: 100, duration: 20, intensity: 1 },
+    //   { delay: 120, duration: 35, intensity: 1 },
+    // ]);
     setTimeout(() => {
       setIsSubmitted(false);
       setSelectedReaction(null);

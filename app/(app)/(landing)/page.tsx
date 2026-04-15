@@ -50,7 +50,7 @@ export default async function Home() {
     <div className="w-full flex flex-col ">
       <OneTap />
       <GridBackground />
-      <section className="mt-0 sm:mt-2">
+      <section className="mt-0 sm:mt-2 z-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div className="flex flex-col gap-4 sm:gap-6 text-left order-1 lg:order-1">
