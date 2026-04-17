@@ -191,13 +191,15 @@
   }
 
   *::selection {
-    background-color: oklch(78% 0.14 270.934);
-    color: oklch(18% 0.02 270.934);
+    @apply text-primary-foreground text-shadow-lg;
+    background: #6372cf;
   }
 
-  .dark *::selection {
-    background-color: oklch(49.226% 0.22277 275.888);
-    color: oklch(96% 0.01 270.934);
+  *::search-text {
+    @apply text-primary text-shadow-lg bg-primary/20;
+  }
+  ::search-text:current {
+    @apply bg-primary text-shadow-lg text-primary-foreground;
   }
 
   body {

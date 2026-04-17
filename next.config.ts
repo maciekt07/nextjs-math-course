@@ -29,6 +29,14 @@ const nextConfig: NextConfig = {
     serverMinification: true,
     authInterrupts: true,
   },
+  turbopack: {
+    ignoreIssue: [
+      {
+        path: /globals\.css$/,
+        description: /search-text/,
+      },
+    ],
+  },
   webpack: (webpackConfig) => {
     webpackConfig.resolve.extensionAlias = {
       ".cjs": [".cts", ".cjs"],

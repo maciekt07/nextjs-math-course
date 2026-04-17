@@ -67,7 +67,7 @@ export default async function Home() {
                     "bg-gradient-to-b",
                     "from-[color-mix(in_oklab,var(--primary)_96%,white_12%)]",
                     "to-[color-mix(in_oklab,var(--primary)_82%,black_5%)]",
-                    "dark:from-[color-mix(in_oklab,var(--primary)_86%,white_40%)]",
+                    "dark:from-[color-mix(in_oklab,var(--primary)_86%,white_50%)]",
                     "dark:to-[color-mix(in_oklab,var(--primary)_85%,var(--background)_10%)]",
                   )}
                 >
