@@ -247,27 +247,29 @@ export function VideoPlayer({
     // };
 
     return (
-      <MuxPlayer
-        ref={muxPlayerCallback}
-        playbackId={playbackId || undefined}
-        tokens={playbackPolicy === "signed" ? state.tokens : undefined}
-        poster={posterUrl ?? undefined}
-        placeholder={placeholder}
-        title=""
-        videoTitle={videoTitle || title}
-        accentColor="#4E65FF"
-        proudlyDisplayMuxBadge
-        metadata={{
-          video_title: videoTitle,
-          video_id: videoId,
-          lesson_id: id,
-        }}
-        onError={(e) => console.log(e)}
-        preload="metadata"
-        streamType="on-demand"
-        autoPlay={false}
-        className="rounded-xl w-full overflow-hidden bg-background aspect-video shadow-xl"
-      />
+      <div>
+        <MuxPlayer
+          ref={muxPlayerCallback}
+          playbackId={playbackId || undefined}
+          tokens={playbackPolicy === "signed" ? state.tokens : undefined}
+          poster={posterUrl ?? undefined}
+          placeholder={placeholder}
+          title=""
+          videoTitle={videoTitle || title}
+          accentColor="#4E65FF"
+          proudlyDisplayMuxBadge
+          metadata={{
+            video_title: videoTitle,
+            video_id: videoId,
+            lesson_id: id,
+          }}
+          onError={(e) => console.log(e)}
+          preload="metadata"
+          streamType="on-demand"
+          autoPlay={false}
+          className="rounded-xl w-full overflow-hidden bg-background aspect-video shadow-xl"
+        />
+      </div>
     );
   };
 

@@ -113,13 +113,12 @@ export function CourseSidebar({
     [lessons, pathname, optimisticPath, course.slug],
   );
 
-  const { queueLessonScroll, registerLessonRef, scrollLessonIntoView } =
-    useActiveLessonScroll({
-      activeChapterId,
-      activeLessonPath,
-      expandedChapters,
-      open,
-    });
+  const { registerLessonRef } = useActiveLessonScroll({
+    activeChapterId,
+    activeLessonPath,
+    expandedChapters,
+    open,
+  });
 
   useEffect(() => {
     if (!open || !activeChapterId) return;
@@ -151,23 +150,11 @@ export function CourseSidebar({
         return;
       }
 
-      scrollLessonIntoView(nextPath);
-      queueLessonScroll(nextPath);
-
       if (!isSameLesson) {
         router.push(nextPath);
       }
     },
-    [
-      optimisticPath,
-      pathname,
-      queueLessonScroll,
-      router,
-      scrollLessonIntoView,
-      setOpen,
-      setOptimisticPath,
-      trigger,
-    ],
+    [optimisticPath, pathname, router, setOpen, setOptimisticPath, trigger],
   );
 
   return (

@@ -1,5 +1,4 @@
 "use client";
-import { useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useRef } from "react";
 
 interface UseActiveLessonScrollOptions {
@@ -15,9 +14,9 @@ export function useActiveLessonScroll({
   expandedChapters,
   open,
 }: UseActiveLessonScrollOptions) {
-  const prefersReducedMotion = useReducedMotion();
   const lessonRefs = useRef<Map<string, HTMLAnchorElement>>(new Map());
-  const pendingScrollTarget = useRef<string | null>(null);
+  const hasInitialScrollRun = useRef(false);
+  const previousOpen = useRef(open);
 
   const registerLessonRef = useCallback(
     (lessonPath: string, node: HTMLAnchorElement | null) => {
@@ -30,48 +29,33 @@ export function useActiveLessonScroll({
     [],
   );
 
-  const scrollLessonIntoView = useCallback(
-    (lessonPath: string) => {
-      const lessonElement = lessonRefs.current.get(lessonPath);
-      if (!lessonElement) return false;
-      lessonElement.scrollIntoView({
-        behavior: prefersReducedMotion ? "auto" : "smooth",
-        block: "center",
-        inline: "nearest",
-      });
-      return true;
-    },
-    [prefersReducedMotion],
-  );
-
-  const queueLessonScroll = useCallback((lessonPath: string | null) => {
-    pendingScrollTarget.current = lessonPath;
+  const scrollLessonIntoView = useCallback((lessonPath: string) => {
+    const lessonElement = lessonRefs.current.get(lessonPath);
+    if (!lessonElement) return false;
+    lessonElement.scrollIntoView({
+      behavior: "auto",
+      block: "center",
+      inline: "nearest",
+    });
+    return true;
   }, []);
 
   useEffect(() => {
-    if (activeLessonPath) {
-      pendingScrollTarget.current = activeLessonPath;
-    }
-  }, [activeLessonPath]);
+    const didJustOpen = open && !previousOpen.current;
+    const shouldRunInitialScroll = !hasInitialScrollRun.current && open;
 
-  useEffect(() => {
-    if (open && activeLessonPath) {
-      pendingScrollTarget.current = activeLessonPath;
-    }
-  }, [open, activeLessonPath]);
+    previousOpen.current = open;
 
-  useEffect(() => {
-    if (!open || !pendingScrollTarget.current) return;
+    if (!activeLessonPath || (!didJustOpen && !shouldRunInitialScroll)) return;
     if (activeChapterId && !expandedChapters.includes(activeChapterId)) return;
 
-    const target = pendingScrollTarget.current;
     let firstFrame = 0;
     let secondFrame = 0;
 
     firstFrame = window.requestAnimationFrame(() => {
       secondFrame = window.requestAnimationFrame(() => {
-        if (scrollLessonIntoView(target)) {
-          pendingScrollTarget.current = null;
+        if (scrollLessonIntoView(activeLessonPath)) {
+          hasInitialScrollRun.current = true;
         }
       });
     });
@@ -80,11 +64,15 @@ export function useActiveLessonScroll({
       window.cancelAnimationFrame(firstFrame);
       window.cancelAnimationFrame(secondFrame);
     };
-  }, [activeChapterId, expandedChapters, open, scrollLessonIntoView]);
+  }, [
+    activeChapterId,
+    activeLessonPath,
+    expandedChapters,
+    open,
+    scrollLessonIntoView,
+  ]);
 
   return {
-    queueLessonScroll,
     registerLessonRef,
-    scrollLessonIntoView,
   };
 }

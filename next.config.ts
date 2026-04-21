@@ -1,7 +1,11 @@
+import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { withPayload } from "@payloadcms/next/withPayload";
 import { createJiti } from "jiti";
 import type { NextConfig } from "next";
+
+const __filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(__filename);
 
 const jiti = createJiti(fileURLToPath(import.meta.url));
 
@@ -30,6 +34,7 @@ const nextConfig: NextConfig = {
     authInterrupts: true,
   },
   turbopack: {
+    root: path.resolve(dirname),
     ignoreIssue: [
       {
         path: /globals\.css$/,
@@ -45,10 +50,6 @@ const nextConfig: NextConfig = {
     };
     return webpackConfig;
   },
-
-  // enable statically typed links
-  // @see https://nextjs.org/docs/app/api-reference/config/typescript#statically-typed-links
-  // typedRoutes: true,
 };
 
 export default withPayload(nextConfig, { devBundleServerPackages: false });
