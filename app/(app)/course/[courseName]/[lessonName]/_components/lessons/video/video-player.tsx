@@ -2,33 +2,47 @@
 import MuxPlayer, { type MuxPlayerRefAttributes } from "@mux/mux-player-react";
 import {
   AlertCircle,
-  List,
   Loader2Icon,
   type LucideIcon,
   Video,
   VideoOff,
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import type React from "react";
-import { useCallback, useEffect, useReducer, useRef } from "react";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useWebHaptics } from "web-haptics/react";
 import { MarkdownRenderer } from "@/components/markdown";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useMounted } from "@/hooks/use-mounted";
-import { formatDuration } from "@/lib/format";
 import { fetchMuxToken, RateLimitError } from "@/lib/mux-token-cache";
 import { cn } from "@/lib/ui";
 import type { MuxTokens } from "@/types/mux";
 import type { Course, Lesson, MuxVideo } from "@/types/payload-types";
+import { VideoChaptersSkeleton } from "./video-chapters";
+
+const VideoChapters = dynamic(
+  () =>
+    import("./video-chapters").then((mod) => ({
+      default: mod.VideoChapters,
+    })),
+  {
+    loading: VideoChaptersSkeleton,
+  },
+);
 
 type PlaybackOption = NonNullable<MuxVideo["playbackOptions"]>[number];
 
 interface VideoPlayerProps
   extends Pick<
     Lesson,
-    "videoChapters" | "free" | "videoDescription" | "id" | "title"
+    | "videoChapters"
+    | "free"
+    | "videoDescription"
+    | "id"
+    | "title"
+    | "videoDurationSeconds"
   > {
   playbackId: PlaybackOption["playbackId"];
   playbackPolicy: PlaybackOption["playbackPolicy"];
@@ -52,6 +66,7 @@ export function VideoPlayer({
   id,
   title,
   videoDescription,
+  videoDurationSeconds,
   free,
   course,
 }: VideoPlayerProps) {
@@ -59,6 +74,7 @@ export function VideoPlayer({
   const { trigger } = useWebHaptics();
   const playerRef = useRef<HTMLDivElement>(null);
   const playerElementRef = useRef<MuxPlayerRefAttributes | null>(null);
+  const [currentTime, setCurrentTime] = useState<number>(0);
 
   type MuxState = {
     tokens: Partial<MuxTokens>;
@@ -166,7 +182,12 @@ export function VideoPlayer({
         if (mounted) {
           dispatch({
             type: "SET_TOKENS",
-            tokens: { playback: t.playback, storyboard: t.storyboard },
+            tokens: {
+              playback: t.playback,
+              thumbnail: t.thumbnail,
+              storyboard: t.storyboard,
+              chapterThumbnails: t.chapterThumbnails,
+            },
           });
         }
       })
@@ -191,6 +212,7 @@ export function VideoPlayer({
     const player = playerElementRef.current;
     if (player && "currentTime" in player) {
       trigger();
+      setCurrentTime(startTime);
       player.currentTime = startTime;
       player.play();
       requestAnimationFrame(() => {
@@ -263,6 +285,12 @@ export function VideoPlayer({
             video_id: videoId,
             lesson_id: id,
           }}
+          onTimeUpdate={() => {
+            const player = playerElementRef.current;
+            if (player && "currentTime" in player) {
+              setCurrentTime(player.currentTime);
+            }
+          }}
           onError={(e) => console.log(e)}
           preload="metadata"
           streamType="on-demand"
@@ -295,35 +323,24 @@ export function VideoPlayer({
           {videoChapters && videoChapters.length > 0 && (
             <>
               <Separator className="mt-4" />
-              <div className="mt-4 font-inter">
-                <h3 className="text-lg font-semibold mb-4 text-primary flex items-center gap-2">
-                  <List className="size-5" />
-                  Chapters
-                </h3>
-
-                <ul className=" space-y-2 sm:space-y-1">
-                  {videoChapters.map((chapter, index) => (
-                    <li
-                      key={chapter.id || index}
-                      className="flex items-center gap-2"
-                    >
-                      <Button
-                        variant="link"
-                        size="sm"
-                        onClick={() => handleTimestampClick(chapter.startTime)}
-                        className="text-primary text-md p-0 shrink-0 hover:underline disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed disabled:no-underline"
-                        disabled={!hasVideo || state.isRateLimited}
-                      >
-                        {formatDuration(chapter.startTime)}
-                      </Button>
-                      <span>&ndash;</span>
-                      <span className="truncate font-semibold">
-                        {chapter.title}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <VideoChapters
+                playbackId={playbackId}
+                chapterThumbnailTokens={
+                  playbackPolicy === "signed"
+                    ? state.tokens.chapterThumbnails
+                    : undefined
+                }
+                currentTime={currentTime}
+                hasVideo={hasVideo}
+                isRateLimited={state.isRateLimited}
+                onChapterSelect={handleTimestampClick}
+                placeholder={placeholder}
+                videoChapters={videoChapters}
+                videoDuration={videoDurationSeconds}
+                tokensReady={
+                  playbackPolicy !== "signed" || !!state.tokens.thumbnail
+                }
+              />
             </>
           )}
         </CardContent>

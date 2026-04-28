@@ -35,6 +35,7 @@ export async function VideoLesson({ lesson }: VideoLessonProps) {
       videoId={muxVideo?.id}
       videoTitle={muxVideo?.title}
       videoChapters={lesson.videoChapters}
+      videoDurationSeconds={lesson.videoDurationSeconds}
       // lesson info
       id={lesson.id}
       title={lesson.title}

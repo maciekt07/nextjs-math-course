@@ -26,7 +26,7 @@ export default function Loading() {
       <Separator className="mb-6" />
 
       {/* TOC for small screens */}
-      <div className="hidden max-[1704px]:block my-8">
+      <div className="hidden max-[1704px]:block my-10">
         <Skeleton className="bg-card rounded-2xl px-6 border-1">
           <div className="flex items-center justify-between py-4">
             <Skeleton className="h-5 w-28 rounded-md" />

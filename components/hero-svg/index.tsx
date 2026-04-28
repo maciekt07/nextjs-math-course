@@ -4,7 +4,10 @@ import dynamic from "next/dynamic";
 import { type SVGProps, useEffect, useState } from "react";
 import Floor from "@/components/hero-svg/floor";
 
-const HeroElements = dynamic(() => import("./elements"), { ssr: false });
+const HeroElements = dynamic(() => import("./elements"), {
+  ssr: false,
+  loading: () => null,
+});
 
 const HeroSvgComponent = (props: SVGProps<SVGSVGElement>) => {
   const [show, setShow] = useState<boolean>(false);
