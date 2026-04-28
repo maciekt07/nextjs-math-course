@@ -34,7 +34,6 @@ export function DesmosGraph({ graphUrl, noEmbed = false }: DesmosGraphProps) {
         <iframe
           title={`Desmos Graph: ${graphId}`}
           src={iframeUrl}
-          loading="lazy"
           className={cn(
             "block size-full transition-all duration-300",
             forceDarkMode && "dark:[filter:invert(1)_hue-rotate(180deg)]",

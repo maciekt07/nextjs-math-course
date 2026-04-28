@@ -1,5 +1,4 @@
 import { serverEnv } from "@env/server";
-import Mux from "@mux/mux-node";
 import { Ratelimit } from "@upstash/ratelimit";
 import { and, eq } from "drizzle-orm";
 import type { NextRequest } from "next/server";
@@ -10,15 +9,9 @@ import { enrollment } from "@/drizzle/schema";
 import { clientEnv } from "@/env/client";
 import { auth } from "@/lib/auth/auth";
 import { VIDEO_LIMITS } from "@/lib/constants/limits";
+import { mux } from "@/lib/mux";
 import { getPayloadClient } from "@/lib/payload-client";
 import { redis } from "@/lib/redis";
-
-const mux = new Mux({
-  tokenId: serverEnv.MUX_TOKEN_ID,
-  tokenSecret: serverEnv.MUX_TOKEN_SECRET,
-  jwtSigningKey: serverEnv.MUX_JWT_KEY_ID,
-  jwtPrivateKey: serverEnv.MUX_JWT_KEY,
-});
 
 const limiter = new Ratelimit({
   redis,
@@ -104,7 +97,7 @@ export async function POST(request: NextRequest) {
         and: [publishedStatusWhere, { video: { equals: video.id } }],
       },
       limit: 1,
-      select: { course: true },
+      select: { course: true, videoChapters: true },
     });
 
     const lesson = lessons.docs?.[0];
@@ -139,13 +132,37 @@ export async function POST(request: NextRequest) {
 
     const expiration = clientEnv.NEXT_PUBLIC_MUX_SIGNED_URL_EXPIRATION;
 
-    const [videoToken, storyboardToken] = await Promise.all([
+    const chapterStartTimes = (lesson.videoChapters || [])
+      .sort((a, b) => a.startTime - b.startTime)
+      .map((chapter) => chapter.startTime);
+
+    const chapterTokens = await Promise.all(
+      chapterStartTimes.map(async (startTime) => {
+        const token = await mux.jwt.signPlaybackId(playbackId, {
+          expiration,
+          type: "thumbnail",
+          params: { time: startTime.toString() },
+        });
+        return { startTime, token };
+      }),
+    );
+
+    const [videoToken, thumbnailToken, storyboardToken] = await Promise.all([
       mux.jwt.signPlaybackId(playbackId, { expiration, type: "video" }),
+      mux.jwt.signPlaybackId(playbackId, {
+        expiration,
+        type: "thumbnail",
+      }),
       mux.jwt.signPlaybackId(playbackId, { expiration, type: "storyboard" }),
     ]);
 
     return NextResponse.json(
-      { playback: videoToken, storyboard: storyboardToken },
+      {
+        playback: videoToken,
+        thumbnail: thumbnailToken,
+        storyboard: storyboardToken,
+        chapterThumbnails: chapterTokens,
+      },
       { headers: rateLimitHeaders },
     );
   } catch (err) {

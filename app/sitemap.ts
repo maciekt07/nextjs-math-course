@@ -53,7 +53,6 @@ function truncateDescription(text: string, max = 300): string {
 
 function getVideoMetadata(
   origin: string,
-  playerLoc: string,
   lesson: {
     free?: boolean | null;
     title: string;
@@ -90,7 +89,6 @@ function getVideoMetadata(
       thumbnail_loc: thumbnailLoc,
       content_loc:
         toAbsoluteUrl(origin, playbackOption?.playbackUrl) ?? undefined,
-      player_loc: playerLoc,
       duration:
         lesson.videoDurationSeconds ?? lesson.video.duration ?? undefined,
       publication_date: lesson.createdAt,
@@ -148,9 +146,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           ? getImageUrls(origin, lesson.uploadImage)
           : undefined,
       videos:
-        lesson.type === "video"
-          ? getVideoMetadata(origin, url, lesson)
-          : undefined,
+        lesson.type === "video" ? getVideoMetadata(origin, lesson) : undefined,
     });
   }
 
