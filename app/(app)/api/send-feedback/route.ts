@@ -2,7 +2,7 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { type NextRequest, NextResponse } from "next/server";
 import sanitizeHtml from "sanitize-html";
 import { getServerSession } from "@/lib/auth/get-session";
-import { FEEDBACK_LIMITS, LESSON_LIMITS } from "@/lib/constants/limits";
+import { LIMITS } from "@/lib/constants/limits";
 import { getPayloadClient } from "@/lib/payload-client";
 import { redis } from "@/lib/redis";
 
@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
       !lessonId ||
       typeof lessonId !== "string" ||
       !lessonId.trim() ||
-      lessonId.trim().length > LESSON_LIMITS.lessonId
+      lessonId.trim().length > LIMITS.lesson.lessonIdMaxLength
     )
       return NextResponse.json({ error: "Invalid lessonId" }, { status: 400 });
 
@@ -81,10 +81,10 @@ export async function POST(req: NextRequest) {
     }
 
     const trimmedComment = comment.trim();
-    if (trimmedComment.length > FEEDBACK_LIMITS.comment) {
+    if (trimmedComment.length > LIMITS.feedback.commentMaxLength) {
       return NextResponse.json(
         {
-          error: `Comment is too long (${trimmedComment.length}/${FEEDBACK_LIMITS.comment})`,
+          error: `Comment is too long (${trimmedComment.length}/${LIMITS.feedback.commentMaxLength})`,
         },
         { status: 400 },
       );

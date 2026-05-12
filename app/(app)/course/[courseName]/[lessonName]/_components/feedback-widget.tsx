@@ -13,7 +13,7 @@ import { LoadingSwap } from "@/components/ui/loading-swap";
 import { Textarea } from "@/components/ui/textarea";
 import { useMounted } from "@/hooks/use-mounted";
 import { authClient } from "@/lib/auth/auth-client";
-import { FEEDBACK_LIMITS } from "@/lib/constants/limits";
+import { LIMITS } from "@/lib/constants/limits";
 import { system } from "@/lib/system";
 import { cn } from "@/lib/ui";
 import type { Lesson } from "@/types/payload-types";
@@ -229,12 +229,12 @@ export default function FeedbackWidget({
                 />
                 <p
                   className={`text-xs mt-1 text-right ${
-                    comment.length > FEEDBACK_LIMITS.comment
+                    comment.length > LIMITS.feedback.commentMaxLength
                       ? "text-red-500"
                       : "text-muted-foreground"
                   }`}
                 >
-                  {comment.length}/{FEEDBACK_LIMITS.comment}
+                  {comment.length}/{LIMITS.feedback.commentMaxLength}
                 </p>
                 <AnimateIcon animateOnHover>
                   <Button
@@ -242,7 +242,7 @@ export default function FeedbackWidget({
                     disabled={
                       isSubmitting ||
                       !selectedReaction ||
-                      comment.length > FEEDBACK_LIMITS.comment
+                      comment.length > LIMITS.feedback.commentMaxLength
                     }
                     className="w-full mt-2 flex items-center justify-center gap-2 cursor-pointer"
                   >

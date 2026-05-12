@@ -20,7 +20,7 @@ import {
 } from "@/lib/auth/google-profile";
 import { secondaryStorage } from "@/lib/auth/secondary-storage";
 import { limitUserSessions } from "@/lib/auth/session-limit";
-import { AUTH_LIMITS } from "@/lib/constants/limits";
+import { LIMITS } from "@/lib/constants/limits";
 
 // https://www.better-auth.com/docs/reference/options
 export const auth = betterAuth({
@@ -65,7 +65,7 @@ export const auth = betterAuth({
   ),
 
   emailVerification: {
-    expiresIn: AUTH_LIMITS.verificationTokenTTL,
+    expiresIn: LIMITS.auth.verificationTokenTTL,
     sendOnSignUp: false,
 
     sendVerificationEmail: async ({ user, url }) => {
@@ -81,9 +81,9 @@ export const auth = betterAuth({
     enabled: true,
     autoSignIn: true,
     requireEmailVerification: false,
-    minPasswordLength: AUTH_LIMITS.passwordMin,
-    maxPasswordLength: AUTH_LIMITS.passwordMax,
-    resetPasswordTokenExpiresIn: AUTH_LIMITS.resetPasswordTokenTTL,
+    minPasswordLength: LIMITS.auth.passwordMinLength,
+    maxPasswordLength: LIMITS.auth.passwordMaxLength,
+    resetPasswordTokenExpiresIn: LIMITS.auth.resetPasswordTokenTTL,
     async sendResetPassword({ user, url }) {
       void sendEmail({
         to: user.email,
@@ -114,10 +114,10 @@ export const auth = betterAuth({
   },
 
   session: {
-    expiresIn: AUTH_LIMITS.sessionExpiresIn,
+    expiresIn: LIMITS.auth.sessionExpiresIn,
     cookieCache: {
       enabled: true,
-      maxAge: AUTH_LIMITS.cookieCacheMaxAge,
+      maxAge: LIMITS.auth.cookieCacheMaxAge,
     },
   },
 

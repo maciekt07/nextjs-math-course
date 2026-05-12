@@ -1,5 +1,5 @@
 import { Heading, Hr, Text } from "@react-email/components";
-import { AUTH_LIMITS } from "@/lib/constants/limits";
+import { LIMITS } from "@/lib/constants/limits";
 import { formatSeconds } from "@/lib/format";
 import EmailButton from "../components/email-button";
 import EmailLayout from "../components/email-layout";
@@ -28,7 +28,7 @@ export default function ResetPasswordEmailTemplate({
       <Hr className="border-gray-200 my-6" />
 
       <Text className="text-xs text-gray-600 text-center">
-        This link expires in {formatSeconds(AUTH_LIMITS.resetPasswordTokenTTL)}.
+        This link expires in {formatSeconds(LIMITS.auth.resetPasswordTokenTTL)}.
       </Text>
 
       <Text className="text-xs text-gray-500 text-center">

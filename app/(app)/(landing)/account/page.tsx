@@ -29,7 +29,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { auth } from "@/lib/auth/auth";
 import { getServerSession } from "@/lib/auth/get-session";
-import { AUTH_LIMITS } from "@/lib/constants/limits";
+import { LIMITS } from "@/lib/constants/limits";
 import { buildNoIndexMetadata } from "@/lib/seo";
 import ActiveSessions from "./_components/active-sessions";
 import { LogOutButton } from "./_components/logout-button";
@@ -223,7 +223,7 @@ export default async function AccountPage() {
           <p className="text-xs text-muted-foreground">
             You can have a maximum of{" "}
             <span className="font-semibold text-foreground/80">
-              {AUTH_LIMITS.maxSessions}
+              {LIMITS.auth.maxSessions}
             </span>{" "}
             active sessions at a time to prevent account sharing.
           </p>

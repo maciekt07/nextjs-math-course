@@ -8,7 +8,7 @@ import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
 import { clientEnv } from "@/env/client";
 import { auth } from "@/lib/auth/auth";
-import { VIDEO_LIMITS } from "@/lib/constants/limits";
+import { LIMITS } from "@/lib/constants/limits";
 import { mux } from "@/lib/mux";
 import { getPayloadClient } from "@/lib/payload-client";
 import { redis } from "@/lib/redis";
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     if (
       !playbackId ||
       typeof playbackId !== "string" ||
-      playbackId.length > VIDEO_LIMITS.playbackId
+      playbackId.length > LIMITS.video.playbackIdMaxLength
     ) {
       return NextResponse.json(
         { error: "Invalid playbackId" },

@@ -1,6 +1,6 @@
 import type { Access, CollectionConfig } from "payload";
 import { isAdmin } from "@/cms/access/roles";
-import { AUTH_LIMITS, FEEDBACK_LIMITS } from "@/lib/constants/limits";
+import { LIMITS } from "@/lib/constants/limits";
 
 const canManageFeedbacks: Access = ({ req: { user } }) => isAdmin(user);
 
@@ -40,7 +40,7 @@ export const Feedbacks: CollectionConfig = {
       name: "userName",
       type: "text",
       required: true,
-      maxLength: AUTH_LIMITS.name,
+      maxLength: LIMITS.auth.nameMaxLength,
       admin: {
         readOnly: true,
       },
@@ -60,7 +60,7 @@ export const Feedbacks: CollectionConfig = {
       type: "text",
       required: true,
       index: true,
-      maxLength: AUTH_LIMITS.email,
+      maxLength: LIMITS.auth.emailMaxLength,
       admin: {
         readOnly: true,
       },
@@ -80,7 +80,7 @@ export const Feedbacks: CollectionConfig = {
       name: "comment",
       type: "textarea",
       required: false,
-      maxLength: FEEDBACK_LIMITS.comment,
+      maxLength: LIMITS.feedback.commentMaxLength,
       admin: {
         readOnly: true,
       },

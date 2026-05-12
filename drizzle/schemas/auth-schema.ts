@@ -7,12 +7,14 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
-import { AUTH_LIMITS } from "@/lib/constants/limits";
+import { LIMITS } from "@/lib/constants/limits";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
-  name: varchar("name", { length: AUTH_LIMITS.name }).notNull(),
-  email: varchar("email", { length: AUTH_LIMITS.email }).notNull().unique(),
+  name: varchar("name", { length: LIMITS.auth.nameMaxLength }).notNull(),
+  email: varchar("email", { length: LIMITS.auth.emailMaxLength })
+    .notNull()
+    .unique(),
   normalizedEmail: text("normalized_email").unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),
   image: text("image"),

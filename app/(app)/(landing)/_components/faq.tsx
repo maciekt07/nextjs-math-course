@@ -13,6 +13,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { LIMITS } from "@/lib/constants/limits";
 
 const faqs: { question: string; answer: string }[] = [
   {
@@ -32,8 +33,7 @@ const faqs: { question: string; answer: string }[] = [
   },
   {
     question: "Can I access courses on mobile devices?",
-    answer:
-      "Completely! Learn on any phone, tablet, or computer. You can be logged in on up to 2 devices at once per account.",
+    answer: `Completely! Learn on any phone, tablet, or computer. You can be logged in on up to ${LIMITS.auth.maxSessions} devices at once per account.`,
   },
 ];
 

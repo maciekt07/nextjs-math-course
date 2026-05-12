@@ -1,7 +1,7 @@
 import "server-only";
 
-import { AUTH_LIMITS } from "@lib/constants/limits";
 import type { Session } from "better-auth";
+import { LIMITS } from "@/lib/constants/limits";
 import { redis } from "@/lib/redis";
 
 const TTL_SECONDS = 30 * 24 * 60 * 60;
@@ -18,7 +18,7 @@ export async function limitUserSessions({
 
   try {
     const key = `user:sessions:${userId}`;
-    const limit = AUTH_LIMITS.maxSessions;
+    const limit = LIMITS.auth.maxSessions;
     const overflowEnd = -limit - 1;
 
     const pipeline = redis.pipeline();

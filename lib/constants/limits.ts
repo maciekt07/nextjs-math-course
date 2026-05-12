@@ -2,33 +2,36 @@ type LimitTree = {
   readonly [key: string]: number | LimitTree;
 };
 
-export const AUTH_LIMITS = {
-  name: 32,
-  email: 254,
-  passwordMax: 72,
-  passwordMin: 8,
-  maxSessions: 2,
-  /** 2 hours */
-  verificationTokenTTL: 2 * 60 * 60,
+export const LIMITS = {
+  auth: {
+    nameMaxLength: 32,
+    emailMaxLength: 254,
+    passwordMaxLength: 72,
+    passwordMinLength: 8,
+    maxSessions: 2,
 
-  /** 15 minutes */
-  resetPasswordTokenTTL: 15 * 60,
+    /** 2 hours */
+    verificationTokenTTL: 2 * 60 * 60,
 
-  /** 3 minutes */
-  cookieCacheMaxAge: 60 * 3,
+    /** 15 minutes */
+    resetPasswordTokenTTL: 15 * 60,
 
-  /** 7 days */
-  sessionExpiresIn: 60 * 60 * 24 * 7,
-} as const satisfies LimitTree;
+    /** 3 minutes */
+    cookieCacheMaxAge: 60 * 3,
 
-export const FEEDBACK_LIMITS = {
-  comment: 200,
-} as const satisfies LimitTree;
+    /** 7 days */
+    sessionExpiresIn: 60 * 60 * 24 * 7,
+  },
 
-export const VIDEO_LIMITS = {
-  playbackId: 100,
-} as const satisfies LimitTree;
+  feedback: {
+    commentMaxLength: 200,
+  },
 
-export const LESSON_LIMITS = {
-  lessonId: 32,
+  video: {
+    playbackIdMaxLength: 100,
+  },
+
+  lesson: {
+    lessonIdMaxLength: 32,
+  },
 } as const satisfies LimitTree;
