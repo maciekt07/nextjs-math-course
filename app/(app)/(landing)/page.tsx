@@ -1,5 +1,5 @@
-import { BookOpen } from "lucide-react";
 import Link from "next/link";
+import { BookOpen } from "@/components/animate-ui/icons/book-open";
 import { Compass } from "@/components/animate-ui/icons/compass";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { CourseCard } from "@/components/course-card";
@@ -93,17 +93,19 @@ export default async function Home() {
                   </Button>
                 </AnimateIcon>
                 {courses.length > 0 && (
-                  <Button
-                    variant="outline"
-                    size="xl"
-                    asChild
-                    className="backdrop-blur-2xl shadow-sm"
-                  >
-                    {/* already prefetched */}
-                    <Link href={featuredPreviewLink}>
-                      <BookOpen className="size-4" /> Watch Free Demo
-                    </Link>
-                  </Button>
+                  <AnimateIcon animateOnHover>
+                    <Button
+                      variant="outline"
+                      size="xl"
+                      asChild
+                      className="backdrop-blur-2xl shadow-sm w-full"
+                    >
+                      {/* already prefetched */}
+                      <Link href={featuredPreviewLink}>
+                        <BookOpen className="size-4" /> Watch Free Demo
+                      </Link>
+                    </Button>{" "}
+                  </AnimateIcon>
                 )}
               </div>
               <div className="flex h-16 items-center gap-8 pt-4">

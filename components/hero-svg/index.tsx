@@ -1,5 +1,4 @@
 "use client";
-
 import dynamic from "next/dynamic";
 import { type SVGProps, useEffect, useState } from "react";
 import Floor from "@/components/hero-svg/floor";
@@ -9,13 +8,20 @@ const HeroElements = dynamic(() => import("./elements"), {
   loading: () => null,
 });
 
+const preloadHeroElements = () => import("./elements");
+
 const HeroSvgComponent = (props: SVGProps<SVGSVGElement>) => {
   const [show, setShow] = useState<boolean>(false);
+
   useEffect(() => {
-    const cb = () => setShow(true);
+    const preload = preloadHeroElements();
+
+    const cb = () => {
+      preload.then(() => setShow(true));
+    };
 
     if ("requestIdleCallback" in window) {
-      const id = requestIdleCallback(cb);
+      const id = requestIdleCallback(cb, { timeout: 2000 });
       return () => cancelIdleCallback(id);
     } else {
       const id = setTimeout(cb, 500);
@@ -30,6 +36,7 @@ const HeroSvgComponent = (props: SVGProps<SVGSVGElement>) => {
       viewBox="0 0 500 500"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      style={{ willChange: "transform, opacity" }}
       {...props}
     >
       <g id="Hero-SVG">
@@ -40,4 +47,5 @@ const HeroSvgComponent = (props: SVGProps<SVGSVGElement>) => {
     </svg>
   );
 };
+
 export default HeroSvgComponent;
