@@ -43,7 +43,11 @@ export const ImageZoom = ({
         '[&_[data-rmiz-modal-overlay="hidden"]]:bg-transparent',
         '[&_[data-rmiz-modal-overlay="visible"]]:bg-background/80 [&_[data-rmiz-modal-overlay="visible"]]:backdrop-blur-md',
         "[&_[data-rmiz-modal-content]]:relative [&_[data-rmiz-modal-content]]:size-full",
-        "[&_[data-rmiz-modal-img]]:absolute [&_[data-rmiz-modal-img]]:origin-top-left [&_[data-rmiz-modal-img]]:cursor-zoom-out [&_[data-rmiz-modal-img]]:transition-transform",
+        "[&_[data-rmiz-modal-img]]:absolute [&_[data-rmiz-modal-img]]:origin-top-left [&_[data-rmiz-modal-img]]:cursor-zoom-out [&_[data-rmiz-modal-img]]:transition-[transform,border-radius,border-width,box-shadow]",
+
+        '[&:has([data-rmiz-modal-overlay="visible"])_[data-rmiz-modal-img]]:rounded-none [&:has([data-rmiz-modal-overlay="visible"])_[data-rmiz-modal-img]]:border-0 [&:has([data-rmiz-modal-overlay="visible"])_[data-rmiz-modal-img]]:shadow-none',
+
+        '[&:has([data-rmiz-modal-overlay="hidden"])_[data-rmiz-modal-img]]:rounded-lg [&:has([data-rmiz-modal-overlay="hidden"])_[data-rmiz-modal-img]]:border [&:has([data-rmiz-modal-overlay="hidden"])_[data-rmiz-modal-img]]:shadow-sm',
         "motion-reduce:[&_[data-rmiz-modal-img]]:transition-none motion-reduce:[&_[data-rmiz-modal-overlay]]:transition-none",
         backdropClassName,
       )}
