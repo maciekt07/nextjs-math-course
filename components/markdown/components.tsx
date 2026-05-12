@@ -1,5 +1,8 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { Components } from "react-markdown";
+import { ExternalLink } from "@/components/animate-ui/icons/external-link";
+import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { CalloutBlock } from "@/components/markdown/blocks/callout-block";
 import type { BlockType } from "@/components/markdown/blocks/callout-config";
 import { stripBasicMarkdown } from "@/lib/markdown/strip-markdown";
@@ -31,14 +34,45 @@ export function createMarkdownComponents({
 }: CreateMarkdownComponentsOptions): Components {
   let mathElementCount = 0;
   return {
-    a: ({ node, ...props }) => (
-      <a
-        {...props}
-        className="text-primary underline"
-        target="_blank"
-        rel="noopener noreferrer"
-      />
-    ),
+    a: ({ node, href, children, ...props }) => {
+      const isExternal = href?.startsWith("http") || href?.startsWith("//");
+
+      if (isExternal) {
+        return (
+          <AnimateIcon animateOnHover>
+            <a
+              {...props}
+              href={href}
+              className="inline-flex items-center gap-1 text-primary underline underline-offset-2 hover:text-primary/80 transition-colors"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {/* <span className="inline-flex items-center justify-center size-5">
+                <img
+                  src={`https://www.google.com/s2/favicons?sz=32&domain_url=${href}`}
+                  alt="favicon"
+                  className="size-4"
+                />
+              </span> */}
+
+              <span>{children}</span>
+
+              <ExternalLink className="ml-0.5 size-4" />
+            </a>
+          </AnimateIcon>
+        );
+      }
+
+      return (
+        <Link
+          {...props}
+          href={href ?? "#"}
+          className="text-primary underline underline-offset-2 hover:text-primary/80 transition-colors"
+        >
+          {children}
+        </Link>
+      );
+    },
     img: ({ node, ...props }) => {
       const matchedMedia = media?.find((m) => m.url === props.src);
       const blurhash = matchedMedia?.blurhash;
