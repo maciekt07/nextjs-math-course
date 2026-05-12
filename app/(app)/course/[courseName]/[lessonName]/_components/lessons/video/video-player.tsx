@@ -250,7 +250,7 @@ export function VideoPlayer({
 
     if (!state.tokens.playback && playbackPolicy === "signed") {
       return (
-        <div className="w-full aspect-video rounded-xl overflow-hidden bg-background flex items-center justify-center">
+        <div className="w-full aspect-video rounded-xl overflow-hidden flex items-center justify-center bg-background mb-1.5">
           <Loader2Icon className="animate-spin size-[90px] text-foreground/10" />
         </div>
       );
@@ -322,7 +322,7 @@ export function VideoPlayer({
           )}
           {videoChapters && videoChapters.length > 0 && (
             <>
-              <Separator className="mt-4" />
+              <Separator className="mb-4 mt-6" />
               <VideoChapters
                 playbackId={playbackId}
                 chapterThumbnailTokens={

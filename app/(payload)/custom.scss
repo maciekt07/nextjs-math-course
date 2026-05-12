@@ -1,0 +1,80 @@
+$primary: oklch(58.222% 0.22825 270.934);
+
+$light-theme: (
+  bg: oklch(1 0 0),
+  input-bg: oklch(0.98 0.0025 245),
+  elevation-50: oklch(0.98 0.0025 245),
+  elevation-100: oklch(0.92 0 0),
+  elevation-200: oklch(0.92 0 0),
+  card: oklch(0.98 0.0025 245),
+);
+
+$dark-theme: (
+  bg: oklch(0.145 0 0),
+  input-bg: oklch(0.205 0 0),
+  elevation-50: oklch(0.205 0 0),
+  elevation-100: oklch(1 0 0 / 10%),
+  elevation-200: oklch(1 0 0 / 10%),
+  card: oklch(0.205 0 0),
+);
+
+$radius-s: 6px;
+$radius-m: 10px;
+$radius-l: 14px;
+
+:root {
+  --primary: #{$primary};
+
+  --theme-bg: #{map-get($light-theme, bg)};
+  --theme-input-bg: #{map-get($light-theme, input-bg)};
+
+  --theme-elevation-50: #{map-get($light-theme, elevation-50)};
+  --theme-elevation-100: #{map-get($light-theme, elevation-100)};
+  --theme-elevation-200: #{map-get($light-theme, elevation-200)};
+
+  --card: #{map-get($light-theme, card)};
+
+  --style-radius-s: #{$radius-s};
+  --style-radius-m: #{$radius-m};
+  --style-radius-l: #{$radius-l};
+}
+
+html[data-theme="dark"] {
+  --theme-bg: #{map-get($dark-theme, bg)};
+  --theme-input-bg: #{map-get($dark-theme, input-bg)};
+
+  --theme-elevation-50: #{map-get($dark-theme, elevation-50)};
+  --theme-elevation-100: #{map-get($dark-theme, elevation-100)};
+  --theme-elevation-200: #{map-get($dark-theme, elevation-200)};
+
+  --card: #{map-get($dark-theme, card)};
+}
+
+.card {
+  background-color: var(--card);
+}
+
+.doc-controls__dots,
+.hamburger,
+.pill {
+  border-radius: var(--style-radius-s) !important;
+}
+
+td {
+  img {
+    border-radius: var(--style-radius-s) !important;
+  }
+}
+
+.where-builder,
+.pill-selector {
+  border-radius: var(--style-radius-m) !important;
+}
+
+.table {
+  width: 100%;
+
+  &-wrap {
+    overflow-x: auto;
+  }
+}

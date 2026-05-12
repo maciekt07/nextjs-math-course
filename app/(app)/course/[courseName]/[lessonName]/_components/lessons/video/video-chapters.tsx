@@ -8,6 +8,12 @@ import {
   Play,
   Video,
 } from "lucide-react";
+import {
+  AnimatePresence,
+  type HTMLMotionProps,
+  motion,
+  useReducedMotion,
+} from "motion/react";
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -121,31 +127,17 @@ export function VideoChapters({
       </div>
 
       <div className="relative">
-        {canScrollLeft ? (
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            onClick={() => handleScrollBy("left")}
-            className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-card/90 backdrop-blur-md shadow-md cursor-pointer"
-            aria-label="Scroll chapters left"
-          >
-            <ChevronLeft className="size-6" />
-          </Button>
-        ) : null}
+        <ScrollButton
+          show={canScrollLeft}
+          direction="left"
+          onClick={() => handleScrollBy("left")}
+        />
 
-        {canScrollRight ? (
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            onClick={() => handleScrollBy("right")}
-            className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-card/90 backdrop-blur-md shadow-md cursor-pointer"
-            aria-label="Scroll chapters right"
-          >
-            <ChevronRight className="size-6" />
-          </Button>
-        ) : null}
+        <ScrollButton
+          show={canScrollRight}
+          direction="right"
+          onClick={() => handleScrollBy("right")}
+        />
 
         <div
           ref={scrollRef}
@@ -173,7 +165,7 @@ export function VideoChapters({
             return (
               <button
                 type="button"
-                key={chapter.id || index}
+                key={`${chapter.startTime}-${chapter.title}`}
                 onClick={() => onChapterSelect(chapter.startTime)}
                 disabled={!hasVideo || isRateLimited}
                 className={cn(
@@ -198,6 +190,7 @@ export function VideoChapters({
                       src={chapterThumbnailUrl}
                       alt={`${chapter.title} preview`}
                       fill
+                      loading="lazy"
                       className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
                       sizes={`(max-width: 640px) 72vw, ${CARD_WIDTH}px`}
                       placeholder={placeholder ? "blur" : "empty"}
@@ -211,11 +204,8 @@ export function VideoChapters({
                   <div className="absolute inset-0 bg-gradient-to-t from-background/20 dark:from-background/90 via-background/15 to-transparent" />
                   <div className="absolute left-3 top-3">
                     <Badge
-                      variant={isActive ? "default" : "secondary"}
-                      className={cn(
-                        "backdrop-blur-sm border-1 border-border/40 dark:border-border",
-                        !isActive && "bg-card/70",
-                      )}
+                      variant="outline"
+                      className="backdrop-blur-sm border-1 border-border/40 dark:border-border bg-card/70"
                     >
                       {formatDuration(chapter.startTime)}
                     </Badge>
@@ -323,6 +313,60 @@ export function VideoChaptersSkeleton() {
         </div>
       </div>
     </div>
+  );
+}
+
+function ScrollButton({
+  show,
+  direction,
+  onClick,
+}: {
+  show: boolean;
+  direction: "left" | "right";
+  onClick: () => void;
+}) {
+  const isLeft = direction === "left";
+  const fromX = (isLeft ? -1 : 1) * 20;
+  const prefersReducedMotion = useReducedMotion();
+
+  const motionProps: HTMLMotionProps<"div"> = prefersReducedMotion
+    ? {}
+    : {
+        initial: { scale: 0, x: fromX },
+        animate: { scale: 1, x: 0 },
+        exit: { scale: 0, x: fromX },
+        transition: { duration: 0.15 },
+      };
+
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          key={`chapter-scroll-${direction}`}
+          {...motionProps}
+          className={cn(
+            "absolute top-1/2 z-10 -translate-y-1/2",
+            "hidden [@media(hover:hover)_and_(pointer:fine)]:block",
+            isLeft ? "left-2" : "right-2",
+          )}
+        >
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            onClick={onClick}
+            className="rounded-full bg-card/90 backdrop-blur-md shadow-md cursor-pointer"
+            aria-label={`Scroll ${direction}`}
+          >
+            {isLeft ? (
+              <ChevronLeft className="size-6" />
+            ) : (
+              <ChevronRight className="size-6" />
+            )}
+          </Button>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 

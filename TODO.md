@@ -57,6 +57,10 @@
 - [x] Add Upstash Redis rate limiting
 - [x] use waitUntil from `@vercel/functions` for emails
 
+# Performance
+
+- [ ] Make landing page static
+
 ## Security
 
 - [ ] Prevent email enumeration on `/forgot-password` and `/sign-up` [better-auth/issues/7972](https://github.com/better-auth/better-auth/issues/7972),

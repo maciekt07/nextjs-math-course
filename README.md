@@ -2,9 +2,7 @@
 
 A modern full-stack Next.js 16 platform with CMS, auth, and Stripe integration - built to manage and sell online math courses with videos, quizzes, LaTeX, and interactive graphs.
 
-### **Live Demo: [https://nextjs-math-course.vercel.app/](https://nextjs-math-course.vercel.app/)**
-
-</br>
+## Live Demo: [https://nextjs-math-course.vercel.app/](https://nextjs-math-course.vercel.app/)
 
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/maciekt07/nextjs-math-course?color=4e65ff&labelColor=0A0A0A)
 ![GitHub created at](https://img.shields.io/github/created-at/maciekt07/nextjs-math-course?color=4e65ff&labelColor=0A0A0A)
@@ -60,7 +58,7 @@ pnpm install
 
 ### 3. Set Up Environment Variables
 
-Create a `.env` file in the root directory. Use [.env.example](.env.example) as a template.
+Create a `.env.development` file in the root directory. Use [.env.example](.env.example) as a template.
 Environment variables are fully typed and validated for both dev and build.
 
 ### 4. Start Databases
@@ -68,7 +66,7 @@ Environment variables are fully typed and validated for both dev and build.
 Both PostgreSQL (for main app data) and MongoDB (for Payload CMS) run via Docker Compose
 
 ```bash
-docker compose up -d
+pnpm docker:dev
 ```
 
 > [!TIP]
@@ -81,13 +79,13 @@ docker compose up -d
 ### 5. Apply Database Migrations
 
 ```bash
-pnpm run db:push
+pnpm db:push
 ```
 
 ### 6. Run the Stripe webhook listener
 
 ```bash
-pnpm run stripe:webhook
+pnpm stripe:webhook
 ```
 
 #### Testing Payments
@@ -103,13 +101,13 @@ Use these Stripe test card details to simulate a successful payment:
 Development mode:
 
 ```bash
-pnpm run dev
+pnpm dev
 ```
 
 Production preview:
 
 ```bash
-pnpm run preview
+pnpm preview
 ```
 
 The application should now be running at [http://localhost:3000](http://localhost:3000)
