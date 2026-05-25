@@ -21,7 +21,7 @@
     "build": "next build",
     "start": "next start",
     "preview": "pnpm build && pnpm start",
-    "test": "pnpm run test:unit && pnpm run test:int && pnpm run test:e2e",
+    "test": "pnpm test:unit && pnpm test:int && pnpm test:e2e",
     "test:unit": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts --exclude tests/int",
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts tests/int",
     "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --import=tsx/esm\" playwright test --config=playwright.config.ts",
@@ -147,11 +147,5 @@
   "packageManager": "pnpm@10.29.3",
   "engines": {
     "node": "^18.20.2 || >=20.9.0"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "sharp",
-      "esbuild"
-    ]
   }
 }
