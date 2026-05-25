@@ -23,8 +23,9 @@ export default function BuyCourseButton({
   const router = useRouter();
   const { buy, loading, setLoading } = useBuyCourse();
 
-  const handleClick = async () => {
+  const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     setLoading(true);
+    props.onClick?.(e);
     try {
       const { data: session } = await authClient.getSession({
         query: { disableCookieCache: true },
@@ -59,10 +60,10 @@ export default function BuyCourseButton({
 
   return (
     <Button
-      onClick={handleClick}
       disabled={loading}
       className={cn("cursor-pointer", className)}
       {...props}
+      onClick={handleClick}
     >
       <LoadingSwap isLoading={loading} className="flex items-center gap-2">
         {children}

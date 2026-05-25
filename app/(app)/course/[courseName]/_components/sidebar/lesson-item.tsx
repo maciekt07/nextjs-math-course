@@ -134,8 +134,9 @@ export const LessonItem = memo(
           </div>
           {!lesson.free && !owned && (
             <Lock
+              size={18}
               className={cn(
-                "w-4 h-4 shrink-0 text-orange-600 dark:text-orange-500",
+                "shrink-0 text-orange-600 dark:text-orange-500",
                 isActive && "text-primary-foreground!",
               )}
             />

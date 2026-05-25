@@ -58,7 +58,7 @@ export default async function ActiveSessions() {
         return (
           <div
             key={session.token}
-            className="rounded-lg border bg-card shadow-xs"
+            className="rounded-lg border bg-card shadow-xs [overflow-anchor:none]"
           >
             <div className="flex items-center gap-3 p-4">
               <Icon className="size-6 shrink-0" />

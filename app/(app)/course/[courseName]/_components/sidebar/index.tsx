@@ -248,14 +248,19 @@ export function CourseSidebar({
                   className="w-full border-t border-b first:border-t-0"
                 >
                   {groupedChapters.map(
-                    ({ chapter, lessons: chapterLessons }) => (
+                    ({ chapter, lessons: chapterLessons }, index) => (
                       <AccordionItem key={chapter.id} value={chapter.id}>
                         <AccordionTrigger
                           onClick={() => trigger(defaultPatterns.light)}
                           className="px-4 sm:py-4 py-6 font-medium text-sm hover:no-underline cursor-pointer rounded-none transition-none hover:bg-muted/70"
                           data-animate={mounted && !reducedMotion}
                         >
-                          <span>{chapter.title}</span>
+                          <span>
+                            <span className="text-muted-foreground font-semibold mr-0.5">
+                              {String(index + 1)}.
+                            </span>{" "}
+                            <span>{chapter.title}</span>
+                          </span>
                         </AccordionTrigger>
 
                         <AccordionContent

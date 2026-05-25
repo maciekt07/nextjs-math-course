@@ -132,6 +132,11 @@ export default function FeedbackWidget({
   //   );
   // }
 
+  const disableSendButton =
+    isSubmitting ||
+    !selectedReaction ||
+    comment.length > LIMITS.feedback.commentMaxLength;
+
   if (!session || !isMounted || isPending) {
     return null;
   }
@@ -236,14 +241,10 @@ export default function FeedbackWidget({
                 >
                   {comment.length}/{LIMITS.feedback.commentMaxLength}
                 </p>
-                <AnimateIcon animateOnHover>
+                <AnimateIcon animateOnHover={!disableSendButton}>
                   <Button
                     onClick={handleSubmit}
-                    disabled={
-                      isSubmitting ||
-                      !selectedReaction ||
-                      comment.length > LIMITS.feedback.commentMaxLength
-                    }
+                    disabled={disableSendButton}
                     className="w-full mt-2 flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <LoadingSwap

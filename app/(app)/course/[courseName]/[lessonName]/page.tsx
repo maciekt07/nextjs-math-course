@@ -1,15 +1,8 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { publishedStatusWhere } from "@/cms/access/contentAccess";
-import { AnimateIcon } from "@/components/animate-ui/icons/icon";
-import { Lock } from "@/components/animate-ui/icons/lock";
-import { LogIn } from "@/components/animate-ui/icons/log-in";
-import BuyCourseButton from "@/components/buy-course-button";
-import { EmptyStateCenterWrapper } from "@/components/empty-state";
 import Footer from "@/components/footer";
-import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth/auth";
 import { getIsDraftMode, withCache } from "@/lib/cache/withCache";
 import { hasEnrollment } from "@/lib/data/enrollment";
@@ -27,6 +20,7 @@ import type { Course } from "@/types/payload-types";
 import FeedbackWidget from "./_components/feedback-widget";
 import { LessonLayout } from "./_components/lesson-layout";
 import { LessonNavigation } from "./_components/lesson-navigation";
+import { LockedLesson } from "./_components/locked-lesson";
 
 export const revalidate = 3600;
 
@@ -153,54 +147,11 @@ export default async function LessonPage({
 
   if (!allowed) {
     return (
-      <EmptyStateCenterWrapper>
-        <div className="flex flex-col items-center text-center space-y-6 max-w-130">
-          <div className="mx-auto w-24 h-24 flex items-center justify-center bg-orange-600/10 dark:bg-orange-500/10 rounded-full">
-            <AnimateIcon animate animation="path">
-              <Lock
-                size={48}
-                className="text-orange-600 dark:text-orange-500"
-              />
-            </AnimateIcon>
-          </div>
-          <div className="space-y-2">
-            <h1 className="text-2xl font-semibold">{lesson.title}</h1>
-            <h2 className="text-muted-foreground">
-              This is a premium lesson. You need to own a full course to access
-              it.
-            </h2>
-          </div>
-          {showSignIn ? (
-            <AnimateIcon animateOnHover className="w-full">
-              <Button size="lg" className="w-full" asChild>
-                <Link
-                  href={{
-                    pathname: "/auth/sign-in",
-                    query: {
-                      returnTo: `/course/${courseName}/${lesson.slug}`,
-                    },
-                  }}
-                >
-                  <LogIn className="h-4 w-4" />
-                  Sign in to continue
-                </Link>
-              </Button>
-            </AnimateIcon>
-          ) : (
-            <BuyCourseButton
-              courseId={
-                typeof lesson.course === "string"
-                  ? lesson.course
-                  : (lesson.course as Course).id
-              }
-              size="lg"
-              className="w-full"
-            >
-              Buy course
-            </BuyCourseButton>
-          )}
-        </div>
-      </EmptyStateCenterWrapper>
+      <LockedLesson
+        lesson={lesson}
+        courseName={courseName}
+        showSignIn={showSignIn}
+      />
     );
   }
 

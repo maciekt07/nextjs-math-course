@@ -24,7 +24,7 @@ const staticAnimations = {
     animate: {
       pathLength: [0.05, 1],
       transition: {
-        duration: 0.8,
+        duration: 0.6,
         ease: "easeInOut",
       },
     },
@@ -34,14 +34,14 @@ const staticAnimations = {
     animate: {
       pathLength: [1, 0.05, 1],
       transition: {
-        duration: 1.6,
+        duration: 1.2,
         ease: "easeInOut",
       },
     },
   } as Variants,
 } as const;
 
-type StaticAnimations = keyof typeof staticAnimations;
+export type StaticAnimations = keyof typeof staticAnimations;
 type TriggerProp<T = string> = boolean | StaticAnimations | T;
 type Trigger = TriggerProp<string>;
 

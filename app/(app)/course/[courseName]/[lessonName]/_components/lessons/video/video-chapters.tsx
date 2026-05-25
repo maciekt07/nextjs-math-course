@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  ChevronLeft,
-  ChevronRight,
-  Clock3,
-  List,
-  Play,
-  Video,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, Clock3, List, Video } from "lucide-react";
 import {
   AnimatePresence,
   type HTMLMotionProps,
@@ -16,6 +9,8 @@ import {
 } from "motion/react";
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AnimateIcon } from "@/components/animate-ui/icons/icon";
+import { Play } from "@/components/animate-ui/icons/play";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -163,89 +158,99 @@ export function VideoChapters({
                 : null;
 
             return (
-              <button
-                type="button"
+              <AnimateIcon
+                animateOnHover
                 key={`${chapter.startTime}-${chapter.title}`}
-                onClick={() => onChapterSelect(chapter.startTime)}
-                disabled={!hasVideo || isRateLimited}
-                className={cn(
-                  `flex min-w-[${CARD_WIDTH}px] max-w-[${CARD_WIDTH}px]`,
-                  "group relative snap-start flex-col overflow-hidden rounded-2xl border bg-card text-left shadow-sm transition-all duration-200 cursor-pointer",
-                  "disabled:cursor-not-allowed disabled:opacity-50",
-                  isActive && "border-primary/60 ring-1 ring-primary/30",
-                )}
               >
-                <div className="relative aspect-video overflow-hidden bg-muted">
-                  {placeholder ? (
-                    // biome-ignore lint/performance/noImgElement: blur placeholder
-                    <img
-                      src={placeholder}
-                      alt=""
-                      aria-hidden="true"
-                      className="absolute inset-0 h-full w-full scale-110 object-cover opacity-70 blur-sm"
-                    />
-                  ) : null}
-                  {chapterThumbnailUrl && tokensReady ? (
-                    <Image
-                      src={chapterThumbnailUrl}
-                      alt={`${chapter.title} preview`}
-                      fill
-                      loading="lazy"
-                      className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                      sizes={`(max-width: 640px) 72vw, ${CARD_WIDTH}px`}
-                      placeholder={placeholder ? "blur" : "empty"}
-                      blurDataURL={placeholder}
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-muted text-muted-foreground">
-                      <Video className="size-8 opacity-60" />
-                    </div>
+                <button
+                  type="button"
+                  key={`${chapter.startTime}-${chapter.title}`}
+                  onClick={() => onChapterSelect(chapter.startTime)}
+                  disabled={!hasVideo || isRateLimited}
+                  className={cn(
+                    `flex min-w-[${CARD_WIDTH}px] max-w-[${CARD_WIDTH}px]`,
+                    "group relative snap-start flex-col overflow-hidden rounded-2xl border bg-card text-left shadow-sm transition-all duration-200 cursor-pointer",
+                    "disabled:cursor-not-allowed disabled:opacity-50",
+                    isActive && "border-primary/60 ring-1 ring-primary/30",
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/20 dark:from-background/90 via-background/15 to-transparent" />
-                  <div className="absolute left-3 top-3">
-                    <Badge
-                      variant="outline"
-                      className="backdrop-blur-sm border-1 border-border/40 dark:border-border bg-card/70"
-                    >
-                      {formatDuration(chapter.startTime)}
-                    </Badge>
-                  </div>
-                  <div
-                    className={cn(
-                      "pointer-events-none border border-border/40 dark:border-border absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 text-sm rounded-full bg-card/70 px-4 py-2 font-medium text-foreground opacity-0 shadow-sm blur-sm",
-                      "transition-[opacity,filter,transform] duration-200 ease-out backdrop-blur-md group-hover:opacity-100 group-hover:blur-none group-focus-visible:translate-y-0 group-focus-visible:opacity-100 group-focus-visible:blur-none motion-reduce:transition-none",
+                >
+                  <div className="relative aspect-video overflow-hidden bg-muted">
+                    {placeholder ? (
+                      // biome-ignore lint/performance/noImgElement: blur placeholder
+                      <img
+                        src={placeholder}
+                        alt=""
+                        aria-hidden="true"
+                        className="absolute inset-0 h-full w-full scale-110 object-cover opacity-70 blur-sm"
+                      />
+                    ) : null}
+                    {chapterThumbnailUrl && tokensReady ? (
+                      <Image
+                        src={chapterThumbnailUrl}
+                        alt={`${chapter.title} preview`}
+                        fill
+                        loading="lazy"
+                        className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                        sizes={`(max-width: 640px) 72vw, ${CARD_WIDTH}px`}
+                        placeholder={placeholder ? "blur" : "empty"}
+                        blurDataURL={placeholder}
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center bg-muted text-muted-foreground">
+                        <Video className="size-8 opacity-60" />
+                      </div>
                     )}
-                  >
-                    <Play className="size-3.5 fill-current" />
-                    Jump
-                  </div>
-                </div>
-
-                <div className="flex flex-1 flex-col gap-3 p-4">
-                  <div className="space-y-1">
-                    <div className="line-clamp-2 text-sm font-semibold leading-5 text-foreground">
-                      {chapter.title}
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/20 dark:from-background/90 via-background/15 to-transparent" />
+                    <div className="absolute left-3 top-3">
+                      <Badge
+                        variant="outline"
+                        className="backdrop-blur-sm border-1 border-border/40 dark:border-border bg-card/70"
+                      >
+                        {formatDuration(chapter.startTime)}
+                      </Badge>
                     </div>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <Clock3 className="size-3.5" />
-                      <span>Starts at {formatDuration(chapter.startTime)}</span>
-                    </div>
-                  </div>
-
-                  <div className="mt-auto flex items-center justify-between gap-3 text-xs text-muted-foreground">
-                    <span>
-                      {chapterLength
-                        ? `${chapterLength} segment`
-                        : "Chapter marker"}
-                    </span>
-                    <span
-                      className={cn("font-medium", isActive && "text-primary")}
+                    <div
+                      className={cn(
+                        "pointer-events-none border border-border/40 dark:border-border absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 text-sm rounded-full bg-card/70 px-4 py-2 font-medium text-foreground opacity-0 shadow-sm blur-sm",
+                        "transition-[opacity,filter,transform] duration-200 ease-out backdrop-blur-md group-hover:opacity-100 group-hover:blur-none group-focus-visible:translate-y-0 group-focus-visible:opacity-100 group-focus-visible:blur-none motion-reduce:transition-none",
+                      )}
                     >
-                      {isActive ? "Now playing" : `Chapter ${index + 1}`}
-                    </span>
+                      <Play animation="path" size={18} />
+                      Jump
+                    </div>
                   </div>
-                </div>
-              </button>
+
+                  <div className="flex flex-1 flex-col gap-3 p-4">
+                    <div className="space-y-1">
+                      <div className="line-clamp-2 text-sm font-semibold leading-5 text-foreground">
+                        {chapter.title}
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <Clock3 className="size-3.5" />
+                        <span>
+                          Starts at {formatDuration(chapter.startTime)}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="mt-auto flex items-center justify-between gap-3 text-xs text-muted-foreground">
+                      <span>
+                        {chapterLength
+                          ? `${chapterLength} segment`
+                          : "Chapter marker"}
+                      </span>
+                      <span
+                        className={cn(
+                          "font-medium",
+                          isActive && "text-primary",
+                        )}
+                      >
+                        {isActive ? "Now playing" : `Chapter ${index + 1}`}
+                      </span>
+                    </div>
+                  </div>
+                </button>
+              </AnimateIcon>
             );
           })}
         </div>

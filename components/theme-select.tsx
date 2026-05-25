@@ -79,6 +79,7 @@ export function ThemeSelect() {
             key={`moon-${moonKey}`}
             animate={moonKey > 0}
             initialOnAnimateEnd
+            animation="balancing"
             className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 dark:scale-100 dark:rotate-0"
           />
           <span className="sr-only">Toggle theme</span>
