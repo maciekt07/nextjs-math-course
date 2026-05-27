@@ -20,6 +20,16 @@
 }
 
 article {
+  section {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 500px;
+
+    > h2:first-child,
+    > h3:first-child {
+      margin-top: 0;
+    }
+  }
+
   hr {
     @apply border-border;
   }
@@ -60,6 +70,7 @@ article {
       }
     }
   }
+
   .table-container {
     @apply w-full overflow-x-auto rounded-2xl my-6 border border-border relative shadow-sm;
     scrollbar-width: auto;

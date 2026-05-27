@@ -1,23 +1,21 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { Components } from "react-markdown";
+import type { Components as MarkdownComponents } from "react-markdown";
 import { ExternalLink } from "@/components/animate-ui/icons/external-link";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
-import { CalloutBlock } from "@/components/markdown/blocks/callout-block";
-import type { BlockType } from "@/components/markdown/blocks/callout-config";
 import { stripBasicMarkdown } from "@/lib/markdown/strip-markdown";
 import { slug } from "@/lib/slugify";
 import type { Media } from "@/types/payload-types";
 import { ImageZoom } from "../ui/shadcn-io/image-zoom";
 import type { CalloutDivProps } from "./blocks/blocks-plugin";
+import { CalloutBlock } from "./blocks/callout-block";
+import type { BlockType } from "./blocks/callout-config";
 import { DesmosGraph } from "./desmos/desmos-graph";
 import type { DesmosDivProps } from "./desmos/desmos-plugin";
 import { Heading } from "./heading";
 import { KatexRenderer } from "./katex/katex-renderer";
 import type { MathElementProps } from "./types";
-import { getText } from "./utils";
-
-let currentH2Text = "";
+import { getNodeId, getText } from "./utils";
 
 interface CreateMarkdownComponentsOptions {
   media?: Media[];
@@ -31,7 +29,7 @@ export function createMarkdownComponents({
   media,
   optimizeMath = false,
   optimizeImages = false,
-}: CreateMarkdownComponentsOptions): Components {
+}: CreateMarkdownComponentsOptions): MarkdownComponents {
   let mathElementCount = 0;
   return {
     a: ({ node, href, children, ...props }) => {
@@ -73,6 +71,7 @@ export function createMarkdownComponents({
         </Link>
       );
     },
+
     img: ({ node, ...props }) => {
       const matchedMedia = media?.find((m) => m.url === props.src);
       const blurhash = matchedMedia?.blurhash;
@@ -164,12 +163,11 @@ export function createMarkdownComponents({
           },
         }
       : {}),
+
     // generate stable IDs for h2/h3 for TOC
-    // h3 IDs are namespaced under the last h2 to avoid collisions
     h2: ({ node, ...props }) => {
       const text = stripBasicMarkdown(getText(props.children));
-      currentH2Text = text;
-      const id = slug(text);
+      const id = getNodeId(node) ?? slug(text);
 
       return (
         <Heading as="h2" id={id}>
@@ -177,10 +175,10 @@ export function createMarkdownComponents({
         </Heading>
       );
     },
+
     h3: ({ node, ...props }) => {
       const text = stripBasicMarkdown(getText(props.children));
-      const parent = currentH2Text || "section";
-      const id = slug(`${parent}-${text}`);
+      const id = getNodeId(node) ?? slug(text);
 
       return (
         <Heading as="h3" id={id}>
@@ -188,6 +186,7 @@ export function createMarkdownComponents({
         </Heading>
       );
     },
+
     table: ({ node, ...props }) => (
       <div className="table-container">
         <table {...props} />

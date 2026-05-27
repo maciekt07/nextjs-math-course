@@ -1,3 +1,5 @@
+import "katex/dist/katex.min.css";
+
 import ReactMarkdown from "react-markdown";
 import rehypeKatex from "rehype-katex";
 import rehypeUnwrapImages from "rehype-unwrap-images";
@@ -10,27 +12,37 @@ import { blocks } from "./blocks/blocks-plugin";
 import { createMarkdownComponents } from "./components";
 import { desmos } from "./desmos/desmos-plugin";
 import { KATEX_REHYPE_OPTIONS } from "./katex/katex-rehype-options";
+import { remarkHeadingIds } from "./remark/remark-heading-ids";
+import remarkSections from "./remark/remark-sections";
 import { MarkdownWrapper } from "./wrapper";
-import "katex/dist/katex.min.css";
 
-const REMARK_PLUGINS: Pluggable[] = [
+const BASE_REMARK_PLUGINS: Pluggable[] = [
   remarkGfm,
   remarkMath,
   remarkDirective,
   desmos,
   blocks,
+  remarkHeadingIds,
 ];
+
 const REHYPE_PLUGINS: Pluggable[] = [rehypeUnwrapImages, rehypeKatex];
 
 interface MarkdownRendererProps {
   content: string;
   media?: Media[];
+
   /**
-   * SSR just a placeholder so the page loads fast
-   * the actual KaTeX content can be very long and nested and is only rendered on the client as it scrolls into view
-   * this prevents blocking the main thread and FPS drops on long pages with lots of formulas
+   * SSR just a placeholder so the page loads fast.
+   * The actual KaTeX content can be very long and nested and is only rendered
+   * on the client as it scrolls into view.
+   * This prevents blocking the main thread and FPS drops on long pages with lots of formulas.
    */
   optimizeMath?: boolean;
+
+  /**
+   * wrap markdown in sections to apply content-visibility
+   */
+  useSections?: boolean;
   isFreeLesson?: boolean;
 }
 
@@ -38,7 +50,8 @@ export function MarkdownRenderer({
   content,
   media,
   optimizeMath = false,
-  isFreeLesson,
+  isFreeLesson = false,
+  useSections = false,
 }: MarkdownRendererProps) {
   const components = createMarkdownComponents({
     media,
@@ -46,13 +59,17 @@ export function MarkdownRenderer({
     optimizeImages: isFreeLesson,
   });
 
+  const remarkPlugins: Pluggable[] = useSections
+    ? [...BASE_REMARK_PLUGINS, [remarkSections, { depth: [2] }]]
+    : BASE_REMARK_PLUGINS;
+
   return (
     <MarkdownWrapper>
       <ReactMarkdown
         // biome-ignore lint/correctness/noChildrenProp: cannot pass content as JSX children
         children={content}
         components={components}
-        remarkPlugins={REMARK_PLUGINS}
+        remarkPlugins={remarkPlugins}
         rehypePlugins={REHYPE_PLUGINS}
         remarkRehypeOptions={optimizeMath ? KATEX_REHYPE_OPTIONS : undefined}
       />

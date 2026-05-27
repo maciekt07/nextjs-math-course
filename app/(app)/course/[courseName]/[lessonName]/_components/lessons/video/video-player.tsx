@@ -316,6 +316,7 @@ export function VideoPlayer({
             <MarkdownRenderer
               content={videoDescription}
               optimizeMath={!free || process.env.NODE_ENV === "development"}
+              useSections
             />
           ) : (
             <p className="italic text-muted-foreground">No Description</p>

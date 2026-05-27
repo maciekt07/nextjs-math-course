@@ -106,8 +106,7 @@ export function LessonTOC({ headings }: { headings: Heading[] }) {
 
   if (headings.length <= 1) return null;
 
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-    e.preventDefault();
+  const handleClick = (id: string) => {
     forceActive(id);
     scrollToHeader(id);
   };
@@ -115,7 +114,7 @@ export function LessonTOC({ headings }: { headings: Heading[] }) {
   return (
     <>
       {/* accordion for mobile */}
-      <div className="hidden max-[1704px]:block mb-10 font-inter">
+      <div className="hidden max-[1704px]:block mb-6 pt-3 font-inter">
         <Accordion
           type="single"
           collapsible
@@ -131,7 +130,7 @@ export function LessonTOC({ headings }: { headings: Heading[] }) {
                   <a
                     key={h.id}
                     href={`#${h.id}`}
-                    onClick={(e) => handleClick(e, h.id)}
+                    onClick={() => handleClick(h.id)}
                     className={cn(
                       "group flex items-start gap-2 py-3 sm:py-2 text-[16px] text-muted-foreground transition-colors leading-tight hover:text-foreground",
                       h.level === 3 && "pl-4",
@@ -163,7 +162,7 @@ export function LessonTOC({ headings }: { headings: Heading[] }) {
                     if (el) tocItemRefs.current.set(h.id, el);
                     else tocItemRefs.current.delete(h.id);
                   }}
-                  onClick={(e) => handleClick(e, h.id)}
+                  onClick={() => handleClick(h.id)}
                   data-active={activeId === h.id}
                   className={cn(
                     "group flex items-start gap-2 text-sm transition-color leading-tight",

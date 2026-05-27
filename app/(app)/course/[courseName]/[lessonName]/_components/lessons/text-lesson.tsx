@@ -11,7 +11,7 @@ export function TextLesson({ lesson }: TextLessonProps) {
   const headings = extractHeadings(lesson.content);
 
   return (
-    <>
+    <div className="-mt-4">
       {headings.length > 0 && <LessonTOC headings={headings} />}
       <MarkdownRenderer
         content={lesson.content ?? "No Content"}
@@ -20,7 +20,8 @@ export function TextLesson({ lesson }: TextLessonProps) {
         // there are no performance issues since they are SSGed
         optimizeMath={!lesson.free || process.env.NODE_ENV === "development"}
         isFreeLesson={lesson.free ?? false}
+        useSections
       />
-    </>
+    </div>
   );
 }

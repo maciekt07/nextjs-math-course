@@ -10,17 +10,17 @@ interface PageProps {
   }>;
 }
 
-type ErrorConfig = {
-  icon: LucideIcon;
-  title: string;
-  description: React.ReactNode;
-};
-
 export const metadata = buildNoIndexMetadata({
   title: "Authentication Error",
   description:
     "There was a problem completing authentication. Please try again.",
 });
+
+type ErrorConfig = {
+  icon: LucideIcon;
+  title: string;
+  description: React.ReactNode;
+};
 
 const ERROR_MAP = {
   account_not_linked: {

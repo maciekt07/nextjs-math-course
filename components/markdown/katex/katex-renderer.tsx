@@ -16,22 +16,29 @@ export const KatexRenderer = memo(
     const divRef = useRef<HTMLDivElement>(null);
     const spanRef = useRef<HTMLSpanElement>(null);
     const cacheKey = `${block ? "block" : "inline"}:${content}`;
+
     useEffect(() => {
       const el = block ? divRef.current : spanRef.current;
       if (!el) return;
 
       if (el.dataset.value === content) return;
 
+      let idleId: number | null = null;
+      let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
       const renderFormula = () => {
         try {
-          if (katexCache.has(cacheKey)) {
-            el.innerHTML = katexCache.get(cacheKey)!;
+          const cached = katexCache.get(cacheKey);
+
+          if (cached) {
+            el.innerHTML = cached;
           } else {
             katex.render(content, el, {
               displayMode: block,
               throwOnError: false,
               strict: false,
             });
+
             katexCache.set(cacheKey, el.innerHTML);
           }
         } catch {
@@ -39,36 +46,49 @@ export const KatexRenderer = memo(
         }
 
         el.dataset.value = content;
+
+        if (block) {
+          el.removeAttribute("class");
+        }
       };
 
       if (!shouldLazy) {
-        // Render immediately for first 10 elements (SSR optimization)
         renderFormula();
         return;
       }
 
-      // lazy render only when visible for remaining elements
       const observer = new IntersectionObserver(
         (entries) => {
-          if (!entries[0].isIntersecting) return;
+          if (!entries[0]?.isIntersecting) return;
+
+          observer.disconnect();
 
           if ("requestIdleCallback" in window) {
-            const id = window.requestIdleCallback(renderFormula);
-            return () => window.cancelIdleCallback(id);
+            idleId = window.requestIdleCallback(renderFormula);
           } else {
-            const id = setTimeout(renderFormula, 0);
-            return () => clearTimeout(id);
+            timeoutId = setTimeout(renderFormula, 0);
           }
         },
         { rootMargin: "300px" },
       );
 
       observer.observe(el);
-      return () => observer.disconnect();
+
+      return () => {
+        observer.disconnect();
+
+        if (idleId !== null) {
+          window.cancelIdleCallback(idleId);
+        }
+
+        if (timeoutId !== null) {
+          clearTimeout(timeoutId);
+        }
+      };
     }, [content, block, cacheKey, shouldLazy]);
 
     return block ? (
-      <div ref={divRef} className="flex items-center justify-center min-h-14" />
+      <div ref={divRef} className="flex min-h-12 items-center justify-center" />
     ) : (
       <span ref={spanRef} />
     );
