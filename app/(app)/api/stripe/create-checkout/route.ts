@@ -123,12 +123,9 @@ export async function POST(req: Request) {
     return NextResponse.json(result, { headers: rateLimitHeaders });
   } catch (e: unknown) {
     console.error("Payment intent creation failed:", e);
-
-    const errorMessage =
-      e instanceof Error ? e.message : "Failed to create payment intent";
-
-    const statusCode = errorMessage.includes("already have access") ? 409 : 500;
-
-    return NextResponse.json({ error: errorMessage }, { status: statusCode });
+    return NextResponse.json(
+      { error: "Failed to create payment intent" },
+      { status: 500 },
+    );
   }
 }
