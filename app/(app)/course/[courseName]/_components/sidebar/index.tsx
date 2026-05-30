@@ -228,7 +228,7 @@ export function CourseSidebar({
           duration: reducedMotion ? 0 : 0.2,
           ease: [0.25, 0.46, 0.45, 0.94],
         }}
-        className="fixed flex flex-col h-dvh w-80 border-r bg-background z-40 shadow-2xl md:shadow-none overflow-y-auto will-change-transform transform-gpu"
+        className="fixed flex flex-col h-dvh w-80 border-r bg-background z-40 shadow-2xl md:shadow-none overflow-y-auto will-change-transform transform-gpu print:hidden"
         style={{ transform: "translateZ(0)" }}
       >
         <SidebarCourseHeader course={course} owned={owned} />

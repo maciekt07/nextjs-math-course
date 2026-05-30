@@ -1,5 +1,39 @@
 import { describe, expect, it } from "vitest";
-import { formatDuration, formatReadingTime, formatSeconds } from "@/lib/format";
+import {
+  formatDuration,
+  formatPlural,
+  formatReadingTime,
+  formatSeconds,
+} from "@/lib/format";
+
+describe("formatPlural", () => {
+  it("formats singular", () => {
+    expect(formatPlural(1, { one: "lesson", other: "lessons" })).toBe(
+      "1 lesson",
+    );
+  });
+
+  it("formats plural", () => {
+    expect(formatPlural(2, { one: "lesson", other: "lessons" })).toBe(
+      "2 lessons",
+    );
+  });
+
+  it("formats number", () => {
+    expect(formatPlural(1_200, { one: "view", other: "views" })).toBe(
+      "1,200 views",
+    );
+  });
+  it("uses custom zero message without number", () => {
+    expect(
+      formatPlural(0, {
+        zero: "no tasks",
+        one: "task",
+        other: "tasks",
+      }),
+    ).toBe("no tasks");
+  });
+});
 
 describe("formatDuration", () => {
   it("formats zero", () => expect(formatDuration(0)).toBe("0:00"));

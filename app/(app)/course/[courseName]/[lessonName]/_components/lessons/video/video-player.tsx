@@ -16,7 +16,7 @@ import { MarkdownRenderer } from "@/components/markdown";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useMounted } from "@/hooks/use-mounted";
-import { fetchMuxToken, RateLimitError } from "@/lib/mux-token-cache";
+import { fetchMuxToken, RateLimitError } from "@/lib/mux/mux-token-cache";
 import { cn } from "@/lib/ui";
 import type { MuxTokens } from "@/types/mux";
 import type { Course, Lesson, MuxVideo } from "@/types/payload-types";

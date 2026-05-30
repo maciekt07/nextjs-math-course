@@ -9,7 +9,7 @@ import { enrollment } from "@/drizzle/schema";
 import { clientEnv } from "@/env/client";
 import { auth } from "@/lib/auth/auth";
 import { LIMITS } from "@/lib/constants/limits";
-import { mux } from "@/lib/mux";
+import { mux } from "@/lib/mux/mux";
 import { getPayloadClient } from "@/lib/payload-client";
 import { redis } from "@/lib/redis";
 

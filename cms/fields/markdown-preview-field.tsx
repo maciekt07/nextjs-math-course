@@ -130,7 +130,11 @@ export default function MarkdownPreviewField({
             style={{ contain: "layout paint" }}
           >
             {debouncedValue ? (
-              <MarkdownRenderer content={debouncedValue} optimizeMath />
+              <MarkdownRenderer
+                content={debouncedValue}
+                optimizeMath
+                useSections
+              />
             ) : (
               <p className="italic">Nothing to preview yet</p>
             )}

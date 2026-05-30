@@ -8,7 +8,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { formatDuration, formatReadingTime } from "@/lib/format";
+import { formatDuration, formatPlural, formatReadingTime } from "@/lib/format";
 import { cn } from "@/lib/ui";
 import type { Lesson } from "@/types/payload-types";
 
@@ -108,7 +108,10 @@ function getLessonMetadata(lesson: Lesson) {
       return count > 0
         ? {
             icon: List,
-            text: `${count} ${count === 1 ? "question" : "questions"}`,
+            text: formatPlural(count, {
+              one: "question",
+              other: "questions",
+            }),
           }
         : null;
     }

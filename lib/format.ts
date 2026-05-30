@@ -1,3 +1,64 @@
+type PluralCategory = Intl.LDMLPluralRule;
+
+type PluralForms = Partial<Record<PluralCategory, string>> & {
+  other: string;
+  zero?: string;
+};
+
+type FormatPluralOptions = {
+  /**
+   * default `"en-US"`
+   */
+  locale?: Intl.LocalesArgument;
+  numberFormatOptions?: Intl.NumberFormatOptions;
+  pluralRuleOptions?: Intl.PluralRulesOptions;
+};
+
+/**
+ * Formats a number with `Intl.NumberFormat` and appends the correct plural label
+ * selected by `Intl.PluralRules`
+ *
+ * @param value - Finite numeric value to format
+ * @param forms - Plural labels keyed by Intl plural category
+ * @param options - Optional Intl locale, number formatting, and plural rule options
+ * @returns A formatted string such as `"1 task"`, `"2 tasks"`, or `"0 no tasks"`
+ *
+ * @throws {TypeError} When `value` is `NaN`, `Infinity`, or `-Infinity`
+ *
+ * @example
+ * formatPlural(1, { one: "question", other: "questions" });
+ * // "1 question"
+ * formatPlural(0, { zero: "tasks", one: "task", other: "tasks" });
+ * // "0 tasks"
+ */
+export function formatPlural(
+  value: number,
+  forms: PluralForms,
+  options: FormatPluralOptions = {},
+): string {
+  if (!Number.isFinite(value)) {
+    throw new TypeError("formatPlural expected a finite number.");
+  }
+
+  const { locale = "en-US", numberFormatOptions, pluralRuleOptions } = options;
+
+  const formattedNumber = new Intl.NumberFormat(
+    locale,
+    numberFormatOptions,
+  ).format(value);
+
+  if (value === 0 && forms.zero) {
+    return `${formattedNumber} ${forms.zero}`;
+  }
+
+  const category = new Intl.PluralRules(locale, pluralRuleOptions).select(
+    value,
+  );
+  const label = forms[category] ?? forms.other;
+
+  return `${formattedNumber} ${label}`;
+}
+
 /**
  * Formats a duration in seconds to a MM:SS string format.
  *

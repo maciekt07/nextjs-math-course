@@ -27,6 +27,24 @@ export function SidebarControls({
     <>
       <div className="flex items-center flex-row-reverse fixed top-4 right-4 z-50 gap-3">
         <ThemeSelect />
+        {/* TODO: */}
+        {/* {typeof window.print === "function" && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                className="cursor-pointer"
+                aria-label="Print"
+                onClick={() => window.print()}
+              >
+                <Printer />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Print</TooltipContent>
+          </Tooltip>
+        )} */}
+
         <AnimatePresence>
           {!open && (
             <motion.div

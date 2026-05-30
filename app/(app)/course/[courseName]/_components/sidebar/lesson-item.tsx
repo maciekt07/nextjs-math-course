@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { memo } from "react";
-import { formatDuration, formatReadingTime } from "@/lib/format";
+import { formatDuration, formatPlural, formatReadingTime } from "@/lib/format";
 import { cn } from "@/lib/ui";
 import type { Lesson } from "@/types/payload-types";
 
@@ -114,9 +114,11 @@ export const LessonItem = memo(
             </p>
             {lesson.type === "quiz" && (
               <p className="text-xs truncate">
-                {lesson.quiz?.length
-                  ? `${lesson.quiz.length} task${lesson.quiz.length > 1 ? "s" : ""}`
-                  : "no tasks"}
+                {formatPlural(lesson.quiz?.length ?? 0, {
+                  zero: "no tasks",
+                  one: "task",
+                  other: "tasks",
+                })}
               </p>
             )}
 

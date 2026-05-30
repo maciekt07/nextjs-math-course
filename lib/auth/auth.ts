@@ -1,5 +1,6 @@
 import "server-only";
 
+import { waitUntil } from "@vercel/functions";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
@@ -43,6 +44,11 @@ export const auth = betterAuth({
 
   onAPIError: {
     errorURL: "/auth/error",
+  },
+
+  advanced: {
+    // https://better-auth.com/docs/guides/optimizing-for-performance#background-tasks
+    backgroundTasks: { handler: waitUntil },
   },
 
   plugins: [

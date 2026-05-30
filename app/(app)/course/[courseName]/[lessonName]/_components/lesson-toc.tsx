@@ -114,7 +114,7 @@ export function LessonTOC({ headings }: { headings: Heading[] }) {
   return (
     <>
       {/* accordion for mobile */}
-      <div className="hidden max-[1704px]:block mb-6 pt-3 font-inter">
+      <div className="hidden max-[1704px]:block mb-6 pt-3 font-inter print:hidden">
         <Accordion
           type="single"
           collapsible
@@ -147,7 +147,7 @@ export function LessonTOC({ headings }: { headings: Heading[] }) {
       </div>
 
       {/* for desktop */}
-      <div className="hidden min-[1704px]:block fixed right-0 top-24 w-64 font-inter bg-background">
+      <div className="hidden min-[1704px]:block fixed right-0 top-24 w-64 font-inter bg-background print:hidden">
         <div className="relative">
           <div className="overflow-y-auto max-h-[70vh] pl-2" ref={scrollRef}>
             <p className="text-xs font-medium mb-4 uppercase tracking-wide text-muted-foreground/80">
