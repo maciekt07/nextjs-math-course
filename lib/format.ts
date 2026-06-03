@@ -48,7 +48,7 @@ export function formatPlural(
   ).format(value);
 
   if (value === 0 && forms.zero) {
-    return `${formattedNumber} ${forms.zero}`;
+    return forms.zero;
   }
 
   const category = new Intl.PluralRules(locale, pluralRuleOptions).select(
