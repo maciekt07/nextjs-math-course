@@ -1,3 +1,7 @@
 ignoredBuiltDependencies:
   - sharp
   - esbuild
+
+trustPolicy: "no-downgrade"
+minimumReleaseAge: 7200
+blockExoticSubdeps: true
