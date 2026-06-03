@@ -1,21 +1,24 @@
 import type { Metadata } from "next";
 import Footer from "@/components/footer";
 import { Navbar } from "@/components/navbar";
+import { getServerSession } from "@/lib/auth/get-session";
 import { buildNoIndexMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildNoIndexMetadata({
   description: "Securely sign in, sign up, and manage account access.",
 });
 
-export default function AuthLayout({
+export default async function AuthLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getServerSession();
+
   return (
     <>
       <div className="flex viewport-smooth-scroll">
-        <Navbar />
+        <Navbar user={session?.user || null} />
       </div>
       <main className="px-4">
         <div className="min-h-[calc(100dvh-100px)] flex items-start md:items-center justify-center">
