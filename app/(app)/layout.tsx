@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "@styles/globals.css";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import NextTopLoader from "nextjs-toploader";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -55,6 +56,7 @@ export default function RootLayout({
           {children}
           <Toaster />
           <GoogleAnalytics gaId="G-SYM2633LQY" />
+          <SpeedInsights />
         </ThemeProvider>
       </body>
     </html>
