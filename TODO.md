@@ -52,7 +52,6 @@
 
 ## Backend
 
-- [ ] Track lesson completion and quiz progress per user in DB
 - [ ] Update Next.js caching [payload/pull/14456](https://github.com/payloadcms/payload/pull/14456)
 - [x] Add Upstash Redis rate limiting
 - [x] use waitUntil from `@vercel/functions` for emails
@@ -61,11 +60,6 @@
 
 - [ ] Make landing page static
 
-## Security
-
-- [ ] Prevent email enumeration on `/forgot-password` and `/sign-up` [better-auth/issues/7972](https://github.com/better-auth/better-auth/issues/7972),
-      [OWASP](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#authentication-and-error-messages)
-
 ## CI
 
-- [ ] Cancel Vercel deployment on fail
+- [x] Cancel Vercel deployment on fail

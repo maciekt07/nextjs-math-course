@@ -29,6 +29,18 @@ A modern full-stack Next.js 16 platform with CMS, auth, and Stripe integration -
   <img alt="Lesson" src="screenshots/lesson-dark.png">
 </picture>
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="screenshots/cms-quiz-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="screenshots/cms-quiz-light.png">
+  <img alt="Lesson" src="screenshots/cms-quiz-dark.png">
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="screenshots/cms-text-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="screenshots/cms-text-light.png">
+  <img alt="Lesson" src="screenshots/cms-text-dark.png">
+</picture>
+
 ## Features
 
 - **Full Authentication** - powered by **BetterAuth**, featuring Google OAuth, Google One Tap, email verification & password reset via **Resend**. Includes block for disposable emails, last used method badge, session limits and rate limiting with **Redis** to prevent account sharing and abuse.
@@ -73,7 +85,7 @@ pnpm docker:dev
 > View Database with Drizzle Studio
 >
 > ```bash
-> pnpm run db:studio
+> pnpm db:studio
 > ```
 
 ### 5. Apply Database Migrations
@@ -202,6 +214,8 @@ This is a tip with a custom title
 ### Math rendering
 
 In paid lessons, math formulas are rendered lazily on the client as it scrolls into view, preventing main-thread blocking and avoiding FPS drops on long pages with many formulas. Free lessons are fully SSGed, which requires no special optimization and also benefits SEO.
+
+Pages are also automatically split into semantic `<section>` tags. Each section uses `content-visibility: auto`, allowing the browser to skip rendering off-screen content until it is needed.
 
 ## Credits
 
