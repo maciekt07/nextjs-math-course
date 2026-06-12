@@ -16,6 +16,7 @@ export function RevokeButton({ token }: { token: string }) {
     try {
       setIsRevoking(true);
       await authClient.revokeSession({ token });
+      toast.success("Session revoked");
       router.refresh();
     } catch (error) {
       if (isAPIError(error)) {

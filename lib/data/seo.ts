@@ -1,7 +1,7 @@
 import "server-only";
 
 import { publishedStatusWhere } from "@/cms/access/contentAccess";
-import { getIsDraftMode, withCache } from "@/lib/cache/withCache";
+import { getIsDraftMode, withCache } from "@/lib/cache/with-cache";
 import { getPayloadClient } from "@/lib/payload-client";
 import type { Course, Poster } from "@/types/payload-types";
 

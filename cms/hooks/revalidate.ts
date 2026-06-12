@@ -1,4 +1,4 @@
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import type { Payload } from "payload";
 
 export async function revalidateCourseCache(
@@ -28,6 +28,7 @@ export async function revalidateCourseCache(
   revalidateTag(`course:${courseId}`, "max");
   if (courseSlug) revalidateTag(`course-slug:${courseSlug}`, "max");
   revalidateTag("courses-list", "max");
+  revalidatePath("/");
 }
 
 export function revalidateLessonCache(lessonId: string) {

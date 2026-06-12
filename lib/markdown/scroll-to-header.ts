@@ -147,7 +147,12 @@ export function scrollToHeader(
 }
 
 function cancelOnUserScroll(runId: number) {
-  const events: (keyof WindowEventMap)[] = ["wheel", "touchmove", "keydown"];
+  const events: (keyof WindowEventMap)[] = [
+    "wheel",
+    "touchstart",
+    "touchmove",
+    "keydown",
+  ];
 
   const cancel = () => {
     if (runId === activeScrollRun) {
@@ -160,13 +165,13 @@ function cancelOnUserScroll(runId: number) {
   };
 
   events.forEach((event) => {
-    window.addEventListener(event, cancel, { passive: false });
+    window.addEventListener(event, cancel, { passive: true });
   });
 }
 
-function cancelOnSidebarToggle(runId: number) {
+function cancelOnSidebarToggle(runId: number): () => void {
   const aside = document.querySelector("aside");
-  if (!aside) return;
+  if (!aside) return () => {};
 
   const observer = new MutationObserver(() => {
     if (runId === activeScrollRun) {
@@ -179,4 +184,6 @@ function cancelOnSidebarToggle(runId: number) {
     attributes: true,
     attributeFilter: ["data-open"],
   });
+
+  return () => observer.disconnect();
 }

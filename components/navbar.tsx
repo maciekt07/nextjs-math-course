@@ -16,6 +16,7 @@ import { ThemeSelect } from "@/components/theme-select";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useMounted } from "@/hooks/use-mounted";
+import { authClient } from "@/lib/auth/auth-client";
 import { cn } from "@/lib/ui";
 
 const navLinks = [
@@ -24,7 +25,7 @@ const navLinks = [
 ] as const satisfies readonly { label: string; href: string }[];
 
 interface AuthButtonsProps extends React.ComponentProps<"button"> {
-  user: User | null;
+  user: User | undefined;
   onNavigate?: () => void;
 }
 
@@ -56,7 +57,7 @@ function AuthButtons({
           onClick={onNavigate}
           {...props}
         >
-          <Link href="/account" className="flex items-center gap-2">
+          <Link href="/account" className="flex items-center gap-2" prefetch>
             <Avatar className="size-6">
               <AvatarFallback className="bg-primary text-primary-foreground text-sm!">
                 {user.name?.charAt(0).toUpperCase() ||
@@ -93,7 +94,9 @@ function AuthButtons({
   );
 }
 
-export function Navbar({ user }: { user: User | null }) {
+export function Navbar() {
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
   const { trigger } = useWebHaptics();
   const [open, setOpen] = useState<boolean>(false);
   const [atTop, setAtTop] = useState<boolean>(true);
@@ -155,7 +158,12 @@ export function Navbar({ user }: { user: User | null }) {
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4">
           {/* LEFT */}
           <div className="flex items-center gap-6 ml-1">
-            <Link href="/" prefetch className="flex items-center gap-4">
+            <Link
+              href="/"
+              prefetch
+              className="flex items-center gap-4"
+              onClick={() => setOpen(false)}
+            >
               <Image
                 alt="Logo"
                 src="/logo512.png"

@@ -9,7 +9,7 @@ import { PartyPopper } from "@/components/animate-ui/icons/party-popper";
 import BuyCourseButton from "@/components/buy-course-button";
 import { EmptyState, EmptyStateCenterWrapper } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
-import { getIsDraftMode, withCache } from "@/lib/cache/withCache";
+import { getIsDraftMode, withCache } from "@/lib/cache/with-cache";
 import { getCourseSeoData } from "@/lib/data/seo";
 import { getPayloadClient } from "@/lib/payload-client";
 import {

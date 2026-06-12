@@ -4,9 +4,9 @@ import { Compass } from "@/components/animate-ui/icons/compass";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { CourseCard } from "@/components/course-card";
 import { OneTap } from "@/components/one-tap";
+import { OwnedCoursesProvider } from "@/components/owned-courses-provider";
 import { Button } from "@/components/ui/button";
-import { getServerSession } from "@/lib/auth/get-session";
-import { getCourses, getOwnedCourseIds } from "@/lib/data/courses";
+import { getCourses } from "@/lib/data/courses";
 import { getUserCount } from "@/lib/data/users";
 import {
   buildPublicMetadata,
@@ -27,16 +27,14 @@ export const metadata = buildPublicMetadata({
   images: [getLandingSocialImage()],
 });
 
-export default async function Home() {
-  const session = await getServerSession();
+export const dynamic = "force-static";
+export const revalidate = 3600;
 
-  const [courses, userCount, ownedIds] = await Promise.all([
+export default async function Home() {
+  const [courses, userCount] = await Promise.all([
     getCourses(),
     getUserCount(),
-    session?.user?.id ? getOwnedCourseIds(session.user.id) : [],
   ]);
-
-  const ownedSet = new Set(ownedIds);
 
   const formattedUserCount = Math.max(10, Math.floor(userCount / 10) * 10);
   const featuredCourse = courses[0];
@@ -145,15 +143,15 @@ export default async function Home() {
           </div>
 
           <div className="mt-8 px-4 sm:px-6 max-w-7xl mx-auto w-full">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-              {courses.map((course) => (
-                <CourseCard
-                  key={course.id}
-                  course={course}
-                  owned={ownedSet.has(course.id)}
-                />
-              ))}
-            </div>
+            <OwnedCoursesProvider
+              courseIds={courses.map((course) => course.id)}
+            >
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+                {courses.map((course) => (
+                  <CourseCard key={course.id} course={course} owned={false} />
+                ))}
+              </div>
+            </OwnedCoursesProvider>
           </div>
         </div>
       ) : (

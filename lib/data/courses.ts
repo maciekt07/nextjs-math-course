@@ -4,7 +4,7 @@ import { and, eq } from "drizzle-orm";
 import { publishedStatusWhere } from "@/cms/access/contentAccess";
 import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
-import { getIsDraftMode, withCache } from "@/lib/cache/withCache";
+import { getIsDraftMode, withCache } from "@/lib/cache/with-cache";
 import { getPayloadClient } from "@/lib/payload-client";
 
 const payloadPromise = getPayloadClient();

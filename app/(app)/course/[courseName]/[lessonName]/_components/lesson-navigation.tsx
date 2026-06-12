@@ -1,4 +1,3 @@
-"use client";
 import {
   Calculator,
   ChevronLeft,
@@ -8,47 +7,33 @@ import {
   Video,
 } from "lucide-react";
 import Link from "next/link";
-import { useMemo } from "react";
-import { useCourseStore } from "@/stores/course-store";
-import { useSidebarStore } from "@/stores/sidebar-store";
 import type { Lesson } from "@/types/payload-types";
 
 interface LessonNavigationProps {
-  currentSlug?: string | null;
+  courseSlug: string;
+  previousLesson: Lesson | null;
+  nextLesson: Lesson | null;
 }
 
-export function LessonNavigation({ currentSlug }: LessonNavigationProps) {
-  const lessonsMeta = useCourseStore((state) => state.lessonsMeta);
-  const course = useCourseStore((state) => state.course);
-  const setOptimisticPath = useSidebarStore((state) => state.setOptimisticPath);
-
-  const { previousLesson, nextLesson } = useMemo(() => {
-    const index = lessonsMeta.findIndex((l) => l.slug === currentSlug);
-    return {
-      previousLesson: index > 0 ? lessonsMeta[index - 1] : null,
-      nextLesson:
-        index >= 0 && index < lessonsMeta.length - 1
-          ? lessonsMeta[index + 1]
-          : null,
-    };
-  }, [lessonsMeta, currentSlug]);
-
-  if (!lessonsMeta?.length || (!previousLesson && !nextLesson)) return null;
+export function LessonNavigation({
+  courseSlug,
+  previousLesson,
+  nextLesson,
+}: LessonNavigationProps) {
+  if (!previousLesson && !nextLesson) return null;
 
   return (
-    <nav className="mt-8 mb-8 w-full font-inter">
+    <nav className="mt-8 mb-8 w-full font-inter print:hidden">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 max-w-4xl mx-auto">
         <LessonCard
           lesson={previousLesson}
           isPrevious
-          courseSlug={course?.slug}
-          setOptimisticPath={setOptimisticPath}
+          courseSlug={courseSlug}
         />
         <LessonCard
           lesson={nextLesson}
           isPrevious={false}
-          courseSlug={course?.slug}
-          setOptimisticPath={setOptimisticPath}
+          courseSlug={courseSlug}
         />
       </div>
     </nav>
@@ -58,8 +43,7 @@ export function LessonNavigation({ currentSlug }: LessonNavigationProps) {
 interface LessonCardProps {
   lesson: Lesson | null;
   isPrevious: boolean;
-  courseSlug?: string | null;
-  setOptimisticPath: (path: string) => void;
+  courseSlug: string;
 }
 
 const LESSON_ICONS = {
@@ -68,12 +52,7 @@ const LESSON_ICONS = {
   default: FileText,
 } as const satisfies Record<"video" | "quiz" | "default", LucideIcon>;
 
-const LessonCard = ({
-  lesson,
-  isPrevious,
-  courseSlug,
-  setOptimisticPath,
-}: LessonCardProps) => {
+const LessonCard = ({ lesson, isPrevious, courseSlug }: LessonCardProps) => {
   if (!lesson) return <LessonPlaceholder isPrevious={isPrevious} />;
 
   const Icon =
@@ -86,7 +65,6 @@ const LessonCard = ({
       href={path}
       prefetch
       aria-label={`${isPrevious ? "Previous" : "Next"} lesson - ${lesson.title}`}
-      onClick={() => setOptimisticPath(path)}
       className="group flex-1 min-h-[5rem] p-4 rounded-lg border border-border transition-all duration-200 flex items-center justify-between"
     >
       <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -113,7 +91,7 @@ const LessonCard = ({
 };
 
 const LessonPlaceholder = ({ isPrevious }: { isPrevious: boolean }) => (
-  <div className="flex-1 min-h-[5rem] opacity-50 select-none p-4 rounded-lg border border-border/50 flex items-center justify-between bg-muted/20 cursor-not-allowed">
+  <div className="flex-1 min-h-[5rem] opacity-60 select-none p-4 rounded-lg border border-border/50 flex items-center justify-between bg-muted/20 cursor-not-allowed">
     <div className="flex items-center gap-3 min-w-0">
       {isPrevious && (
         <ChevronLeft className="w-5 h-5 text-muted-foreground/50 flex-shrink-0" />
