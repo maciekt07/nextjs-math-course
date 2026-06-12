@@ -3,7 +3,7 @@ import "server-only";
 import { count } from "drizzle-orm";
 import { db } from "@/drizzle/db";
 import { user } from "@/drizzle/schema";
-import { withCache } from "@/lib/cache/withCache";
+import { withCache } from "@/lib/cache/with-cache";
 
 export const getUserCount = withCache(
   async () => {

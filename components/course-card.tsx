@@ -1,15 +1,10 @@
-import {
-  BookOpen,
-  Check,
-  Clock,
-  GraduationCap,
-  HelpCircle,
-} from "lucide-react";
+import { BookOpen, Clock, GraduationCap, HelpCircle } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import type * as React from "react";
-import BuyCourseButton from "@/components/buy-course-button";
-import { Button } from "@/components/ui/button";
+import {
+  CourseCardOwnershipButton,
+  CourseCardOwnershipFooter,
+} from "@/components/course-card-ownership";
 import {
   Card,
   CardContent,
@@ -51,6 +46,11 @@ export function CourseCard({
       ? `/course/${course.slug}/${course.firstFreeLessonSlug ?? course.firstLessonSlug}`
       : defaultCourseHref;
 
+  const cardBackground =
+    "linear-gradient(155deg, color-mix(in oklab, var(--d) var(--start), transparent), color-mix(in oklab, var(--d) var(--mid), transparent) 40%, transparent)";
+  const hoverBackground =
+    "radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--d) 15%, transparent), transparent 85%)";
+
   return (
     <Card
       key={course.id}
@@ -62,30 +62,15 @@ export function CourseCard({
       )}
       style={{
         "--d": dominant,
-        background: `
-        linear-gradient(
-          155deg,
-          color-mix(in oklab, var(--d) var(--start), transparent),
-          color-mix(in oklab, var(--d) var(--mid), transparent) 40%,
-          transparent
-        )
-      `,
+        background: cardBackground,
       }}
       {...props}
     >
-      <div
-        className="pointer-events-none absolute inset-0 rounded-3xl
-                bg-gradient-to-b from-black/4 to-transparent
-                dark:from-white/6"
-      />
+      <div className="pointer-events-none absolute inset-0 rounded-3xl bg-gradient-to-b from-black/4 to-transparent dark:from-white/6" />
       <div
         className="pointer-events-none absolute inset-0 sm:opacity-0 opacity-100 group-hover:opacity-100 transition-opacity duration-400 rounded-3xl"
         style={{
-          background: `radial-gradient(
-            circle at 50% 0%,
-            color-mix(in srgb, var(--d) 15%, transparent),
-            transparent 85%
-          )`,
+          background: hoverBackground,
         }}
       />
 
@@ -162,58 +147,23 @@ export function CourseCard({
             </div>
           )}
         </div>
-        {customContent ? (
-          customContent
-        ) : owned ? (
-          <Button size="lg" asChild>
-            <Link prefetch href={ownedCourseHref}>
-              See All Lessons
-            </Link>
-          </Button>
-        ) : (
-          <Button
-            variant="green"
-            size="lg"
-            asChild
-            className="bg-background/20 hover:bg-background/50 border-foreground/10 shadow-sm"
-          >
-            <Link prefetch href={previewCourseHref} className="text-shadow-sm">
-              See Free Lessons
-            </Link>
-          </Button>
+        {customContent ?? (
+          <CourseCardOwnershipButton
+            courseId={course.id}
+            initialOwned={owned}
+            ownedCourseHref={ownedCourseHref}
+            previewCourseHref={previewCourseHref}
+          />
         )}
       </CardContent>
 
       {!customContent && (
         <CardFooter className="border-t border-foreground/10 min-h-[80px] flex items-center px-4 md:px-5 [.border-t]:pt-4 md:[.border-t]:pt-5">
-          {owned ? (
-            <div className="flex items-center justify-center w-full gap-2">
-              <Check size={28} className="text-green-600" />
-              <span className="font-semibold">Owned</span>
-            </div>
-          ) : (
-            <div className="flex justify-between w-full items-center">
-              <div className="flex flex-col">
-                <span className="text-2xl font-bold">
-                  {new Intl.NumberFormat("en-US", {
-                    style: "currency",
-                    currency: "USD",
-                  }).format(course.price ?? 0)}
-                </span>
-                <span className="text-xs text-muted-foreground tracking-wide">
-                  One-time purchase
-                </span>
-              </div>
-
-              <BuyCourseButton
-                courseId={course.id}
-                size="lg"
-                className="font-bold"
-              >
-                Buy Now
-              </BuyCourseButton>
-            </div>
-          )}
+          <CourseCardOwnershipFooter
+            courseId={course.id}
+            initialOwned={owned}
+            price={course.price ?? 0}
+          />
         </CardFooter>
       )}
     </Card>

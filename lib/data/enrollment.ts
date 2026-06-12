@@ -3,7 +3,7 @@ import "server-only";
 import { and, eq } from "drizzle-orm";
 import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
-import { withCache } from "@/lib/cache/withCache";
+import { withCache } from "@/lib/cache/with-cache";
 
 export const hasEnrollment = (userId: string, courseId: string) =>
   withCache(

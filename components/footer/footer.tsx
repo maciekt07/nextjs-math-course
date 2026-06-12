@@ -2,11 +2,9 @@ import { SiGithub } from "@icons-pack/react-simple-icons";
 import { Mail } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { getServerSession } from "@/lib/auth/get-session";
+import { FooterAccountLinks } from "@/components/footer/footer-auth-links";
 
-export default async function Footer() {
-  const session = await getServerSession();
-
+export default function Footer() {
   return (
     <footer className="w-full border-t border-foreground/10 bg-transparent">
       <div className="max-w-6xl mx-auto px-4 py-8">
@@ -53,37 +51,7 @@ export default async function Footer() {
             <div className="flex flex-col gap-3">
               <p className="font-medium text-sm text-foreground">Account</p>
               <nav className="flex flex-col gap-2 text-sm">
-                {session?.user ? (
-                  <>
-                    <Link
-                      href="/account"
-                      className="text-foreground/70 hover:text-primary transition-colors"
-                    >
-                      My Account
-                    </Link>
-                    <Link
-                      href="/courses"
-                      className="text-foreground/70 hover:text-primary transition-colors"
-                    >
-                      My Courses
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      href="/auth/sign-in"
-                      className="text-foreground/70 hover:text-primary transition-colors"
-                    >
-                      Sign In
-                    </Link>
-                    <Link
-                      href="/auth/sign-up"
-                      className="text-foreground/70 hover:text-primary transition-colors"
-                    >
-                      Sign Up
-                    </Link>
-                  </>
-                )}
+                <FooterAccountLinks />
               </nav>
             </div>
 

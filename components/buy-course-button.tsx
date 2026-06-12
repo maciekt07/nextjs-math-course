@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
 import type React from "react";
 import { toast } from "sonner";
@@ -21,6 +22,7 @@ export default function BuyCourseButton({
   ...props
 }: BuyButtonProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const { buy, loading, setLoading } = useBuyCourse();
 
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -35,7 +37,11 @@ export default function BuyCourseButton({
 
       if (!user) {
         toast.error("You must be signed in to purchase a course.");
-        router.push("/auth/sign-in");
+        const params = new URLSearchParams({
+          returnTo: pathname,
+        });
+
+        router.push(`/auth/sign-in?${params}`);
         return;
       }
 

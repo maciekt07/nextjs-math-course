@@ -35,11 +35,11 @@ A modern full-stack Next.js 16 platform with CMS, auth, and Stripe integration -
   <img alt="Lesson" src="screenshots/cms-quiz-dark.png">
 </picture>
 
-<picture>
+<!-- <picture>
   <source media="(prefers-color-scheme: dark)" srcset="screenshots/cms-text-dark.png">
   <source media="(prefers-color-scheme: light)" srcset="screenshots/cms-text-light.png">
   <img alt="Lesson" src="screenshots/cms-text-dark.png">
-</picture>
+</picture> -->
 
 ## Features
 

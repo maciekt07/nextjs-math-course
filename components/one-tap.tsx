@@ -20,8 +20,9 @@ export function OneTap() {
     authClient
       .oneTap({
         fetchOptions: {
-          onSuccess: (ctx) => {
+          onSuccess: async (ctx) => {
             if (ctx?.data?.user) {
+              authClient.$store.notify("$sessionSignal");
               toast.success("Signed in successfully");
               router.push("/");
               router.refresh();

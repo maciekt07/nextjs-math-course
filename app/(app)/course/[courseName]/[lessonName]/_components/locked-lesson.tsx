@@ -16,7 +16,6 @@ import { EmptyStateCenterWrapper } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { useMounted } from "@/hooks/use-mounted";
 import { cn } from "@/lib/ui";
-import type { Course, Lesson } from "@/types/payload-types";
 
 type LockAnimation = keyof typeof lockAnimations | StaticAnimations;
 type LockState = "locked" | "unlocked";
@@ -27,8 +26,14 @@ const UNLOCK_DURATION =
 const LOCK_DURATION =
   lockAnimations.lock.group.animate.transition.duration * 1000;
 
+export interface LockedLessonPreview {
+  title: string;
+  slug: string;
+  courseId: string;
+}
+
 interface LockedLessonProps {
-  lesson: Lesson;
+  lesson: LockedLessonPreview;
   courseName: string;
   showSignIn: boolean;
 }
@@ -116,11 +121,6 @@ export function LockedLesson({
     onClick: handleClick,
   };
 
-  const courseId =
-    typeof lesson.course === "string"
-      ? lesson.course
-      : (lesson.course as Course).id;
-
   return (
     <EmptyStateCenterWrapper>
       <div className="flex flex-col items-center text-center space-y-6 max-w-130">
@@ -143,7 +143,6 @@ export function LockedLesson({
             it.
           </h2>
         </div>
-
         {showSignIn ? (
           <AnimateIcon animateOnHover className="w-full">
             <Button size="lg" className="w-full" asChild {...buttonProps}>
@@ -160,7 +159,7 @@ export function LockedLesson({
           </AnimateIcon>
         ) : (
           <BuyCourseButton
-            courseId={courseId}
+            courseId={lesson.courseId}
             size="lg"
             className="w-full"
             {...buttonProps}
