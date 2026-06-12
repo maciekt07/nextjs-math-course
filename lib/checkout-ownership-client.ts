@@ -1,6 +1,6 @@
 "use client";
 
-export type PendingCheckoutOwnership = {
+type PendingCheckoutOwnership = {
   courseId: string;
   checkoutSessionId: string;
   expiresAt: number;
