@@ -53,27 +53,27 @@ A modern full-stack Next.js 16 platform with CMS, auth, and Stripe integration -
 - **Rich Lesson Content** - lessons are authored in Markdown with LaTeX math, interactive Desmos graphs, and custom elements like callout blocks, with settings like larger math font or colored symbols.
 - **SEO Optimization** - OG image generation, XML sitemap with per-lesson metadata (images, video thumbnails, duration, descriptions) for published free lessons.
 
-## Installation Steps
+## Development
 
-### 1. Clone the Repository
+### Clone the Repository
 
 ```bash
 git clone https://github.com/maciekt07/nextjs-math-course
 cd nextjs-math-course
 ```
 
-### 2. Install Dependencies
+### Install Dependencies
 
 ```bash
 pnpm install
 ```
 
-### 3. Set Up Environment Variables
+### Set Up Environment Variables
 
 Create a `.env.development` file in the root directory. Use [.env.example](.env.example) as a template.
 Environment variables are fully typed and validated for both dev and build.
 
-### 4. Start Databases
+### Start Databases
 
 Both PostgreSQL (for main app data) and MongoDB (for Payload CMS) run via Docker Compose
 
@@ -88,13 +88,13 @@ pnpm docker:dev
 > pnpm db:studio
 > ```
 
-### 5. Apply Database Migrations
+### Apply Database Migrations
 
 ```bash
 pnpm db:push
 ```
 
-### 6. Run the Stripe webhook listener
+### Run the Stripe webhook listener
 
 ```bash
 pnpm stripe:webhook
@@ -108,7 +108,7 @@ Use these Stripe test card details to simulate a successful payment:
 - Expiration Date: Any future date
 - CVC: Any 3-digit code
 
-### 7. Run the App
+### Run the App
 
 Development mode:
 
@@ -124,7 +124,7 @@ pnpm preview
 
 The application should now be running at [http://localhost:3000](http://localhost:3000)
 
-### 8. Access Payload CMS Admin Panel
+### Access Payload CMS Admin Panel
 
 Once the app is running, you can access the CMS at:
 
@@ -133,6 +133,14 @@ Once the app is running, you can access the CMS at:
 - Create your admin account on first visit
 
 - Use the panel to manage courses, lessons, and media
+
+### Preview Emails
+
+Start the React Email preview server to view and test email templates locally:
+
+```bash
+pnpm email:dev
+```
 
 ## Usage
 
