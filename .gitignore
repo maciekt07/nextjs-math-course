@@ -46,3 +46,6 @@ next-env.d.ts
 
 # payload cms media uploads
 /media
+
+# html emails
+email-out

@@ -5,3 +5,5 @@ ignoredBuiltDependencies:
 trustPolicy: "no-downgrade"
 minimumReleaseAge: 7200
 blockExoticSubdeps: true
+trustPolicyExclude:
+  - chokidar@4.0.3
