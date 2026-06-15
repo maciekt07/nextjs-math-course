@@ -9,7 +9,8 @@
   --math-foreground: #000000ff;
 }
 
-.dark {
+.dark,
+html[data-theme="dark"] {
   --fraction: #2974ffff;
   --operator-color: #7147f0ff;
   --relation-color: #3b99f6ff;
@@ -19,7 +20,7 @@
   --math-foreground: #ffffffff;
 }
 
-article {
+:where(.prose) {
   section {
     content-visibility: auto;
     contain-intrinsic-size: 0 500px;
@@ -42,30 +43,26 @@ article {
     @apply w-full border-collapse m-0;
     contain: layout;
 
-    thead {
-      tr {
-        @apply bg-card/50 border-b border-border;
+    thead tr {
+      @apply bg-card/50 border-b border-border;
 
-        th {
-          @apply px-4 py-3 text-left text-sm font-semibold;
-        }
+      th {
+        @apply px-4 py-3 text-left text-sm font-semibold;
       }
     }
 
-    tbody {
-      tr {
-        @apply border-b border-border;
+    tbody tr {
+      @apply border-b border-border;
+
+      td {
+        @apply px-4 py-3 text-sm;
+      }
+
+      &:last-child {
+        @apply border-b-0;
 
         td {
-          @apply px-4 py-3 text-sm;
-        }
-
-        &:last-child {
-          @apply border-b-0;
-
-          td {
-            @apply first:rounded-bl-lg last:rounded-br-lg;
-          }
+          @apply first:rounded-bl-lg last:rounded-br-lg;
         }
       }
     }
@@ -75,67 +72,54 @@ article {
     @apply w-full overflow-x-auto rounded-2xl my-6 border border-border relative shadow-sm;
     scrollbar-width: auto;
   }
-}
 
-.large-math {
-  /* inline math */
-  .katex {
-    font-size: 1.4em;
+  /* scroll wide math expressions */
+  .katex-display {
+    display: block;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    padding: 0 1em;
+    contain: layout style paint;
+    scrollbar-width: auto;
+
+    /* right scroll shadow */
+    -webkit-mask-image: linear-gradient(
+      to right,
+      black 0%,
+      black calc(100% - 2rem),
+      transparent 100%
+    );
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%;
+    mask-image: linear-gradient(
+      to right,
+      black 0%,
+      black calc(100% - 2rem),
+      transparent 100%
+    );
+    mask-repeat: no-repeat;
+    mask-size: 100% 100%;
+
+    > .katex {
+      display: inline-block;
+      min-width: max-content;
+      padding-right: 16px;
+    }
   }
 
-  /* block math */
-  .katex-display .katex {
-    font-size: 1.4em;
-    margin: 0.5rem 0;
-  }
-}
-
-/* scroll wide math expressions */
-.katex-display {
-  display: block;
-  overflow-x: auto;
-  overflow-y: hidden;
-  white-space: nowrap;
-  padding: 0 1em;
-  contain: layout style paint;
-  scrollbar-width: auto;
-
-  /* right scroll shadow */
-  -webkit-mask-image: linear-gradient(
-    to right,
-    black 0%,
-    black calc(100% - 2rem),
-    transparent 100%
-  );
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-size: 100% 100%;
-  mask-image: linear-gradient(
-    to right,
-    black 0%,
-    black calc(100% - 2rem),
-    transparent 100%
-  );
-  mask-repeat: no-repeat;
-  mask-size: 100% 100%;
-}
-
-.katex-display > .katex {
-  display: inline-block;
-  min-width: max-content;
-  padding-right: 16px;
-}
-
-/* colored markdown KaTeX */
-.colored-markdown {
-  .katex {
+  /* colored markdown KaTeX */
+  &.colored-markdown .katex {
     * {
       border-color: var(--fraction);
       border-bottom: 3px var(--fraction);
     }
+
     .mathdefault,
     .mord {
       color: var(--math-foreground);
     }
+
     /* operators (+, -, *, /) */
     .mbin {
       color: var(--operator-color);
@@ -164,26 +148,38 @@ article {
       color: var(--function-color);
     }
   }
-}
 
-.block {
-  h1,
-  h2,
-  h3 {
-    @apply text-base font-semibold;
-    margin: 0;
-    padding: 0;
+  /* inline math */
+  &.large-math .katex {
+    font-size: 1.4em;
   }
 
-  p {
-    margin: 0 !important;
+  /* block math */
+  &.large-math .katex-display .katex {
+    font-size: 1.4em;
+    margin: 0.5rem 0;
   }
 
-  ul,
-  ol {
-    @apply pl-5 m-0;
-  }
-  li {
-    @apply my-1;
+  .block {
+    h1,
+    h2,
+    h3 {
+      @apply text-base font-semibold;
+      margin: 0;
+      padding: 0;
+    }
+
+    p {
+      margin: 0 !important;
+    }
+
+    ul,
+    ol {
+      @apply pl-5 m-0;
+    }
+
+    li {
+      @apply my-1;
+    }
   }
 }

@@ -126,7 +126,7 @@ export default function MarkdownPreviewField({
         {showPreview && (
           <div
             ref={previewRef}
-            className="flex-1 overflow-auto pr-4 my-2"
+            className="flex-1 overflow-auto pr-4 [&_p]:mt-1!"
             style={{ contain: "layout paint" }}
           >
             {debouncedValue ? (

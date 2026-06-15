@@ -1,5 +1,6 @@
 @layer theme, base, components, utilities;
 @import "tailwindcss/theme.css" layer(theme);
+@import "./theme.css";
 @import "tailwindcss/utilities.css" layer(utilities);
-
-@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+@import "./markdown.css";
+@plugin "@tailwindcss/typography";
