@@ -47,7 +47,6 @@
 - [x] Add OpenDyslexic font for lessons
 - [x] Add next/previous lesson navigation
 - [x] Add heading anchor links on hover to markdown
-- [ ] Use responsive pagination for quiz [shadcn](https://ui.shadcn.com/docs/components/pagination)
 - [x] Redesign course cards to be more responsive
 
 ## Backend
@@ -58,7 +57,7 @@
 
 # Performance
 
-- [ ] Make landing page static
+- [x] Make landing page static
 
 ## CI
 
