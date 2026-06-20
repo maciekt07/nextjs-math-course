@@ -8,6 +8,7 @@ import { Users } from "@cms/collections/Users";
 import { muxVideoPlugin } from "@oversightstudio/mux-video";
 import { mongooseAdapter } from "@payloadcms/db-mongodb";
 import { resendAdapter } from "@payloadcms/email-resend";
+import { importExportPlugin } from "@payloadcms/plugin-import-export";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { s3Storage } from "@payloadcms/storage-s3";
 import { buildConfig } from "payload";
@@ -72,6 +73,18 @@ export default buildConfig({
         region: "auto", // Cloudflare R2 uses 'auto' as the region
         endpoint: serverEnv.S3_ENDPOINT || "",
       },
+    }),
+    importExportPlugin({
+      collections: [
+        {
+          slug: "feedback",
+          import: false,
+          export: {
+            disableJobsQueue: true,
+            format: "csv",
+          },
+        },
+      ],
     }),
   ],
   //  onInit: async (payload) => {
