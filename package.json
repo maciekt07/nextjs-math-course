@@ -40,7 +40,8 @@
     "cms:gen-types": "payload generate:types",
     "cms:gen-map": "payload generate:importmap",
     "stripe:webhook": "stripe listen --forward-to localhost:3000/api/stripe/webhook",
-    "prepare": "husky"
+    "prepare": "husky",
+    "commitlint": "commitlint --edit"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -126,6 +127,9 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.9",
+    "@commitlint/cli": "^21.0.2",
+    "@commitlint/config-conventional": "^21.0.2",
+    "@commitlint/types": "^21.0.1",
     "@playwright/test": "^1.59.1",
     "@react-email/ui": "6.5.0",
     "@tailwindcss/postcss": "^4",
