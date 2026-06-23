@@ -40,8 +40,7 @@
     "cms:gen-types": "payload generate:types",
     "cms:gen-map": "payload generate:importmap",
     "stripe:webhook": "stripe listen --forward-to localhost:3000/api/stripe/webhook",
-    "prepare": "husky",
-    "commitlint": "commitlint --edit"
+    "prepare": "husky"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
