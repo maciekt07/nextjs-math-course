@@ -3,7 +3,7 @@
 import { Check } from "lucide-react";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
-import { APP_NAME } from "@/lib/seo";
+import { APP_NAME } from "@/lib/constants/site";
 
 type Reason = {
   title: string;

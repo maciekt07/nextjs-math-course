@@ -5,12 +5,12 @@ import { publishedStatusWhere } from "@/cms/access/contentAccess";
 import Footer from "@/components/footer/footer";
 import { auth } from "@/lib/auth/auth";
 import { getIsDraftMode, withCache } from "@/lib/cache/with-cache";
+import { APP_NAME } from "@/lib/constants/site";
 import { getCourseWithLessons } from "@/lib/data/course-outline";
 import { hasEnrollment } from "@/lib/data/enrollment";
 import { getLessonSeoData } from "@/lib/data/seo";
 import { getPayloadClient } from "@/lib/payload-client";
 import {
-  APP_NAME,
   buildNoIndexMetadata,
   buildPublicMetadata,
   getCourseDescription,

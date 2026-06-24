@@ -17,7 +17,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useMounted } from "@/hooks/use-mounted";
 import { authClient } from "@/lib/auth/auth-client";
-import { APP_NAME } from "@/lib/seo";
+import { APP_NAME } from "@/lib/constants/site";
 import { cn } from "@/lib/ui";
 
 const navLinks = [

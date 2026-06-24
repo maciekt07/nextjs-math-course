@@ -1,10 +1,6 @@
 import { ImageResponse } from "next/og";
-import {
-  APP_NAME,
-  fileToDataUrl,
-  SEO_IMAGE_HEIGHT,
-  SEO_IMAGE_WIDTH,
-} from "@/lib/seo";
+import { APP_NAME } from "@/lib/constants/site";
+import { fileToDataUrl, SEO_IMAGE_HEIGHT, SEO_IMAGE_WIDTH } from "@/lib/seo";
 
 export const runtime = "nodejs";
 

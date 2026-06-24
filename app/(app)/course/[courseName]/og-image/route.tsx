@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
+import { APP_NAME } from "@/lib/constants/site";
 import { getCourseSeoData } from "@/lib/data/seo";
 import {
-  APP_NAME,
   fileToDataUrl,
   imageUrlToDataUrl,
   SEO_IMAGE_HEIGHT,

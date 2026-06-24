@@ -3,13 +3,14 @@ import "server-only";
 import { readFile } from "node:fs/promises";
 import type { Metadata } from "next";
 import { clientEnv } from "@/env/client";
+import {
+  APP_NAME,
+  APP_SHORT_NAME,
+  SITE_CATEGORY,
+  SITE_DESCRIPTION,
+  SITE_LOCALE,
+} from "@/lib/constants/site";
 
-export const APP_NAME = "Math Course Online";
-export const APP_SHORT_NAME = "Math Course";
-export const SITE_DESCRIPTION =
-  "Online math courses with guided lessons, quizzes, and video walkthroughs.";
-export const SITE_LOCALE = "en_US";
-export const SITE_CATEGORY = "education";
 export const SEO_IMAGE_WIDTH = 1200;
 export const SEO_IMAGE_HEIGHT = 630;
 

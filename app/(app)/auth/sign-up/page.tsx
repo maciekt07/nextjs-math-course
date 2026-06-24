@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getServerSession } from "@/lib/auth/get-session";
-import { APP_NAME, buildNoIndexMetadata } from "@/lib/seo";
+import { APP_NAME } from "@/lib/constants/site";
+import { buildNoIndexMetadata } from "@/lib/seo";
 import { AuthCard } from "../_components/auth-card";
 import { AuthFooter } from "../_components/auth-footer";
 import { SignUpForm } from "./sign-up-form";

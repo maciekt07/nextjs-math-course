@@ -6,13 +6,10 @@ import { CourseCard } from "@/components/course-card";
 import { OneTap } from "@/components/one-tap";
 import { OwnedCoursesProvider } from "@/components/owned-courses-provider";
 import { Button } from "@/components/ui/button";
+import { SITE_DESCRIPTION } from "@/lib/constants/site";
 import { getCourses } from "@/lib/data/courses";
 import { getUserCount } from "@/lib/data/users";
-import {
-  buildPublicMetadata,
-  getLandingSocialImage,
-  SITE_DESCRIPTION,
-} from "@/lib/seo";
+import { buildPublicMetadata, getLandingSocialImage } from "@/lib/seo";
 import { cn } from "@/lib/ui";
 import { CTASection } from "./_components/cta";
 import { FAQ } from "./_components/faq";

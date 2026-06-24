@@ -6,7 +6,7 @@ import {
   SITE_CATEGORY,
   SITE_DESCRIPTION,
   SITE_LOCALE,
-} from "@/lib/seo";
+} from "@/lib/constants/site";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {

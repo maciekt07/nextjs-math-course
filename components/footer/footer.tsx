@@ -3,7 +3,7 @@ import { Mail } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { FooterAccountLinks } from "@/components/footer/footer-auth-links";
-import { APP_NAME } from "@/lib/seo";
+import { APP_NAME } from "@/lib/constants/site";
 
 export default function Footer() {
   return (

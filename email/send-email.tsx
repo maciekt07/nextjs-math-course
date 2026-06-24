@@ -3,8 +3,8 @@ import "server-only";
 import { waitUntil } from "@vercel/functions";
 import type { CreateEmailOptions } from "resend";
 import { serverEnv } from "@/env/server";
+import { APP_NAME } from "@/lib/constants/site";
 import { resend } from "@/lib/resend";
-import { APP_NAME } from "@/lib/seo";
 
 export async function sendEmail(
   options: Omit<CreateEmailOptions, "from">,

@@ -22,7 +22,7 @@ import {
 import { secondaryStorage } from "@/lib/auth/secondary-storage";
 import { limitUserSessions } from "@/lib/auth/session-limit";
 import { LIMITS } from "@/lib/constants/limits";
-import { APP_NAME, APP_SHORT_NAME } from "@/lib/seo";
+import { APP_NAME, APP_SHORT_NAME } from "@/lib/constants/site";
 
 // https://www.better-auth.com/docs/reference/options
 export const auth = betterAuth({

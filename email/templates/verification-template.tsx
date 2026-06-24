@@ -1,8 +1,8 @@
 import { Heading, Hr, Text } from "@react-email/components";
 import { clientEnv } from "@/env/client";
 import { LIMITS } from "@/lib/constants/limits";
+import { APP_NAME } from "@/lib/constants/site";
 import { formatSeconds } from "@/lib/format";
-import { APP_NAME } from "@/lib/seo";
 import EmailButton from "../components/email-button";
 import EmailLayout from "../components/email-layout";
 
