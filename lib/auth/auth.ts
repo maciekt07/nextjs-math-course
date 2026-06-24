@@ -22,10 +22,11 @@ import {
 import { secondaryStorage } from "@/lib/auth/secondary-storage";
 import { limitUserSessions } from "@/lib/auth/session-limit";
 import { LIMITS } from "@/lib/constants/limits";
+import { APP_NAME, APP_SHORT_NAME } from "@/lib/seo";
 
 // https://www.better-auth.com/docs/reference/options
 export const auth = betterAuth({
-  appName: "Math Course",
+  appName: APP_SHORT_NAME,
 
   database: drizzleAdapter(db, { provider: "pg" }),
 
@@ -77,7 +78,7 @@ export const auth = betterAuth({
     sendVerificationEmail: async ({ user, url }) => {
       void sendEmail({
         to: user.email,
-        subject: "Confirm Your Email Address - Math Course Online",
+        subject: `Confirm Your Email Address - ${APP_NAME}`,
         react: VerificationEmailTemplate({ name: user.name, url }),
       });
     },
@@ -93,7 +94,7 @@ export const auth = betterAuth({
     async sendResetPassword({ user, url }) {
       void sendEmail({
         to: user.email,
-        subject: "Reset Your Password - Math Course Online",
+        subject: `Reset Your Password - ${APP_NAME}`,
         react: ResetPasswordEmailTemplate({ name: user.name, url }),
       });
     },
@@ -102,11 +103,12 @@ export const auth = betterAuth({
   user: {
     changeEmail: {
       enabled: true,
-
+      // shares same TTL as emailVerification.expiresIn (LIMITS.auth.verificationTokenTTL)
+      // https://github.com/better-auth/better-auth/blob/main/packages/better-auth/src/api/routes/update-user.ts
       sendChangeEmailConfirmation: async ({ user, newEmail, url }) => {
         void sendEmail({
           to: user.email,
-          subject: "Please Confirm Your New Email Address - Math Course Online",
+          subject: `Please Confirm Your New Email Address - ${APP_NAME}`,
           react: ChangeEmailEmailTemplate({ name: user.name, newEmail, url }),
         });
       },

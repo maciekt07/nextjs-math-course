@@ -1,6 +1,8 @@
 import { Heading, Hr, Text } from "@react-email/components";
+import { clientEnv } from "@/env/client";
 import { LIMITS } from "@/lib/constants/limits";
 import { formatSeconds } from "@/lib/format";
+import { APP_NAME } from "@/lib/seo";
 import EmailButton from "../components/email-button";
 import EmailLayout from "../components/email-layout";
 
@@ -11,7 +13,7 @@ interface VerificationEmailProps {
 
 const VerificationEmailTemplate = Object.assign(
   function VerificationEmailTemplate({ url, name }: VerificationEmailProps) {
-    const parsedUrl = new URL(url, "https://nextjs-math-course.vercel.app");
+    const parsedUrl = new URL(url, clientEnv.NEXT_PUBLIC_APP_URL);
 
     const callback = parsedUrl.searchParams.get("callbackURL");
 
@@ -38,8 +40,7 @@ const VerificationEmailTemplate = Object.assign(
           </Text>
         ) : (
           <Text className="text-gray-600 leading-relaxed mb-6">
-            Welcome to <strong>Math Course Online</strong>. Please verify your
-            email.
+            Welcome to <strong>{APP_NAME}</strong>. Please verify your email.
           </Text>
         )}
 
