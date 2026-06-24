@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getServerSession } from "@/lib/auth/get-session";
-import { buildNoIndexMetadata } from "@/lib/seo";
+import { APP_NAME, buildNoIndexMetadata } from "@/lib/seo";
 import { AuthCard } from "../_components/auth-card";
 import { AuthFooter } from "../_components/auth-footer";
 
@@ -8,18 +8,16 @@ import { SignInForm } from "./sign-in-form";
 
 export const metadata = buildNoIndexMetadata({
   title: "Sign In",
-  description:
-    "Access your Math Course Online account to continue learning and manage your courses.",
+  description: `Access your ${APP_NAME} account to continue learning and manage your courses.`,
 });
 
 export default async function SignInPage({
   searchParams,
 }: {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
+  searchParams: Promise<{ returnTo?: string }>;
 }) {
   const params = await searchParams;
-  const returnTo =
-    typeof params.returnTo === "string" ? params.returnTo : undefined;
+  const returnTo = params.returnTo;
 
   const session = await getServerSession({
     query: {

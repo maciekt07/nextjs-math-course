@@ -17,6 +17,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useMounted } from "@/hooks/use-mounted";
 import { fetchMuxToken, RateLimitError } from "@/lib/mux/mux-token-cache";
+import { APP_NAME } from "@/lib/seo";
 import { cn } from "@/lib/ui";
 import type { MuxTokens } from "@/types/mux";
 import type { Course, Lesson, MuxVideo } from "@/types/payload-types";
@@ -154,8 +155,8 @@ export function VideoPlayer({
         title: videoTitle || title,
         artist:
           course && typeof course !== "string"
-            ? `${course.title} | Math Course Online`
-            : "Math Course Online",
+            ? `${course.title} | ${APP_NAME}`
+            : APP_NAME,
         album: "Course Video",
         artwork: [
           {

@@ -105,8 +105,8 @@ export function ResetPasswordForm({
             <strong>Success!</strong>
           </AlertTitle>
           <AlertDescription>
-            Your password has been reset
-            {!session && ". You can now sign in with your new password"}.
+            Your password has been reset. All other sessions have been revoked.
+            {!session && " You can now sign in with your new password."}
           </AlertDescription>
         </Alert>
 
@@ -123,25 +123,6 @@ export function ResetPasswordForm({
             <Link href="/">Back to home</Link>
           </Button>
         )}
-      </div>
-    );
-  }
-
-  if (!token) {
-    return (
-      <div className="space-y-5">
-        <Alert variant="destructive">
-          <AlertTitle>Invalid link</AlertTitle>
-          <AlertDescription>
-            This password reset link is invalid or has expired. Please request a
-            new one.
-          </AlertDescription>
-        </Alert>
-        <Button className="w-full" asChild>
-          <Link href={session ? "/account" : "/auth/forgot-password"}>
-            Request New Reset Link
-          </Link>
-        </Button>
       </div>
     );
   }

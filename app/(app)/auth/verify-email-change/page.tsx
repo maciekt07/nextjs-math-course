@@ -14,37 +14,47 @@ export const metadata: Metadata = buildNoIndexMetadata({
 export default async function VerifyEmailChangePage({
   searchParams,
 }: {
-  searchParams: Promise<{ success: string; error: string }>;
+  searchParams: Promise<{ success?: string; error?: string }>;
 }) {
-  const isSuccess = (await searchParams).success === "true";
-  const tokenExpired = (await searchParams).error === "token_expired";
+  const params = await searchParams;
+  const isSuccess = params.success === "true";
+  const invalidToken =
+    params?.error === "INVALID_TOKEN" || params?.error === "token_expired";
 
-  return tokenExpired ? (
+  if (invalidToken) {
+    return (
+      <AuthIconCard
+        icon={AlertCircle}
+        title="Invalid verification link"
+        description="This verification link is invalid or has expired"
+        variant="destructive"
+      >
+        <Button asChild className="w-full">
+          <Link href="/account">Go to account</Link>
+        </Button>
+      </AuthIconCard>
+    );
+  }
+
+  if (isSuccess) {
+    return (
+      <AuthIconCard
+        icon={MailCheck}
+        title="Email Change Complete"
+        description="Your email address has been successfully updated."
+      >
+        <Button className="w-full" asChild>
+          <Link href="/">Back to home</Link>
+        </Button>
+      </AuthIconCard>
+    );
+  }
+
+  return (
     <AuthIconCard
-      icon={AlertCircle}
-      title="Link expired"
-      description="Your verification link has expired. Try to change email again."
-      variant="destructive"
-    >
-      <Button asChild className="w-full">
-        <Link href="/account">Go to account</Link>
-      </Button>
-    </AuthIconCard>
-  ) : isSuccess ? (
-    <AuthIconCard
-      title="Email Change Complete"
-      description="Your email address has been successfully updated."
-      icon={MailCheck}
-    >
-      <Button className="w-full" asChild>
-        <Link href="/">Back to home</Link>
-      </Button>
-    </AuthIconCard>
-  ) : (
-    <AuthIconCard
+      icon={MailWarning}
       title="Verify your new email"
       description="We've sent a verification link to your new email address. Open the email and click the link to finish the change."
-      icon={MailWarning}
     />
   );
 }

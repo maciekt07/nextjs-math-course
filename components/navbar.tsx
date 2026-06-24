@@ -17,6 +17,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useMounted } from "@/hooks/use-mounted";
 import { authClient } from "@/lib/auth/auth-client";
+import { APP_NAME } from "@/lib/seo";
 import { cn } from "@/lib/ui";
 
 const navLinks = [
@@ -57,7 +58,7 @@ function AuthButtons({
           onClick={onNavigate}
           {...props}
         >
-          <Link href="/account" className="flex items-center gap-2" prefetch>
+          <Link href="/account" className="flex items-center gap-2">
             <Avatar className="size-6">
               <AvatarFallback className="bg-primary text-primary-foreground text-sm!">
                 {user.name?.charAt(0).toUpperCase() ||
@@ -173,7 +174,7 @@ export function Navbar() {
                 priority
                 quality={100}
               />
-              <span className="text-xl font-bold">Math Course Online</span>
+              <span className="text-xl font-bold">{APP_NAME}</span>
             </Link>
             <div className="hidden md:flex items-center ml-2 gap-5 font-medium text-muted-foreground">
               {navLinks.map((link) => (

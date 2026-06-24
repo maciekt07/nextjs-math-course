@@ -13,11 +13,10 @@ export const metadata = buildNoIndexMetadata({
 export default async function ForgotPasswordPage({
   searchParams,
 }: {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
+  searchParams: Promise<{ returnTo?: string }>;
 }) {
   const params = await searchParams;
-  const returnTo =
-    typeof params.returnTo === "string" ? params.returnTo : undefined;
+  const returnTo = params.returnTo;
 
   const session = await getServerSession({
     query: {

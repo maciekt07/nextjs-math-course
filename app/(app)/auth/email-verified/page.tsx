@@ -22,19 +22,20 @@ export default async function EmailVerifiedPage({
   searchParams?: Promise<{ error?: string }>;
 }) {
   const params = await searchParams;
-  const tokenExpired = params?.error === "token_expired";
+  const invalidToken =
+    params?.error === "INVALID_TOKEN" || params?.error === "token_expired";
 
   const session = await getServerSession({
     query: { disableCookieCache: true },
   });
   const user = session?.user;
 
-  if (tokenExpired) {
+  if (invalidToken) {
     return (
       <AuthIconCard
         icon={AlertCircle}
-        title="Link expired"
-        description="Your verification link has expired. Please request a new one."
+        title="Invalid verification link"
+        description="This verification link is invalid or has expired. Please request a new one."
         variant="destructive"
       >
         {user ? (
@@ -50,7 +51,7 @@ export default async function EmailVerifiedPage({
                   query: { returnTo: "/auth/verify-email" },
                 }}
               >
-                <LogIn /> Sign in
+                <LogIn /> Sign in to continue
               </Link>
             </Button>
           </AnimateIcon>

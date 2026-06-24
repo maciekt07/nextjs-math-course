@@ -3,6 +3,7 @@ import { Mail } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { FooterAccountLinks } from "@/components/footer/footer-auth-links";
+import { APP_NAME } from "@/lib/seo";
 
 export default function Footer() {
   return (
@@ -21,7 +22,7 @@ export default function Footer() {
                 height={20}
                 quality={100}
               />
-              <span>Math Course Online</span>
+              <span>{APP_NAME}</span>
             </Link>
             <p className="text-sm text-foreground/60 max-w-xs">
               Transforming math education <br /> with interactive, engaging
@@ -79,8 +80,7 @@ export default function Footer() {
 
         <div className="pt-6 border-t border-foreground/10">
           <p className="text-center text-xs text-foreground/50">
-            © {new Date().getFullYear()} Math Course Online. All rights
-            reserved.
+            © {new Date().getFullYear()} {APP_NAME}. All rights reserved.
           </p>
         </div>
       </div>

@@ -35,12 +35,6 @@ A modern full-stack Next.js 16 platform with CMS, auth, and Stripe integration -
   <img alt="Lesson" src="screenshots/cms-quiz-dark.png">
 </picture>
 
-<!-- <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="screenshots/cms-text-dark.png">
-  <source media="(prefers-color-scheme: light)" srcset="screenshots/cms-text-light.png">
-  <img alt="Lesson" src="screenshots/cms-text-dark.png">
-</picture> -->
-
 ## Features
 
 - **Full Authentication** - powered by **BetterAuth**, featuring Google OAuth, Google One Tap, email verification & password reset via **Resend**. Includes block for disposable emails, last used method badge, session limits and rate limiting with **Redis** to prevent account sharing and abuse.
@@ -71,7 +65,7 @@ pnpm install
 ### Set Up Environment Variables
 
 Create a `.env.development` file in the root directory. Use [.env.example](.env.example) as a template.
-Environment variables are fully typed and validated for both dev and build.
+Environment variables are fully typed and validated for both dev and build. For production preview, use `.env` file.
 
 ### Start Databases
 

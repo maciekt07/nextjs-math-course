@@ -1,23 +1,22 @@
 import { redirect } from "next/navigation";
 import { getServerSession } from "@/lib/auth/get-session";
-import { buildNoIndexMetadata } from "@/lib/seo";
+import { APP_NAME, buildNoIndexMetadata } from "@/lib/seo";
 import { AuthCard } from "../_components/auth-card";
 import { AuthFooter } from "../_components/auth-footer";
 import { SignUpForm } from "./sign-up-form";
 
 export const metadata = buildNoIndexMetadata({
   title: "Sign Up",
-  description: "Create your Math Course Online account to start learning.",
+  description: `Create your ${APP_NAME} account to start learning.`,
 });
 
 export default async function SignUpPage({
   searchParams,
 }: {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
+  searchParams: Promise<{ returnTo?: string }>;
 }) {
   const params = await searchParams;
-  const returnTo =
-    typeof params.returnTo === "string" ? params.returnTo : undefined;
+  const returnTo = params.returnTo;
 
   const session = await getServerSession({
     query: {

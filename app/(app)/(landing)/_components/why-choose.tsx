@@ -3,6 +3,7 @@
 import { Check } from "lucide-react";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
+import { APP_NAME } from "@/lib/seo";
 
 type Reason = {
   title: string;
@@ -34,7 +35,7 @@ export function WhyChoose() {
         <div className="mb-12 text-center">
           {/* bg-gradient-to-b from-foreground to-neutral-500 dark:to-neutral-500 bg-clip-text text-transparent text-shadow-md */}
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Why Choose Math Course Online?
+            Why Choose {APP_NAME}?
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
             It's not just another course platform. Here's what makes this one
