@@ -16,6 +16,9 @@ export const LIMITS = {
     /** 15 minutes */
     resetPasswordTokenTTL: 15 * 60,
 
+    /** 15 minutes */
+    deleteTokenTTL: 15 * 60,
+
     /** 3 minutes */
     cookieCacheMaxAge: 60 * 3,
 

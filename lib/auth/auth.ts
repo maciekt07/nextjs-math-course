@@ -10,6 +10,7 @@ import { db } from "@/drizzle/db";
 import { sendEmail } from "@/email/send-email";
 import AccountReadyEmailTemplate from "@/email/templates/account-ready-template";
 import ChangeEmailEmailTemplate from "@/email/templates/change-email-template";
+import DeleteAccountEmailTemplate from "@/email/templates/delete-account-template";
 import ResetPasswordEmailTemplate from "@/email/templates/reset-password-template";
 import VerificationEmailTemplate from "@/email/templates/verification-template";
 import { clientEnv } from "@/env/client";
@@ -110,6 +111,18 @@ export const auth = betterAuth({
   },
 
   user: {
+    deleteUser: {
+      enabled: true,
+      deleteTokenExpiresIn: LIMITS.auth.deleteTokenTTL,
+      sendDeleteAccountVerification: async ({ user, url }) => {
+        void sendEmail({
+          to: user.email,
+          subject: `Confirm Account Deletion - ${APP_NAME}`,
+          react: DeleteAccountEmailTemplate({ name: user.name, url }),
+        });
+      },
+    },
+
     changeEmail: {
       enabled: true,
       // shares same TTL as emailVerification.expiresIn (LIMITS.auth.verificationTokenTTL)

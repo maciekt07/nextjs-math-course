@@ -29,5 +29,9 @@ export const rateLimit: BetterAuthRateLimitOptions = {
       window: 30 * 60,
       max: 3,
     },
+    "/delete-user": {
+      window: 30 * 60,
+      max: 3,
+    },
   },
 };

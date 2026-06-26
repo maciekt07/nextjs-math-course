@@ -5,6 +5,7 @@ import {
   Mail,
   MailWarning,
   SettingsIcon,
+  Trash2,
 } from "lucide-react";
 import { headers } from "next/headers";
 import Link from "next/link";
@@ -32,6 +33,7 @@ import { getServerSession } from "@/lib/auth/get-session";
 import { LIMITS } from "@/lib/constants/limits";
 import { buildNoIndexMetadata } from "@/lib/seo";
 import ActiveSessions from "./_components/active-sessions";
+import { DeleteAccountButton } from "./_components/delete-account-button";
 import { LogOutButton } from "./_components/logout-button";
 import { LogoutEverywhereButton } from "./_components/logout-everywhere-button";
 import { PasswordChangeButton } from "./_components/password-change-button";
@@ -247,6 +249,21 @@ export default async function AccountPage() {
         <CardContent>
           <Settings />
         </CardContent>
+      </Card>
+
+      <Card className="border-destructive/40">
+        <CardHeader>
+          <CardTitle className="flex items-center justify-start gap-2 text-destructive">
+            <Trash2 className="size-5" /> Delete account
+          </CardTitle>
+          <CardDescription>
+            Permanently delete your account and remove your data. We will send a
+            confirmation email before deleting anything.
+          </CardDescription>
+        </CardHeader>
+        <CardFooter>
+          <DeleteAccountButton />
+        </CardFooter>
       </Card>
     </div>
   );
