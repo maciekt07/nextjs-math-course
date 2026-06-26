@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Calculator,
   ChevronLeft,
@@ -7,6 +9,7 @@ import {
   Video,
 } from "lucide-react";
 import Link from "next/link";
+import { useSidebarStore } from "@/stores/sidebar-store";
 import type { Lesson } from "@/types/payload-types";
 
 interface LessonNavigationProps {
@@ -53,6 +56,7 @@ const LESSON_ICONS = {
 } as const satisfies Record<"video" | "quiz" | "default", LucideIcon>;
 
 const LessonCard = ({ lesson, isPrevious, courseSlug }: LessonCardProps) => {
+  const setOptimisticPath = useSidebarStore((state) => state.setOptimisticPath);
   if (!lesson) return <LessonPlaceholder isPrevious={isPrevious} />;
 
   const Icon =
@@ -66,6 +70,7 @@ const LessonCard = ({ lesson, isPrevious, courseSlug }: LessonCardProps) => {
       prefetch
       aria-label={`${isPrevious ? "Previous" : "Next"} lesson - ${lesson.title}`}
       className="group flex-1 min-h-[5rem] p-4 rounded-lg border border-border transition-all duration-200 flex items-center justify-between"
+      onClick={() => setOptimisticPath(path)}
     >
       <div className="flex items-center gap-3 min-w-0 flex-1">
         {isPrevious && (

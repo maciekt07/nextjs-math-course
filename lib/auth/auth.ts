@@ -8,6 +8,7 @@ import { lastLoginMethod, oneTap } from "better-auth/plugins";
 import { emailHarmony } from "better-auth-harmony";
 import { db } from "@/drizzle/db";
 import { sendEmail } from "@/email/send-email";
+import AccountReadyEmailTemplate from "@/email/templates/account-ready-template";
 import ChangeEmailEmailTemplate from "@/email/templates/change-email-template";
 import ResetPasswordEmailTemplate from "@/email/templates/reset-password-template";
 import VerificationEmailTemplate from "@/email/templates/verification-template";
@@ -80,6 +81,14 @@ export const auth = betterAuth({
         to: user.email,
         subject: `Confirm Your Email Address - ${APP_NAME}`,
         react: VerificationEmailTemplate({ name: user.name, url }),
+      });
+    },
+
+    afterEmailVerification: async (user) => {
+      void sendEmail({
+        to: user.email,
+        subject: `Your ${APP_NAME} Account Is Ready`,
+        react: AccountReadyEmailTemplate({ name: user.name }),
       });
     },
   },

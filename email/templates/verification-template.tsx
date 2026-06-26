@@ -1,5 +1,5 @@
 import { Heading, Hr, Text } from "@react-email/components";
-import { clientEnv } from "@/env/client";
+import { APP_URL } from "@/email/app-url";
 import { LIMITS } from "@/lib/constants/limits";
 import { APP_NAME } from "@/lib/constants/site";
 import { formatSeconds } from "@/lib/format";
@@ -13,7 +13,7 @@ interface VerificationEmailProps {
 
 const VerificationEmailTemplate = Object.assign(
   function VerificationEmailTemplate({ url, name }: VerificationEmailProps) {
-    const parsedUrl = new URL(url, clientEnv.NEXT_PUBLIC_APP_URL);
+    const parsedUrl = new URL(url, APP_URL);
 
     const callback = parsedUrl.searchParams.get("callbackURL");
 
