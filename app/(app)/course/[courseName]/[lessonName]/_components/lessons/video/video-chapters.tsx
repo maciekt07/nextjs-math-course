@@ -1,12 +1,7 @@
 "use client";
 
 import { ChevronLeft, ChevronRight, Clock3, List, Video } from "lucide-react";
-import {
-  AnimatePresence,
-  type HTMLMotionProps,
-  motion,
-  useReducedMotion,
-} from "motion/react";
+import { type HTMLMotionProps, motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
@@ -14,6 +9,7 @@ import { Play } from "@/components/animate-ui/icons/play";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useMounted } from "@/hooks/use-mounted";
 import { formatDuration } from "@/lib/format";
 import { cn } from "@/lib/ui";
 import type { Lesson } from "@/types/payload-types";
@@ -333,45 +329,58 @@ function ScrollButton({
   const isLeft = direction === "left";
   const fromX = (isLeft ? -1 : 1) * 20;
   const prefersReducedMotion = useReducedMotion();
+  const mounted = useMounted();
 
   const motionProps: HTMLMotionProps<"div"> = prefersReducedMotion
-    ? {}
+    ? { initial: false, animate: { opacity: show ? 1 : 0 } }
     : {
-        initial: { scale: 0, x: fromX },
-        animate: { scale: 1, x: 0 },
-        exit: { scale: 0, x: fromX },
+        initial: false,
+        animate: {
+          opacity: show ? 1 : 0,
+          scale: show ? 1 : 0,
+          x: show ? 0 : fromX,
+        },
         transition: { duration: 0.15 },
       };
 
+  if (!mounted) return null;
+
   return (
-    <AnimatePresence>
-      {show && (
-        <motion.div
-          key={`chapter-scroll-${direction}`}
-          {...motionProps}
-          className={cn(
-            "absolute top-1/2 z-10 -translate-y-1/2",
-            "hidden [@media(hover:hover)_and_(pointer:fine)]:block",
-            isLeft ? "left-2" : "right-2",
-          )}
+    <>
+      <div
+        className={cn(
+          "absolute w-14 h-full z-1",
+          !isLeft && "right-0",
+          !show && "pointer-events-none inset-0",
+        )}
+      />
+      <motion.div
+        {...motionProps}
+        style={{ pointerEvents: show ? "auto" : "none" }}
+        className={cn(
+          "absolute top-1/2 z-10 -translate-y-1/2",
+          "hidden [@media(hover:hover)_and_(pointer:fine)]:block",
+          isLeft ? "left-2" : "right-2",
+        )}
+      >
+        <Button
+          type="button"
+          variant="outline"
+          size="icon-lg"
+          onClick={onClick}
+          tabIndex={show ? 0 : -1}
+          aria-hidden={!show}
+          className="rounded-full bg-card/80! shadow-xl cursor-pointer"
+          aria-label={`Scroll ${direction}`}
         >
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            onClick={onClick}
-            className="rounded-full bg-card/90 backdrop-blur-md shadow-md cursor-pointer"
-            aria-label={`Scroll ${direction}`}
-          >
-            {isLeft ? (
-              <ChevronLeft className="size-6" />
-            ) : (
-              <ChevronRight className="size-6" />
-            )}
-          </Button>
-        </motion.div>
-      )}
-    </AnimatePresence>
+          {isLeft ? (
+            <ChevronLeft className="size-6" />
+          ) : (
+            <ChevronRight className="size-6" />
+          )}
+        </Button>
+      </motion.div>
+    </>
   );
 }
 

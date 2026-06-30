@@ -49,11 +49,18 @@ export function LockedLesson({
   const [key, setKey] = useState<number>(0);
 
   const isAnimatingRef = useRef<boolean>(false);
-  const disabledRef = useRef<boolean>(false);
+  const disabledRef = useRef<boolean>(true);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const currentStateRef = useRef<LockState>("locked");
   const desiredStateRef = useRef<LockState>("locked");
+
+  useEffect(() => {
+    const id = setTimeout(() => {
+      disabledRef.current = false;
+    }, lockAnimations.lock.path.animate.transition.duration * 1000);
+    return () => clearTimeout(id);
+  }, []);
 
   const startAnimation = (nextState: LockState) => {
     if (disabledRef.current) return;

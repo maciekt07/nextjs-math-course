@@ -149,6 +149,7 @@ export function CourseLayoutWrapper({
           duration: prefersReducedMotion ? 0 : 0.2,
           ease: [0.25, 0.46, 0.45, 0.94],
         }}
+        style={{ willChange: "width" }}
       />
 
       <CourseSidebar
@@ -169,6 +170,7 @@ export function CourseLayoutWrapper({
             duration: prefersReducedMotion ? 0 : 0.2,
             ease: [0.25, 0.46, 0.45, 0.94],
           }}
+          style={{ willChange: "padding-top" }}
         >
           {children}
         </motion.main>
