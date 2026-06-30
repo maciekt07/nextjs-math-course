@@ -58,11 +58,12 @@ export default buildConfig({
         },
       },
     }),
+    //TODO: add second storage adapter for public media
     s3Storage({
       enabled: useS3,
       collections: {
-        media: true,
-        posters: true,
+        media: { signedDownloads: { expiresIn: 7200 } },
+        posters: { signedDownloads: { expiresIn: 7200 } },
       },
       bucket: serverEnv.S3_BUCKET || "",
       config: {
@@ -72,6 +73,7 @@ export default buildConfig({
         },
         region: "auto", // Cloudflare R2 uses 'auto' as the region
         endpoint: serverEnv.S3_ENDPOINT || "",
+        forcePathStyle: true,
       },
     }),
     importExportPlugin({
