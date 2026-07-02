@@ -42,7 +42,7 @@ A modern full-stack Next.js 16 platform with CMS, auth, and Stripe integration -
 - **Stripe Payments** - sell courses with one-time payments using Stripe Checkout.
 - **Hybrid Lesson Delivery (SSR + SSG)** - free lessons are pre-rendered for speed and SEO, while paid lessons use server-side rendering for secure, on-demand access.
 - **Caching & Revalidation** - lesson and enrollment data are cached for performance and automatically refreshed via Payload CMS hooks or Stripe webhook when content or access changes.
-- **Protected media** - paid lesson images restricted to enrolled users, with auto-generated blur placeholders and optional AWS S3 / Cloudflare R2 storage.
+- **Media storage** - dual-bucket setup on AWS S3 / Cloudflare R2: public assets (course posters, free lesson images) served directly from the CDN for speed, and protected assets (paid lesson images) served through presigned URLs restricted to enrolled users, both with auto-generated blur placeholders.
 - **Mux Video Integration** - video uploads through CMS and streaming; paid lessons use signed URLs restricted to enrolled users, free lessons stream publicly.
 - **Rich Lesson Content** - lessons are authored in Markdown with LaTeX math, interactive Desmos graphs, and custom elements like callout blocks, with settings like larger math font or colored symbols.
 - **SEO Optimization** - OG image generation, XML sitemap with per-lesson metadata (images, video thumbnails, duration, descriptions) for published free lessons.
