@@ -188,14 +188,14 @@ export function CourseSidebar({
           fix ios 26 safari drop support for meta theme-color
           https://github.com/andesco/safari-color-tinting
       */}
-      <div className="fixed top-0 left-0 right-0 z-41 h-3 bg-background hidden safari-ios:block md:hidden" />
+      {/* <div className="fixed top-0 left-0 right-0 z-41 h-3 bg-background hidden safari-ios:block md:hidden" />
 
       <div
         className={cn(
           "fixed bottom-0 left-0 right-0 z-41 h-3 bg-background hidden safari-ios:block md:hidden",
           !open && "hidden!",
         )}
-      />
+      /> */}
 
       <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
         <SettingsDialogContent />

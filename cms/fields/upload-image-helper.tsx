@@ -3,14 +3,18 @@
 import { Button, useField } from "@payloadcms/ui";
 import { Copy, ImageIcon, Trash } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import type { Media } from "@/types/payload-types";
+import type { MediaPrivate, MediaPublic } from "@/types/payload-types";
+
+type MediaCollection = "media-public" | "media-private";
+type MediaDoc = MediaPrivate | MediaPublic;
 
 type UploadValue =
-  | Media
+  | MediaDoc
   | File
   | {
       id?: string;
-      value?: string | Media;
+      relationTo?: MediaCollection;
+      value?: string | MediaDoc;
     }
   | string
   | null
@@ -20,41 +24,63 @@ type UploadImageHelperProps = {
   path: string;
 };
 
+type MediaRef = {
+  id: string;
+  collection: MediaCollection;
+};
+
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null;
 
-const isMediaDoc = (value: unknown): value is Media =>
+const isMediaDoc = (value: unknown): value is MediaDoc =>
   isRecord(value) && typeof value.id === "string";
 
-const getItemId = (item: UploadValue) => {
-  if (typeof item === "string") return item;
+// Polymorphic upload/relationship values from Payload come shaped as
+// { relationTo: "media-public" | "media-private", value: string | Doc }.
+// We need both the id AND the collection to know which API endpoint to hit.
+const getItemRef = (item: UploadValue): MediaRef | null => {
   if (item instanceof File) return null;
-  if (!isRecord(item)) return null;
+  if (typeof item === "string") return null; // no collection info available
 
-  if (typeof item.id === "string") return item.id;
-  if (typeof item.value === "string") return item.value;
-  if (isMediaDoc(item.value)) return item.value.id;
+  if (isRecord(item)) {
+    const collection = (item.relationTo ?? null) as MediaCollection | null;
+    if (!collection) return null;
+
+    if (typeof item.id === "string") {
+      return { id: item.id, collection };
+    }
+    if (typeof item.value === "string") {
+      return { id: item.value, collection };
+    }
+    if (isMediaDoc(item.value)) {
+      return { id: item.value.id, collection };
+    }
+  }
 
   return null;
 };
 
 const getResolvedMedia = (
   item: UploadValue,
-  mediaById: Record<string, Media>,
-): Media | null => {
-  if (isMediaDoc(item)) return item;
+  mediaById: Record<string, MediaDoc>,
+): MediaDoc | null => {
+  if (isMediaDoc(item) && !(item instanceof File)) return item;
   if (isRecord(item) && isMediaDoc(item.value)) return item.value;
 
-  const id = getItemId(item);
-  return id ? (mediaById[id] ?? null) : null;
+  const ref = getItemRef(item);
+  return ref ? (mediaById[ref.id] ?? null) : null;
 };
 
-const buildMediaPath = (media: Media) => {
+const buildMediaPath = (media: MediaDoc, collection: MediaCollection) => {
+  if (collection === "media-public") {
+    return media.url ?? null;
+  }
+
   if (!media.filename) return null;
-  return `/api/media/file/${media.filename}`;
+  return `/api/${collection}/file/${media.filename}`;
 };
 
-const getDefaultAlt = (media: Media) => {
+const getDefaultAlt = (media: MediaDoc) => {
   if (media.alt?.trim()) return media.alt.trim();
   if (media.filename) {
     return media.filename
@@ -72,56 +98,78 @@ export default function UploadImageHelper({ path }: UploadImageHelperProps) {
   const { value, setValue } = useField<UploadValue[] | null>({ path });
   const [copiedPath, setCopiedPath] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [mediaById, setMediaById] = useState<Record<string, Media>>({});
+  const [mediaById, setMediaById] = useState<Record<string, MediaDoc>>({});
+  const [failedIds, setFailedIds] = useState<Set<string>>(new Set());
 
   const mediaItems = Array.isArray(value) ? value : [];
 
-  const idsToFetch = useMemo(() => {
+  const refsToFetch = useMemo(() => {
     return mediaItems
       .map((item) => {
         const media = getResolvedMedia(item, mediaById);
         if (media?.filename) return null;
-        return getItemId(item);
+
+        const ref = getItemRef(item);
+        if (!ref) return null;
+        if (failedIds.has(ref.id)) return null;
+
+        return ref;
       })
-      .filter((id): id is string => Boolean(id));
-  }, [mediaById, mediaItems]);
+      .filter((ref): ref is MediaRef => Boolean(ref));
+  }, [mediaById, mediaItems, failedIds]);
 
   useEffect(() => {
-    if (idsToFetch.length === 0) return;
+    if (refsToFetch.length === 0) return;
 
     let isCancelled = false;
 
     const fetchMedia = async () => {
       const entries = await Promise.all(
-        idsToFetch.map(async (id) => {
+        refsToFetch.map(async (ref) => {
           try {
-            const response = await fetch(`/api/media/${id}`, {
+            const response = await fetch(`/api/${ref.collection}/${ref.id}`, {
               credentials: "same-origin",
             });
 
-            if (!response.ok) return null;
+            if (!response.ok) {
+              return { ok: false as const, id: ref.id };
+            }
 
-            const doc = (await response.json()) as Media;
-            return [id, doc] as const;
+            const doc = (await response.json()) as MediaDoc;
+            return { ok: true as const, id: ref.id, doc };
           } catch (error) {
-            console.error(`Failed to fetch media ${id}`, error);
-            return null;
+            console.error(`Failed to fetch media ${ref.id}`, error);
+            return { ok: false as const, id: ref.id };
           }
         }),
       );
 
       if (isCancelled) return;
 
-      setMediaById((current) => {
-        const next = { ...current };
+      const succeeded = entries.filter(
+        (e): e is { ok: true; id: string; doc: MediaDoc } => e.ok,
+      );
+      const failed = entries.filter((e) => !e.ok);
 
-        for (const entry of entries) {
-          if (!entry) continue;
-          next[entry[0]] = entry[1];
-        }
+      if (succeeded.length > 0) {
+        setMediaById((current) => {
+          const next = { ...current };
+          for (const entry of succeeded) {
+            next[entry.id] = entry.doc;
+          }
+          return next;
+        });
+      }
 
-        return next;
-      });
+      if (failed.length > 0) {
+        setFailedIds((current) => {
+          const next = new Set(current);
+          for (const entry of failed) {
+            next.add(entry.id);
+          }
+          return next;
+        });
+      }
     };
 
     void fetchMedia();
@@ -129,7 +177,7 @@ export default function UploadImageHelper({ path }: UploadImageHelperProps) {
     return () => {
       isCancelled = true;
     };
-  }, [idsToFetch]);
+  }, [refsToFetch]);
 
   if (mediaItems.length === 0) {
     return (
@@ -152,11 +200,11 @@ export default function UploadImageHelper({ path }: UploadImageHelperProps) {
     }
   };
 
-  const removeMedia = async (mediaId: string) => {
+  const removeMedia = async (mediaId: string, collection: MediaCollection) => {
     try {
       setDeletingId(mediaId);
 
-      const response = await fetch(`/api/media/${mediaId}`, {
+      const response = await fetch(`/api/${collection}/${mediaId}`, {
         method: "DELETE",
         credentials: "same-origin",
       });
@@ -167,14 +215,21 @@ export default function UploadImageHelper({ path }: UploadImageHelperProps) {
 
       setValue(
         mediaItems.filter((item) => {
-          const itemId = getItemId(item);
-          return itemId ? itemId !== mediaId : true;
+          const ref = getItemRef(item);
+          return ref ? ref.id !== mediaId : true;
         }),
       );
 
       setMediaById((current) => {
         const next = { ...current };
         delete next[mediaId];
+        return next;
+      });
+
+      setFailedIds((current) => {
+        if (!current.has(mediaId)) return current;
+        const next = new Set(current);
+        next.delete(mediaId);
         return next;
       });
     } catch (error) {
@@ -191,13 +246,15 @@ export default function UploadImageHelper({ path }: UploadImageHelperProps) {
       <div className="flex flex-col gap-2">
         {mediaItems.map((item, index) => {
           const media = getResolvedMedia(item, mediaById);
+          const ref = getItemRef(item);
 
           if (!media) {
             const pendingName = item instanceof File ? item.name : null;
+            const isFailed = ref ? failedIds.has(ref.id) : false;
 
             return (
               <div
-                key={`${getItemId(item) ?? pendingName ?? "pending"}-${
+                key={`${ref?.id ?? pendingName ?? "pending"}-${
                   // biome-ignore lint/suspicious/noArrayIndexKey: safe
                   index
                 }`}
@@ -205,12 +262,17 @@ export default function UploadImageHelper({ path }: UploadImageHelperProps) {
               >
                 {pendingName
                   ? `Uploading ${pendingName}...`
-                  : "Loading image details..."}
+                  : isFailed
+                    ? "Failed to load image details."
+                    : "Loading image details..."}
               </div>
             );
           }
 
-          const mediaPath = buildMediaPath(media);
+          const collection: MediaCollection =
+            ref?.collection ?? "media-private";
+
+          const mediaPath = buildMediaPath(media, collection);
           const altText = getDefaultAlt(media);
           const markdown = mediaPath
             ? `![${escapeMarkdownAlt(altText)}](${mediaPath})`
@@ -241,7 +303,7 @@ export default function UploadImageHelper({ path }: UploadImageHelperProps) {
                   {media.filename || "Untitled image"}
                 </div>
                 <div className="truncate text-xs text-[var(--theme-text)] opacity-70">
-                  alt: {altText}
+                  alt: {altText} Â· {collection}
                 </div>
                 {markdown ? (
                   <code className="mt-1 block truncate text-xs text-[var(--theme-text)] opacity-75">
@@ -275,7 +337,7 @@ export default function UploadImageHelper({ path }: UploadImageHelperProps) {
                   buttonStyle="error"
                   disabled={deletingId === media.id}
                   margin={false}
-                  onClick={() => void removeMedia(media.id)}
+                  onClick={() => void removeMedia(media.id, collection)}
                   size="small"
                   type="button"
                 >

@@ -1,6 +1,6 @@
 import { MarkdownRenderer } from "@/components/markdown";
 import { extractHeadings } from "@/lib/markdown/extract-headings";
-import type { Lesson, Media } from "@/types/payload-types";
+import type { Lesson } from "@/types/payload-types";
 import { LessonTOC } from "../lesson-toc";
 
 interface TextLessonProps {
@@ -15,7 +15,7 @@ export function TextLesson({ lesson }: TextLessonProps) {
       {headings.length > 0 && <LessonTOC headings={headings} />}
       <MarkdownRenderer
         content={lesson.content ?? "No Content"}
-        media={lesson.uploadImage as Media[]}
+        media={lesson.uploadImage}
         // don't optimize free lessons for better SEO
         // there are no performance issues since they are SSGed
         optimizeMath={!lesson.free || process.env.NODE_ENV === "development"}

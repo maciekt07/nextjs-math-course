@@ -1,5 +1,4 @@
 import type { Access, CollectionConfig } from "payload";
-import { posterReadAccess } from "@/cms/access/posterAccess";
 import { isAdminOrEditor } from "@/cms/access/roles";
 import { extractPalette } from "@/cms/hooks/extractPalette";
 import { generateBlurhash } from "@/cms/hooks/generateBlurhash";
@@ -10,7 +9,7 @@ const canManagePosters: Access = ({ req: { user } }) => isAdminOrEditor(user);
 export const Posters: CollectionConfig = {
   slug: "posters",
   access: {
-    read: posterReadAccess,
+    read: () => true,
     create: canManagePosters,
     update: canManagePosters,
     delete: canManagePosters,
@@ -19,6 +18,7 @@ export const Posters: CollectionConfig = {
     beforeOperation: [renameFile],
     beforeValidate: [generateBlurhash, extractPalette],
   },
+
   upload: {
     mimeTypes: ["image/*"],
     staticDir: "media",
@@ -32,16 +32,6 @@ export const Posters: CollectionConfig = {
     {
       name: "alt",
       type: "text",
-    },
-    {
-      name: "isPublic",
-      type: "checkbox",
-      defaultValue: false,
-      admin: {
-        readOnly: true,
-        description:
-          "Managed automatically. Public posters are attached to at least one published course.",
-      },
     },
     {
       name: "palette",

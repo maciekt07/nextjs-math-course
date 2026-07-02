@@ -7,7 +7,7 @@ import remarkDirective from "remark-directive";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import type { Pluggable } from "unified";
-import type { Media } from "@/types/payload-types";
+import type { Lesson } from "@/types/payload-types";
 import { blocks } from "./blocks/blocks-plugin";
 import { createMarkdownComponents } from "./components";
 import { desmos } from "./desmos/desmos-plugin";
@@ -29,7 +29,7 @@ const REHYPE_PLUGINS: Pluggable[] = [rehypeUnwrapImages, rehypeKatex];
 
 interface MarkdownRendererProps {
   content: string;
-  media?: Media[];
+  media?: NonNullable<Lesson["uploadImage"]> | null;
 
   /**
    * SSR just a placeholder so the page loads fast.

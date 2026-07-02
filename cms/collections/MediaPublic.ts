@@ -1,12 +1,22 @@
-import type { CollectionConfig } from "payload";
+import type { Access, CollectionConfig } from "payload";
+import { isAdminOrEditor } from "@/cms/access/roles";
 import { generateBlurhash } from "@/cms/hooks/generateBlurhash";
-import { mediaReadAccess } from "../access/mediaAccess";
 import { renameFile } from "../hooks/renameFile";
 
-export const Media: CollectionConfig = {
-  slug: "media",
+const canManageMediaPublic: Access = ({ req: { user } }) =>
+  isAdminOrEditor(user);
+
+export const MediaPublic: CollectionConfig = {
+  slug: "media-public",
+  labels: {
+    singular: "Public Media",
+    plural: "Public Media",
+  },
   access: {
-    read: mediaReadAccess,
+    read: () => true,
+    create: canManageMediaPublic,
+    update: canManageMediaPublic,
+    delete: canManageMediaPublic,
   },
   hooks: {
     beforeOperation: [renameFile],
@@ -14,7 +24,7 @@ export const Media: CollectionConfig = {
   },
   upload: {
     mimeTypes: ["image/*"],
-    staticDir: "media",
+    staticDir: "media-public",
     modifyResponseHeaders: ({ headers }) => {
       headers.set("Cache-Control", "public, max-age=31536000, immutable");
       return headers;

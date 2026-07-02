@@ -16,6 +16,8 @@ jiti.import("./env/client");
 
 const ngrokOrigin = serverEnv.NGROK_URL?.replace(/^https?:\/\//, "");
 
+const cdnUrl = serverEnv.S3_PUBLIC_CDN_URL;
+
 const nextConfig: NextConfig = {
   images: {
     minimumCacheTTL: 31536000, // 1 year
@@ -27,6 +29,17 @@ const nextConfig: NextConfig = {
         hostname: "image.mux.com",
         pathname: "/**",
       },
+      ...(cdnUrl
+        ? [
+            {
+              protocol: new URL(cdnUrl).protocol.slice(0, -1) as
+                | "http"
+                | "https",
+              hostname: new URL(cdnUrl).hostname,
+              pathname: "/**",
+            },
+          ]
+        : []),
     ],
   },
 

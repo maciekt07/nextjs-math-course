@@ -5,7 +5,7 @@ import { ExternalLink } from "@/components/animate-ui/icons/external-link";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { stripBasicMarkdown } from "@/lib/markdown/strip-markdown";
 import { slug } from "@/lib/slugify";
-import type { Media } from "@/types/payload-types";
+import type { Lesson, MediaPrivate, MediaPublic } from "@/types/payload-types";
 import { ImageZoom } from "../ui/shadcn-io/image-zoom";
 import type { CalloutDivProps } from "./blocks/blocks-plugin";
 import { CalloutBlock } from "./blocks/callout-block";
@@ -17,9 +17,46 @@ import { KatexRenderer } from "./katex/katex-renderer";
 import type { MathElementProps } from "./types";
 import { getNodeId, getText } from "./utils";
 
+type MediaDoc = MediaPrivate | MediaPublic;
+type UploadImageValue = NonNullable<Lesson["uploadImage"]> | null;
+
+type ResolvedMediaItem = {
+  src: string;
+  width?: number | null;
+  height?: number | null;
+  blurhash?: string | null;
+};
+
+function resolveMediaItems(media?: UploadImageValue): ResolvedMediaItem[] {
+  if (!media) return [];
+
+  return media.flatMap((item): ResolvedMediaItem[] => {
+    if (!item.value || typeof item.value === "string") return [];
+    const doc: MediaDoc = item.value;
+
+    const src = doc.url;
+    if (!src) return [];
+
+    return [
+      {
+        src,
+        width: doc.width,
+        height: doc.height,
+        blurhash: doc.blurhash,
+      },
+    ];
+  });
+}
+
 interface CreateMarkdownComponentsOptions {
-  media?: Media[];
+  media?: UploadImageValue | null;
   optimizeMath?: boolean;
+  /**
+   * must be `false` for protected media. next/image fetches images
+   * server-side without forwarding auth cookies, so access-controlled images will fail to load
+   *
+   * @see https://nextjs.org/docs/app/api-reference/components/image#src
+   */
   optimizeImages?: boolean;
 }
 
@@ -30,6 +67,7 @@ export function createMarkdownComponents({
   optimizeMath = false,
   optimizeImages = false,
 }: CreateMarkdownComponentsOptions): MarkdownComponents {
+  const resolvedMedia = resolveMediaItems(media);
   let mathElementCount = 0;
   return {
     a: ({ node, href, children, ...props }) => {
@@ -73,7 +111,7 @@ export function createMarkdownComponents({
     },
 
     img: ({ node, ...props }) => {
-      const matchedMedia = media?.find((m) => m.url === props.src);
+      const matchedMedia = resolvedMedia.find((m) => m.src === props.src);
       const blurhash = matchedMedia?.blurhash;
       const width = matchedMedia?.width ?? 800;
       const height = matchedMedia?.height ?? 500;
