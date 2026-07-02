@@ -1,6 +1,13 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
+const S3EnvSchema = {
+  bucket: z.string().min(1).optional(),
+  accessKeyId: z.string().min(1).optional(),
+  secret: z.string().min(1).optional(),
+  endpoint: z.url().optional().or(z.literal("")),
+};
+
 export const serverEnv = createEnv({
   skipValidation:
     !!process.env.SKIP_ENV_VALIDATION || process.env.NODE_ENV === "test",
@@ -44,10 +51,17 @@ export const serverEnv = createEnv({
       ),
 
     ENABLE_S3: z.coerce.boolean().default(false),
-    S3_BUCKET: z.string().optional(),
-    S3_ACCESS_KEY_ID: z.string().optional(),
-    S3_SECRET: z.string().optional(),
-    S3_ENDPOINT: z.url().optional().or(z.literal("")),
+
+    S3_ENDPOINT: S3EnvSchema.endpoint,
+    S3_BUCKET: S3EnvSchema.bucket,
+    S3_ACCESS_KEY_ID: S3EnvSchema.accessKeyId,
+    S3_SECRET: S3EnvSchema.secret,
+
+    S3_PUBLIC_CDN_URL: z.url().optional(),
+    S3_PUBLIC_ENDPOINT: S3EnvSchema.endpoint,
+    S3_PUBLIC_BUCKET: S3EnvSchema.bucket,
+    S3_PUBLIC_ACCESS_KEY_ID: S3EnvSchema.accessKeyId,
+    S3_PUBLIC_SECRET: S3EnvSchema.secret,
 
     MUX_TOKEN_ID: z.string().min(1),
     MUX_TOKEN_SECRET: z.string().min(1),

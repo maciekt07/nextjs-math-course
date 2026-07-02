@@ -163,7 +163,7 @@ export const Lessons: CollectionConfig = {
             {
               name: "uploadImage",
               type: "upload",
-              relationTo: "media",
+              relationTo: ["media-public", "media-private"],
               label: "Upload images for this lesson",
               hasMany: true,
               admin: {

@@ -3,7 +3,7 @@ import { publishedStatusWhere } from "@/cms/access/contentAccess";
 import { clientEnv } from "@/env/client";
 import { stripMarkdown } from "@/lib/markdown/strip-markdown";
 import { getPayloadClient } from "@/lib/payload-client";
-import type { Media, MuxVideo } from "@/types/payload-types";
+import type { Lesson, MuxVideo } from "@/types/payload-types";
 
 /**
  * sitemap covers landing page + free published lessons
@@ -29,12 +29,13 @@ function toAbsoluteUrl(origin: string, url?: string | null) {
 
 function getImageUrls(
   origin: string,
-  uploadImage?: (string | Media)[] | null,
+  uploadImage?: Lesson["uploadImage"],
 ): string[] | undefined {
   const images = (uploadImage ?? [])
-    .map((image) =>
-      typeof image === "string" ? null : toAbsoluteUrl(origin, image.url),
-    )
+    .map((item) => {
+      if (!item.value || typeof item.value === "string") return null;
+      return toAbsoluteUrl(origin, item.value.url);
+    })
     .filter((image): image is string => Boolean(image));
 
   return images.length > 0 ? Array.from(new Set(images)) : undefined;

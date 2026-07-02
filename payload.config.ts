@@ -3,7 +3,7 @@ import "server-only";
 import { Courses } from "@cms/collections/Courses";
 import { Feedbacks } from "@cms/collections/Feedbacks";
 import { Lessons } from "@cms/collections/Lessons";
-import { Media } from "@cms/collections/Media";
+import { MediaPublic } from "@cms/collections/MediaPublic";
 import { Users } from "@cms/collections/Users";
 import { muxVideoPlugin } from "@oversightstudio/mux-video";
 import { mongooseAdapter } from "@payloadcms/db-mongodb";
@@ -14,16 +14,42 @@ import { s3Storage } from "@payloadcms/storage-s3";
 import { buildConfig } from "payload";
 import sharp from "sharp";
 import { Chapters } from "@/cms/collections/Chapters";
+import { MediaPrivate } from "@/cms/collections/MediaPrivate";
 import { Posters } from "@/cms/collections/Posters";
 import { clientEnv } from "@/env/client";
 import { serverEnv } from "@/env/server";
 
 // Use ENABLE_S3=true in .env to enable S3/R2 storage
-const useS3 = serverEnv.ENABLE_S3 && !!serverEnv.S3_BUCKET;
+const useS3 =
+  serverEnv.ENABLE_S3 && !!serverEnv.S3_BUCKET && !!serverEnv.S3_PUBLIC_BUCKET;
+
+function buildPublicFileURL({
+  bucket,
+  cdnURL,
+  filename,
+  prefix,
+}: {
+  bucket: string;
+  cdnURL: string;
+  filename: string;
+  prefix?: string;
+}) {
+  const key = [prefix, filename].filter(Boolean).join("/");
+  return `${cdnURL.replace(/\/$/, "")}/${bucket}/${key}`;
+}
 
 export default buildConfig({
   editor: lexicalEditor(),
-  collections: [Courses, Posters, Lessons, Chapters, Media, Users, Feedbacks],
+  collections: [
+    Courses,
+    Posters,
+    Lessons,
+    Chapters,
+    MediaPrivate,
+    MediaPublic,
+    Users,
+    Feedbacks,
+  ],
   secret: serverEnv.PAYLOAD_SECRET,
   db: mongooseAdapter({
     url: serverEnv.MONGO_URL,
@@ -35,11 +61,13 @@ export default buildConfig({
   typescript: {
     outputFile: "types/payload-types.ts",
   },
+
   email: resendAdapter({
     defaultFromAddress: serverEnv.RESEND_FROM_EMAIL,
     defaultFromName: serverEnv.RESEND_FROM_EMAIL,
     apiKey: serverEnv.RESEND_API_KEY,
   }),
+
   plugins: [
     muxVideoPlugin({
       enabled: true,
@@ -58,12 +86,12 @@ export default buildConfig({
         },
       },
     }),
-    //TODO: add second storage adapter for public media
+
+    // https://payloadcms.com/docs/upload/storage-adapters#s3-r2
     s3Storage({
       enabled: useS3,
       collections: {
-        media: { signedDownloads: { expiresIn: 7200 } },
-        posters: { signedDownloads: { expiresIn: 7200 } },
+        "media-private": { signedDownloads: { expiresIn: 7200 } },
       },
       bucket: serverEnv.S3_BUCKET || "",
       config: {
@@ -76,6 +104,46 @@ export default buildConfig({
         forcePathStyle: true,
       },
     }),
+
+    // public bucket
+    s3Storage({
+      enabled: useS3,
+      collections: {
+        posters: {
+          disablePayloadAccessControl: true,
+          generateFileURL: ({ filename, prefix }) => {
+            return buildPublicFileURL({
+              bucket: serverEnv.S3_PUBLIC_BUCKET || "",
+              cdnURL: serverEnv.S3_PUBLIC_CDN_URL || "",
+              filename,
+              prefix,
+            });
+          },
+        },
+        "media-public": {
+          disablePayloadAccessControl: true,
+          generateFileURL: ({ filename, prefix }) => {
+            return buildPublicFileURL({
+              bucket: serverEnv.S3_PUBLIC_BUCKET || "",
+              cdnURL: serverEnv.S3_PUBLIC_CDN_URL || "",
+              filename,
+              prefix,
+            });
+          },
+        },
+      },
+      bucket: serverEnv.S3_PUBLIC_BUCKET || "",
+      config: {
+        credentials: {
+          accessKeyId: serverEnv.S3_PUBLIC_ACCESS_KEY_ID || "",
+          secretAccessKey: serverEnv.S3_PUBLIC_SECRET || "",
+        },
+        region: "auto",
+        endpoint: serverEnv.S3_PUBLIC_ENDPOINT || "",
+        forcePathStyle: true,
+      },
+    }),
+
     importExportPlugin({
       collections: [
         {

@@ -71,7 +71,8 @@ export interface Config {
     posters: Poster;
     lessons: Lesson;
     chapters: Chapter;
-    media: Media;
+    'media-private': MediaPrivate;
+    'media-public': MediaPublic;
     users: User;
     feedback: Feedback;
     'mux-video': MuxVideo;
@@ -89,7 +90,8 @@ export interface Config {
     posters: PostersSelect<false> | PostersSelect<true>;
     lessons: LessonsSelect<false> | LessonsSelect<true>;
     chapters: ChaptersSelect<false> | ChaptersSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
+    'media-private': MediaPrivateSelect<false> | MediaPrivateSelect<true>;
+    'media-public': MediaPublicSelect<false> | MediaPublicSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     feedback: FeedbackSelect<false> | FeedbackSelect<true>;
     'mux-video': MuxVideoSelect<false> | MuxVideoSelect<true>;
@@ -172,10 +174,6 @@ export interface Poster {
   id: string;
   alt?: string | null;
   /**
-   * Managed automatically. Public posters are attached to at least one published course.
-   */
-  isPublic?: boolean | null;
-  /**
    * Auto-generated color palette
    */
   palette?: {
@@ -214,7 +212,18 @@ export interface Lesson {
    */
   chapter?: (string | null) | Chapter;
   type: 'text' | 'quiz' | 'video';
-  uploadImage?: (string | Media)[] | null;
+  uploadImage?:
+    | (
+        | {
+            relationTo: 'media-public';
+            value: string | MediaPublic;
+          }
+        | {
+            relationTo: 'media-private';
+            value: string | MediaPrivate;
+          }
+      )[]
+    | null;
   content?: string | null;
   quiz?:
     | {
@@ -274,9 +283,29 @@ export interface Chapter {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
+ * via the `definition` "media-public".
  */
-export interface Media {
+export interface MediaPublic {
+  id: string;
+  alt?: string | null;
+  blurhash?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media-private".
+ */
+export interface MediaPrivate {
   id: string;
   alt?: string | null;
   blurhash?: string | null;
@@ -581,8 +610,12 @@ export interface PayloadLockedDocument {
         value: string | Chapter;
       } | null)
     | ({
-        relationTo: 'media';
-        value: string | Media;
+        relationTo: 'media-private';
+        value: string | MediaPrivate;
+      } | null)
+    | ({
+        relationTo: 'media-public';
+        value: string | MediaPublic;
       } | null)
     | ({
         relationTo: 'users';
@@ -665,7 +698,6 @@ export interface CoursesSelect<T extends boolean = true> {
  */
 export interface PostersSelect<T extends boolean = true> {
   alt?: T;
-  isPublic?: T;
   palette?:
     | T
     | {
@@ -747,9 +779,28 @@ export interface ChaptersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
+ * via the `definition` "media-private_select".
  */
-export interface MediaSelect<T extends boolean = true> {
+export interface MediaPrivateSelect<T extends boolean = true> {
+  alt?: T;
+  blurhash?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media-public_select".
+ */
+export interface MediaPublicSelect<T extends boolean = true> {
   alt?: T;
   blurhash?: T;
   updatedAt?: T;
@@ -980,7 +1031,8 @@ export interface TaskCreateCollectionExport {
       | 'posters'
       | 'lessons'
       | 'chapters'
-      | 'media'
+      | 'media-private'
+      | 'media-public'
       | 'users'
       | 'feedback'
       | 'mux-video'

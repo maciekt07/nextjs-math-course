@@ -1,4 +1,5 @@
 "use client";
+
 import dynamic from "next/dynamic";
 import { type SVGProps, useEffect, useState } from "react";
 import Floor from "@/components/hero-svg/floor";
@@ -30,6 +31,7 @@ const HeroSvgComponent = (props: SVGProps<SVGSVGElement>) => {
   }, []);
 
   return (
+    // <MotionConfig reducedMotion="always">
     <svg
       width={500}
       height={500}

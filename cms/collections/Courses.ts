@@ -7,10 +7,6 @@ import {
   revalidateCourse,
   revalidateCourseAfterDelete,
 } from "@/cms/hooks/revalidateCourse";
-import {
-  syncCoursePosterVisibilityAfterChange,
-  syncCoursePosterVisibilityAfterDelete,
-} from "@/cms/hooks/syncPosterVisibility";
 
 const canManageCourses: Access = ({ req: { user } }) => isAdmin(user);
 
@@ -29,12 +25,8 @@ export const Courses: CollectionConfig = {
     drafts: true,
   },
   hooks: {
-    afterChange: [revalidateCourse, syncCoursePosterVisibilityAfterChange],
-    afterDelete: [
-      syncCoursePosterVisibilityAfterDelete,
-      cascadeDeleteCourse,
-      revalidateCourseAfterDelete,
-    ],
+    afterChange: [revalidateCourse],
+    afterDelete: [cascadeDeleteCourse, revalidateCourseAfterDelete],
   },
   admin: {
     useAsTitle: "title",
