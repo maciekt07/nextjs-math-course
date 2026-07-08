@@ -50,7 +50,7 @@ export const serverEnv = createEnv({
         },
       ),
 
-    ENABLE_S3: z.coerce.boolean().default(false),
+    ENABLE_S3: z.enum(["true", "false"]).transform((v) => v === "true"),
 
     S3_ENDPOINT: S3EnvSchema.endpoint,
     S3_BUCKET: S3EnvSchema.bucket,

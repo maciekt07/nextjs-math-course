@@ -1,6 +1,6 @@
 "use client";
 
-import { MailCheck, MailX } from "lucide-react";
+import { MailCheck, MailX, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
@@ -91,7 +91,7 @@ export function DeleteAccountButton() {
         <DialogHeader>
           <DialogTitle className="text-center sm:text-left">
             <span className="inline-flex items-center justify-center sm:justify-start gap-2">
-              <AnimatedTrash2 animate className="size-5 text-destructive" />
+              <Trash2 className="size-5 text-destructive" />
               Delete account?
             </span>
           </DialogTitle>

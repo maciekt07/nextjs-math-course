@@ -3,14 +3,13 @@ import { buildPublishedStatusWhere } from "@/cms/access/contentAccess";
 import { isAdminOrEditor } from "@/cms/access/roles";
 import { getRequestedFilename } from "@/cms/utils/get-requested-filename";
 import { getServerSession } from "@/lib/auth/get-session";
+import { LIMITS } from "@/lib/constants/limits";
 import { hasEnrollment } from "@/lib/data/enrollment";
 import { redis } from "@/lib/redis";
 
-const ACCESS_CACHE_TTL_SECONDS = 60 * 60;
+const MEDIA_ACCESS_TTL_ALLOWED = LIMITS.media.signedDownloads - 20 * 60;
 
-function buildMediaCacheKey(filename: string, userId: string): string {
-  return `media-access:${filename}:${userId}`;
-}
+const MEDIA_ACCESS_TTL_DENIED = 60;
 
 export const mediaReadAccess: Access = async ({ req }): Promise<boolean> => {
   try {
@@ -23,7 +22,7 @@ export const mediaReadAccess: Access = async ({ req }): Promise<boolean> => {
     const userId = session?.user?.id;
     if (!userId) return false;
 
-    const cacheKey = buildMediaCacheKey(filename, userId);
+    const cacheKey = `media-access:${filename}:${userId}`;
 
     try {
       const cached = await redis.get<boolean>(cacheKey);
@@ -38,7 +37,7 @@ export const mediaReadAccess: Access = async ({ req }): Promise<boolean> => {
 
     try {
       await redis.set(cacheKey, result, {
-        ex: result ? ACCESS_CACHE_TTL_SECONDS : 2 * 60, // TODO:
+        ex: result ? MEDIA_ACCESS_TTL_ALLOWED : MEDIA_ACCESS_TTL_DENIED,
       });
     } catch (cacheError) {
       console.error("Media access cache write error:", cacheError);

@@ -18,24 +18,27 @@ import { MediaPrivate } from "@/cms/collections/MediaPrivate";
 import { Posters } from "@/cms/collections/Posters";
 import { clientEnv } from "@/env/client";
 import { serverEnv } from "@/env/server";
+import { LIMITS } from "@/lib/constants/limits";
+import { APP_NAME } from "@/lib/constants/site";
+import { buildPublicFileURL } from "@/lib/storage/build-url";
 
 // Use ENABLE_S3=true in .env to enable S3/R2 storage
 const useS3 =
   serverEnv.ENABLE_S3 && !!serverEnv.S3_BUCKET && !!serverEnv.S3_PUBLIC_BUCKET;
 
-function buildPublicFileURL({
-  bucket,
-  cdnURL,
+function publicFileURL({
   filename,
   prefix,
 }: {
-  bucket: string;
-  cdnURL: string;
   filename: string;
   prefix?: string;
 }) {
-  const key = [prefix, filename].filter(Boolean).join("/");
-  return `${cdnURL.replace(/\/$/, "")}/${bucket}/${key}`;
+  return buildPublicFileURL({
+    bucket: serverEnv.S3_PUBLIC_BUCKET || "",
+    cdnURL: serverEnv.S3_PUBLIC_CDN_URL || "",
+    filename,
+    prefix,
+  });
 }
 
 export default buildConfig({
@@ -60,6 +63,36 @@ export default buildConfig({
   },
   typescript: {
     outputFile: "types/payload-types.ts",
+  },
+
+  admin: {
+    meta: {
+      titleSuffix: `- ${APP_NAME} Admin Panel`,
+      icons: [
+        {
+          rel: "icon",
+          type: "image/ico",
+          url: "/favicon.ico",
+        },
+        {
+          rel: "apple-touch-icon",
+          type: "image/png",
+          url: "/apple-icon.png",
+        },
+      ],
+    },
+    components: {
+      graphics: {
+        Icon: {
+          path: "@cms/components/branding",
+          exportName: "Icon",
+        },
+        Logo: {
+          path: "@cms/components/branding",
+          exportName: "Logo",
+        },
+      },
+    },
   },
 
   email: resendAdapter({
@@ -91,7 +124,9 @@ export default buildConfig({
     s3Storage({
       enabled: useS3,
       collections: {
-        "media-private": { signedDownloads: { expiresIn: 7200 } },
+        "media-private": {
+          signedDownloads: { expiresIn: LIMITS.media.signedDownloads },
+        },
       },
       bucket: serverEnv.S3_BUCKET || "",
       config: {
@@ -111,25 +146,11 @@ export default buildConfig({
       collections: {
         posters: {
           disablePayloadAccessControl: true,
-          generateFileURL: ({ filename, prefix }) => {
-            return buildPublicFileURL({
-              bucket: serverEnv.S3_PUBLIC_BUCKET || "",
-              cdnURL: serverEnv.S3_PUBLIC_CDN_URL || "",
-              filename,
-              prefix,
-            });
-          },
+          generateFileURL: publicFileURL,
         },
         "media-public": {
           disablePayloadAccessControl: true,
-          generateFileURL: ({ filename, prefix }) => {
-            return buildPublicFileURL({
-              bucket: serverEnv.S3_PUBLIC_BUCKET || "",
-              cdnURL: serverEnv.S3_PUBLIC_CDN_URL || "",
-              filename,
-              prefix,
-            });
-          },
+          generateFileURL: publicFileURL,
         },
       },
       bucket: serverEnv.S3_PUBLIC_BUCKET || "",

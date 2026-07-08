@@ -65,7 +65,7 @@ pnpm install
 ### Set Up Environment Variables
 
 Create a `.env.development` file in the root directory. Use [.env.example](.env.example) as a template.
-Environment variables are fully typed and validated for both dev and build. For production preview, use `.env` file.
+Environment variables are fully typed and validated for both dev and build. For production preview, use `.env.production` file.
 
 ### Start Databases
 

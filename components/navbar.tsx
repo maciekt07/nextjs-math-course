@@ -58,7 +58,7 @@ function AuthButtons({
           onClick={onNavigate}
           {...props}
         >
-          <Link href="/account" className="flex items-center gap-2">
+          <Link href="/account" prefetch className="flex items-center gap-2">
             <Avatar className="size-6">
               <AvatarFallback className="bg-primary text-primary-foreground text-sm!">
                 {user.name?.charAt(0).toUpperCase() ||

@@ -9,6 +9,7 @@ import type React from "react";
 import { importMap } from "./admin/importMap.js";
 import "./custom.scss";
 import "@styles/payload-styles.css";
+import { inter } from "@/lib/fonts";
 
 type Args = {
   children: React.ReactNode;
@@ -28,6 +29,9 @@ const Layout = ({ children }: Args) => (
     config={config}
     importMap={importMap}
     serverFunction={serverFunction}
+    htmlProps={{
+      className: `${inter.className} ${inter.variable} antialiased`,
+    }}
   >
     {children}
   </RootLayout>

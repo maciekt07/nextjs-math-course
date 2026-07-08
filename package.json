@@ -35,7 +35,7 @@
     "knip": "cross-env NODE_OPTIONS=\"--import tsx\" knip",
     "db:generate": "dotenv -e .env.development drizzle-kit generate",
     "db:push": "dotenv -e .env.development drizzle-kit push",
-    "db:migrate": "drizzle-kit migrate",
+    "db:migrate": "dotenv -e .env.production drizzle-kit migrate",
     "db:studio": "dotenv -e .env.development drizzle-kit studio",
     "cms:gen-types": "payload generate:types",
     "cms:gen-map": "payload generate:importmap",

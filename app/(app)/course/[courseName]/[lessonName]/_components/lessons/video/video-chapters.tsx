@@ -349,7 +349,7 @@ function ScrollButton({
     <>
       <div
         className={cn(
-          "absolute w-14 h-full z-1",
+          "absolute w-14 h-full z-1 hidden sm:block",
           !isLeft && "right-0",
           !show && "pointer-events-none inset-0",
         )}

@@ -26,6 +26,11 @@ export const LIMITS = {
     sessionExpiresIn: 60 * 60 * 24 * 7,
   },
 
+  media: {
+    /** 2 hours */
+    signedDownloads: 60 * 60 * 2,
+  },
+
   feedback: {
     commentMaxLength: 200,
   },
