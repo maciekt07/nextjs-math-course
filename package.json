@@ -32,7 +32,7 @@
     "lint:fix": "biome check --write",
     "lint:fix-unsafe": "biome check --write --unsafe",
     "format": "biome format --write",
-    "knip": "cross-env NODE_OPTIONS=\"--import tsx\" knip",
+    "knip": "cross-env SKIP_ENV_VALIDATION=1 NODE_OPTIONS=\"--import tsx\" knip",
     "db:generate": "dotenv -e .env.development drizzle-kit generate",
     "db:push": "dotenv -e .env.development drizzle-kit push",
     "db:migrate": "dotenv -e .env.production drizzle-kit migrate",

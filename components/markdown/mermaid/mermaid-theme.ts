@@ -89,7 +89,7 @@ const darkMindmapVariables = {
   cScaleLabel11: "#fed7aa",
 } satisfies Partial<ThemeVariables>;
 
-export const lightThemeVariables: ThemeVariables = {
+const lightThemeVariables: ThemeVariables = {
   darkMode: false,
   fontFamily: "Inter, ui-sans-serif, sans-serif",
 
@@ -192,7 +192,7 @@ export const lightThemeVariables: ThemeVariables = {
   },
 };
 
-export const darkThemeVariables: ThemeVariables = {
+const darkThemeVariables: ThemeVariables = {
   darkMode: true,
   fontFamily: "Inter, ui-sans-serif, sans-serif",
 
