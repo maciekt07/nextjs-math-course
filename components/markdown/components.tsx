@@ -14,6 +14,8 @@ import { DesmosGraph } from "./desmos/desmos-graph";
 import type { DesmosDivProps } from "./desmos/desmos-plugin";
 import { Heading } from "./heading";
 import { KatexRenderer } from "./katex/katex-renderer";
+import { MermaidDiagram } from "./mermaid/mermaid-diagram";
+import type { MermaidDivProps } from "./mermaid/mermaid-plugin";
 import type { MathElementProps } from "./types";
 import { getNodeId, getText } from "./utils";
 
@@ -138,7 +140,7 @@ export function createMarkdownComponents({
       className,
       children,
       ...props
-    }: MathElementProps & DesmosDivProps & CalloutDivProps) {
+    }: MathElementProps & DesmosDivProps & CalloutDivProps & MermaidDivProps) {
       // handle callout blocks
       if (className?.includes("callout-block")) {
         const blockType = props["data-block-type"] as BlockType;
@@ -158,6 +160,13 @@ export function createMarkdownComponents({
         const noEmbed = props["data-no-embed"] === "true";
         if (!graphUrl) return null;
         return <DesmosGraph graphUrl={graphUrl} noEmbed={noEmbed} />;
+      }
+
+      // handle mermaid diagrams
+      if (className?.includes("mermaid-diagram")) {
+        const code = props["data-mermaid-code"];
+        if (!code) return null;
+        return <MermaidDiagram code={code} />;
       }
 
       // KaTeX block math

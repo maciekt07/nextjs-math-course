@@ -18,7 +18,7 @@ import { authClient } from "@/lib/auth/auth-client";
 import {
   forgetPendingCheckoutOwnership,
   readPendingCheckoutOwnership,
-} from "@/lib/checkout-ownership-client";
+} from "@/lib/ownership-client";
 
 type OwnedCoursesContextValue = {
   isOwned: (courseId: string, fallback?: boolean) => boolean;

@@ -4,7 +4,7 @@ import { Compass } from "@/components/animate-ui/icons/compass";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { CourseCard } from "@/components/course-card";
 import { OneTap } from "@/components/one-tap";
-import { OwnedCoursesProvider } from "@/components/owned-courses-provider";
+import { OwnedCoursesProvider } from "@/components/ownership-provider";
 import { Button } from "@/components/ui/button";
 import { SITE_DESCRIPTION } from "@/lib/constants/site";
 import { getCourses } from "@/lib/data/courses";

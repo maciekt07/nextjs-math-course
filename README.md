@@ -176,6 +176,29 @@ $$
 
 For more details, see the [Markdown + LaTeX documentation](https://ashki23.github.io/markdown-latex.html#mathematical-formula)
 
+### Using Mermaid Diagrams
+
+You can add [Mermaid](https://mermaid.js.org/intro/) diagrams directly in your markdown lessons:
+
+````markdown
+```mermaid
+flowchart TD
+    A["Numbers"] --> B["Natural numbers"]
+    A --> C["Integers"]
+    A --> D["Rational numbers"]
+    A --> E["Real numbers"]
+
+    D --> F["$$\frac{a}{b}$$"]
+    E --> G["Number line"]
+```
+````
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="screenshots/diagram-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="screenshots/diagram-light.png">
+  <img alt="Mermaid Diagram" src="screenshots/diagram-dark.png">
+</picture>
+
 ### Using Callout Blocks
 
 You can highlight important content or tips using custom callout blocks like `note`, `tip`, `important`, `warning`, `card`.

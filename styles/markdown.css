@@ -35,6 +35,10 @@ html[data-theme="dark"] {
     @apply border-border;
   }
 
+  pre {
+    @apply bg-transparent! p-0! m-0!;
+  }
+
   blockquote {
     @apply border-l-4 border-border pl-4;
   }

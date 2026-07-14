@@ -7,7 +7,7 @@ import { confirmCheckoutOwnershipAction } from "@/lib/actions/ownership";
 import {
   forgetPendingCheckoutOwnership,
   rememberPendingCheckoutOwnership,
-} from "@/lib/checkout-ownership-client";
+} from "@/lib/ownership-client";
 import { useCourseStore } from "@/stores/course-store";
 import { useSidebarStore } from "@/stores/sidebar-store";
 import type { Chapter, Course, Lesson } from "@/types/payload-types";

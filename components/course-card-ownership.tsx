@@ -3,7 +3,7 @@
 import { Check } from "lucide-react";
 import Link from "next/link";
 import BuyCourseButton from "@/components/buy-course-button";
-import { useOwnedCourse } from "@/components/owned-courses-provider";
+import { useOwnedCourse } from "@/components/ownership-provider";
 import { Button } from "@/components/ui/button";
 
 type CourseCardOwnershipProps = {

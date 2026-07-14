@@ -12,6 +12,7 @@ import { blocks } from "./blocks/blocks-plugin";
 import { createMarkdownComponents } from "./components";
 import { desmos } from "./desmos/desmos-plugin";
 import { KATEX_REHYPE_OPTIONS } from "./katex/katex-rehype-options";
+import { mermaid } from "./mermaid/mermaid-plugin";
 import { remarkHeadingIds } from "./remark/remark-heading-ids";
 import remarkSections from "./remark/remark-sections";
 import { MarkdownWrapper } from "./wrapper";
@@ -22,6 +23,7 @@ const BASE_REMARK_PLUGINS: Pluggable[] = [
   remarkDirective,
   desmos,
   blocks,
+  mermaid,
   remarkHeadingIds,
 ];
 
