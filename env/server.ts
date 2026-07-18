@@ -5,15 +5,16 @@ const S3EnvSchema = {
   bucket: z.string().min(1).optional(),
   accessKeyId: z.string().min(1).optional(),
   secret: z.string().min(1).optional(),
-  endpoint: z.url().optional().or(z.literal("")),
+  endpoint: z.string().url().optional().or(z.literal("")),
 };
 
 export const serverEnv = createEnv({
   skipValidation:
     !!process.env.SKIP_ENV_VALIDATION || process.env.NODE_ENV === "test",
   server: {
-    NGROK_URL: z.url().optional().or(z.literal("")),
+    NGROK_URL: z.string().url().optional().or(z.literal("")),
     DATABASE_URL: z
+      .string()
       .url()
       .min(10)
       .refine((val) => val.startsWith("postgresql://"), {
@@ -26,7 +27,7 @@ export const serverEnv = createEnv({
     DB_NAME: z.string().optional(),
 
     BETTER_AUTH_SECRET: z.string().min(16),
-    BETTER_AUTH_URL: z.url().min(1),
+    BETTER_AUTH_URL: z.string().url().min(1),
 
     RESEND_API_KEY: z
       .string()
@@ -34,9 +35,9 @@ export const serverEnv = createEnv({
       .refine((val) => val.startsWith("re"), {
         message: "RESEND_API_KEY must start with 're'",
       }),
-    RESEND_FROM_EMAIL: z.email(
-      "RESEND_FROM_EMAIL must be a valid email address",
-    ),
+    RESEND_FROM_EMAIL: z
+      .string()
+      .email("RESEND_FROM_EMAIL must be a valid email address"),
 
     PAYLOAD_SECRET: z.string().min(16),
     MONGO_URL: z
@@ -57,7 +58,7 @@ export const serverEnv = createEnv({
     S3_ACCESS_KEY_ID: S3EnvSchema.accessKeyId,
     S3_SECRET: S3EnvSchema.secret,
 
-    S3_PUBLIC_CDN_URL: z.url().optional(),
+    S3_PUBLIC_CDN_URL: z.string().url().optional(),
     S3_PUBLIC_ENDPOINT: S3EnvSchema.endpoint,
     S3_PUBLIC_BUCKET: S3EnvSchema.bucket,
     S3_PUBLIC_ACCESS_KEY_ID: S3EnvSchema.accessKeyId,
@@ -82,7 +83,7 @@ export const serverEnv = createEnv({
         message: "STRIPE_WEBHOOK_SECRET must start with 'whsec'",
       }),
 
-    UPSTASH_REDIS_REST_URL: z.url(),
+    UPSTASH_REDIS_REST_URL: z.string().url(),
     UPSTASH_REDIS_REST_TOKEN: z.string().min(1),
 
     GOOGLE_CLIENT_SECRET: z.string().min(1),

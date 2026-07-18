@@ -25,7 +25,7 @@ export function mermaid() {
 
       node.data.hName = "div";
       node.data.hProperties = {
-        className: "mermaid-diagram",
+        className: ["mermaid-diagram"],
         "data-mermaid-code": node.value,
       };
       node.data.hChildren = [];

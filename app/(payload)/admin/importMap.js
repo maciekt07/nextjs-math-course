@@ -22,6 +22,7 @@ import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc056
 import { ImportExportProvider as ImportExportProvider_cdf7e044479f899a31f804427d568b36 } from '@payloadcms/plugin-import-export/rsc'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
+/** @type import('payload').ImportMap */
 export const importMap = {
   "@fields/slug-field#default": default_df61bc795ed44bc39fa38d91d9356f6d,
   "@fields/upload-image-helper#default": default_00c1433fbd51b0415764332e0c6f3e98,

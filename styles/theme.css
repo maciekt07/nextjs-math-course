@@ -1,9 +1,6 @@
-@custom-variant dark (&:where(
-    .dark,
-    .dark *,
-    [data-theme="dark"],
-    [data-theme="dark"] *
-  ));
+@custom-variant dark (
+  &:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *)
+);
 
 /* WebKit on touch Apple devices */
 @custom-variant safari-ios {

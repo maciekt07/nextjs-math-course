@@ -2,11 +2,20 @@ import z from "zod";
 import { LIMITS } from "@/lib/constants/limits";
 
 export const emailSchema = z
+  .string()
   .email("Please enter a valid email")
   .min(1, "Email cannot be empty")
   .max(
     LIMITS.auth.emailMaxLength,
     `Email cannot exceed ${LIMITS.auth.emailMaxLength} characters`,
+  );
+
+export const nameSchema = z
+  .string()
+  .min(1, "Name cannot be empty")
+  .max(
+    LIMITS.auth.nameMaxLength,
+    `Name cannot exceed ${LIMITS.auth.nameMaxLength} characters`,
   );
 
 export const passwordSchema = z
@@ -34,13 +43,7 @@ export type SignInSchema = z.infer<typeof signInSchema>;
 
 export const signUpSchema = z
   .object({
-    name: z
-      .string()
-      .min(1, "Name cannot be empty")
-      .max(
-        LIMITS.auth.nameMaxLength,
-        `Name cannot exceed ${LIMITS.auth.nameMaxLength} characters`,
-      ),
+    name: nameSchema,
     email: emailSchema,
     password: passwordSchema,
     confirmPassword: z.string().min(1, "Please confirm your password"),

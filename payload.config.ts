@@ -9,6 +9,7 @@ import { muxVideoPlugin } from "@oversightstudio/mux-video";
 import { mongooseAdapter } from "@payloadcms/db-mongodb";
 import { resendAdapter } from "@payloadcms/email-resend";
 import { importExportPlugin } from "@payloadcms/plugin-import-export";
+import { mcpPlugin } from "@payloadcms/plugin-mcp";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { s3Storage } from "@payloadcms/storage-s3";
 import { buildConfig } from "payload";
@@ -21,6 +22,7 @@ import { serverEnv } from "@/env/server";
 import { LIMITS } from "@/lib/constants/limits";
 import { APP_NAME } from "@/lib/constants/site";
 import { buildPublicFileURL } from "@/lib/storage/build-url";
+import PayloadMCPConfig from "@/payload-mcp";
 
 // Use ENABLE_S3=true in .env to enable S3/R2 storage
 const useS3 =
@@ -102,6 +104,7 @@ export default buildConfig({
   }),
 
   plugins: [
+    mcpPlugin(PayloadMCPConfig),
     muxVideoPlugin({
       enabled: true,
       initSettings: {

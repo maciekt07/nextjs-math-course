@@ -34,18 +34,20 @@ export const Users: CollectionConfig = {
     read: ({ req }) => {
       const user = req.user;
       if (!user) return false;
-      if (user.role === "admin") return true;
+      if ("role" in user && user.role === "admin") return true;
       return { id: { equals: user.id } };
     },
-    create: ({ req }) => req.user?.role === "admin",
+    create: ({ req }) =>
+      req.user && "role" in req.user ? req.user.role === "admin" : false,
     update: ({ req, id }) => {
       const user = req.user;
       if (!user) return false;
-      if (user.role === "admin") return true;
+      if ("role" in user && user.role === "admin") return true;
       return id === user.id;
     },
 
-    delete: ({ req }) => req.user?.role === "admin",
+    delete: ({ req }) =>
+      req.user && "role" in req.user ? req.user.role === "admin" : false,
   },
   fields: [
     {
@@ -62,7 +64,8 @@ export const Users: CollectionConfig = {
         condition: ({ id }) => Boolean(id),
       },
       access: {
-        update: ({ req }) => req.user?.role === "admin",
+        update: ({ req }) =>
+          req.user && "role" in req.user ? req.user.role === "admin" : false,
       },
     },
   ],

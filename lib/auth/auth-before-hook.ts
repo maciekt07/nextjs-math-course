@@ -6,7 +6,7 @@ import {
   getSessionFromCtx,
 } from "better-auth/api";
 import type { User } from "better-auth/types";
-import { passwordSchema, signUpSchema } from "@/lib/auth/auth-validation";
+import { nameSchema, passwordSchema } from "@/lib/auth/auth-validation";
 
 const PATHS = {
   SIGN_UP: "/sign-up/email",
@@ -62,7 +62,7 @@ const validators = {
   },
 
   name(ctx: CTX) {
-    if (!signUpSchema.shape.name.safeParse(ctx.body.name).success) {
+    if (!nameSchema.safeParse(ctx.body.name).success) {
       throw new APIError("BAD_REQUEST", { message: "Invalid name" });
     }
   },

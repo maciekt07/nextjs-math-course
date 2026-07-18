@@ -39,6 +39,7 @@ A modern full-stack Next.js 16 platform with CMS, auth, and Stripe integration -
 
 - **Full Authentication** - powered by **BetterAuth**, featuring Google OAuth, Google One Tap, email verification & password reset via **Resend**. Includes block for disposable emails, last used method badge, session limits and rate limiting with **Redis** to prevent account sharing and abuse.
 - **Admin CMS Dashboard** - manage courses, lessons, and media directly through an integrated headless **Payload CMS** interface with drafts and version history.
+- **MCP integration** - a Model Context Protocol server lets AI clients like Claude draft, edit, and review lesson content directly against the CMS.
 - **Stripe Payments** - sell courses with one-time payments using Stripe Checkout.
 - **Hybrid Lesson Delivery (SSR + SSG)** - free lessons are pre-rendered for speed and SEO, while paid lessons use server-side rendering for secure, on-demand access.
 - **Caching & Revalidation** - lesson and enrollment data are cached for performance and automatically refreshed via Payload CMS hooks or Stripe webhook when content or access changes.
@@ -137,6 +138,25 @@ pnpm email:dev
 ```
 
 ## Usage
+
+### Using MCP Server
+
+The CMS exposes an MCP server for managing `lessons`, `chapters`, and `courses`
+
+**1. Generate an API key**
+
+Go to `/admin` → **MCP → API Keys** → **Create New**, enable the required collections/operations, save, and copy the generated key.
+
+**2. Connect your MCP client**
+
+Claude Code example:
+
+```bash
+claude mcp add --transport http Math-Course-CMS http://127.0.0.1:3000/api/mcp \
+  --header "Authorization: Bearer MCP-USER-API-KEY"
+```
+
+Changes will be automatically saved as draft with version control.
 
 ### Using Desmos Graphs
 

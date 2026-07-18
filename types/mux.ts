@@ -1,4 +1,4 @@
-export type ChapterThumbnailToken = {
+type ChapterThumbnailToken = {
   startTime: number;
   token: string;
 };
