@@ -10,6 +10,8 @@ const lessonContentSyntaxGuide = `The \`content\`, \`videoDescription\`, and all
 - Callout blocks as :::type{title="Custom Title"} content :::, where type is one of note, tip, important, warning, or card. Each type has a sensible default title if title is omitted (card defaults to "You will learn"); title must be plain text only, but the callout content can include math or any of the other custom syntax above.
 - Structure content with Markdown headings: use ## for top-level sections and ### for subsections. Do not use # (h1)`;
 
+// https://github.com/payloadcms/payload/issues/17125
+
 /**
  * @see https://payloadcms.com/docs/plugins/mcp
  */
