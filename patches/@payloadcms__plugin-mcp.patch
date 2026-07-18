@@ -1,0 +1,57 @@
+diff --git a/dist/mcp/createRequest.js b/dist/mcp/createRequest.js
+index cfbf3f0ddcfb6d310f70fd4d70553bc174d63488..e46b766f056cbfc9b09846c3263ff71b228edfbb 100644
+--- a/dist/mcp/createRequest.js
++++ b/dist/mcp/createRequest.js
+@@ -3,9 +3,9 @@ export const createRequestFromPayloadRequest = (req)=>{
+     if (!req.url) {
+         throw new AuthenticationError();
+     }
++    const noBody = req.method === 'GET' || req.method === 'HEAD';
+     return new Request(req.url, {
+-        body: req.body,
+-        duplex: 'half',
++        ...(noBody ? {} : { body: req.body, duplex: 'half' }),
+         headers: req.headers,
+         method: req.method
+     });
+diff --git a/dist/utils/schemaConversion/convertCollectionSchemaToZod.js b/dist/utils/schemaConversion/convertCollectionSchemaToZod.js
+index 07a2628fdc987d663885c7e918152539ca7c1766..b009274125ee7f679dca5b0396137684769f6cfc 100644
+--- a/dist/utils/schemaConversion/convertCollectionSchemaToZod.js
++++ b/dist/utils/schemaConversion/convertCollectionSchemaToZod.js
+@@ -28,7 +28,8 @@ export const convertCollectionSchemaToZod = (schema)=>{
+      * 4. The resulting Zod schema is used only for parameter validation in MCP tools, not for data processing
+      * 5. No user input or external data is involved in the schema generation process
+      */ // eslint-disable-next-line @typescript-eslint/no-implied-eval
+-        return new Function('z', `return ${transpileResult.outputText}`)(z);
++        const outputText = transpileResult.outputText.replace(/^["']use strict["'];?\s*/m, '');
++        return new Function('z', `return ${outputText}`)(z);
+     } catch (error) {
+         // If schema conversion fails (e.g., due to Zod v4 toJSONSchema null-check bug
+         // with record schemas that have undefined valueType, or bundler transforms
+diff --git a/dist/utils/schemaConversion/simplifyRelationshipFields.js b/dist/utils/schemaConversion/simplifyRelationshipFields.js
+index 428f2933493c56abe8e072ac9c25ce21e2a8701f..eae89dfd4a671f90216bcf98c6b08f54d9ee9268 100644
+--- a/dist/utils/schemaConversion/simplifyRelationshipFields.js
++++ b/dist/utils/schemaConversion/simplifyRelationshipFields.js
+@@ -27,9 +27,20 @@
+             const nonRefOptions = processed.oneOf.filter((option)=>!(option && typeof option === 'object' && '$ref' in option)).map((option)=>simplifyRelationshipFields(option));
+             if (nonRefOptions.length === 1) {
+                 const single = nonRefOptions[0];
++                if (single && typeof single === 'object' && single.type === 'null') {
++                    delete processed.oneOf;
++                    processed.anyOf = [
++                        { type: ['string', 'number'] },
++                        { type: 'null' }
++                    ];
++                } else {
++                    delete processed.oneOf;
++                    Object.assign(processed, single);
++                }
++            } else if (nonRefOptions.length === 0) {
+                 delete processed.oneOf;
+-                Object.assign(processed, single);
+-            } else if (nonRefOptions.length > 1) {
++                processed.type = ['string', 'number'];
++            } else {
+                 delete processed.oneOf;
+                 processed.anyOf = nonRefOptions;
+             }

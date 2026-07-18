@@ -5,7 +5,7 @@
     "components/ui/**",
     "components/animate-ui/**"
   ],
-  "ignoreDependencies": ["client-only", "postcss", "@react-email/ui"],
+  "ignoreDependencies": ["client-only"],
   "ignoreBinaries": ["ngrok", "stripe"],
   "payload": {
     "config": []

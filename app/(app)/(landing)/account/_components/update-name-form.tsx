@@ -18,10 +18,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 import { authClient } from "@/lib/auth/auth-client";
-import { signUpSchema } from "@/lib/auth/auth-validation";
+import { nameSchema } from "@/lib/auth/auth-validation";
 
 const updateNameSchema = z.object({
-  name: signUpSchema.shape.name,
+  name: nameSchema,
 });
 
 type UpdateNameSchema = z.infer<typeof updateNameSchema>;

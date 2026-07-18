@@ -5,5 +5,16 @@ ignoredBuiltDependencies:
 trustPolicy: "no-downgrade"
 minimumReleaseAge: 7200
 blockExoticSubdeps: true
+
 trustPolicyExclude:
   - chokidar@4.0.3
+
+patchedDependencies:
+  "@payloadcms/plugin-mcp": patches/@payloadcms__plugin-mcp.patch
+
+overrides:
+  "@modelcontextprotocol/sdk": "1.26.0"
+
+peerDependencyRules:
+  allowedVersions:
+    zod: "3.25.76"

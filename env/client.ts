@@ -7,7 +7,7 @@ export const clientEnv = createEnv({
   skipValidation:
     !!process.env.SKIP_ENV_VALIDATION || process.env.NODE_ENV === "test",
   client: {
-    NEXT_PUBLIC_APP_URL: z.url().default("http://localhost:3000"),
+    NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
     NEXT_PUBLIC_GOOGLE_CLIENT_ID: z.string().min(1),
     NEXT_PUBLIC_STRIPE_PK: z
       .string()
