@@ -4,3 +4,12 @@
 @import "tailwindcss/utilities.css" layer(utilities);
 @import "./markdown.css";
 @plugin "@tailwindcss/typography";
+
+/* fix text rendering issue */
+.w-md-editor-text-pre span.token {
+  display: inline !important;
+  border: none !important;
+  position: static !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}

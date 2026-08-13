@@ -71,13 +71,17 @@ export function FAQ() {
           <motion.div
             // biome-ignore lint/suspicious/noArrayIndexKey: safe
             key={i}
-            initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
-            animate={isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
-            transition={{ duration: 0.6, delay: i * 0.15, ease: "easeOut" }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{
+              duration: 0.6,
+              delay: i * 0.16,
+              ease: [0.22, 1, 0.36, 1],
+            }}
           >
             <AccordionItem
               value={`item-${i}`}
-              className="border border-border rounded-xl bg-muted/40 px-4 shadow-md"
+              className="border border-border rounded-xl bg-muted/40 px-4 shadow-md transition-shadow hover:shadow-lg"
             >
               <AccordionTrigger className="text-left py-4 hover:no-underline [&>svg]:text-muted-foreground cursor-pointer">
                 <span className="font-medium">{faq.question}</span>

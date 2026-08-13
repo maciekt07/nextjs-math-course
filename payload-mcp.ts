@@ -1,13 +1,18 @@
 import type { MCPPluginConfig } from "@payloadcms/plugin-mcp";
 import type { CollectionConfig } from "payload";
-import { isAdmin, isAdminOrEditor } from "@/cms/access/roles";
+import { isAdmin, isEditor } from "@/cms/access/roles";
+import { VALID_BLOCK_TYPES } from "@/components/markdown/blocks/callout-config";
 import { APP_NAME } from "@/lib/constants/site";
+
+const formattedBlockTypes = new Intl.ListFormat("en", {
+  type: "disjunction", // or
+}).format(VALID_BLOCK_TYPES);
 
 const lessonContentSyntaxGuide = `The \`content\`, \`videoDescription\`, and all quiz fields are Markdown with custom extensions:
 - LaTeX inline math as $...$ and block math as $$...$$ (exactly two dollar signs, never three or more, and never on the same line as other text for block math). Write LaTeX commands with a single backslash, e.g. \\frac{a}{b} and \\int_{a}^{b}, not \\\\frac or \\\\int — this is raw Markdown text, not a JSON or JS string, so backslashes must not be escaped.
 - Mermaid diagrams as a fenced \`\`\`mermaid code block.
 - Desmos graphs as ::desmos{url="..."}.
-- Callout blocks as :::type{title="Custom Title"} content :::, where type is one of note, tip, important, warning, or card. Each type has a sensible default title if title is omitted (card defaults to "You will learn"); title must be plain text only, but the callout content can include math or any of the other custom syntax above.
+- Callout blocks as :::type{title="Custom Title"} content :::, where type is one of ${formattedBlockTypes}. Each type has a sensible default title if title is omitted (card defaults to "You will learn"); title must be plain text only, but the callout content can include math or any of the other custom syntax above.
 - Structure content with Markdown headings: use ## for top-level sections and ### for subsections. Do not use # (h1)`;
 
 // https://github.com/payloadcms/payload/issues/17125
@@ -20,7 +25,7 @@ const PayloadMCPConfig: MCPPluginConfig = {
   mcp: {
     serverOptions: {
       instructions:
-        "Use this MCP server to manage math-course content. Prefer read operations first, make the smallest necessary content changes.",
+        "Use this MCP server to manage math-course content. Prefer read operations first, make the smallest necessary content changes. Use `select` parameter to request only the fields needed for the task.",
       serverInfo: {
         name: `${APP_NAME} CMS`,
         version: "0.1.0",
@@ -41,7 +46,11 @@ const PayloadMCPConfig: MCPPluginConfig = {
               /"videoBlurDataURL":\s*"[^"]*"/g,
               '"videoBlurDataURL": "[omitted]"',
             )
-            .replace(/"blurhash":\s*"[^"]*"/g, '"blurhash": "[omitted]"'),
+            .replace(/"blurhash":\s*"[^"]*"/g, '"blurhash": "[omitted]"')
+            .replace(
+              /"playbackOptions":\s*\[[\s\S]*?\](?=,|\s*})/g,
+              '"playbackOptions": "[omitted]"',
+            ),
         }));
         return response;
       },
@@ -76,7 +85,7 @@ const PayloadMCPConfig: MCPPluginConfig = {
       read: ({ req }) => {
         const user = req.user;
         if (isAdmin(user)) return true;
-        if (isAdminOrEditor(user)) {
+        if (isEditor(user)) {
           return {
             user: {
               equals: user?.id,

@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Frown, type LucideIcon, Meh, Smile, Star } from "lucide-react";
+import { Frown, type LucideIcon, Meh, Smile, Star } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { defaultPatterns } from "web-haptics";
 import { useWebHaptics } from "web-haptics/react";
+import { Check } from "@/components/animate-ui/icons/check";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { Lock } from "@/components/animate-ui/icons/lock";
 import { LogIn } from "@/components/animate-ui/icons/log-in";
@@ -283,6 +284,7 @@ export default function FeedbackWidget({
                     className="mx-auto flex items-center justify-center rounded-full bg-green-600/10 p-4"
                   >
                     <Check
+                      animate
                       size={32}
                       strokeWidth={3}
                       className="text-green-600"

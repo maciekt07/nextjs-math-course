@@ -19,6 +19,7 @@ import { Label } from "@/components/ui/label";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 import { authClient } from "@/lib/auth/auth-client";
 import { nameSchema } from "@/lib/auth/auth-validation";
+import { cn } from "@/lib/ui";
 
 const updateNameSchema = z.object({
   name: nameSchema,
@@ -26,9 +27,13 @@ const updateNameSchema = z.object({
 
 type UpdateNameSchema = z.infer<typeof updateNameSchema>;
 
+const STATUS_DISPLAY_MS = 1400;
+
+type Phase = "idle" | "loading" | "success" | "error";
+
 export function UpdateNameForm({ name }: { name: string }) {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const [phase, setPhase] = useState<Phase>("idle");
 
   const form = useForm<UpdateNameSchema>({
     resolver: zodResolver(updateNameSchema),
@@ -42,20 +47,22 @@ export function UpdateNameForm({ name }: { name: string }) {
     form.watch("name").trim() !== submittedName;
 
   async function onSubmit(values: UpdateNameSchema) {
-    setLoading(true);
+    setPhase("loading");
 
     const { error } = await authClient.updateUser({ name: values.name });
 
     if (error) {
-      setLoading(false);
       form.setError("name", { message: error.message });
+      setPhase("error");
+      setTimeout(() => setPhase("idle"), STATUS_DISPLAY_MS);
       return;
     }
 
     setSubmittedName(values.name);
     router.refresh();
     toast.success("Name updated successfully.");
-    setLoading(false);
+    setPhase("success");
+    setTimeout(() => setPhase("idle"), STATUS_DISPLAY_MS);
   }
 
   return (
@@ -74,10 +81,24 @@ export function UpdateNameForm({ name }: { name: string }) {
                 <Button
                   type="submit"
                   variant="outline"
-                  className="shrink-0 cursor-pointer"
-                  disabled={!hasChanged || loading}
+                  className={cn(
+                    "shrink-0 cursor-pointer",
+                    (phase === "success" || phase === "error") &&
+                      "opacity-100!",
+                  )}
+                  disabled={
+                    !hasChanged ||
+                    phase !== "idle" ||
+                    !form.watch("name").trim()
+                  }
                 >
-                  <LoadingSwap isLoading={loading}>Update</LoadingSwap>
+                  <LoadingSwap
+                    isLoading={phase === "loading"}
+                    isSuccess={phase === "success"}
+                    isError={phase === "error"}
+                  >
+                    Update
+                  </LoadingSwap>
                 </Button>
               </div>
               <FormMessage />

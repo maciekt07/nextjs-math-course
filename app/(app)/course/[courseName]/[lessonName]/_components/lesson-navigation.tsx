@@ -74,7 +74,7 @@ const LessonCard = ({ lesson, isPrevious, courseSlug }: LessonCardProps) => {
     >
       <div className="flex items-center gap-3 min-w-0 flex-1">
         {isPrevious && (
-          <ChevronLeft className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0" />
+          <ChevronLeft className="w-5 h-5 text-muted-foreground group-hover:text-foreground group-hover:-translate-x-1 group-hover:scale-110 transition-all flex-shrink-0" />
         )}
         <div className="min-w-0 flex-1">
           <div className="text-xs text-muted-foreground mb-1 transition-colors group-hover:text-foreground">
@@ -89,7 +89,7 @@ const LessonCard = ({ lesson, isPrevious, courseSlug }: LessonCardProps) => {
         </div>
       </div>
       {!isPrevious && (
-        <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0 ml-3" />
+        <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 group-hover:scale-110 transition-all flex-shrink-0 ml-3" />
       )}
     </Link>
   );

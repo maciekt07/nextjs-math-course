@@ -29,8 +29,3 @@ export function getText(children: React.ReactNode | unknown): string {
 
   return "";
 }
-
-export function getNodeId(node: unknown): string | undefined {
-  const id = (node as { properties?: { id?: unknown } })?.properties?.id;
-  return typeof id === "string" ? id : undefined;
-}

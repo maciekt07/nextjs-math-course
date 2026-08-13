@@ -187,3 +187,7 @@ html[data-theme="dark"] {
     }
   }
 }
+/* Mermaid element */
+svg[aria-roledescription="error"] {
+  display: none;
+}

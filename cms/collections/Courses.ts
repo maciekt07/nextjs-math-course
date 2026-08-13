@@ -1,7 +1,7 @@
 import { createSlugField } from "@fields/factories/createSlugField";
 import type { Access, CollectionConfig } from "payload";
 import { publicPublishedReadAccess } from "@/cms/access/contentAccess";
-import { isAdmin } from "@/cms/access/roles";
+import { isAdmin, isMcpRequest } from "@/cms/access/roles";
 import { cascadeDeleteCourse } from "@/cms/hooks/cascadeDeleteCourse";
 import {
   revalidateCourse,
@@ -44,6 +44,10 @@ export const Courses: CollectionConfig = {
       label: "Price",
       type: "number",
       required: true,
+      access: {
+        // doesn't let ai modify the price
+        update: ({ req }) => !isMcpRequest(req),
+      },
     },
     {
       name: "description",
