@@ -1,7 +1,7 @@
 import type { Heading, Root } from "mdast";
 import { visit } from "unist-util-visit";
 import { createHeadingIdGenerator } from "@/lib/markdown/extract-headings";
-import { getText } from "../utils";
+import { getText } from "@/lib/markdown/get-text";
 
 /**
  * Remark plugin that assigns stable, unique `id` attributes to `h2` and `h3` headings.

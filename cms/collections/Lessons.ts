@@ -3,6 +3,7 @@ import { createSlugField } from "@fields/factories/createSlugField";
 import createBlurUp from "@mux/blurup";
 import type { Access, CollectionConfig } from "payload";
 import { isAdminOrEditor } from "@/cms/access/roles";
+import CustomAPIError from "@/cms/CustomAPIError";
 import {
   revalidateLesson,
   revalidateLessonAfterDelete,
@@ -61,6 +62,21 @@ export const Lessons: CollectionConfig = {
 
         return data;
       },
+      // validate markdown content
+      // FIXME: mermaid validates only client side
+      // async ({ data }) => {
+      //   if (!data.content) return data;
+
+      //   const errors = await validateMarkdown(data.content);
+
+      //   if (errors.length) {
+      //     throw new CustomAPIError(
+      //       errors.map((e) => `${e.type}: ${e.message}`).join("\n"),
+      //     );
+      //   }
+
+      //   return data;
+      // },
       async ({ data, req }) => {
         //TODO: update only when needed
         if (data.type !== "video") return data;
@@ -85,6 +101,19 @@ export const Lessons: CollectionConfig = {
           console.warn("Blur generation failed:", err);
         }
 
+        return data;
+      },
+      // prevent type change
+      ({ data, originalDoc }) => {
+        if (
+          originalDoc?._status === "published" &&
+          data.type !== undefined &&
+          data.type !== originalDoc.type
+        ) {
+          throw new CustomAPIError(
+            "Lesson type cannot be changed after publishing.",
+          );
+        }
         return data;
       },
     ],
@@ -146,6 +175,7 @@ export const Lessons: CollectionConfig = {
             {
               name: "type",
               type: "select",
+
               options: [
                 { label: "Text", value: "text" },
                 { label: "Quiz", value: "quiz" },

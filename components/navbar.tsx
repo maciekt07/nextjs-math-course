@@ -1,7 +1,7 @@
 "use client";
 
 import type { User } from "better-auth";
-import { BookOpen, LogIn, Menu, UserPlus, X } from "lucide-react";
+import { BookOpen, LogIn, UserPlus } from "lucide-react";
 import {
   AnimatePresence,
   type HTMLMotionProps,
@@ -12,10 +12,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useWebHaptics } from "web-haptics/react";
+import { Menu } from "@/components/animate-ui/icons/menu";
 import { ThemeSelect } from "@/components/theme-select";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { useMounted } from "@/hooks/use-mounted";
 import { authClient } from "@/lib/auth/auth-client";
 import { APP_NAME } from "@/lib/constants/site";
 import { cn } from "@/lib/ui";
@@ -103,18 +103,8 @@ export function Navbar() {
   const [atTop, setAtTop] = useState<boolean>(true);
 
   const prefersReducedMotion = useReducedMotion();
-  const mounted = useMounted();
 
   const showBorder = !atTop || open;
-
-  const iconMotionProps: HTMLMotionProps<"div"> = prefersReducedMotion
-    ? {}
-    : {
-        initial: { opacity: 0.5, scale: 0.8, filter: "blur(4px)" },
-        animate: { opacity: 1, scale: 1, filter: "blur(0px)" },
-        exit: { opacity: 0.5, scale: 0.8, filter: "blur(4px)" },
-        transition: { duration: 0.14 },
-      };
 
   const backdropMotionProps: HTMLMotionProps<"div"> = prefersReducedMotion
     ? {}
@@ -206,19 +196,7 @@ export function Navbar() {
                 setOpen((v) => !v);
               }}
             >
-              {!mounted ? (
-                /* SSR */
-                <Menu />
-              ) : (
-                <AnimatePresence mode="wait" initial={false}>
-                  <motion.div
-                    key={open ? "close" : "menu"}
-                    {...iconMotionProps}
-                  >
-                    {open ? <X /> : <Menu />}
-                  </motion.div>
-                </AnimatePresence>
-              )}
+              <Menu animate={open} />
             </Button>
           </div>
         </div>

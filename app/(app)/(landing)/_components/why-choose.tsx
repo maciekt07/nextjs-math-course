@@ -1,8 +1,8 @@
 "use client";
 
-import { Check } from "lucide-react";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
+import { Check } from "@/components/animate-ui/icons/check";
 import { APP_NAME } from "@/lib/constants/site";
 
 type Reason = {
@@ -33,7 +33,6 @@ export function WhyChoose() {
     <section className="border-y bg-muted/30">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:py-20 lg:py-24">
         <div className="mb-12 text-center">
-          {/* bg-gradient-to-b from-foreground to-neutral-500 dark:to-neutral-500 bg-clip-text text-transparent text-shadow-md */}
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
             Why Choose {APP_NAME}?
           </h2>
@@ -60,13 +59,31 @@ function WhyChooseCard({ reason, idx }: { reason: Reason; idx: number }) {
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, filter: "blur(8px)", y: 30 }}
-      animate={isInView ? { opacity: 1, filter: "blur(0px)", y: 0 } : {}}
-      transition={{ duration: 0.6, ease: "easeOut", delay: idx * 0.15 }}
+      initial={{ opacity: 0, y: 24 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{
+        duration: 0.6,
+        ease: [0.22, 1, 0.36, 1],
+        delay: idx * 0.16,
+      }}
       className="space-y-3"
     >
       <div className="flex gap-3">
-        <Check className="h-5 w-5 flex-shrink-0 text-primary mt-0.5" />
+        <motion.div
+          initial={{ scale: 0.6, opacity: 0 }}
+          animate={isInView ? { scale: 1, opacity: 1 } : {}}
+          transition={{
+            type: "spring",
+            stiffness: 300,
+            damping: 20,
+            delay: idx * 0.15 + 0.2,
+          }}
+        >
+          <Check
+            animate={isInView}
+            className="size-6 flex-shrink-0 text-primary mt-0.5"
+          />
+        </motion.div>
         <h3 className="font-semibold">{reason.title}</h3>
       </div>
       <p className="text-sm text-muted-foreground">{reason.description}</p>

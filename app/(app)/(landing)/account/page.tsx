@@ -67,13 +67,6 @@ export default async function AccountPage() {
 
   return (
     <div className="max-w-2xl mx-auto mt-0 sm:mt-16 px-4 pb-8 space-y-6">
-      <header className="space-y-2 text-center">
-        <h1 className="sm:text-4xl text-3xl font-bold">Your Account</h1>
-        <p className="sm:text-lg text-md text-muted-foreground">
-          Manage your personal information and settings
-        </p>
-      </header>
-
       {!user.emailVerified && isCredentials && (
         <Card className="border-yellow-600/50 dark:border-yellow-400/50">
           <CardHeader>
@@ -251,7 +244,7 @@ export default async function AccountPage() {
         </CardContent>
       </Card>
 
-      <Card className="border-destructive/40">
+      <Card className="border-destructive/40 bg-destructive/[0.03]">
         <CardHeader>
           <CardTitle className="flex items-center justify-start gap-2 text-destructive">
             <Trash2 className="size-5" /> Delete account

@@ -13,13 +13,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function Loading() {
   return (
     <div className="mx-auto mt-0 max-w-2xl space-y-6 px-4 pb-8 sm:mt-16">
-      <header className="space-y-2 text-center">
-        <h1 className="sm:text-4xl text-3xl font-bold">Your Account</h1>
-        <p className="sm:text-lg text-md text-muted-foreground">
-          Manage your personal information and settings
-        </p>
-      </header>
-
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">

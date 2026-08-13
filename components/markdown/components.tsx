@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Components as MarkdownComponents } from "react-markdown";
 import { ExternalLink } from "@/components/animate-ui/icons/external-link";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
+import { getText } from "@/lib/markdown/get-text";
 import { stripBasicMarkdown } from "@/lib/markdown/strip-markdown";
 import { slug } from "@/lib/slugify";
 import type { Lesson, MediaPrivate, MediaPublic } from "@/types/payload-types";
@@ -17,7 +18,6 @@ import { KatexRenderer } from "./katex/katex-renderer";
 import { MermaidDiagram } from "./mermaid/mermaid-diagram";
 import type { MermaidDivProps } from "./mermaid/mermaid-plugin";
 import type { MathElementProps } from "./types";
-import { getNodeId, getText } from "./utils";
 
 type MediaDoc = MediaPrivate | MediaPublic;
 type UploadImageValue = NonNullable<Lesson["uploadImage"]> | null;
@@ -48,6 +48,11 @@ function resolveMediaItems(media?: UploadImageValue): ResolvedMediaItem[] {
       },
     ];
   });
+}
+
+function getNodeId(node: unknown): string | undefined {
+  const id = (node as { properties?: { id?: unknown } })?.properties?.id;
+  return typeof id === "string" ? id : undefined;
 }
 
 interface CreateMarkdownComponentsOptions {
