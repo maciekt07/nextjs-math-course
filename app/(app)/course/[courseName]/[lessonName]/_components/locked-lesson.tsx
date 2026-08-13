@@ -16,6 +16,7 @@ import { EmptyStateCenterWrapper } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { useMounted } from "@/hooks/use-mounted";
 import { cn } from "@/lib/ui";
+import type { Lesson } from "@/types/payload-types";
 
 type LockAnimation = keyof typeof lockAnimations | StaticAnimations;
 type LockState = "locked" | "unlocked";
@@ -29,6 +30,7 @@ const LOCK_DURATION =
 export interface LockedLessonPreview {
   title: string;
   slug: string;
+  type: Lesson["type"];
   courseId: string;
 }
 
@@ -130,7 +132,7 @@ export function LockedLesson({
 
   return (
     <EmptyStateCenterWrapper>
-      <div className="flex flex-col items-center text-center space-y-6 max-w-130">
+      <div className="flex flex-col items-center text-center space-y-6 w-full sm:max-w-xl">
         <div className="mx-auto w-24 h-24 flex items-center justify-center bg-orange-600/10 dark:bg-orange-500/10 rounded-full">
           <AnimateIcon key={key} animate={animation} completeOnStop>
             <Lock
@@ -143,11 +145,11 @@ export function LockedLesson({
           </AnimateIcon>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2 w-full">
           <h1 className="text-2xl font-semibold">{lesson.title}</h1>
           <h2 className="text-muted-foreground">
-            This is a premium lesson. You need to own a full course to access
-            it.
+            This is a premium {lesson.type === "text" ? "lesson" : lesson.type}.
+            You need to own a full course to access it.
           </h2>
         </div>
         {showSignIn ? (

@@ -90,6 +90,7 @@ async function getLessonAccessData({
           title: true,
           slug: true,
           free: true,
+          type: true,
           course: true,
         },
         where: {
@@ -198,6 +199,7 @@ export default async function LessonPage({
     const lockedLesson: LockedLessonPreview = {
       title: lessonAccessData.title,
       slug: lessonAccessData.slug ?? lessonName,
+      type: lessonAccessData.type,
       courseId,
     };
 
