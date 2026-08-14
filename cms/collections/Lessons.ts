@@ -4,6 +4,7 @@ import createBlurUp from "@mux/blurup";
 import type { Access, CollectionConfig } from "payload";
 import { isAdminOrEditor } from "@/cms/access/roles";
 import CustomAPIError from "@/cms/CustomAPIError";
+import { forceMcpDraftOnly } from "@/cms/hooks/forceMcpDraftOnly";
 import {
   revalidateLesson,
   revalidateLessonAfterDelete,
@@ -37,6 +38,7 @@ export const Lessons: CollectionConfig = {
     drafts: true,
   },
   hooks: {
+    beforeOperation: [forceMcpDraftOnly],
     beforeChange: [
       async ({ data, req }) => {
         if (data.content) {

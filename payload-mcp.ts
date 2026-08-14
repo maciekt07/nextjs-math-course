@@ -25,7 +25,10 @@ const PayloadMCPConfig: MCPPluginConfig = {
   mcp: {
     serverOptions: {
       instructions:
-        "Use this MCP server to manage math-course content. Prefer read operations first, make the smallest necessary content changes. Use `select` parameter to request only the fields needed for the task.",
+        "Use this MCP server to manage math-course content. " +
+        "Prefer read operations first, make the smallest necessary content changes. " +
+        "Use `select` parameter to request only the fields needed for the task. " +
+        "You are not allowed to publish or delete content.",
       serverInfo: {
         name: `${APP_NAME} CMS`,
         version: "0.1.0",
@@ -36,7 +39,8 @@ const PayloadMCPConfig: MCPPluginConfig = {
     lessons: {
       enabled: { find: true, create: true, update: true, delete: false },
       description:
-        "Individual lessons within a math course. Each belongs to a course and optional chapter, has a type (text/quiz/video), markdown content, quiz questions, or a linked Mux video with chapters. Use to draft, edit, or review lesson content.\n\n" +
+        "Individual lessons within a math course. Each belongs to a course and optional chapter, has a type (text/quiz/video), markdown content, quiz questions, or a linked Mux video with chapters. " +
+        "Use to draft, edit, or review lesson content.\n\n" +
         lessonContentSyntaxGuide,
       overrideResponse: (response) => {
         response.content = response.content.map((item) => ({
@@ -58,12 +62,16 @@ const PayloadMCPConfig: MCPPluginConfig = {
     chapters: {
       enabled: { find: true, create: true, update: true, delete: false },
       description:
-        "Chapters group lessons within a course. Has a title and a course relation. Use to list, create, rename, or reorganize chapters.",
+        "Chapters group lessons within a course. " +
+        "Has a title and a course relation. " +
+        "Use to list, create, rename, or reorganize chapters.",
     },
     courses: {
       enabled: { find: true, create: true, update: true, delete: false },
       description:
-        "Top-level math courses with pricing, description, and computed stats (lessonCount, totalVideoSeconds, etc). Use to look up course metadata or update description/title, not price.",
+        "Top-level math courses with pricing, description, and computed stats (lessonCount, totalVideoSeconds, etc). " +
+        "Use to look up course metadata or update description/title. " +
+        "You are not allowed to change the price.",
       overrideResponse: (response) => {
         response.content = response.content.map((item) => ({
           ...item,
