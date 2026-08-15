@@ -1,6 +1,7 @@
 import { BookOpen, Clock, GraduationCap, HelpCircle } from "lucide-react";
 import Image from "next/image";
 import type * as React from "react";
+import { ViewTransition } from "react";
 import {
   CourseCardOwnershipButton,
   CourseCardOwnershipFooter,
@@ -77,20 +78,29 @@ export function CourseCard({
       <CardHeader className="px-4 md:px-5 relative">
         <div className="flex flex-col sm:flex-row items-start gap-4">
           {course.poster ? (
-            <div className="relative w-full h-48 sm:w-32 sm:h-32 sm:aspect-square rounded-lg overflow-hidden shadow-lg">
-              <Image
-                src={(course.poster as Poster).url!}
-                alt={(course.poster as Poster).alt ?? course.title ?? "Preview"}
-                fill
-                className="object-cover group-hover:scale-110 ease-in-out transition-transform duration-200"
-                sizes="(min-width: 640px) 256px, 640px"
-                loading="lazy"
-                placeholder={
-                  (course.poster as Poster).blurhash ? "blur" : "empty"
-                }
-                blurDataURL={(course.poster as Poster).blurhash || undefined}
-              />
-            </div>
+            <ViewTransition
+              name={`course-poster-${course.id}`}
+              share={{ "nav-forward": "morph", default: "none" }}
+              enter="none"
+              exit={{ "nav-forward": "morph", default: "none" }}
+            >
+              <div className="relative w-full h-48 sm:w-32 sm:h-32 sm:aspect-square rounded-lg overflow-hidden shadow-lg">
+                <Image
+                  src={(course.poster as Poster).url!}
+                  alt={
+                    (course.poster as Poster).alt ?? course.title ?? "Preview"
+                  }
+                  fill
+                  className="object-cover group-hover:scale-110 ease-in-out transition-transform duration-200"
+                  sizes="(min-width: 640px) 256px, 640px"
+                  loading="lazy"
+                  placeholder={
+                    (course.poster as Poster).blurhash ? "blur" : "empty"
+                  }
+                  blurDataURL={(course.poster as Poster).blurhash || undefined}
+                />
+              </div>
+            </ViewTransition>
           ) : (
             <div className="relative w-full h-48 sm:w-32 sm:h-32 rounded-lg border-3 border-primary/30 bg-primary/10 shrink-0 flex items-center justify-center">
               <GraduationCap className="w-16 h-16 text-primary" />

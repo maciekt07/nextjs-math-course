@@ -56,6 +56,7 @@ export default async function CoursesPage() {
               <Button asChild size="lg" className="w-full">
                 <Link
                   prefetch
+                  transitionTypes={["nav-forward"]}
                   href={
                     c.slug && c.firstLessonSlug
                       ? `/course/${c.slug}/${c.firstLessonSlug}`

@@ -49,6 +49,7 @@ const nextConfig: NextConfig = {
   experimental: {
     serverMinification: true,
     authInterrupts: true,
+    viewTransition: true,
   },
   turbopack: {
     root: path.resolve(dirname),

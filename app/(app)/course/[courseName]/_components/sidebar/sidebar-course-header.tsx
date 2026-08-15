@@ -3,6 +3,7 @@
 import { ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { ViewTransition } from "react";
 import BuyCourseButton from "@/components/buy-course-button";
 import { Button } from "@/components/ui/button";
 import type { Course, Poster } from "@/types/payload-types";
@@ -27,20 +28,27 @@ export function SidebarCourseHeader({
 
       <div className="flex md:block gap-3 mb-3 mt-2">
         {course.poster && (
-          <div className="relative w-20 h-20 md:w-full md:h-40 shrink-0 overflow-hidden rounded-lg md:rounded-2xl shadow-md md:mb-4">
-            <Image
-              src={(course.poster as Poster).url!}
-              alt={(course.poster as Poster).alt ?? course.title!}
-              fill
-              priority
-              sizes="(min-width: 768px) 287px, 80px"
-              className="object-cover"
-              placeholder={
-                (course.poster as Poster).blurhash ? "blur" : "empty"
-              }
-              blurDataURL={(course.poster as Poster).blurhash || undefined}
-            />
-          </div>
+          <ViewTransition
+            name={`course-poster-${course.id}`}
+            share={{ "nav-forward": "morph", default: "none" }}
+            enter={{ "nav-forward": "morph", default: "none" }}
+            exit="none"
+          >
+            <div className="relative w-20 h-20 md:w-full md:h-40 shrink-0 overflow-hidden rounded-lg md:rounded-2xl shadow-md md:mb-4">
+              <Image
+                src={(course.poster as Poster).url!}
+                alt={(course.poster as Poster).alt ?? course.title!}
+                fill
+                priority
+                sizes="(min-width: 768px) 287px, 80px"
+                className="object-cover"
+                placeholder={
+                  (course.poster as Poster).blurhash ? "blur" : "empty"
+                }
+                blurDataURL={(course.poster as Poster).blurhash || undefined}
+              />
+            </div>
+          </ViewTransition>
         )}
 
         <div className="flex-1 min-w-0 md:hidden space-y-1">

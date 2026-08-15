@@ -25,7 +25,7 @@ export function CourseCardOwnershipButton({
   if (owned) {
     return (
       <Button size="lg" asChild>
-        <Link prefetch href={ownedCourseHref}>
+        <Link prefetch href={ownedCourseHref} transitionTypes={["nav-forward"]}>
           See All Lessons
         </Link>
       </Button>
@@ -39,7 +39,12 @@ export function CourseCardOwnershipButton({
       asChild
       className="bg-background/20 hover:bg-background/50 border-foreground/10 shadow-sm"
     >
-      <Link prefetch href={previewCourseHref} className="text-shadow-sm">
+      <Link
+        prefetch
+        href={previewCourseHref}
+        transitionTypes={["nav-forward"]}
+        className="text-shadow-sm"
+      >
         See Free Lessons
       </Link>
     </Button>

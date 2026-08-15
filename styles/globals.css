@@ -187,3 +187,77 @@ https://stackoverflow.com/questions/75226935/white-background-issue-around-sign-
     outline: none !important;
   }
 }
+
+::view-transition-group(.morph) {
+  animation-duration: 420ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  /* animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1); */
+}
+
+::view-transition-old(.morph),
+::view-transition-new(.morph) {
+  animation: none;
+  mix-blend-mode: normal;
+  height: 100%;
+  overflow: clip;
+}
+
+::view-transition-old(.morph) {
+  object-fit: contain;
+}
+
+::view-transition-new(.morph) {
+  object-fit: cover;
+  border-radius: 8px;
+  --vt-radius: 8px;
+  animation: 450ms ease both vt-settle;
+}
+
+@media (min-width: 768px) {
+  ::view-transition-new(.morph) {
+    --vt-radius: 16px;
+  }
+}
+
+@keyframes vt-settle {
+  0%,
+  55% {
+    border-radius: 8px;
+    box-shadow: 0 0 0 0 transparent;
+  }
+  100% {
+    border-radius: var(--vt-radius);
+    box-shadow:
+      0 4px 6px -1px rgb(0 0 0 / 0.1),
+      0 2px 4px -2px rgb(0 0 0 / 0.1);
+  }
+}
+
+/* ::view-transition-image-pair(.morph) {
+  animation: 450ms ease both vt-via-blur;
+}
+
+@keyframes vt-via-blur {
+  35% {
+    filter: blur(4px);
+  }
+} */
+
+::view-transition-old(.morph):only-child {
+  animation: 200ms ease both vt-fade-out;
+}
+
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}
