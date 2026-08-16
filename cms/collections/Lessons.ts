@@ -1,5 +1,3 @@
-import { createMarkdownField } from "@fields/factories/createMarkdownPreviewField";
-import { createSlugField } from "@fields/factories/createSlugField";
 import createBlurUp from "@mux/blurup";
 import type { Access, CollectionConfig } from "payload";
 import { isAdminOrEditor } from "@/cms/access/roles";
@@ -13,6 +11,8 @@ import {
   syncLessonCourseMetadataAfterChange,
   syncLessonCourseMetadataAfterDelete,
 } from "@/cms/hooks/syncCourseMetadata";
+import { createMarkdownField } from "@/fields/factories/createMarkdownPreviewField";
+import { createSlugField } from "@/fields/factories/createSlugField";
 
 interface LessonData {
   course?: string | { id: string };
@@ -42,7 +42,7 @@ export const Lessons: CollectionConfig = {
     beforeChange: [
       async ({ data, req }) => {
         if (data.content) {
-          const { getReadingTime } = await import("@lib/reading-time");
+          const { getReadingTime } = await import("@/lib/reading-time");
           data.readingTimeSeconds = getReadingTime(data.content);
         }
 
@@ -200,7 +200,7 @@ export const Lessons: CollectionConfig = {
               hasMany: true,
               admin: {
                 components: {
-                  afterInput: ["@fields/upload-image-helper"],
+                  afterInput: ["@/fields/upload-image-helper"],
                 },
                 condition: (data) => data.type === "text",
               },

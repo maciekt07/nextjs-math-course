@@ -21,13 +21,7 @@
     "paths": {
       "@/*": ["./*"],
       "@payload-config": ["./payload.config.ts"],
-      "@styles/*": ["./styles/*"],
-      "@cms/*": ["./cms/*"],
-      "@fields/*": ["./cms/fields/*"],
-      "@email/*": ["./email/*"],
-      "@lib/*": ["./lib/*"],
-      "@env/*": ["./env/*"],
-      "@hooks/*": ["./hooks/*"],
+      "@/fields/*": ["./cms/fields/*"],
       "server-only": ["./lib/stubs/server-only.ts"]
     }
   },

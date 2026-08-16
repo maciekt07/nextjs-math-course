@@ -1,4 +1,3 @@
-import { serverEnv } from "@env/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { and, eq } from "drizzle-orm";
 import type { NextRequest } from "next/server";
@@ -7,6 +6,7 @@ import { publishedStatusWhere } from "@/cms/access/contentAccess";
 import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
 import { clientEnv } from "@/env/client";
+import { serverEnv } from "@/env/server";
 import { auth } from "@/lib/auth/auth";
 import { LIMITS } from "@/lib/constants/limits";
 import { mux } from "@/lib/mux/mux";

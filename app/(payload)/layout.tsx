@@ -8,7 +8,7 @@ import type React from "react";
 
 import { importMap } from "./admin/importMap.js";
 import "./custom.scss";
-import "@styles/payload-styles.css";
+import "@/styles/payload-styles.css";
 import { inter } from "@/lib/fonts";
 
 type Args = {

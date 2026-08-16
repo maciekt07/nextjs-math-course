@@ -1,4 +1,3 @@
-import { createSlugField } from "@fields/factories/createSlugField";
 import type { Access, CollectionConfig } from "payload";
 import { publicPublishedReadAccess } from "@/cms/access/contentAccess";
 import { isAdmin, isMcpRequest } from "@/cms/access/roles";
@@ -8,6 +7,7 @@ import {
   revalidateCourse,
   revalidateCourseAfterDelete,
 } from "@/cms/hooks/revalidateCourse";
+import { createSlugField } from "@/fields/factories/createSlugField";
 
 const canManageCourses: Access = ({ req: { user } }) => isAdmin(user);
 

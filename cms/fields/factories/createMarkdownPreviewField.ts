@@ -1,5 +1,5 @@
-import type { MarkdownPreviewFieldProps } from "@fields/markdown-preview-field";
 import type { TextareaField } from "payload";
+import type { MarkdownPreviewFieldProps } from "@/fields/markdown-preview-field";
 
 type MarkdownFieldOptions = Omit<TextareaField, "type" | "admin"> & {
   admin?: Partial<TextareaField["admin"]> & {
@@ -19,7 +19,7 @@ export const createMarkdownField = (
       ...admin,
       components: {
         Field: {
-          path: "@fields/markdown-preview-field",
+          path: "@/fields/markdown-preview-field",
           clientProps: admin?.clientProps ?? {},
         },
       },

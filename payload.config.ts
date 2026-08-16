@@ -1,10 +1,5 @@
 import "server-only";
 
-import { Courses } from "@cms/collections/Courses";
-import { Feedbacks } from "@cms/collections/Feedbacks";
-import { Lessons } from "@cms/collections/Lessons";
-import { MediaPublic } from "@cms/collections/MediaPublic";
-import { Users } from "@cms/collections/Users";
 import { muxVideoPlugin } from "@oversightstudio/mux-video";
 import { mongooseAdapter } from "@payloadcms/db-mongodb";
 import { resendAdapter } from "@payloadcms/email-resend";
@@ -15,8 +10,13 @@ import { s3Storage } from "@payloadcms/storage-s3";
 import { buildConfig } from "payload";
 import sharp from "sharp";
 import { Chapters } from "@/cms/collections/Chapters";
+import { Courses } from "@/cms/collections/Courses";
+import { Feedbacks } from "@/cms/collections/Feedbacks";
+import { Lessons } from "@/cms/collections/Lessons";
 import { MediaPrivate } from "@/cms/collections/MediaPrivate";
+import { MediaPublic } from "@/cms/collections/MediaPublic";
 import { Posters } from "@/cms/collections/Posters";
+import { Users } from "@/cms/collections/Users";
 import { clientEnv } from "@/env/client";
 import { serverEnv } from "@/env/server";
 import { LIMITS } from "@/lib/constants/limits";
@@ -86,11 +86,11 @@ export default buildConfig({
     components: {
       graphics: {
         Icon: {
-          path: "@cms/components/branding",
+          path: "@/cms/components/branding",
           exportName: "Icon",
         },
         Logo: {
-          path: "@cms/components/branding",
+          path: "@/cms/components/branding",
           exportName: "Logo",
         },
       },

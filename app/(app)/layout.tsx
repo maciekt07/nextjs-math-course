@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import "@styles/globals.css";
+import "@/styles/globals.css";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import NextTopLoader from "nextjs-toploader";
