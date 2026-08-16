@@ -7,6 +7,9 @@ import { toast } from "sonner";
 import { clientEnv } from "@/env/client";
 import { formatSeconds } from "@/lib/format";
 
+/**
+ * @see https://better-auth.com/docs/concepts/client
+ */
 export const authClient = createAuthClient({
   plugins: [
     lastLoginMethodClient(),

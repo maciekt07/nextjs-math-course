@@ -1,6 +1,9 @@
 import type { BetterAuthRateLimitOptions } from "better-auth";
 
-// https://better-auth.com/docs/concepts/rate-limit
+/**
+ * rate limit configuration for better-auth
+ * @see https://better-auth.com/docs/concepts/rate-limit
+ */
 
 export const rateLimit: BetterAuthRateLimitOptions = {
   storage: "secondary-storage",

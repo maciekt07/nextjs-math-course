@@ -1,12 +1,6 @@
 import type { Root } from "mdast";
-import type {
-  ContainerDirective,
-  LeafDirective,
-  TextDirective,
-} from "mdast-util-directive";
+import type { LeafDirective } from "mdast-util-directive";
 import { visit } from "unist-util-visit";
-
-type DirectiveNode = ContainerDirective | LeafDirective | TextDirective;
 
 export interface DesmosDivProps extends React.HTMLAttributes<HTMLDivElement> {
   "data-graph-url"?: string;
@@ -22,29 +16,23 @@ export interface DesmosDivProps extends React.HTMLAttributes<HTMLDivElement> {
 export function desmos() {
   return (tree: Root) => {
     visit(tree, (node) => {
-      if (
-        node.type === "containerDirective" ||
-        node.type === "leafDirective" ||
-        node.type === "textDirective"
-      ) {
-        const directiveNode = node as DirectiveNode;
+      if (node.type !== "leafDirective") return;
+      const directiveNode = node as LeafDirective;
+      if (directiveNode.name !== "desmos") return;
 
-        if (directiveNode.name === "desmos") {
-          if (!directiveNode.data) {
-            directiveNode.data = {};
-          }
-
-          const graphUrl = directiveNode.attributes?.url;
-          const noEmbed = directiveNode.attributes?.noEmbed === "true";
-
-          directiveNode.data.hName = "div";
-          directiveNode.data.hProperties = {
-            className: "desmos-graph",
-            "data-graph-url": graphUrl || "",
-            "data-no-embed": noEmbed.toString(),
-          };
-        }
+      if (!directiveNode.data) {
+        directiveNode.data = {};
       }
+
+      const graphUrl = directiveNode.attributes?.url;
+      const noEmbed = directiveNode.attributes?.noEmbed === "true";
+
+      directiveNode.data.hName = "div";
+      directiveNode.data.hProperties = {
+        className: "desmos-graph",
+        "data-graph-url": graphUrl || "",
+        "data-no-embed": noEmbed.toString(),
+      };
     });
   };
 }

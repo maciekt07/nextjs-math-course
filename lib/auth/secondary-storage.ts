@@ -3,8 +3,10 @@ import "server-only";
 import type { SecondaryStorage } from "better-auth";
 import { redis } from "@/lib/redis";
 
-// https://www.better-auth.com/docs/concepts/database#secondary-storage
-
+/**
+ * Redis secondary storage for better-auth sessions
+ * @see https://better-auth.com/docs/concepts/database#secondary-storage
+ */
 export const secondaryStorage: SecondaryStorage = {
   async get(key: string) {
     const val = await redis.get(key);
