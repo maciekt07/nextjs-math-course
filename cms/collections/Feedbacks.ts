@@ -1,6 +1,7 @@
 import type { Access, CollectionConfig } from "payload";
 import { isAdmin } from "@/cms/access/roles";
 import { LIMITS } from "@/lib/constants/limits";
+import { reactions } from "@/lib/constants/reactions";
 
 const canManageFeedbacks: Access = ({ req: { user } }) => isAdmin(user);
 
@@ -72,7 +73,7 @@ export const Feedbacks: CollectionConfig = {
       min: 1,
       max: 4,
       admin: {
-        description: "1 = Poor, 2 = Fair, 3 = Good, 4 = Excellent",
+        description: reactions.map((r) => `${r.value} = ${r.label}`).join(", "),
         readOnly: true,
       },
     },

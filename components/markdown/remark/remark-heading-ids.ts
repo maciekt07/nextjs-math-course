@@ -5,7 +5,7 @@ import { getText } from "@/lib/markdown/get-text";
 
 /**
  * Remark plugin that assigns stable, unique `id` attributes to `h2` and `h3` headings.
- * {@link createHeadingIdGenerator}
+ * @see {@link createHeadingIdGenerator}
  */
 export function remarkHeadingIds() {
   return (tree: Root) => {

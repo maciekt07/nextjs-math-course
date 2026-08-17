@@ -1,4 +1,7 @@
+import "client-only";
+
 import { clientEnv } from "@/env/client";
+import { getMuxTokenAction } from "@/lib/mux/actions";
 import type { MuxTokens } from "@/types/mux";
 
 // client-side cache for Mux signed tokens with automatic expiration
@@ -67,25 +70,14 @@ function setCachedToken(playbackId: string, tokens: MuxTokens, ttl: number) {
 }
 
 async function requestToken(playbackId: string): Promise<MuxTokens> {
-  const res = await fetch("/api/mux/token", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ playbackId }),
-  });
+  const result = await getMuxTokenAction(playbackId);
 
-  if (res.status === 429) throw new RateLimitError();
-  if (!res.ok) {
-    let errorMessage = "Failed to fetch Mux token";
-    try {
-      const data = await res.json();
-      if (data.error) errorMessage = data.error;
-    } catch {
-      // ignore JSON parse errors
-    }
-    throw new MuxTokenError(errorMessage, res.status);
+  if (!result.success) {
+    if (result.status === 429) throw new RateLimitError();
+    throw new MuxTokenError(result.error, result.status);
   }
 
-  return res.json();
+  return result.tokens;
 }
 
 function parseDuration(duration: string): number {

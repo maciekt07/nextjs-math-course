@@ -1,6 +1,5 @@
 "use client";
 
-import { Frown, type LucideIcon, Meh, Smile, Star } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -17,24 +16,13 @@ import { Button } from "@/components/ui/button";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 import { Textarea } from "@/components/ui/textarea";
 import { useMounted } from "@/hooks/use-mounted";
+import { submitFeedbackAction } from "@/lib/actions/feedback";
 import { authClient } from "@/lib/auth/auth-client";
 import { LIMITS } from "@/lib/constants/limits";
+import { reactions } from "@/lib/constants/reactions";
 import { system } from "@/lib/system";
 import { cn } from "@/lib/ui";
 import type { Lesson } from "@/types/payload-types";
-
-interface Reaction {
-  value: number;
-  icon: LucideIcon;
-  label: string;
-}
-
-const reactions = [
-  { value: 1, icon: Frown, label: "Poor" },
-  { value: 2, icon: Meh, label: "Fair" },
-  { value: 3, icon: Smile, label: "Good" },
-  { value: 4, icon: Star, label: "Excellent" },
-] as const satisfies readonly Reaction[];
 
 export default function FeedbackWidget({
   lessonId,
@@ -79,22 +67,14 @@ export default function FeedbackWidget({
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/send-feedback", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          lessonId,
-          reaction: selectedReaction,
-          comment: comment.trim(),
-        }),
+      const result = await submitFeedbackAction({
+        lessonId,
+        reaction: selectedReaction,
+        comment: comment.trim(),
       });
 
-      const data = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        toast.error(
-          `Failed to submit feedback: ${data.error || "Unknown error"}`,
-        );
+      if (!result.success) {
+        toast.error(`Failed to submit feedback: ${result.error}`);
         return;
       }
 

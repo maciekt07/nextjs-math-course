@@ -147,9 +147,11 @@ async function syncCourseMetadata(req: PayloadRequest, courseId: string) {
       collection: "courses",
       id: courseId,
       overrideAccess: true,
+      draft: true,
       select: {
         id: true,
         slug: true,
+        _status: true,
         lessonCount: true,
         totalQuizQuestions: true,
         totalReadingTimeSeconds: true,
@@ -186,7 +188,11 @@ async function syncCourseMetadata(req: PayloadRequest, courseId: string) {
     id: courseId,
     overrideAccess: true,
     context: { disableRevalidate: true },
-    data: metadata,
+    draft: course._status === "draft",
+    data: {
+      ...metadata,
+      ...(course._status ? { _status: course._status } : {}),
+    },
   });
 
   await revalidateCourseCache(req.payload, courseId, course.slug);
