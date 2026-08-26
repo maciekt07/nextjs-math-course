@@ -40,6 +40,8 @@ export const serverEnv = createEnv({
       .email("RESEND_FROM_EMAIL must be a valid email address"),
 
     PAYLOAD_SECRET: z.string().min(16),
+    PAYLOAD_DEV_AUTOLOGIN_EMAIL: z.string().email().optional(),
+    PAYLOAD_DEV_AUTOLOGIN_PASSWORD: z.string().min(6).optional(),
     MONGO_URL: z
       .string()
       .min(1)

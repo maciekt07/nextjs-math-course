@@ -69,6 +69,18 @@ export default buildConfig({
   },
 
   admin: {
+    // auto fill login fields for development
+    autoLogin:
+      process.env.NODE_ENV === "development" &&
+      serverEnv.PAYLOAD_DEV_AUTOLOGIN_EMAIL &&
+      serverEnv.PAYLOAD_DEV_AUTOLOGIN_PASSWORD
+        ? {
+            email: serverEnv.PAYLOAD_DEV_AUTOLOGIN_EMAIL,
+            password: serverEnv.PAYLOAD_DEV_AUTOLOGIN_PASSWORD,
+            prefillOnly: true,
+          }
+        : false,
+
     meta: {
       titleSuffix: `- ${APP_NAME} Admin Panel`,
       icons: [
