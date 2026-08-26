@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { publishedStatusWhere } from "@/cms/access/contentAccess";
 import Footer from "@/components/footer/footer";
-import { auth } from "@/lib/auth/auth";
+import { getServerSession } from "@/lib/auth/get-session";
 import { getIsDraftMode, withCache } from "@/lib/cache/with-cache";
 import { APP_NAME } from "@/lib/constants/site";
 import { getCourseWithLessons } from "@/lib/data/course-outline";
@@ -46,6 +45,24 @@ async function getLesson({
         depth: 1,
         overrideAccess: true,
         draft: isDraftMode,
+        select: {
+          title: true,
+          slug: true,
+          id: true,
+          type: true,
+          free: true,
+          content: true,
+          quiz: true,
+          video: true,
+          videoDescription: true,
+          videoChapters: true,
+          videoDurationSeconds: true,
+          videoBlurDataURL: true,
+          readingTimeSeconds: true,
+          uploadImage: true,
+          createdAt: true,
+          updatedAt: true,
+        },
         where: {
           and: [
             ...(isDraftMode ? [] : [publishedStatusWhere]),
@@ -186,7 +203,7 @@ export default async function LessonPage({
   let session = null;
 
   if (!allowed) {
-    session = await auth.api.getSession({ headers: await headers() });
+    session = await getServerSession();
 
     if (!session) {
       showSignIn = true;

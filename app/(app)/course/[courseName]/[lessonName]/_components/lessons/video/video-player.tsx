@@ -9,10 +9,18 @@ import {
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import type React from "react";
-import { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import { toast } from "sonner";
 import { useWebHaptics } from "web-haptics/react";
 import { MarkdownRenderer } from "@/components/markdown";
+import { createMarkdownComponents } from "@/components/markdown/components";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useMounted } from "@/hooks/use-mounted";
@@ -75,6 +83,8 @@ export function VideoPlayer({
   const { trigger } = useWebHaptics();
   const playerRef = useRef<HTMLDivElement>(null);
   const playerElementRef = useRef<MuxPlayerRefAttributes | null>(null);
+  const currentTimeRef = useRef<number>(0);
+  const lastUpdateRef = useRef<number>(0);
   const [currentTime, setCurrentTime] = useState<number>(0);
 
   type MuxState = {
@@ -213,6 +223,7 @@ export function VideoPlayer({
     const player = playerElementRef.current;
     if (player && "currentTime" in player) {
       trigger();
+      currentTimeRef.current = startTime;
       setCurrentTime(startTime);
       player.currentTime = startTime;
       player.play();
@@ -221,6 +232,14 @@ export function VideoPlayer({
       });
     }
   };
+
+  const markdownComponents = useMemo(
+    () =>
+      createMarkdownComponents({
+        optimizeMath: !free || process.env.NODE_ENV === "development",
+      }),
+    [free],
+  );
 
   const renderVideoArea = () => {
     if (!hasVideo || !playbackId) {
@@ -289,7 +308,12 @@ export function VideoPlayer({
           onTimeUpdate={() => {
             const player = playerElementRef.current;
             if (player && "currentTime" in player) {
-              setCurrentTime(player.currentTime);
+              currentTimeRef.current = player.currentTime;
+              const now = Date.now();
+              if (now - lastUpdateRef.current >= 1000) {
+                lastUpdateRef.current = now;
+                setCurrentTime(player.currentTime);
+              }
             }
           }}
           onError={(e) => console.log(e)}
@@ -318,6 +342,7 @@ export function VideoPlayer({
               content={videoDescription}
               optimizeMath={!free || process.env.NODE_ENV === "development"}
               useSections
+              components={markdownComponents}
             />
           ) : (
             <p className="italic text-muted-foreground">No Description</p>

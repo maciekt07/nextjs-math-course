@@ -25,13 +25,8 @@ export async function revalidateCourseCache(
     `Revalidating cache for course: ${courseId} (slug: ${courseSlug ?? "unknown"})`,
   );
 
-  revalidateTag(`course:${courseId}`, "max");
   if (courseSlug) revalidateTag(`course-slug:${courseSlug}`, "max");
   revalidateTag("courses-list", "max");
   revalidatePath("/");
   revalidatePath("/sitemap.xml");
-}
-
-export function revalidateLessonCache(lessonId: string) {
-  revalidateTag(`lesson:${lessonId}`, "max");
 }

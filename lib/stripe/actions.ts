@@ -1,21 +1,12 @@
 "use server";
 
-import { Ratelimit } from "@upstash/ratelimit";
 import type { User } from "better-auth";
 import { and, eq } from "drizzle-orm";
 import { db } from "@/drizzle/db";
 import { enrollment } from "@/drizzle/schema";
 import { clientEnv } from "@/env/client";
-import { redis } from "@/lib/redis";
 import type { Course } from "@/types/payload-types";
 import { stripe } from "./stripe";
-
-const limiter = new Ratelimit({
-  redis,
-  limiter: Ratelimit.slidingWindow(3, "180 s"),
-  analytics: true,
-  prefix: "checkout_ratelimit",
-});
 
 /**
  * Create a Stripe checkout session and a pending enrollment row in Postgres.
@@ -28,14 +19,6 @@ export async function createPaymentIntent(
   >,
   user: User,
 ) {
-  const { success, reset } = await limiter.limit(`user:${user.id}`);
-  if (!success) {
-    const retryAfter = Math.ceil((reset - Date.now()) / 1000);
-    throw new Error(
-      `Too many checkout attempts, try again in ${retryAfter} seconds`,
-    );
-  }
-
   const existingEnrollment = await db
     .select()
     .from(enrollment)

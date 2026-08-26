@@ -71,7 +71,7 @@ async function resolveMediaAccess(
   const lessons = await payload.find({
     collection: "lessons",
     depth: 0,
-    limit: 10,
+    limit: 0,
     overrideAccess: true,
     select: { uploadImage: true, free: true, course: true },
     where: {

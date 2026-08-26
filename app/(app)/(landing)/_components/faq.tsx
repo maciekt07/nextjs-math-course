@@ -81,7 +81,7 @@ export function FAQ() {
           >
             <AccordionItem
               value={`item-${i}`}
-              className="border border-border rounded-xl bg-muted/40 px-4 shadow-md transition-shadow hover:shadow-lg"
+              className="border border-border rounded-xl bg-muted/40 px-4 shadow-md"
             >
               <AccordionTrigger className="text-left py-4 hover:no-underline [&>svg]:text-muted-foreground cursor-pointer">
                 <span className="font-medium">{faq.question}</span>

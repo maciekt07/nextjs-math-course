@@ -14,7 +14,7 @@ export async function VideoLesson({ lesson }: VideoLessonProps) {
 
   const selectedOption =
     playbackOptions.find((opt) => opt.playbackPolicy === policy) ??
-    playbackOptions.find(Boolean);
+    (lesson.free ? playbackOptions.find(Boolean) : undefined);
 
   const {
     playbackId = null,

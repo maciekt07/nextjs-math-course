@@ -9,6 +9,7 @@ import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { s3Storage } from "@payloadcms/storage-s3";
 import { buildConfig } from "payload";
 import sharp from "sharp";
+import { isAdminOrEditor } from "@/cms/access/roles";
 import { Chapters } from "@/cms/collections/Chapters";
 import { Courses } from "@/cms/collections/Courses";
 import { Feedbacks } from "@/cms/collections/Feedbacks";
@@ -107,6 +108,7 @@ export default buildConfig({
     mcpPlugin(PayloadMCPConfig),
     muxVideoPlugin({
       enabled: true,
+      access: (req) => isAdminOrEditor(req.user),
       initSettings: {
         tokenId: serverEnv.MUX_TOKEN_ID,
         tokenSecret: serverEnv.MUX_TOKEN_SECRET,

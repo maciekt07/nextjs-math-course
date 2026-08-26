@@ -1,7 +1,6 @@
 import type { Access, CollectionConfig } from "payload";
 import { publicPublishedReadAccess } from "@/cms/access/contentAccess";
 import { isAdmin, isMcpRequest } from "@/cms/access/roles";
-import { cascadeDeleteCourse } from "@/cms/hooks/cascadeDeleteCourse";
 import { forceMcpDraftOnly } from "@/cms/hooks/forceMcpDraftOnly";
 import {
   revalidateCourse,
@@ -28,7 +27,7 @@ export const Courses: CollectionConfig = {
   hooks: {
     beforeOperation: [forceMcpDraftOnly],
     afterChange: [revalidateCourse],
-    afterDelete: [cascadeDeleteCourse, revalidateCourseAfterDelete],
+    afterDelete: [revalidateCourseAfterDelete],
   },
   admin: {
     useAsTitle: "title",

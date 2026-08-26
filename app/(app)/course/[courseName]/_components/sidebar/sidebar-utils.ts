@@ -17,13 +17,22 @@ export const groupLessonsByChapter = (
   lessons: Lesson[],
   chapters: Chapter[],
 ): ChapterLessonsGroup[] => {
+  const lessonsByChapter = new Map<string, Lesson[]>();
+  for (const lesson of lessons) {
+    const id = getChapterId(lesson.chapter);
+    if (!id) continue;
+    let group = lessonsByChapter.get(id);
+    if (!group) {
+      group = [];
+      lessonsByChapter.set(id, group);
+    }
+    group.push(lesson);
+  }
+
   return chapters
     .map((chapter) => ({
       chapter,
-      lessons: lessons.filter(
-        (lesson) =>
-          lesson.chapter && getChapterId(lesson.chapter) === chapter.id,
-      ),
+      lessons: lessonsByChapter.get(chapter.id) ?? [],
     }))
     .filter(({ lessons: chapterLessons }) => chapterLessons.length > 0);
 };

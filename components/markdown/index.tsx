@@ -1,6 +1,8 @@
 import "katex/dist/katex.min.css";
 
-import ReactMarkdown from "react-markdown";
+import ReactMarkdown, {
+  type Components as MarkdownComponents,
+} from "react-markdown";
 import rehypeKatex from "rehype-katex";
 import rehypeUnwrapImages from "rehype-unwrap-images";
 import remarkDirective from "remark-directive";
@@ -46,6 +48,7 @@ interface MarkdownRendererProps {
    */
   useSections?: boolean;
   isFreeLesson?: boolean;
+  components?: MarkdownComponents;
 }
 
 export function MarkdownRenderer({
@@ -54,12 +57,15 @@ export function MarkdownRenderer({
   optimizeMath = false,
   isFreeLesson = false,
   useSections = false,
+  components: componentsProp,
 }: MarkdownRendererProps) {
-  const components = createMarkdownComponents({
-    media,
-    optimizeMath,
-    optimizeImages: isFreeLesson,
-  });
+  const components =
+    componentsProp ??
+    createMarkdownComponents({
+      media,
+      optimizeMath,
+      optimizeImages: isFreeLesson,
+    });
 
   const remarkPlugins: Pluggable[] = useSections
     ? [...BASE_REMARK_PLUGINS, [remarkSections, { depth: [2] }]]
