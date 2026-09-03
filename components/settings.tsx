@@ -50,7 +50,7 @@ export function Settings() {
 
   const settings = { desmosForceDarkMode, coloredMarkdown, largeMath };
   return (
-    <div className="space-y-6 py-2">
+    <div className="space-y-6">
       {switchSettings.map(({ key, label, description }) => (
         <div key={key}>
           <div className="flex items-start justify-between gap-4">

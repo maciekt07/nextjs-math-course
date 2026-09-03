@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { publishedStatusWhere } from "@/cms/access/contentAccess";
+import {
+  publishedCourseStatusWhere,
+  publishedStatusWhere,
+} from "@/cms/access/contentAccess";
 import Footer from "@/components/footer/footer";
 import { getServerSession } from "@/lib/auth/get-session";
 import { getIsDraftMode, withCache } from "@/lib/cache/with-cache";
@@ -65,7 +68,9 @@ async function getLesson({
         },
         where: {
           and: [
-            ...(isDraftMode ? [] : [publishedStatusWhere]),
+            ...(isDraftMode
+              ? []
+              : [publishedStatusWhere, publishedCourseStatusWhere]),
             { "course.slug": { equals: courseSlug } },
             { slug: { equals: lessonSlug } },
           ],
@@ -112,7 +117,9 @@ async function getLessonAccessData({
         },
         where: {
           and: [
-            ...(isDraftMode ? [] : [publishedStatusWhere]),
+            ...(isDraftMode
+              ? []
+              : [publishedStatusWhere, publishedCourseStatusWhere]),
             { "course.slug": { equals: courseSlug } },
             { slug: { equals: lessonSlug } },
           ],
@@ -141,7 +148,9 @@ export async function generateStaticParams() {
     overrideAccess: true,
     pagination: false,
     select: { slug: true, course: true, free: true },
-    where: publishedStatusWhere,
+    where: {
+      and: [publishedStatusWhere, publishedCourseStatusWhere],
+    },
   });
 
   return lessons.docs

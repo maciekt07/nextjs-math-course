@@ -40,6 +40,7 @@ export const serverEnv = createEnv({
       .email("RESEND_FROM_EMAIL must be a valid email address"),
 
     PAYLOAD_SECRET: z.string().min(16),
+    CRON_SECRET: z.string().min(16),
     PAYLOAD_DEV_AUTOLOGIN_EMAIL: z.string().email().optional(),
     PAYLOAD_DEV_AUTOLOGIN_PASSWORD: z.string().min(6).optional(),
     MONGO_URL: z
@@ -52,6 +53,12 @@ export const serverEnv = createEnv({
           message: "MONGO_URL must start with 'mongodb://' or 'mongodb+srv://'",
         },
       ),
+
+    QSTASH_URL: z.string().url(),
+    QSTASH_TOKEN: z.string().min(1),
+    // verifySignatureAppRouter
+    QSTASH_CURRENT_SIGNING_KEY: z.string().min(1),
+    QSTASH_NEXT_SIGNING_KEY: z.string().min(1),
 
     ENABLE_S3: z.enum(["true", "false"]).transform((v) => v === "true"),
 

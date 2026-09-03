@@ -1,5 +1,8 @@
 import type { MetadataRoute } from "next";
-import { publishedStatusWhere } from "@/cms/access/contentAccess";
+import {
+  publishedCourseStatusWhere,
+  publishedStatusWhere,
+} from "@/cms/access/contentAccess";
 import { clientEnv } from "@/env/client";
 import { stripMarkdown } from "@/lib/markdown/strip-markdown";
 import { getPayloadClient } from "@/lib/payload-client";
@@ -111,7 +114,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     overrideAccess: true,
     pagination: false,
     where: {
-      and: [publishedStatusWhere, { free: { equals: true } }],
+      and: [
+        publishedStatusWhere,
+        publishedCourseStatusWhere,
+        { free: { equals: true } },
+      ],
     },
     select: {
       slug: true,

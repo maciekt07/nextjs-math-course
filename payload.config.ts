@@ -1,5 +1,6 @@
 import "server-only";
 
+import { timingSafeEqual } from "node:crypto";
 import { muxVideoPlugin } from "@oversightstudio/mux-video";
 import { mongooseAdapter } from "@payloadcms/db-mongodb";
 import { resendAdapter } from "@payloadcms/email-resend";
@@ -7,7 +8,7 @@ import { importExportPlugin } from "@payloadcms/plugin-import-export";
 import { mcpPlugin } from "@payloadcms/plugin-mcp";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { s3Storage } from "@payloadcms/storage-s3";
-import { buildConfig } from "payload";
+import { buildConfig, type PayloadRequest } from "payload";
 import sharp from "sharp";
 import { isAdminOrEditor } from "@/cms/access/roles";
 import { Chapters } from "@/cms/collections/Chapters";
@@ -115,6 +116,20 @@ export default buildConfig({
     defaultFromName: serverEnv.RESEND_FROM_EMAIL,
     apiKey: serverEnv.RESEND_API_KEY,
   }),
+
+  // https://payloadcms.com/docs/jobs-queue/jobs
+  jobs: {
+    access: {
+      run: ({ req }: { req: PayloadRequest }) => {
+        if (isAdminOrEditor(req.user)) return true;
+        // https://www.geeksforgeeks.org/node-js/node-js-crypto-timingsafeequal-function/
+        const a = Buffer.from(`Bearer ${serverEnv.CRON_SECRET}`);
+        const b = Buffer.from(req.headers.get("Authorization") ?? "");
+
+        return a.length === b.length && timingSafeEqual(a, b);
+      },
+    },
+  },
 
   plugins: [
     mcpPlugin(PayloadMCPConfig),

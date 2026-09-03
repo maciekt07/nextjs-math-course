@@ -36,7 +36,7 @@ export default function Loading() {
               </div>
             </div>
 
-            <Skeleton className="order-1 h-6.5 w-31 border rounded-full md:order-2 md:self-start" />
+            <Skeleton className="order-1 mt-1 h-6.5 w-31 border rounded-full md:order-2 md:self-start" />
           </div>
 
           <div className="h-px bg-border" />
@@ -45,7 +45,7 @@ export default function Loading() {
             <Skeleton className="h-4 w-16 rounded-md" />
             <div className="flex gap-2 -mt-0.5">
               <Skeleton className="h-9 flex-1 rounded-md border-1" />
-              <Skeleton className="h-9 w-[82px] shrink-0 rounded-md border-1" />
+              <Skeleton className="h-9 w-[83px] shrink-0 rounded-md border-1" />
             </div>
             <Skeleton className="h-3.5 w-56 rounded-md" />
           </div>

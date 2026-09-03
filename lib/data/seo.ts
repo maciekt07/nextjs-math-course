@@ -1,6 +1,9 @@
 import "server-only";
 
-import { publishedStatusWhere } from "@/cms/access/contentAccess";
+import {
+  publishedCourseStatusWhere,
+  publishedStatusWhere,
+} from "@/cms/access/contentAccess";
 import { getIsDraftMode, withCache } from "@/lib/cache/with-cache";
 import { getPayloadClient } from "@/lib/payload-client";
 import type { Course, Poster } from "@/types/payload-types";
@@ -89,7 +92,9 @@ export function getLessonSeoData(courseSlug: string, lessonSlug: string) {
         draft: isDraftMode,
         where: {
           and: [
-            ...(isDraftMode ? [] : [publishedStatusWhere]),
+            ...(isDraftMode
+              ? []
+              : [publishedStatusWhere, publishedCourseStatusWhere]),
             { "course.slug": { equals: courseSlug } },
             { slug: { equals: lessonSlug } },
           ],

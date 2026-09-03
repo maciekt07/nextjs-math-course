@@ -13,6 +13,8 @@ export function buildPublishedStatusWhere(pathPrefix?: string): Where {
 
 export const publishedStatusWhere = buildPublishedStatusWhere();
 
+export const publishedCourseStatusWhere = buildPublishedStatusWhere("course");
+
 export const publicPublishedReadAccess: Access = ({ req }) => {
   if (isAdminOrEditor(req.user)) return true;
 

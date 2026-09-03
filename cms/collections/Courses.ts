@@ -22,7 +22,9 @@ export const Courses: CollectionConfig = {
     delete: canManageCourses,
   },
   versions: {
-    drafts: true,
+    drafts: {
+      schedulePublish: true,
+    },
   },
   hooks: {
     beforeOperation: [forceMcpDraftOnly],
