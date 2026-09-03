@@ -2,7 +2,10 @@ import { BanknoteX, BookX, ChevronLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { publishedStatusWhere } from "@/cms/access/contentAccess";
+import {
+  publishedCourseStatusWhere,
+  publishedStatusWhere,
+} from "@/cms/access/contentAccess";
 import { ArrowRight } from "@/components/animate-ui/icons/arrow-right";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { PartyPopper } from "@/components/animate-ui/icons/party-popper";
@@ -48,7 +51,9 @@ const getCourseWithFirstLesson = (courseSlug: string) =>
         draft: isDraftMode,
         where: {
           and: [
-            ...(isDraftMode ? [] : [publishedStatusWhere]),
+            ...(isDraftMode
+              ? []
+              : [publishedStatusWhere, publishedCourseStatusWhere]),
             { course: { equals: course.id } },
           ],
         },

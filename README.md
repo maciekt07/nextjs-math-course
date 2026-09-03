@@ -38,7 +38,8 @@ A modern full-stack Next.js 16 platform with CMS, auth, and Stripe integration -
 ## Features
 
 - **Full Authentication** - powered by **BetterAuth**, featuring Google OAuth, Google One Tap, email verification & password reset via **Resend**. Includes block for disposable emails, last used method badge, session limits and rate limiting with **Redis** to prevent account sharing and abuse.
-- **Admin CMS Dashboard** - manage courses, lessons, and media directly through an integrated headless **Payload CMS** interface with drafts and version history.
+- **Admin CMS Dashboard** - manage courses, lessons, and media directly through an integrated headless **Payload CMS** interface with drafts, version history, and scheduled publishing via **QStash** job queues.
+- **Scheduled Course Publishing** - automated course publishing powered by **QStash** job queues, with failure detection and automatic email notifications to payload admins.
 - **MCP integration** - a Model Context Protocol server lets AI clients like Claude draft, edit, and review lesson content directly against the CMS.
 - **Stripe Payments** - sell courses with one-time payments using Stripe Checkout.
 - **Hybrid Lesson Delivery (SSR + SSG)** - free lessons are pre-rendered for speed and SEO, while paid lessons use server-side rendering for secure, on-demand access.
@@ -135,6 +136,23 @@ Start the React Email preview server to view and test email templates locally:
 
 ```bash
 pnpm email:dev
+```
+
+### Set Up QStash (Scheduled Publishing)
+
+Scheduled course publishing runs on **Payload's Jobs Queue**, triggered
+periodically via **QStash** calling `/api/cron/run`.
+
+Start local QStash CLI:
+
+```bash
+pnpm qstash:dev
+```
+
+Register schedule against it:
+
+```bash
+pnpm qstash:schedules:dev
 ```
 
 ## Usage

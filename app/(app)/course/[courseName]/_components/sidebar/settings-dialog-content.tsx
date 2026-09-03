@@ -1,4 +1,5 @@
 import { Separator } from "@radix-ui/react-dropdown-menu";
+import { SettingsIcon } from "lucide-react";
 import { Settings } from "@/components/settings";
 import {
   DialogContent,
@@ -11,7 +12,10 @@ export function SettingsDialogContent() {
   return (
     <DialogContent>
       <DialogHeader>
-        <DialogTitle className="text-2xl">Settings</DialogTitle>
+        <DialogTitle className="flex items-center justify-center gap-2 text-2xl sm:justify-start">
+          <SettingsIcon className="size-6" />
+          Settings
+        </DialogTitle>
         <DialogDescription>
           Customize your preferences and app behavior
         </DialogDescription>

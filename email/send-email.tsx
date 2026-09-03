@@ -6,6 +6,16 @@ import { serverEnv } from "@/env/server";
 import { APP_NAME } from "@/lib/constants/site";
 import { resend } from "@/lib/resend";
 
+/**
+ * sends a transactional email via Resend
+ * @param options - Resend email options, excluding `from`
+ * @example
+ *   void sendEmail({
+ *     to: user.email,
+ *     subject: `Confirm Your Email Address`,
+ *     react: VerificationEmailTemplate({ name: user.name, url }),
+ *   });
+ */
 export async function sendEmail(
   options: Omit<CreateEmailOptions, "from">,
 ): Promise<void> {
