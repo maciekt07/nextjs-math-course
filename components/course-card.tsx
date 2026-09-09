@@ -81,6 +81,7 @@ export function CourseCard({
             <ViewTransition
               name={`course-poster-${course.id}`}
               share={{ "nav-forward": "morph", default: "none" }}
+              update="none"
               enter="none"
               exit={{ "nav-forward": "morph", default: "none" }}
             >

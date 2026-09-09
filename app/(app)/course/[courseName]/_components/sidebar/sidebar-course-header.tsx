@@ -31,6 +31,7 @@ export function SidebarCourseHeader({
           <ViewTransition
             name={`course-poster-${course.id}`}
             share={{ "nav-forward": "morph", default: "none" }}
+            update="none"
             enter={{ "nav-forward": "morph", default: "none" }}
             exit="none"
           >
