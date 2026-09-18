@@ -5,29 +5,29 @@ const S3EnvSchema = {
   bucket: z.string().min(1).optional(),
   accessKeyId: z.string().min(1).optional(),
   secret: z.string().min(1).optional(),
-  endpoint: z.string().url().optional().or(z.literal("")),
+  endpoint: z.string().url().optional(),
 };
+
+const secretSchema = z
+  .string()
+  .min(32, "Secret must be at least 32 characters long");
 
 export const serverEnv = createEnv({
   skipValidation:
     !!process.env.SKIP_ENV_VALIDATION || process.env.NODE_ENV === "test",
+  emptyStringAsUndefined: true,
   server: {
-    NGROK_URL: z.string().url().optional().or(z.literal("")),
+    NGROK_URL: z.string().url().optional(),
+
     DATABASE_URL: z
       .string()
       .url()
-      .min(10)
       .refine((val) => val.startsWith("postgresql://"), {
         message: "DATABASE_URL must start with 'postgresql://'",
       }),
-    DB_HOST: z.string().optional(),
-    DB_PORT: z.coerce.number().optional(),
-    DB_PASSWORD: z.string().optional(),
-    DB_USER: z.string().optional(),
-    DB_NAME: z.string().optional(),
 
-    BETTER_AUTH_SECRET: z.string().min(16),
-    BETTER_AUTH_URL: z.string().url().min(1),
+    BETTER_AUTH_SECRET: secretSchema,
+    BETTER_AUTH_URL: z.string().url(),
 
     RESEND_API_KEY: z
       .string()
@@ -35,17 +35,19 @@ export const serverEnv = createEnv({
       .refine((val) => val.startsWith("re"), {
         message: "RESEND_API_KEY must start with 're'",
       }),
+
     RESEND_FROM_EMAIL: z
       .string()
       .email("RESEND_FROM_EMAIL must be a valid email address"),
 
-    PAYLOAD_SECRET: z.string().min(16),
-    CRON_SECRET: z.string().min(16),
+    PAYLOAD_SECRET: secretSchema,
+    CRON_SECRET: secretSchema,
+
     PAYLOAD_DEV_AUTOLOGIN_EMAIL: z.string().email().optional(),
     PAYLOAD_DEV_AUTOLOGIN_PASSWORD: z.string().min(6).optional(),
+
     MONGO_URL: z
       .string()
-      .min(1)
       .refine(
         (val) =>
           val.startsWith("mongodb://") || val.startsWith("mongodb+srv://"),
@@ -85,6 +87,7 @@ export const serverEnv = createEnv({
       .refine((val) => val.startsWith("sk"), {
         message: "STRIPE_SECRET_KEY must start with 'sk'",
       }),
+
     STRIPE_WEBHOOK_SECRET: z
       .string()
       .min(10)
@@ -97,7 +100,32 @@ export const serverEnv = createEnv({
 
     GOOGLE_CLIENT_SECRET: z.string().min(1),
   },
-  experimental__runtimeEnv: {},
+
+  createFinalSchema: (shape) =>
+    z.object(shape).superRefine((env, ctx) => {
+      if (!env.ENABLE_S3) return;
+
+      const requiredS3Keys = [
+        "S3_BUCKET",
+        "S3_ACCESS_KEY_ID",
+        "S3_SECRET",
+        "S3_PUBLIC_BUCKET",
+        "S3_PUBLIC_ACCESS_KEY_ID",
+        "S3_PUBLIC_SECRET",
+      ] as const satisfies readonly (keyof typeof shape)[];
+
+      for (const key of requiredS3Keys) {
+        if (!env[key]) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: [key],
+            message: `${key} is required when ENABLE_S3 is true`,
+          });
+        }
+      }
+    }),
+
+  experimental__runtimeEnv: process.env,
 });
 
 // export type ServerEnv = typeof serverEnv;

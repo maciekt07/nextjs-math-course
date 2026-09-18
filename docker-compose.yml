@@ -2,13 +2,14 @@ services:
   # Postgres for auth/users
   db:
     image: postgres:17.0
-    hostname: ${DB_HOST}
+    hostname: localhost
+
     ports:
-      - "5432:${DB_PORT}"
+      - "5432:5432"
     environment:
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=math_course
     volumes:
       - pgdata:/var/lib/postgresql/data
 
