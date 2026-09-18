@@ -5,7 +5,7 @@ export default function NotFound() {
   return (
     <EmptyStateCenterWrapper>
       <EmptyState
-        icon={BookX}
+        icon={<BookX />}
         title="Lesson Not Found"
         description="The lesson you are looking for does not exist."
       />

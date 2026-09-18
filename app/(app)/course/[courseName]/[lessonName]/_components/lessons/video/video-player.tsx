@@ -243,12 +243,12 @@ export function VideoPlayer({
 
   const renderVideoArea = () => {
     if (!hasVideo || !playbackId) {
-      return <EmptyState icon={VideoOff} title="No video available" />;
+      return <VideoEmptyState icon={VideoOff} title="No video available" />;
     }
 
     if (state.isRateLimited) {
       return (
-        <EmptyState
+        <VideoEmptyState
           icon={AlertCircle}
           title="Rate Limited"
           description="Too many requests. Please wait a minute and try again."
@@ -259,7 +259,7 @@ export function VideoPlayer({
 
     if (state.error) {
       return (
-        <EmptyState
+        <VideoEmptyState
           icon={AlertCircle}
           title="Video Error"
           description={state.error}
@@ -328,7 +328,11 @@ export function VideoPlayer({
 
   return (
     <div className="flex flex-col gap-4" ref={playerRef}>
-      {mounted ? renderVideoArea() : <EmptyState className="bg-transparent" />}
+      {mounted ? (
+        renderVideoArea()
+      ) : (
+        <VideoEmptyState className="bg-transparent" />
+      )}
       <Card className="mt-6 bg-card/40 shadow-none">
         <CardHeader className="border-b font-inter">
           <CardTitle className="flex items-center gap-3 -mb-2">
@@ -376,7 +380,7 @@ export function VideoPlayer({
   );
 }
 
-interface EmptyStateProps extends React.ComponentProps<"div"> {
+interface VideoEmptyStateProps extends React.ComponentProps<"div"> {
   icon?: LucideIcon;
   title?: string;
   description?: string;
@@ -385,7 +389,7 @@ interface EmptyStateProps extends React.ComponentProps<"div"> {
   placeholder?: string;
 }
 
-function EmptyState({
+function VideoEmptyState({
   icon: Icon,
   title,
   description,
@@ -394,7 +398,7 @@ function EmptyState({
   placeholder,
   className,
   ...props
-}: EmptyStateProps) {
+}: VideoEmptyStateProps) {
   return (
     <div
       className={cn(

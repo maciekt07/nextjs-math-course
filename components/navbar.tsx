@@ -27,11 +27,13 @@ const navLinks = [
 
 interface AuthButtonsProps extends React.ComponentProps<"button"> {
   user: User | undefined;
+  expanded?: boolean;
   onNavigate?: () => void;
 }
 
 function AuthButtons({
   user,
+  expanded,
   onNavigate,
   className,
   ...props
@@ -54,19 +56,27 @@ function AuthButtons({
         <Button
           asChild
           variant="outline"
-          className={cn("backdrop-blur-md", className)}
+          className={cn(
+            "backdrop-blur-md sm:max-w-[150px]",
+            expanded && "max-w-full!",
+            className,
+          )}
           onClick={onNavigate}
           {...props}
         >
-          <Link href="/account" prefetch className="flex items-center gap-2">
+          <Link
+            href="/account"
+            prefetch
+            className="flex items-center gap-2 min-w-0"
+          >
             <Avatar className="size-6">
-              <AvatarFallback className="bg-primary text-primary-foreground text-sm!">
+              <AvatarFallback className="bg-primary text-primary-foreground text-[13px]!">
                 {user.name?.charAt(0).toUpperCase() ||
                   user.email?.charAt(0).toUpperCase() ||
                   "U"}
               </AvatarFallback>
             </Avatar>
-            {user.name}
+            <span className="truncate">{user.name}</span>
           </Link>
         </Button>
       </>
@@ -230,6 +240,7 @@ export function Navbar() {
                 <div className="border-t pt-6 mt-2 flex flex-col gap-4">
                   <AuthButtons
                     user={user}
+                    expanded={open}
                     onNavigate={() => setOpen(false)}
                     className="p-5 text-base"
                   />

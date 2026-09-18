@@ -141,11 +141,11 @@ export default function FeedbackWidget({
                     onClick={() => toggleReaction(reaction.value)}
                     disabled={disableOptions}
                     className={cn(
-                      "flex items-center justify-center whitespace-nowrap border transition-colors",
+                      "relative flex items-center justify-center whitespace-nowrap border transition-none",
                       "h-10 w-10 px-0 py-0 sm:h-auto sm:w-auto sm:px-2 sm:py-1",
                       "rounded-md sm:rounded-full",
                       selected
-                        ? "border-primary bg-primary text-primary-foreground"
+                        ? "button-sheen button-sheen-primary shadow-none! text-primary-foreground border-background"
                         : "border-border bg-secondary text-foreground hover:bg-secondary/80",
                       disableOptions ? "cursor-default" : "cursor-pointer",
                     )}
@@ -229,7 +229,7 @@ export default function FeedbackWidget({
                       type="button"
                       onClick={handleSubmit}
                       disabled={disableSendButton}
-                      className="mt-2 flex w-full cursor-pointer items-center justify-center gap-2"
+                      className="mt-2 flex w-full cursor-pointer items-center justify-center gap-2 shadow-none!"
                     >
                       <LoadingSwap
                         isLoading={isSubmitting}

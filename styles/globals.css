@@ -76,10 +76,10 @@
     overflow: hidden;
     color: var(--color-primary-foreground);
     text-shadow: 0 -1px 0 rgb(0 0 0 / 0.25);
-    transition:
+    /* transition:
       filter 0.15s ease-out,
       box-shadow 0.15s ease-out,
-      transform 0.15s ease-out;
+      transform 0.15s ease-out; */
     background:
       radial-gradient(ellipse at -20px top, var(--btn-highlight), transparent),
       linear-gradient(180deg, var(--btn-top), var(--btn-bottom));
@@ -96,7 +96,7 @@
     inset: 0;
     border-radius: inherit;
     pointer-events: none;
-    border: 1.5px solid transparent;
+    border: 1px solid transparent;
     background: linear-gradient(
         180deg,
         rgba(255, 255, 255, 0.02),
@@ -141,6 +141,21 @@
         rgb(255 255 255 / 0.28)
       )
       border-box;
+  }
+
+  .button-sheen.button-sheen-primary {
+    --btn-top: var(--primary);
+    --btn-bottom: color-mix(in oklab, var(--primary) 72%, black 28%);
+    --btn-top-dark: color-mix(
+      in oklab,
+      var(--primary) 80%,
+      var(--background) 20%
+    );
+    --btn-bottom-dark: color-mix(
+      in oklab,
+      var(--primary) 62%,
+      var(--background) 38%
+    );
   }
 
   .sidebar-transition {

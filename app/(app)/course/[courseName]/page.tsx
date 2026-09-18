@@ -202,7 +202,7 @@ export default async function CoursePage({
     return (
       <EmptyStateCenterWrapper>
         <EmptyState
-          icon={BookX}
+          icon={<BookX />}
           title="No Lessons Available"
           description="This course doesn't have any lessons yet."
           action={

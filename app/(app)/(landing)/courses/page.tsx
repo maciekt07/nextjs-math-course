@@ -24,7 +24,7 @@ export default async function CoursesPage() {
   if (courses.length === 0) {
     return (
       <EmptyState
-        icon={BookOpen}
+        icon={<BookOpen />}
         title="No courses yet"
         description="Start learning by exploring available courses. Once you purchase one, it will appear here in your library."
         className="mb-24"

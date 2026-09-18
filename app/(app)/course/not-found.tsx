@@ -13,7 +13,7 @@ export default function NotFoundPage() {
   return (
     <EmptyStateCenterWrapper>
       <EmptyState
-        icon={BookX}
+        icon={<BookX />}
         title="The course does not exist."
         description="It might have been removed or you typed the URL incorrectly."
         action={

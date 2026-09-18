@@ -1,9 +1,8 @@
-import type { LucideIcon } from "lucide-react";
-import type * as React from "react";
+import * as React from "react";
 import { cn } from "@/lib/ui";
 
 interface EmptyStateProps extends React.ComponentProps<"div"> {
-  icon?: LucideIcon;
+  icon?: React.ReactElement<{ className?: string }>;
   title: string;
   description?: string;
   action?: React.ReactNode;
@@ -12,7 +11,7 @@ interface EmptyStateProps extends React.ComponentProps<"div"> {
 }
 
 export function EmptyState({
-  icon: Icon,
+  icon,
   title,
   description,
   action,
@@ -29,14 +28,16 @@ export function EmptyState({
       )}
       {...props}
     >
-      {Icon && (
+      {icon && (
         <div
           className={cn(
             "flex size-24 items-center justify-center rounded-full",
             iconBgColor,
           )}
         >
-          <Icon className={cn("size-12", iconColor)} />
+          {React.cloneElement(icon, {
+            className: cn("size-12", iconColor, icon.props.className),
+          })}
         </div>
       )}
 

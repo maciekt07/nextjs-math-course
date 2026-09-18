@@ -9,8 +9,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default:
-          "button-sheen text-primary-foreground [--btn-top:var(--primary)] [--btn-bottom:color-mix(in_oklab,var(--primary)_72%,black_28%)] [--btn-top-dark:color-mix(in_oklab,var(--primary)_80%,var(--background)_20%)] [--btn-bottom-dark:color-mix(in_oklab,var(--primary)_62%,var(--background)_38%)]",
+        default: "button-sheen button-sheen-primary text-primary-foreground",
         destructive:
           "button-sheen text-white focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 [--btn-top:var(--destructive)] [--btn-bottom:color-mix(in_oklab,var(--destructive)_72%,black_28%)] [--btn-top-dark:color-mix(in_oklab,var(--destructive)_80%,var(--background)_20%)] [--btn-bottom-dark:color-mix(in_oklab,var(--destructive)_62%,var(--background)_38%)]",
         outline:
