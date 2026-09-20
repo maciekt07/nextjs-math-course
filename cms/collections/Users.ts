@@ -1,11 +1,33 @@
+import { render } from "@react-email/render";
 import type { CollectionConfig } from "payload";
+import AdminResetPasswordEmailTemplate from "@/email/templates/admin/reset-password-template";
+import { clientEnv } from "@/env/client";
+import { LIMITS } from "@/lib/constants/limits";
 import CustomAPIError from "../CustomAPIError";
 
 export const Users: CollectionConfig = {
   slug: "users",
-  auth: true,
   admin: {
     useAsTitle: "email",
+  },
+  auth: {
+    forgotPassword: {
+      expiration: LIMITS.auth.resetPasswordTokenTTL * 1000,
+      generateEmailHTML: async ({ token, user } = {}) => {
+        const resetUrl = clientEnv.NEXT_PUBLIC_APP_URL.concat(
+          "/admin/reset/",
+          token ?? "",
+        );
+
+        return render(
+          AdminResetPasswordEmailTemplate({
+            email: user?.email ?? "admin",
+            url: resetUrl,
+          }),
+        );
+      },
+      generateEmailSubject: () => "Reset your admin password",
+    },
   },
   // auth: {
   //   forgotPassword: {

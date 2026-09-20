@@ -10,24 +10,24 @@ export const LIMITS = {
     passwordMinLength: 8,
     maxSessions: 2,
 
-    /** 2 hours */
+    /** 2 hours in seconds */
     verificationTokenTTL: 2 * 60 * 60,
 
-    /** 15 minutes */
+    /** 15 minutes in seconds */
     resetPasswordTokenTTL: 15 * 60,
 
-    /** 15 minutes */
+    /** 15 minutes in seconds */
     deleteTokenTTL: 15 * 60,
 
-    /** 3 minutes */
+    /** 3 minutes in seconds */
     cookieCacheMaxAge: 60 * 3,
 
-    /** 7 days */
+    /** 7 days in seconds */
     sessionExpiresIn: 60 * 60 * 24 * 7,
   },
 
   media: {
-    /** 2 hours */
+    /** 2 hours in seconds */
     signedDownloads: 60 * 60 * 2,
   },
 
