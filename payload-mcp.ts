@@ -8,12 +8,48 @@ const formattedBlockTypes = new Intl.ListFormat("en", {
   type: "disjunction", // or
 }).format(VALID_BLOCK_TYPES);
 
-const lessonContentSyntaxGuide = `The \`content\`, \`videoDescription\`, and all quiz fields are Markdown with custom extensions:
-- LaTeX inline math as $...$ and block math as $$...$$ (exactly two dollar signs, never three or more, and never on the same line as other text for block math). Write LaTeX commands with a single backslash, e.g. \\frac{a}{b} and \\int_{a}^{b}, not \\\\frac or \\\\int — this is raw Markdown text, not a JSON or JS string, so backslashes must not be escaped.
-- Mermaid diagrams as a fenced \`\`\`mermaid code block.
-- Desmos graphs as ::desmos{url="..."}.
-- Callout blocks as :::type{title="Custom Title"} content :::, where type is one of ${formattedBlockTypes}. Each type has a sensible default title if title is omitted (card defaults to "You will learn"); title must be plain text only, but the callout content can include math or any of the other custom syntax above.
-- Structure content with Markdown headings: use ## for top-level sections and ### for subsections. Do not use # (h1)`;
+const lessonContentSyntaxGuide = `
+The \`content\`, \`videoDescription\`, and all quiz fields are Markdown
+with custom extensions:
+
+- LaTeX inline math: $...$
+- LaTeX block math: $$...$$
+  - Exactly two dollar signs, never three or more.
+  - Block math must not share a line with other text.
+  - Use a single backslash for LaTeX commands, e.g. \\frac{a}{b}
+    and \\int_{a}^{b}.
+  - This is raw Markdown text, not a JSON or JS string, so
+    backslashes must not be escaped.
+
+- Mermaid (https://mermaid.js.org/) diagrams: fenced \`\`\`mermaid code blocks.
+  - Math inside Mermaid uses KaTeX via \`$$...$$\` (double dollar,
+    even for inline expressions — not the single \`$\` used
+    elsewhere), and only works in flowchart/sequence diagrams.
+  - Never write math as a literal text string in a label.
+  - A node/label must be either pure math or pure text, never both
+    mixed in the same node.
+
+- Desmos graphs: ::desmos{url="..."}.
+  - Use \`noEmbed=true\` to show the full calculator instead of the preview.
+  - Example: ::desmos{url="https://www.desmos.com/calculator/id" noEmbed=true}
+  - Never invent or guess a Desmos calculator ID or URL.
+  - If a graph is needed but no URL was provided, search desmos.com
+    for an existing public calculator that matches the concept and
+    use that URL.
+
+- Callout blocks:
+  :::type{title="Custom Title"} content :::
+  - \`type\` must be one of ${formattedBlockTypes}.
+  - Each type has a sensible default title if \`title\` is omitted.
+  - \`card\` defaults to "You will learn".
+  - \`title\` must be plain text only.
+  - Callout content may contain math or any other custom syntax above.
+
+- Markdown headings:
+  - Use ## for top-level sections.
+  - Use ### for subsections.
+  - Do not use # (h1).
+`;
 
 // https://github.com/payloadcms/payload/issues/17125
 
