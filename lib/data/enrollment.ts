@@ -23,3 +23,26 @@ export const hasEnrollment = (userId: string, courseId: string) =>
     ["enrollment", userId, courseId],
     { revalidate: 300, tags: [`enrollment:${userId}:${courseId}`] },
   )();
+
+export function getOwnedCourseIds(userId: string) {
+  return withCache(
+    async () => {
+      const rows = await db
+        .select({ courseId: enrollment.courseId })
+        .from(enrollment)
+        .where(
+          and(
+            eq(enrollment.userId, userId),
+            eq(enrollment.status, "completed"),
+          ),
+        );
+
+      return rows.map((row) => row.courseId);
+    },
+    ["enrollments", userId],
+    {
+      revalidate: 300,
+      tags: [`enrollments:${userId}`],
+    },
+  )();
+}
