@@ -1,15 +1,51 @@
 import type { Access, Payload } from "payload";
 import { buildPublishedStatusWhere } from "@/cms/access/contentAccess";
 import { isAdminOrEditor } from "@/cms/access/roles";
+import { getId } from "@/cms/utils/get-id";
 import { getRequestedFilename } from "@/cms/utils/get-requested-filename";
 import { getServerSession } from "@/lib/auth/get-session";
 import { LIMITS } from "@/lib/constants/limits";
-import { hasEnrollment } from "@/lib/data/enrollment";
+import { getOwnedCourseIds } from "@/lib/data/enrollment";
 import { redis } from "@/lib/redis";
+import type { Lesson } from "@/types/payload-types";
 
-const MEDIA_ACCESS_TTL_ALLOWED = LIMITS.media.signedDownloads - 20 * 60;
+type MediaAccessMetadata = {
+  mediaId: string;
+  courseIds: string[];
+};
 
-const MEDIA_ACCESS_TTL_DENIED = 60;
+type MediaMetadataCacheValue = MediaAccessMetadata | { missing: true };
+
+const METADATA_TTL = {
+  found: LIMITS.media.signedDownloads,
+  missing: 60,
+} as const satisfies Record<"found" | "missing", number>;
+
+const metadataCacheKey = (filename: string) =>
+  `media-access:metadata:${filename}`;
+
+async function readMetadataCache(
+  filename: string,
+): Promise<MediaMetadataCacheValue | null> {
+  try {
+    return await redis.get<MediaMetadataCacheValue>(metadataCacheKey(filename));
+  } catch (error) {
+    console.error("Media metadata cache read error:", error);
+    return null;
+  }
+}
+
+async function writeMetadataCache(
+  filename: string,
+  value: MediaMetadataCacheValue,
+  ttl: number,
+): Promise<void> {
+  try {
+    await redis.set(metadataCacheKey(filename), value, { ex: ttl });
+  } catch (error) {
+    console.error("Media metadata cache write error:", error);
+  }
+}
 
 export const mediaReadAccess: Access = async ({ req }): Promise<boolean> => {
   try {
@@ -18,43 +54,42 @@ export const mediaReadAccess: Access = async ({ req }): Promise<boolean> => {
     const filename = getRequestedFilename(req.pathname);
     if (!filename) return false;
 
-    const session = await getServerSession();
-    const userId = session?.user?.id;
+    const userId = (await getServerSession())?.user?.id;
     if (!userId) return false;
 
-    const cacheKey = `media-access:${filename}:${userId}`;
+    const metadata = await getMediaAccessMetadata(req.payload, filename);
+    if (!metadata) return false;
 
-    try {
-      const cached = await redis.get<boolean>(cacheKey);
-      if (cached !== null && cached !== undefined) {
-        return cached;
-      }
-    } catch (cacheError) {
-      console.error("Media access cache read error:", cacheError);
-    }
-
-    const result = await resolveMediaAccess(req.payload, filename, userId);
-
-    try {
-      await redis.set(cacheKey, result, {
-        ex: result ? MEDIA_ACCESS_TTL_ALLOWED : MEDIA_ACCESS_TTL_DENIED,
-      });
-    } catch (cacheError) {
-      console.error("Media access cache write error:", cacheError);
-    }
-
-    return result;
+    const ownedCourseIds = new Set(await getOwnedCourseIds(userId));
+    return metadata.courseIds.some((courseId) => ownedCourseIds.has(courseId));
   } catch (error) {
     console.error("Media access error:", error);
     return false;
   }
 };
 
-async function resolveMediaAccess(
+async function getMediaAccessMetadata(
   payload: Payload,
   filename: string,
-  userId: string,
-): Promise<boolean> {
+): Promise<MediaAccessMetadata | null> {
+  const cached = await readMetadataCache(filename);
+  if (cached) return "missing" in cached ? null : cached;
+
+  const metadata = await resolveMediaAccessMetadata(payload, filename);
+
+  if (!metadata) {
+    await writeMetadataCache(filename, { missing: true }, METADATA_TTL.missing);
+    return null;
+  }
+
+  await writeMetadataCache(filename, metadata, METADATA_TTL.found);
+  return metadata;
+}
+
+async function resolveMediaAccessMetadata(
+  payload: Payload,
+  filename: string,
+): Promise<MediaAccessMetadata | null> {
   const media = await payload.find({
     collection: "media-private",
     depth: 0,
@@ -64,16 +99,15 @@ async function resolveMediaAccess(
     where: { filename: { equals: filename } },
   });
 
-  if (!media.docs.length) return false;
-
-  const mediaId = media.docs[0].id;
+  const mediaId = media.docs[0]?.id;
+  if (!mediaId) return null;
 
   const lessons = await payload.find({
     collection: "lessons",
     depth: 0,
     limit: 0,
     overrideAccess: true,
-    select: { uploadImage: true, free: true, course: true },
+    select: { uploadImage: true, course: true },
     where: {
       and: [
         buildPublishedStatusWhere(),
@@ -83,19 +117,69 @@ async function resolveMediaAccess(
     },
   });
 
-  if (!lessons.docs.length) return false;
-  if (lessons.docs.some((lesson) => lesson.free)) return true;
-
   const courseIds = new Set<string>();
   for (const lesson of lessons.docs) {
-    const courseId =
-      typeof lesson.course === "string" ? lesson.course : lesson.course?.id;
+    const courseId = getId(lesson.course);
     if (courseId) courseIds.add(courseId);
   }
 
-  const enrollmentChecks = await Promise.all(
-    [...courseIds].map((courseId) => hasEnrollment(userId, courseId)),
+  return { mediaId, courseIds: [...courseIds] };
+}
+
+export async function invalidateMediaAccessCache(
+  filenames: Array<string | null | undefined>,
+): Promise<void> {
+  const keys = [
+    ...new Set(filenames.filter(Boolean).map((f) => metadataCacheKey(f!))),
+  ];
+  if (!keys.length) return;
+
+  try {
+    await redis.del(...keys);
+  } catch (error) {
+    console.error("Media metadata cache invalidation error:", error);
+  }
+}
+
+function getPrivateMediaReferences(lesson: Pick<Lesson, "uploadImage">) {
+  return (lesson.uploadImage ?? [])
+    .filter((image) => image.relationTo === "media-private")
+    .map((image) => image.value);
+}
+
+export async function invalidateLessonMediaAccessCache(
+  payload: Payload,
+  lessons: Array<Pick<Lesson, "uploadImage"> | null | undefined>,
+): Promise<void> {
+  const references = lessons.flatMap((lesson) =>
+    lesson ? getPrivateMediaReferences(lesson) : [],
   );
 
-  return enrollmentChecks.some(Boolean);
+  const filenames = await Promise.all(
+    references.map((reference) => resolveMediaFilename(payload, reference)),
+  );
+
+  await invalidateMediaAccessCache(filenames);
+}
+
+async function resolveMediaFilename(
+  payload: Payload,
+  reference: NonNullable<Lesson["uploadImage"]>[number]["value"],
+): Promise<string | null | undefined> {
+  if (typeof reference !== "string" && reference.filename) {
+    return reference.filename;
+  }
+
+  const mediaId = getId(reference);
+  if (!mediaId) return null;
+
+  const media = await payload.findByID({
+    collection: "media-private",
+    id: mediaId,
+    depth: 0,
+    overrideAccess: true,
+    select: { filename: true },
+  });
+
+  return media?.filename;
 }

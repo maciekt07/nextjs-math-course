@@ -303,7 +303,7 @@ export default function UploadImageHelper({ path }: UploadImageHelperProps) {
                   {media.filename || "Untitled image"}
                 </div>
                 <div className="truncate text-xs text-[var(--theme-text)] opacity-70">
-                  alt: {altText} Â· {collection}
+                  alt: {altText}
                 </div>
                 {markdown ? (
                   <code className="mt-1 block truncate text-xs text-[var(--theme-text)] opacity-75">
