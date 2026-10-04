@@ -40,9 +40,12 @@
   }
 
   body {
-    @apply bg-background text-foreground min-w-full! overscroll-none;
+    @apply bg-background text-foreground min-w-full!;
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
+    @media (pointer: fine) {
+      overscroll-behavior: none;
+    }
   }
 
   /* fix layout shift when Radix locks scroll */
@@ -53,7 +56,7 @@
   }
 
   html {
-    @apply bg-background overscroll-y-none;
+    @apply bg-background;
     scrollbar-gutter: stable;
   }
 
