@@ -76,6 +76,7 @@
     "@sindresorhus/slugify": "^3.0.0",
     "@t3-oss/env-nextjs": "^0.13.11",
     "@tailwindcss/typography": "^0.5.19",
+    "@typesafe-ai/sdk": "^0.6.0",
     "@uiw/react-md-editor": "^4.1.1",
     "@upstash/qstash": "^2.11.3",
     "@upstash/ratelimit": "^2.0.8",

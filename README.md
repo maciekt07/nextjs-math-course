@@ -39,7 +39,8 @@ A modern full-stack Next.js 16 platform with CMS, auth, and Stripe integration -
 
 - **Full Authentication** - powered by **BetterAuth**, featuring Google OAuth, Google One Tap, email verification & password reset via **Resend**. Includes block for disposable emails, last used method badge, session limits and rate limiting with **Redis** to prevent account sharing and abuse.
 - **Admin CMS Dashboard** - manage courses, lessons, and media directly through an integrated headless **Payload CMS** interface with drafts, version history, and scheduled publishing via **QStash** job queues.
-- **Scheduled Course Publishing** - automated course publishing powered by **QStash** job queues, with failure detection and automatic email notifications to payload admins.
+- **Scheduled Course Publishing** — automatically publish courses on schedule with failure detection and admin email alerts.
+- **AI Feedback Classification** — automatically classify lesson feedback by category, importance, sentiment, and spam using **Jev** by [TypeSafe AI](https://typesafe.ai/), with automatic retries.
 - **MCP integration** - a Model Context Protocol server lets AI clients like Claude draft, edit, and review lesson content directly against the CMS.
 - **Stripe Payments** - sell courses with one-time payments using Stripe Checkout.
 - **Hybrid Lesson Delivery (SSR + SSG)** - free lessons are pre-rendered for speed and SEO, while paid lessons use server-side rendering for secure, on-demand access.
@@ -138,10 +139,9 @@ Start the React Email preview server to view and test email templates locally:
 pnpm email:dev
 ```
 
-### Set Up QStash (Scheduled Publishing)
+### Set Up Upstash QStash (background jobs)
 
-Scheduled course publishing runs on **Payload's Jobs Queue**, triggered
-periodically via **QStash** calling `/api/cron/run`.
+QStash periodically calls `/api/cron/run`, which triggers **Payload's Jobs Queue** for scheduled course publishing and feedback classification with [Jev](https://typesafe.ai/).
 
 Start local QStash CLI:
 

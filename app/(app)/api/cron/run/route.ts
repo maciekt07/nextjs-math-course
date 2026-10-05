@@ -3,7 +3,10 @@ import { waitUntil } from "@vercel/functions";
 import { NextResponse } from "next/server";
 import { clientEnv } from "@/env/client";
 import { serverEnv } from "@/env/server";
+import { classificationQueue } from "@/lib/constants/queues";
 import { notifyAdminsOfCronFailure } from "@/lib/monitoring/cron-failure";
+
+export const runtime = "nodejs";
 
 async function callJob(path: string) {
   const response = await fetch(`${clientEnv.NEXT_PUBLIC_APP_URL}${path}`, {
@@ -21,21 +24,32 @@ async function callJob(path: string) {
 }
 
 async function handler() {
-  try {
-    const jobs = await callJob("/api/payload-jobs/run");
-    return NextResponse.json({ jobs });
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    console.error("Cron job failed:", message);
+  const [publishing, classification] = await Promise.allSettled([
+    callJob("/api/payload-jobs/run"),
+    callJob(`/api/payload-jobs/run?queue=${classificationQueue}`),
+  ]);
 
+  if (publishing.status === "rejected") {
     waitUntil(
-      notifyAdminsOfCronFailure(err).catch((notificationError) => {
-        console.error("Admin failure notification failed:", notificationError);
-      }),
+      notifyAdminsOfCronFailure(publishing.reason).catch(console.error),
     );
-
-    return NextResponse.json({ error: message }, { status: 502 });
   }
+
+  if (
+    publishing.status === "rejected" ||
+    classification.status === "rejected"
+  ) {
+    const errors = [publishing, classification].flatMap((r) =>
+      r.status === "rejected" ? [String(r.reason)] : [],
+    );
+    console.error("Cron jobs failed:", errors);
+    return NextResponse.json({ error: errors.join(" | ") }, { status: 502 });
+  }
+
+  return NextResponse.json({
+    jobs: publishing.value,
+    feedbackClassificationJobs: classification.value,
+  });
 }
 
 export const POST = verifySignatureAppRouter(handler);

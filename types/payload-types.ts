@@ -119,6 +119,7 @@ export interface Config {
   user: User | PayloadMcpApiKey;
   jobs: {
     tasks: {
+      'classify-feedback': TaskClassifyFeedback;
       createCollectionExport: TaskCreateCollectionExport;
       createCollectionImport: TaskCreateCollectionImport;
       schedulePublish: TaskSchedulePublish;
@@ -422,6 +423,56 @@ export interface Feedback {
    * Mark this feedback as seen. Seen feedbacks will appear at the end.
    */
   seen?: boolean | null;
+  /**
+   * Status of the automated feedback classification job.
+   */
+  classificationStatus?: ('pending' | 'processing' | 'classified' | 'skipped' | 'failed') | null;
+  /**
+   * Estimated importance based on the learner's feedback.
+   */
+  importance?: ('low' | 'normal' | 'high' | 'urgent') | null;
+  /**
+   * Whether the feedback appears to be spam.
+   */
+  spam?: boolean | null;
+  /**
+   * Primary topic of the feedback.
+   */
+  category?: ('bug' | 'content' | 'question' | 'usability' | 'praise' | 'other') | null;
+  /**
+   * Overall tone of the feedback.
+   */
+  sentiment?: ('positive' | 'neutral' | 'negative' | 'mixed') | null;
+  /**
+   * Confidence for categorical classifications (0 to 1).
+   */
+  classificationConfidence?: number | null;
+  /**
+   * Probability that the feedback is spam (0 to 1).
+   */
+  spamProbability?: number | null;
+  /**
+   * Probability that feedback requires follow-up (0 to 1).
+   */
+  actionableProbability?: number | null;
+  /**
+   * Raw TypeSafe probability distributions for auditability.
+   */
+  classificationProbabilities?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  classificationModel?: string | null;
+  classifiedAt?: string | null;
+  /**
+   * Most recent classification failure, if any.
+   */
+  classificationError?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -637,7 +688,12 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'createCollectionExport' | 'createCollectionImport' | 'schedulePublish';
+        taskSlug:
+          | 'inline'
+          | 'classify-feedback'
+          | 'createCollectionExport'
+          | 'createCollectionImport'
+          | 'schedulePublish';
         taskID: string;
         input?:
           | {
@@ -670,10 +726,16 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ('inline' | 'createCollectionExport' | 'createCollectionImport' | 'schedulePublish') | null;
+  taskSlug?:
+    | ('inline' | 'classify-feedback' | 'createCollectionExport' | 'createCollectionImport' | 'schedulePublish')
+    | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
+  /**
+   * Used for concurrency control. Jobs with the same key are subject to exclusive/supersedes rules.
+   */
+  concurrencyKey?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -955,6 +1017,18 @@ export interface FeedbackSelect<T extends boolean = true> {
   reaction?: T;
   comment?: T;
   seen?: T;
+  classificationStatus?: T;
+  importance?: T;
+  spam?: T;
+  category?: T;
+  sentiment?: T;
+  classificationConfidence?: T;
+  spamProbability?: T;
+  actionableProbability?: T;
+  classificationProbabilities?: T;
+  classificationModel?: T;
+  classifiedAt?: T;
+  classificationError?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1112,6 +1186,7 @@ export interface PayloadJobsSelect<T extends boolean = true> {
   queue?: T;
   waitUntil?: T;
   processing?: T;
+  concurrencyKey?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1156,6 +1231,19 @@ export interface CollectionsWidget {
     [k: string]: unknown;
   };
   width: 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskClassify-feedback".
+ */
+export interface TaskClassifyFeedback {
+  input: {
+    feedbackId: string;
+  };
+  output: {
+    feedbackId: string;
+    status: string;
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

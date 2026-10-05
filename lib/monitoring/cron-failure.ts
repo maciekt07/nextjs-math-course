@@ -1,8 +1,7 @@
 import "server-only";
 
+import { EMAIL_FROM } from "@/email/send-email";
 import CronFailureEmailTemplate from "@/email/templates/admin/cron-failure-template";
-import { serverEnv } from "@/env/server";
-import { APP_NAME } from "@/lib/constants/site";
 import { getPayloadClient } from "@/lib/payload-client";
 import { redis } from "@/lib/redis";
 import { resend } from "@/lib/resend";
@@ -45,7 +44,7 @@ export async function notifyAdminsOfCronFailure(error: unknown): Promise<void> {
   const message = error instanceof Error ? error.message : String(error);
   const timestamp = new Date().toISOString();
   const emails = recipients.map((to) => ({
-    from: `${APP_NAME} <${serverEnv.RESEND_FROM_EMAIL}>`,
+    from: EMAIL_FROM,
     to: process.env.NODE_ENV === "development" ? ["delivered@resend.dev"] : to,
     subject: "Scheduled publishing failed",
     react: CronFailureEmailTemplate({

@@ -97,6 +97,7 @@ export async function submitFeedbackAction(input: {
         userId,
         reaction,
         comment: sanitizedComment,
+        classificationStatus: sanitizedComment ? "pending" : "skipped",
       },
       overrideAccess: true,
     });
