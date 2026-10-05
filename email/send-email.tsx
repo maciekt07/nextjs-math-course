@@ -6,6 +6,8 @@ import { serverEnv } from "@/env/server";
 import { APP_NAME } from "@/lib/constants/site";
 import { resend } from "@/lib/resend";
 
+export const EMAIL_FROM = `Maciej at ${APP_NAME} <${serverEnv.RESEND_FROM_EMAIL}>`;
+
 /**
  * sends a transactional email via Resend
  * @param options - Resend email options, excluding `from`
@@ -24,7 +26,7 @@ export async function sendEmail(
   // ensure the email is sent on serverless
   waitUntil(
     resend.emails.send({
-      from: `Maciej at ${APP_NAME} <${serverEnv.RESEND_FROM_EMAIL}>`,
+      from: EMAIL_FROM,
       ...options,
       to: isDev ? ["delivered@resend.dev"] : options.to,
     } as CreateEmailOptions),

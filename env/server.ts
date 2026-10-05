@@ -56,6 +56,14 @@ export const serverEnv = createEnv({
         },
       ),
 
+    TYPESAFE_API_KEY: z
+      .string()
+      .min(8)
+      .refine((val) => val.startsWith("apikey_"), {
+        message: "TYPESAFE_API_KEY must start with 'apikey_'",
+      })
+      .optional(),
+
     QSTASH_URL: z.string().url(),
     QSTASH_TOKEN: z.string().min(1),
     // verifySignatureAppRouter

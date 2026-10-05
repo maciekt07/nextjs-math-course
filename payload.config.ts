@@ -10,7 +10,7 @@ import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { s3Storage } from "@payloadcms/storage-s3";
 import { buildConfig, type PayloadRequest } from "payload";
 import sharp from "sharp";
-import { isAdminOrEditor } from "@/cms/access/roles";
+import { isAdmin, isAdminOrEditor } from "@/cms/access/roles";
 import { Chapters } from "@/cms/collections/Chapters";
 import { Courses } from "@/cms/collections/Courses";
 import { Feedbacks } from "@/cms/collections/Feedbacks";
@@ -19,6 +19,7 @@ import { MediaPrivate } from "@/cms/collections/MediaPrivate";
 import { MediaPublic } from "@/cms/collections/MediaPublic";
 import { Posters } from "@/cms/collections/Posters";
 import { Users } from "@/cms/collections/Users";
+import { classifyFeedbackTask } from "@/cms/jobs/classifyFeedback";
 import { clientEnv } from "@/env/client";
 import { serverEnv } from "@/env/server";
 import { LIMITS } from "@/lib/constants/limits";
@@ -119,6 +120,8 @@ export default buildConfig({
 
   // https://payloadcms.com/docs/jobs-queue/jobs
   jobs: {
+    enableConcurrencyControl: true,
+    tasks: [classifyFeedbackTask],
     access: {
       run: ({ req }: { req: PayloadRequest }) => {
         if (isAdminOrEditor(req.user)) return true;
@@ -128,6 +131,8 @@ export default buildConfig({
 
         return a.length === b.length && timingSafeEqual(a, b);
       },
+      cancel: ({ req }) => isAdmin(req.user),
+      queue: ({ req }) => isAdmin(req.user),
     },
   },
 
