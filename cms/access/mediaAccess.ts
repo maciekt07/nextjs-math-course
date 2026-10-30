@@ -4,7 +4,6 @@ import { isAdminOrEditor } from "@/cms/access/roles";
 import { getId } from "@/cms/utils/get-id";
 import { getRequestedFilename } from "@/cms/utils/get-requested-filename";
 import { getServerSession } from "@/lib/auth/get-session";
-import { LIMITS } from "@/lib/constants/limits";
 import { getOwnedCourseIds } from "@/lib/data/enrollment";
 import { redis } from "@/lib/redis";
 import type { Lesson } from "@/types/payload-types";
@@ -17,7 +16,7 @@ type MediaAccessMetadata = {
 type MediaMetadataCacheValue = MediaAccessMetadata | { missing: true };
 
 const METADATA_TTL = {
-  found: LIMITS.media.signedDownloads,
+  found: 60 * 60 * 24, // 1 day
   missing: 60,
 } as const satisfies Record<"found" | "missing", number>;
 

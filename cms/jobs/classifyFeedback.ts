@@ -1,4 +1,8 @@
-import { APIError, type TypeSafeClient } from "@typesafe-ai/sdk";
+import {
+  APIError,
+  type SystemOneResult,
+  type TypeSafeClient,
+} from "@typesafe-ai/sdk";
 import { JobCancelledError, NotFound, type TaskConfig } from "payload";
 import { feedbackQuestions, getTypesafeClient } from "@/lib/typesafe";
 import type { Feedback } from "@/types/payload-types";
@@ -8,9 +12,7 @@ type FeedbackClassificationTask = {
   output: { feedbackId: string; status: "classified" | "skipped" };
 };
 
-const MAX_ATTEMPTS = 3;
-
-function getLessonTitle(lesson: Feedback["lesson"]) {
+function getLessonTitle(lesson: Feedback["lesson"]): string | undefined {
   if (!lesson || typeof lesson === "string") return undefined;
   return typeof lesson === "object" && "title" in lesson
     ? (lesson.title ?? undefined)
@@ -33,7 +35,7 @@ export const classifyFeedbackTask: TaskConfig<FeedbackClassificationTask> = {
   slug: "classify-feedback",
   label: "Classify lesson feedback",
   retries: {
-    attempts: MAX_ATTEMPTS,
+    attempts: 3,
     backoff: { type: "exponential", delay: 30_000 },
   },
   concurrency: ({ input }) => `feedback:${input.feedbackId}`,
@@ -45,12 +47,12 @@ export const classifyFeedbackTask: TaskConfig<FeedbackClassificationTask> = {
   handler: async ({ input, req }) => {
     let feedback: Feedback;
     try {
-      feedback = (await req.payload.findByID({
+      feedback = await req.payload.findByID({
         collection: "feedback",
         id: input.feedbackId,
         depth: 1,
         overrideAccess: true,
-      })) as Feedback;
+      });
     } catch (error) {
       if (error instanceof NotFound) {
         throw new JobCancelledError(
@@ -157,7 +159,10 @@ export const classifyFeedbackTask: TaskConfig<FeedbackClassificationTask> = {
   },
 };
 
-async function classifyFeedback(client: TypeSafeClient, feedback: Feedback) {
+async function classifyFeedback(
+  client: TypeSafeClient,
+  feedback: Feedback,
+): Promise<SystemOneResult<typeof feedbackQuestions>> {
   return client.systemOne({
     state: {
       lessonTitle: getLessonTitle(feedback.lesson) ?? null,

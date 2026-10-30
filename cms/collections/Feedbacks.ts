@@ -2,6 +2,11 @@ import type { Access, CollectionConfig } from "payload";
 
 import { isAdmin } from "@/cms/access/roles";
 import { queueFeedbackClassification } from "@/cms/hooks/queueFeedbackClassification";
+import {
+  feedbackClassification,
+  feedbackClassificationStatus,
+  toPayloadOptions,
+} from "@/lib/constants/feedback-classification";
 import { LIMITS } from "@/lib/constants/limits";
 import { reactions } from "@/lib/constants/reactions";
 
@@ -125,13 +130,7 @@ export const Feedbacks: CollectionConfig = {
               type: "select",
               required: false,
               defaultValue: "pending",
-              options: [
-                { label: "Pending", value: "pending" },
-                { label: "Processing", value: "processing" },
-                { label: "Classified", value: "classified" },
-                { label: "Skipped", value: "skipped" },
-                { label: "Failed", value: "failed" },
-              ],
+              options: toPayloadOptions(feedbackClassificationStatus),
               admin: {
                 description:
                   "Status of the automated feedback classification job.",
@@ -141,12 +140,7 @@ export const Feedbacks: CollectionConfig = {
             {
               name: "importance",
               type: "select",
-              options: [
-                { label: "Low", value: "low" },
-                { label: "Normal", value: "normal" },
-                { label: "High", value: "high" },
-                { label: "Urgent", value: "urgent" },
-              ],
+              options: toPayloadOptions(feedbackClassification.importance),
               admin: {
                 description:
                   "Estimated importance based on the learner's feedback.",
@@ -164,14 +158,7 @@ export const Feedbacks: CollectionConfig = {
             {
               name: "category",
               type: "select",
-              options: [
-                { label: "Bug", value: "bug" },
-                { label: "Content", value: "content" },
-                { label: "Question", value: "question" },
-                { label: "Usability", value: "usability" },
-                { label: "Praise", value: "praise" },
-                { label: "Other", value: "other" },
-              ],
+              options: toPayloadOptions(feedbackClassification.category),
               admin: {
                 description: "Primary topic of the feedback.",
                 readOnly: true,
@@ -180,12 +167,7 @@ export const Feedbacks: CollectionConfig = {
             {
               name: "sentiment",
               type: "select",
-              options: [
-                { label: "Positive", value: "positive" },
-                { label: "Neutral", value: "neutral" },
-                { label: "Negative", value: "negative" },
-                { label: "Mixed", value: "mixed" },
-              ],
+              options: toPayloadOptions(feedbackClassification.sentiment),
               admin: {
                 description: "Overall tone of the feedback.",
                 readOnly: true,
