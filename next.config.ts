@@ -50,6 +50,9 @@ const nextConfig: NextConfig = {
     serverMinification: true,
     authInterrupts: true,
     viewTransition: true,
+    // better FCP on first visit, optimal for small css bundles
+    // https://nextjs.org/docs/app/api-reference/config/next-config-js/inlineCss
+    inlineCss: true,
   },
   turbopack: {
     root: path.resolve(dirname),

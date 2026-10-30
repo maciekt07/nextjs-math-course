@@ -43,7 +43,7 @@
     @apply bg-background text-foreground min-w-full!;
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
-    @media (pointer: fine) {
+    @media (pointer: coarse) {
       overscroll-behavior: none;
     }
   }
@@ -62,6 +62,13 @@
 
   html:has(.viewport-smooth-scroll) {
     scroll-behavior: smooth;
+  }
+
+  @media (pointer: fine) {
+    html,
+    body {
+      overscroll-behavior: none;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
