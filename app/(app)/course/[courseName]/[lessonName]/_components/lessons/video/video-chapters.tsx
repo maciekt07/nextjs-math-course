@@ -132,7 +132,7 @@ export function VideoChapters({
 
         <div
           ref={scrollRef}
-          className="flex gap-4 overflow-x-auto pb-3 pt-1 scroll-smooth"
+          className="flex gap-4 overflow-x-auto pb-3 pt-1 scroll-smooth overscroll-x-contain"
         >
           {normalizedChapters.map((chapter, index) => {
             const isActive = index === activeChapterIndex && currentTime !== 0;

@@ -19,7 +19,7 @@ export function Heading({ as: Tag, id, children }: HeadingProps) {
   return (
     <Tag
       id={id}
-      className="group relative scroll-mt-6 max-[1450px]:[main[data-open='false']_&]:scroll-mt-23"
+      className="group relative scroll-mt-6 max-[1550px]:[main[data-open='false']_&]:scroll-mt-23"
     >
       <AnimateIcon animateOnTap completeOnStop className="mt-0! pt-0!">
         <span className="inline">

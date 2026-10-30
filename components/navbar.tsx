@@ -198,6 +198,7 @@ export function Navbar() {
           <div className="md:hidden flex items-center sm:gap-2 gap-3">
             <ThemeSelect />
             <Button
+              aria-label="Menu"
               variant="outline"
               size="icon"
               className="cursor-pointer backdrop-blur-md overflow-hidden"

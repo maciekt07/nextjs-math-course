@@ -14,7 +14,7 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: APP_SHORT_NAME,
     description: SITE_DESCRIPTION,
     lang: SITE_LOCALE,
-    start_url: "/",
+    start_url: "/courses",
     scope: "/",
     display: "standalone",
     theme_color: META_THEME_COLORS.dark,

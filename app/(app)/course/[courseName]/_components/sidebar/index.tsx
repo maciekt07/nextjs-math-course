@@ -177,7 +177,7 @@ export function CourseSidebar({
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: reducedMotion ? 0 : 0.2 }}
             className={cn(
-              "fixed top-0 left-0 right-0 z-40 h-17 hidden max-[1450px]:flex max-[1450px]:backdrop-blur-xl max-[1450px]:bg-background/60 max-[1450px]:border-b items-center mb-4 gap-3 transition-[border-color] duration-300",
+              "fixed top-0 left-0 right-0 z-40 h-17 hidden max-[1550px]:flex max-[1550px]:backdrop-blur-xl max-[1550px]:bg-background/60 max-[1550px]:border-b items-center mb-4 gap-3 transition-[border-color] duration-300",
               "safari-ios:bg-background! safari-ios:backdrop-blur-none!",
             )}
           />

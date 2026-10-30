@@ -41,6 +41,7 @@ export function SidebarCourseHeader({
                 alt={(course.poster as Poster).alt ?? course.title!}
                 fill
                 priority
+                fetchPriority="high"
                 sizes="(min-width: 768px) 287px, 80px"
                 className="object-cover"
                 placeholder={

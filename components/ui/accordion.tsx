@@ -28,30 +28,36 @@ function AccordionItem({
 function AccordionTrigger({
   className,
   children,
+  headingLevel = "h3",
   "data-animate": animate = true,
   ...props
 }: React.ComponentProps<typeof AccordionPrimitive.Trigger> & {
+  headingLevel?: "h2" | "h3";
   "data-animate"?: boolean;
 }) {
+  const Heading = headingLevel;
+
   return (
-    <AccordionPrimitive.Header className="flex">
-      <AccordionPrimitive.Trigger
-        data-slot="accordion-trigger"
-        className={cn(
-          "motion-reduce:animate-none! motion-reduce:transition-none! focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 items-start justify-between gap-4 rounded-md py-4 text-left text-sm font-medium outline-none hover:underline focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 [&[data-state=open]>svg]:rotate-180",
-          animate && "transition-all",
-          className,
-        )}
-        {...props}
-      >
-        {children}
-        <ChevronDownIcon
+    <AccordionPrimitive.Header asChild>
+      <Heading className="flex">
+        <AccordionPrimitive.Trigger
+          data-slot="accordion-trigger"
           className={cn(
-            "text-muted-foreground pointer-events-none size-4 shrink-0 translate-y-0.5",
-            animate && " transition-transform duration-200",
+            "motion-reduce:animate-none! motion-reduce:transition-none! focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 items-start justify-between gap-4 rounded-md py-4 text-left text-sm font-medium outline-none hover:underline focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 [&[data-state=open]>svg]:rotate-180",
+            animate && "transition-all",
+            className,
           )}
-        />
-      </AccordionPrimitive.Trigger>
+          {...props}
+        >
+          {children}
+          <ChevronDownIcon
+            className={cn(
+              "text-muted-foreground pointer-events-none size-4 shrink-0 translate-y-0.5",
+              animate && " transition-transform duration-200",
+            )}
+          />
+        </AccordionPrimitive.Trigger>
+      </Heading>
     </AccordionPrimitive.Header>
   );
 }

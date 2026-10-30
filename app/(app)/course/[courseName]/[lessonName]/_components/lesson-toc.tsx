@@ -121,7 +121,7 @@ export function LessonTOC({ headings }: { headings: Heading[] }) {
           className="bg-card rounded-2xl px-6 border"
         >
           <AccordionItem value="toc">
-            <AccordionTrigger className="cursor-pointer">
+            <AccordionTrigger headingLevel="h2" className="cursor-pointer">
               Table of contents
             </AccordionTrigger>
             <AccordionContent>
