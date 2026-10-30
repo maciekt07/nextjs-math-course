@@ -3,6 +3,7 @@ import "server-only";
 import { waitUntil } from "@vercel/functions";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
 import { lastLoginMethod, oneTap } from "better-auth/plugins";
 import { emailHarmony } from "better-auth-harmony";
@@ -157,17 +158,18 @@ export const auth = betterAuth({
 
   hooks: {
     before: authBeforeHook,
+    after: createAuthMiddleware(async (ctx) => {
+      const newSession = ctx.context.newSession;
+      if (newSession) {
+        await limitUserSessions(newSession.session);
+      }
+    }),
   },
 
   databaseHooks: {
     user: {
       create: { before: handleGoogleOneTapUser },
       update: { before: handleGoogleOneTapUser },
-    },
-    session: {
-      create: {
-        after: limitUserSessions,
-      },
     },
   },
 });
