@@ -12,6 +12,7 @@ import {
 } from "react";
 import { defaultPatterns } from "web-haptics";
 import { useWebHaptics } from "web-haptics/react";
+import { InstallBanner } from "@/components/pwa/install-banner";
 import { ScrollShadow } from "@/components/scroll-shadow";
 import {
   Accordion,
@@ -319,6 +320,8 @@ export function CourseSidebar({
           </div>
           <ScrollShadow position="bottom" show={showBottom} />
         </div>
+
+        <InstallBanner />
 
         <SidebarFooter
           isPending={isPending}
