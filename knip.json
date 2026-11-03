@@ -1,5 +1,6 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": ["app/sw.ts"],
   "ignore": [
     "types/payload-types.ts",
     "components/ui/**",

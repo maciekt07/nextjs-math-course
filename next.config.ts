@@ -1,6 +1,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { withPayload } from "@payloadcms/next/withPayload";
+import { withSerwist } from "@serwist/turbopack";
 import { createJiti } from "jiti";
 import type { NextConfig } from "next";
 import { serverEnv } from "@/env/server";
@@ -46,6 +47,19 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: [ngrokOrigin].filter((o): o is string => Boolean(o)),
   reactStrictMode: true,
   reactCompiler: true,
+  async headers() {
+    return [
+      {
+        source: "/serwist/sw.js",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-cache, no-store, must-revalidate",
+          },
+        ],
+      },
+    ];
+  },
   experimental: {
     serverMinification: true,
     authInterrupts: true,
@@ -73,4 +87,6 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withPayload(nextConfig, { devBundleServerPackages: false });
+export default withPayload(withSerwist(nextConfig), {
+  devBundleServerPackages: false,
+});
