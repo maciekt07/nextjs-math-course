@@ -1,5 +1,6 @@
 import type { MCPPluginConfig } from "@payloadcms/plugin-mcp";
 import type { CollectionConfig } from "payload";
+import z from "zod";
 import { isAdmin, isEditor } from "@/cms/access/roles";
 import { VALID_BLOCK_TYPES } from "@/components/markdown/blocks/callout-config";
 import { APP_NAME } from "@/lib/constants/site";
@@ -28,6 +29,12 @@ with custom extensions:
   - Never write math as a literal text string in a label.
   - A node/label must be either pure math or pure text, never both
     mixed in the same node.
+  - Example:
+    \`\`\`mermaid
+    flowchart LR
+      A["Function"] --> B["$$ f(x) $$"]
+      B --> C["Derivative"]
+    \`\`\`
 
 - Desmos graphs: ::desmos{url="..."}.
   - Use \`noEmbed=true\` to show the full calculator instead of the preview.
@@ -70,14 +77,26 @@ const PayloadMCPConfig: MCPPluginConfig = {
         version: "0.1.0",
       },
     },
+    tools: [
+      {
+        name: "getLessonSyntaxGuide",
+        description:
+          "Returns the Markdown/LaTeX/Mermaid/Desmos/callout syntax rules for lesson content. Call before creating or editing lessons.",
+        parameters: z.object({}).shape,
+        handler: async () => ({
+          content: [{ type: "text", text: lessonContentSyntaxGuide }],
+        }),
+      },
+    ],
   },
+
   collections: {
     lessons: {
       enabled: { find: true, create: true, update: true, delete: false },
       description:
         "Individual lessons within a math course. Each belongs to a course and optional chapter, has a type (text/quiz/video), markdown content, quiz questions, or a linked Mux video with chapters. " +
-        "Use to draft, edit, or review lesson content.\n\n" +
-        lessonContentSyntaxGuide,
+        "Use to draft, edit, or review lesson content. " +
+        "Before creating or updating any lesson content (content, videoDescription, quiz fields), call `getLessonSyntaxGuide` first.",
       overrideResponse: (response) => {
         response.content = response.content.map((item) => ({
           ...item,
