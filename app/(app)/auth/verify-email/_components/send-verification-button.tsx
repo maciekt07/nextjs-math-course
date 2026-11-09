@@ -40,7 +40,7 @@ export function SendVerificationButton({
     };
   }, [cooldown]);
 
-  async function SendVerificationEmail() {
+  async function sendVerificationEmail() {
     if (cooldown > 0) return;
 
     setIsLoading(true);
@@ -70,7 +70,7 @@ export function SendVerificationButton({
   return (
     <AnimateIcon animateOnHover className="w-full">
       <Button
-        onClick={SendVerificationEmail}
+        onClick={sendVerificationEmail}
         className="w-full cursor-pointer"
         disabled={isLoading || cooldown > 0}
       >

@@ -9,6 +9,7 @@ import { authClient } from "@/lib/auth/auth-client";
 import { cn } from "@/lib/ui";
 
 interface GoogleAuthButtonProps extends React.ComponentProps<typeof Button> {
+  // https://developers.google.com/identity/branding-guidelines?hl=en#text
   title: "Sign in with Google" | "Continue with Google";
   returnTo?: string;
 }

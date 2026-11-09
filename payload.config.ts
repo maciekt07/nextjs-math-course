@@ -126,10 +126,13 @@ export default buildConfig({
       run: ({ req }: { req: PayloadRequest }) => {
         if (isAdminOrEditor(req.user)) return true;
         // https://www.geeksforgeeks.org/node-js/node-js-crypto-timingsafeequal-function/
-        const a = Buffer.from(`Bearer ${serverEnv.CRON_SECRET}`);
-        const b = Buffer.from(req.headers.get("Authorization") ?? "");
+        const expected = Buffer.from(`Bearer ${serverEnv.CRON_SECRET}`);
+        const provided = Buffer.from(req.headers.get("Authorization") ?? "");
 
-        return a.length === b.length && timingSafeEqual(a, b);
+        return (
+          expected.length === provided.length &&
+          timingSafeEqual(expected, provided)
+        );
       },
       cancel: ({ req }) => isAdmin(req.user),
       queue: ({ req }) => isAdmin(req.user),

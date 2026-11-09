@@ -1,4 +1,5 @@
 import { createEnv } from "@t3-oss/env-nextjs";
+import { vercel } from "@t3-oss/env-nextjs/presets-zod";
 import { z } from "zod";
 
 const S3EnvSchema = {
@@ -15,6 +16,7 @@ const secretSchema = z
 export const serverEnv = createEnv({
   skipValidation:
     !!process.env.SKIP_ENV_VALIDATION || process.env.NODE_ENV === "test",
+  extends: [vercel()],
   emptyStringAsUndefined: true,
   server: {
     NGROK_URL: z.string().url().optional(),
