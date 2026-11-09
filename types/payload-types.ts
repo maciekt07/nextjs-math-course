@@ -612,6 +612,12 @@ export interface PayloadMcpApiKey {
      */
     update?: boolean | null;
   };
+  'payload-mcp-tool'?: {
+    /**
+     * Returns the Markdown/LaTeX/Mermaid/Desmos/callout syntax rules for lesson content. Call before creating or editing lessons.
+     */
+    getLessonSyntaxGuide?: boolean | null;
+  };
   updatedAt: string;
   createdAt: string;
   enableAPIKey?: boolean | null;
@@ -1143,6 +1149,11 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         find?: T;
         create?: T;
         update?: T;
+      };
+  'payload-mcp-tool'?:
+    | T
+    | {
+        getLessonSyntaxGuide?: T;
       };
   updatedAt?: T;
   createdAt?: T;
