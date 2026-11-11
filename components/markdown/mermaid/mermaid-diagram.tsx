@@ -1,17 +1,20 @@
 "use client";
 
-import mermaid from "mermaid";
 import { useTheme } from "next-themes";
 import { useEffect, useId, useRef, useState } from "react";
 import { getMermaidThemeVariables } from "./mermaid-theme";
 
+type MermaidApi = typeof import("mermaid").default;
+
 interface MermaidDiagramProps {
   code: string;
 }
+let initializedTheme: string | undefined | null = null;
 
-let initializedTheme: string | undefined;
-
-function ensureMermaidInitialized(resolvedTheme: string | undefined) {
+function ensureMermaidInitialized(
+  mermaid: MermaidApi,
+  resolvedTheme: string | undefined,
+) {
   if (initializedTheme === resolvedTheme) return;
 
   mermaid.initialize({
@@ -39,7 +42,10 @@ export function MermaidDiagram({ code }: MermaidDiagramProps) {
         setError(null);
         setSvg(null);
 
-        ensureMermaidInitialized(resolvedTheme);
+        const { default: mermaid } = await import("mermaid");
+        if (!isCurrent) return;
+
+        ensureMermaidInitialized(mermaid, resolvedTheme);
 
         const result = await mermaid.render(`mermaid-${id}`, code);
 
