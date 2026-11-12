@@ -87,7 +87,7 @@ export function MermaidDiagram({ code }: MermaidDiagramProps) {
   return (
     <div
       ref={containerRef}
-      className="my-6 w-full overflow-x-auto p-4 [scrollbar-width:auto] [&>svg]:mx-auto [&>svg]:block [&>svg]:h-auto [&>svg]:max-w-none"
+      className="mermaid-diagram my-6 w-full overflow-x-auto p-4 [scrollbar-width:auto] [&>svg]:mx-auto [&>svg]:block [&>svg]:h-auto [&>svg]:max-w-none"
     />
   );
 }

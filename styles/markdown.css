@@ -154,12 +154,13 @@ html[data-theme="dark"] {
   }
 
   /* inline math */
-  &.large-math .katex {
+  /* :not(.mermaid-diagram *) keeps the large-math toggle away from KaTeX that Mermaid renders inside diagrams */
+  &.large-math .katex:not(.mermaid-diagram *) {
     font-size: 1.4em;
   }
 
   /* block math */
-  &.large-math .katex-display .katex {
+  &.large-math .katex-display .katex:not(.mermaid-diagram *) {
     font-size: 1.4em;
     margin: 0.5rem 0;
   }
