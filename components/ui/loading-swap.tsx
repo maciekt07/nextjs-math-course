@@ -58,11 +58,7 @@ export function LoadingSwap({
         <Loader animate loop />
       </div>
       {status && (
-        <StatusIcon
-          key={`${status}-${Date.now()}`}
-          status={status}
-          className={className}
-        />
+        <StatusIcon key={status} status={status} className={className} />
       )}
     </div>
   );

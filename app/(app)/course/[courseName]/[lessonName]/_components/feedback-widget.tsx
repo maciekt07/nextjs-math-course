@@ -315,8 +315,13 @@ export default function FeedbackWidget({
               }}
             >
               <p className="text-sm font-medium text-foreground flex items-center gap-2">
-                <Lock size={20} animateOnView delay={650} /> Sign in to leave
-                feedback
+                <Lock
+                  size={20}
+                  animateOnView
+                  delay={650}
+                  className="text-orange-600 dark:text-orange-500"
+                />{" "}
+                Sign in to leave feedback
               </p>
 
               <AnimateIcon animateOnHover>

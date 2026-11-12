@@ -98,20 +98,17 @@ export function QuizLesson({ quiz }: QuizLessonProps) {
   };
 
   const navigate = (direction: 1 | -1) => {
-    setActiveQuestionIdx((prev) => {
-      const nextIdx = Math.min(
-        questions.length - 1,
-        Math.max(0, prev + direction),
-      );
+    const nextIdx = Math.min(
+      questions.length - 1,
+      Math.max(0, activeQuestionIdx + direction),
+    );
 
-      if (nextIdx !== prev) {
-        setSelectedOption(submittedAnswers[nextIdx] ?? null);
-        window.scrollTo({ top: 0, behavior: "instant" });
-        trigger(defaultPatterns.light);
-      }
+    if (nextIdx === activeQuestionIdx) return;
 
-      return nextIdx;
-    });
+    setActiveQuestionIdx(nextIdx);
+    setSelectedOption(submittedAnswers[nextIdx] ?? null);
+    window.scrollTo({ top: 0, behavior: "instant" });
+    trigger(defaultPatterns.light);
   };
 
   const navigateToPrevious = () => navigate(-1);

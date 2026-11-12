@@ -221,7 +221,7 @@ export default function Character() {
           duration: 0.6,
           delay: heroAnimation.characterGlasses.delay,
           type: "spring",
-          stiffness: 100,
+          bounce: 0.3,
         }}
         id="glasses"
       >

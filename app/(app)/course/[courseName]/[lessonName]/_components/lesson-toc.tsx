@@ -51,12 +51,7 @@ function useActiveHeading(ids: string[], enabled: boolean) {
       if (el) observer.observe(el);
     }
 
-    return () => {
-      for (const id of ids) {
-        const el = document.getElementById(id);
-        if (el) observer.unobserve(el);
-      }
-    };
+    return () => observer.disconnect();
   }, [ids, enabled]);
 
   const forceActive = useCallback((id: string) => {

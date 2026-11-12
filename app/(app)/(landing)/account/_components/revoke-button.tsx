@@ -13,18 +13,21 @@ export function RevokeButton({ token }: { token: string }) {
   const router = useRouter();
 
   async function handleRevoke() {
+    setIsRevoking(true);
+
     try {
-      setIsRevoking(true);
       await authClient.revokeSession({ token });
-      toast.success("Session revoked");
-      router.refresh();
     } catch (error) {
+      setIsRevoking(false);
       if (isAPIError(error)) {
         toast.error(error.message);
       }
-    } finally {
-      setIsRevoking(false);
+      return;
     }
+
+    setIsRevoking(false);
+    toast.success("Session revoked");
+    router.refresh();
   }
 
   return (

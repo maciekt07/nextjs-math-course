@@ -69,12 +69,12 @@ const LessonCard = ({ lesson, isPrevious, courseSlug }: LessonCardProps) => {
       href={path}
       prefetch
       aria-label={`${isPrevious ? "Previous" : "Next"} lesson - ${lesson.title}`}
-      className="group flex-1 min-h-[5rem] p-4 rounded-lg border border-border transition-all duration-200 flex items-center justify-between"
+      className="group flex-1 min-h-[5rem] p-4 rounded-lg border border-border flex items-center justify-between"
       onClick={() => setOptimisticPath(path)}
     >
       <div className="flex items-center gap-3 min-w-0 flex-1">
         {isPrevious && (
-          <ChevronLeft className="w-5 h-5 text-muted-foreground group-hover:text-foreground group-hover:-translate-x-1 group-hover:scale-110 transition-all flex-shrink-0" />
+          <ChevronLeft className="w-5 h-5 text-muted-foreground group-hover:text-foreground group-hover:-translate-x-1 group-hover:scale-110 transition-[color,translate,scale] flex-shrink-0" />
         )}
         <div className="min-w-0 flex-1">
           <div className="text-xs text-muted-foreground mb-1 transition-colors group-hover:text-foreground">
@@ -89,7 +89,7 @@ const LessonCard = ({ lesson, isPrevious, courseSlug }: LessonCardProps) => {
         </div>
       </div>
       {!isPrevious && (
-        <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 group-hover:scale-110 transition-all flex-shrink-0 ml-3" />
+        <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 group-hover:scale-110 transition-[color,translate,scale] flex-shrink-0 ml-3" />
       )}
     </Link>
   );

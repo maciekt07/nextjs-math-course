@@ -16,6 +16,19 @@ export function Heading({ as: Tag, id, children }: HeadingProps) {
   const { trigger } = useWebHaptics();
   const iconSize = Tag === "h2" ? 18 : 16;
 
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    scrollToHeader(id, { behavior: "smooth" });
+    trigger();
+
+    // if (isStandalone) {
+    //   navigator.clipboard
+    //     .writeText(e.currentTarget.href)
+    //     .then(() => toast.success("Link copied"))
+    //     .catch(() => toast.error("Couldn't copy link"));
+    // }
+  };
+
   return (
     <Tag
       id={id}
@@ -38,11 +51,7 @@ export function Heading({ as: Tag, id, children }: HeadingProps) {
         </span>
         <a
           href={`#${id}`}
-          onClick={(e) => {
-            e.preventDefault();
-            scrollToHeader(id, { behavior: "smooth" });
-            trigger();
-          }}
+          onClick={handleClick}
           aria-label={`Link to ${id}`}
           className={cn(
             "absolute inset-0 z-20",

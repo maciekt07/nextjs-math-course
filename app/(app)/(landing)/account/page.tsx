@@ -45,6 +45,11 @@ export const metadata = buildNoIndexMetadata({
   description: "Manage your account settings and personal information.",
 });
 
+const JOINED_DATE_FORMATTER = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  year: "numeric",
+});
+
 export default async function AccountPage() {
   const session = await getServerSession({
     query: {
@@ -128,11 +133,7 @@ export default async function AccountPage() {
               variant="outline"
               className="text-xs text-muted-foreground px-3 py-1 order-1 md:order-2 self-start"
             >
-              Joined{" "}
-              {new Intl.DateTimeFormat("en-US", {
-                month: "short",
-                year: "numeric",
-              }).format(new Date(user.createdAt))}
+              Joined {JOINED_DATE_FORMATTER.format(new Date(user.createdAt))}
             </Badge>
           </div>
 

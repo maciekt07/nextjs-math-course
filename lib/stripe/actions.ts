@@ -1,4 +1,4 @@
-"use server";
+import "server-only";
 
 import type { User } from "better-auth";
 import { and, eq } from "drizzle-orm";

@@ -99,8 +99,10 @@ async function getLessonAccessData({
 }) {
   return withCache(
     async () => {
-      const payload = await getPayloadClient();
-      const isDraftMode = await getIsDraftMode();
+      const [payload, isDraftMode] = await Promise.all([
+        getPayloadClient(),
+        getIsDraftMode(),
+      ]);
 
       const { docs } = await payload.find({
         collection: "lessons",

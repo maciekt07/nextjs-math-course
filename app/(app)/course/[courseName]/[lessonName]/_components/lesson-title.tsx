@@ -12,6 +12,17 @@ import { formatDuration, formatPlural, formatReadingTime } from "@/lib/format";
 import { cn } from "@/lib/ui";
 import type { Lesson } from "@/types/payload-types";
 
+const SHORT_DATE_FORMATTER = new Intl.DateTimeFormat("en-US", {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+});
+
+const FULL_DATE_FORMATTER = new Intl.DateTimeFormat("en-US", {
+  dateStyle: "full",
+  timeStyle: "short",
+});
+
 interface LessonTitleProps {
   lesson: Lesson | null;
 }
@@ -23,21 +34,9 @@ export function LessonTitle({ lesson }: LessonTitleProps) {
   const createdAt = new Date(lesson.createdAt);
   const updatedAt = new Date(lesson.updatedAt);
 
-  const formattedDate = new Intl.DateTimeFormat("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  }).format(createdAt);
-
-  const fullCreatedAt = new Intl.DateTimeFormat(navigator.language, {
-    dateStyle: "full",
-    timeStyle: "short",
-  }).format(createdAt);
-
-  const fullUpdatedAt = new Intl.DateTimeFormat(navigator.language, {
-    dateStyle: "full",
-    timeStyle: "short",
-  }).format(updatedAt);
+  const formattedDate = SHORT_DATE_FORMATTER.format(createdAt);
+  const fullCreatedAt = FULL_DATE_FORMATTER.format(createdAt);
+  const fullUpdatedAt = FULL_DATE_FORMATTER.format(updatedAt);
 
   return (
     <div className="mb-8 font-inter">
