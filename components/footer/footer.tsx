@@ -33,7 +33,10 @@ export default function Footer() {
           <div className="md:col-span-8 grid grid-cols-3 gap-6">
             <div className="flex flex-col gap-3">
               <p className="font-medium text-sm text-foreground">Explore</p>
-              <nav className="flex flex-col gap-2 text-sm">
+              <nav
+                aria-label="Footer Links"
+                className="flex flex-col gap-2 text-sm"
+              >
                 <Link
                   href="/#courses"
                   className="text-foreground/70 hover:text-primary transition-colors"
@@ -51,7 +54,10 @@ export default function Footer() {
 
             <div className="flex flex-col gap-3">
               <p className="font-medium text-sm text-foreground">Account</p>
-              <nav className="flex flex-col gap-2 text-sm">
+              <nav
+                aria-label="Account Links"
+                className="flex flex-col gap-2 text-sm"
+              >
                 <FooterAccountLinks />
               </nav>
             </div>
