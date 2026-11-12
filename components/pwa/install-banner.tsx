@@ -61,7 +61,7 @@ export function InstallBanner() {
               >
                 <Download
                   animation="default-loop"
-                  className="size-5 shrink-0 group-hover:scale-110 transition-transform"
+                  className="size-5 shrink-0"
                 />
                 <span className="min-w-0 flex-1">
                   <span className="block text-sm font-medium leading-tight">

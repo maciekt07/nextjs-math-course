@@ -109,29 +109,47 @@ export const serverEnv = createEnv({
     UPSTASH_REDIS_REST_TOKEN: z.string().min(1),
 
     GOOGLE_CLIENT_SECRET: z.string().min(1),
+
+    TURNSTILE_SECRET_KEY: z.string().min(1).optional(),
   },
 
   createFinalSchema: (shape) =>
     z.object(shape).superRefine((env, ctx) => {
-      if (!env.ENABLE_S3) return;
+      if (env.ENABLE_S3) {
+        const requiredS3Keys = [
+          "S3_BUCKET",
+          "S3_ACCESS_KEY_ID",
+          "S3_SECRET",
+          "S3_PUBLIC_BUCKET",
+          "S3_PUBLIC_ACCESS_KEY_ID",
+          "S3_PUBLIC_SECRET",
+        ] as const satisfies readonly (keyof typeof shape)[];
 
-      const requiredS3Keys = [
-        "S3_BUCKET",
-        "S3_ACCESS_KEY_ID",
-        "S3_SECRET",
-        "S3_PUBLIC_BUCKET",
-        "S3_PUBLIC_ACCESS_KEY_ID",
-        "S3_PUBLIC_SECRET",
-      ] as const satisfies readonly (keyof typeof shape)[];
-
-      for (const key of requiredS3Keys) {
-        if (!env[key]) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: [key],
-            message: `${key} is required when ENABLE_S3 is true`,
-          });
+        for (const key of requiredS3Keys) {
+          if (!env[key]) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: [key],
+              message: `${key} is required when ENABLE_S3 is true`,
+            });
+          }
         }
+      }
+
+      const turnstileSecretSet = !!env.TURNSTILE_SECRET_KEY;
+      const turnstileSiteKeySet = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+
+      if (turnstileSecretSet !== turnstileSiteKeySet) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: [
+            turnstileSecretSet
+              ? "TURNSTILE_SECRET_KEY"
+              : "NEXT_PUBLIC_TURNSTILE_SITE_KEY",
+          ],
+          message:
+            "NEXT_PUBLIC_TURNSTILE_SITE_KEY and TURNSTILE_SECRET_KEY must be set together or both omitted",
+        });
       }
     }),
 

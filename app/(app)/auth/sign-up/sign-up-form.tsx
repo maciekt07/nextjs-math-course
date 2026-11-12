@@ -1,7 +1,9 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { useRouter } from "nextjs-toploader/app";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Separator } from "@/components/ui/separator";
+import { clientEnv } from "@/env/client";
 import { authClient } from "@/lib/auth/auth-client";
 import {
   PASSWORD_REQUIREMENTS,
@@ -27,6 +30,8 @@ import { GoogleAuthButton } from "../_components/google-auth-button";
 
 export function SignUpForm({ returnTo }: { returnTo?: string }) {
   const router = useRouter();
+  const [captchaToken, setCaptchaToken] = useState<string>();
+  const turnstileRef = useRef<TurnstileInstance>(null);
   const form = useForm<SignUpSchema>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -39,10 +44,24 @@ export function SignUpForm({ returnTo }: { returnTo?: string }) {
 
   const { isSubmitting } = form.formState;
 
+  function resetCaptcha() {
+    turnstileRef.current?.reset();
+    setCaptchaToken(undefined);
+  }
+
   async function handleSignUp(data: SignUpSchema) {
     await authClient.signUp.email(
-      { ...data, callbackURL: "/auth/email-verified" },
       {
+        ...data,
+        callbackURL: "/auth/email-verified",
+        fetchOptions: {
+          headers: captchaToken
+            ? { "x-captcha-response": captchaToken }
+            : undefined,
+        },
+      },
+      {
+        onError: resetCaptcha,
         onSuccess: () => {
           router.push("/auth/verify-email");
           router.refresh();
@@ -132,14 +151,34 @@ export function SignUpForm({ returnTo }: { returnTo?: string }) {
           )}
         />
 
-        <Button
-          type="submit"
-          size="lg"
-          disabled={isSubmitting}
-          className="w-full my-2 cursor-pointer"
-        >
-          <LoadingSwap isLoading={isSubmitting}>Create Account</LoadingSwap>
-        </Button>
+        <div>
+          {clientEnv.NEXT_PUBLIC_TURNSTILE_SITE_KEY ? (
+            <div className="mb-4 -mt-1 flex w-full justify-center">
+              <Turnstile
+                ref={turnstileRef}
+                siteKey={clientEnv.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+                options={{ appearance: "always", size: "flexible" }}
+                className="w-full"
+                style={{ width: "100%", minWidth: 300 }}
+                onSuccess={(token) => setCaptchaToken(token)}
+                onExpire={resetCaptcha}
+                onError={() => setCaptchaToken(undefined)}
+              />
+            </div>
+          ) : null}
+
+          <Button
+            type="submit"
+            size="lg"
+            disabled={
+              isSubmitting ||
+              (!!clientEnv.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !captchaToken)
+            }
+            className="w-full cursor-pointer"
+          >
+            <LoadingSwap isLoading={isSubmitting}>Create Account</LoadingSwap>
+          </Button>
+        </div>
       </form>
     </Form>
   );
