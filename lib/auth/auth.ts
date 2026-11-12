@@ -5,7 +5,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
-import { lastLoginMethod, oneTap } from "better-auth/plugins";
+import { captcha, lastLoginMethod, oneTap } from "better-auth/plugins";
 import { emailHarmony } from "better-auth-harmony";
 import { db } from "@/drizzle/db";
 import { sendEmail } from "@/email/send-email";
@@ -57,6 +57,15 @@ export const auth = betterAuth({
 
   plugins: [
     emailHarmony(),
+    ...(serverEnv.TURNSTILE_SECRET_KEY
+      ? [
+          captcha({
+            provider: "cloudflare-turnstile",
+            secretKey: serverEnv.TURNSTILE_SECRET_KEY,
+            endpoints: ["/sign-up/email"],
+          }),
+        ]
+      : []),
     lastLoginMethod({
       customResolveMethod: (ctx) => {
         if (ctx.path === GOOGLE_ONE_TAP_PATH) {

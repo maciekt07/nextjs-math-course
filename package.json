@@ -48,6 +48,7 @@
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@icons-pack/react-simple-icons": "^13.13.0",
+    "@marsidev/react-turnstile": "^1.6.3",
     "@mux/blurup": "^1.0.2",
     "@mux/mux-node": "^12.8.1",
     "@mux/mux-player-react": "^3.11.6",
