@@ -1,6 +1,7 @@
 import {
   CircleUser,
   ClockFading,
+  Fingerprint,
   LockKeyhole,
   Mail,
   MailWarning,
@@ -36,6 +37,7 @@ import ActiveSessions from "./_components/active-sessions";
 import { DeleteAccountButton } from "./_components/delete-account-button";
 import { LogOutButton } from "./_components/logout-button";
 import { LogoutEverywhereButton } from "./_components/logout-everywhere-button";
+import { Passkeys } from "./_components/passkeys/passkeys";
 import { PasswordChangeButton } from "./_components/password-change-button";
 import { RequestEmailChangeButton } from "./_components/request-email-change-button";
 import { UpdateNameForm } from "./_components/update-name-form";
@@ -196,6 +198,7 @@ export default async function AccountPage() {
           </CardFooter>
         </Card>
       )}
+
       <Card className="w-full">
         <CardHeader>
           <CardTitle className="flex items-center justify-start gap-2">
@@ -228,6 +231,29 @@ export default async function AccountPage() {
             <LogOutButton />
             <LogoutEverywhereButton />
           </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center justify-start gap-2">
+            <Fingerprint className="size-5" /> Passkeys
+          </CardTitle>
+          <CardDescription>
+            Sign in with Face ID, Touch ID, Windows Hello, or a security key
+            instead of your password.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Suspense
+            fallback={
+              <div className="flex flex-col gap-2">
+                <Skeleton className="h-[72px] rounded-lg border" />
+              </div>
+            }
+          >
+            <Passkeys />
+          </Suspense>
         </CardContent>
       </Card>
 

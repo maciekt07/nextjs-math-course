@@ -91,7 +91,7 @@ export default async function ActiveSessions() {
                     <Shield className="size-3 shrink-0" />
                     {device.os}
                   </span>
-                  <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <span className="truncate flex items-center gap-1 text-xs text-muted-foreground">
                     <Globe className="size-3 shrink-0" />
                     {session.ipAddress
                       ?.split(/[:.]/)

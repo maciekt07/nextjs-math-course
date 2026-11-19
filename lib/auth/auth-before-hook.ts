@@ -6,7 +6,12 @@ import {
   getSessionFromCtx,
 } from "better-auth/api";
 import type { User } from "better-auth/types";
-import { nameSchema, passwordSchema } from "@/lib/auth/auth-validation";
+import {
+  nameSchema,
+  passkeyNameSchema,
+  passwordSchema,
+} from "@/lib/auth/auth-validation";
+import { LIMITS } from "@/lib/constants/limits";
 
 const PATHS = {
   SIGN_UP: "/sign-up/email",
@@ -15,6 +20,7 @@ const PATHS = {
   REQUEST_PASSWORD_RESET: "/request-password-reset",
   UPDATE_USER: "/update-user",
   CHANGE_EMAIL: "/change-email",
+  PASSKEY_VERIFY_REGISTRATION: "/passkey/verify-registration",
 } as const satisfies Record<string, string>;
 
 type AuthPath = (typeof PATHS)[keyof typeof PATHS];
@@ -41,6 +47,8 @@ const PATH_RULES: Record<string, ReadonlySet<AuthPath>> = {
     PATHS.REQUEST_PASSWORD_RESET,
     PATHS.RESET_PASSWORD,
   ]),
+  passkeyName: new Set<AuthPath>([PATHS.PASSKEY_VERIFY_REGISTRATION]),
+  passkeyLimit: new Set<AuthPath>([PATHS.PASSKEY_VERIFY_REGISTRATION]),
 };
 
 const AUTH_PATH_SET = new Set(Object.values(PATHS));
@@ -64,6 +72,29 @@ const validators = {
   name(ctx: CTX) {
     if (!nameSchema.safeParse(ctx.body.name).success) {
       throw new APIError("BAD_REQUEST", { message: "Invalid name" });
+    }
+  },
+
+  passkeyName(ctx: CTX) {
+    if (ctx.body?.name === undefined) return;
+    if (!passkeyNameSchema.safeParse(ctx.body.name).success) {
+      throw new APIError("BAD_REQUEST", { message: "Invalid passkey name" });
+    }
+  },
+
+  async passkeyLimit(ctx: CTX) {
+    const session = await getSessionFromCtx(ctx, { disableCookieCache: true });
+    if (!session?.user?.id) return;
+
+    const passkeys = await ctx.context.adapter.findMany({
+      model: "passkey",
+      where: [{ field: "userId", value: session.user.id }],
+    });
+
+    if (passkeys.length >= LIMITS.auth.maxPasskeys) {
+      throw new APIError("FORBIDDEN", {
+        message: `You can have at most ${LIMITS.auth.maxPasskeys} passkeys.`,
+      });
     }
   },
 

@@ -234,28 +234,21 @@ https://stackoverflow.com/questions/75226935/white-background-issue-around-sign-
 ::view-transition-new(.morph) {
   object-fit: cover;
   border-radius: 8px;
-  --vt-radius: 8px;
-  animation: 450ms ease both vt-settle;
 }
 
 @media (min-width: 768px) {
   ::view-transition-new(.morph) {
-    --vt-radius: 16px;
+    border-radius: 16px;
   }
 }
 
-@keyframes vt-settle {
-  0%,
-  55% {
-    border-radius: 8px;
-    box-shadow: 0 0 0 0 transparent;
-  }
-  100% {
-    border-radius: var(--vt-radius);
-    box-shadow:
-      0 4px 6px -1px rgb(0 0 0 / 0.1),
-      0 2px 4px -2px rgb(0 0 0 / 0.1);
-  }
+/*
+ * https://developer.chrome.com/blog/view-transitions-misconceptions
+ */
+:active-view-transition *,
+:active-view-transition::before,
+:active-view-transition::after {
+  animation-play-state: paused !important;
 }
 
 /* ::view-transition-image-pair(.morph) {

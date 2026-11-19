@@ -18,6 +18,15 @@ export const nameSchema = z
     `Name cannot exceed ${LIMITS.auth.nameMaxLength} characters`,
   );
 
+export const passkeyNameSchema = z
+  .string()
+  .trim()
+  .min(1, "Passkey name cannot be empty")
+  .max(
+    LIMITS.auth.passkeyNameMaxLength,
+    `Passkey name cannot exceed ${LIMITS.auth.passkeyNameMaxLength} characters`,
+  );
+
 export const passwordSchema = z
   .string()
   .min(

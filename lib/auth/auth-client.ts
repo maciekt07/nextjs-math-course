@@ -1,3 +1,4 @@
+import { passkeyClient } from "@better-auth/passkey/client";
 import {
   lastLoginMethodClient,
   oneTapClient,
@@ -28,6 +29,7 @@ export const authClient = createAuthClient({
         use_fedcm_for_prompt: true,
       },
     }),
+    passkeyClient(),
   ],
   fetchOptions: {
     onError: ({ response, error }) => {

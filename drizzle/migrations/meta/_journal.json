@@ -15,6 +15,13 @@
       "when": 1771635507355,
       "tag": "0001_low_young_avengers",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795107744659,
+      "tag": "0002_cheerful_madelyne_pryor",
+      "breakpoints": true
     }
   ]
 }

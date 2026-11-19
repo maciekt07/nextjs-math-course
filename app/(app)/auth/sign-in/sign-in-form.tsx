@@ -24,6 +24,7 @@ import { useMounted } from "@/hooks/use-mounted";
 import { authClient } from "@/lib/auth/auth-client";
 import { type SignInSchema, signInSchema } from "@/lib/auth/auth-validation";
 import { GoogleAuthButton } from "../_components/google-auth-button";
+import { PasskeyAuthButton } from "../_components/passkey-auth-button";
 
 export function SignInForm({ returnTo }: { returnTo?: string }) {
   const router = useRouter();
@@ -64,6 +65,7 @@ export function SignInForm({ returnTo }: { returnTo?: string }) {
   return (
     <Form {...form}>
       <GoogleAuthButton title="Sign in with Google" returnTo={returnTo} />
+      <PasskeyAuthButton className="mt-3" returnTo={returnTo} />
 
       <div className="relative my-7">
         <Separator />
@@ -94,6 +96,7 @@ export function SignInForm({ returnTo }: { returnTo?: string }) {
                   required
                   type="email"
                   placeholder="Your E-mail"
+                  autoComplete="username"
                   {...field}
                 />
               </FormControl>
@@ -121,6 +124,7 @@ export function SignInForm({ returnTo }: { returnTo?: string }) {
                 <PasswordInput
                   required
                   placeholder="Your Password"
+                  autoComplete="current-password"
                   {...field}
                 />
               </FormControl>
