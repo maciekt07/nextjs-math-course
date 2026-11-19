@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 import { useMounted } from "@/hooks/use-mounted";
 import { authClient } from "@/lib/auth/auth-client";
 import { cn } from "@/lib/ui";
+import { LastUsedBadge } from "./last-used-badge";
 
 interface GoogleAuthButtonProps extends React.ComponentProps<typeof Button> {
   // https://developers.google.com/identity/branding-guidelines?hl=en#text
@@ -76,17 +76,7 @@ export function GoogleAuthButton({
           {title}
         </span>
       </LoadingSwap>
-      {wasGoogle && !loading && (
-        <Badge
-          variant="outline"
-          className={cn(
-            "absolute right-2 top-1/2 -translate-y-1/2 animate-in zoom-in duration-200",
-            "max-[430px]:right-[-8px] max-[430px]:top-[-1px] max-[430px]:bg-card",
-          )}
-        >
-          Last used
-        </Badge>
-      )}
+      {wasGoogle && !loading && <LastUsedBadge />}
     </Button>
   );
 }

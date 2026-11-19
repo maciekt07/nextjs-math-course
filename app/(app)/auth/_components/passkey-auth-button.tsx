@@ -5,12 +5,12 @@ import { useRouter } from "nextjs-toploader/app";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Fingerprint } from "@/components/animate-ui/icons/fingerprint";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 import { useMounted } from "@/hooks/use-mounted";
 import { authClient } from "@/lib/auth/auth-client";
 import { cn } from "@/lib/ui";
+import { LastUsedBadge } from "./last-used-badge";
 
 interface PasskeyAuthButtonProps extends React.ComponentProps<typeof Button> {
   returnTo?: string;
@@ -76,17 +76,7 @@ export function PasskeyAuthButton({
             Sign in with a passkey
           </span>
         </LoadingSwap>
-        {wasPasskey && !loading && (
-          <Badge
-            variant="outline"
-            className={cn(
-              "absolute right-2 top-1/2 -translate-y-1/2 animate-in zoom-in duration-200",
-              "max-[430px]:right-[-8px] max-[430px]:top-[-1px] max-[430px]:bg-card",
-            )}
-          >
-            Last used
-          </Badge>
-        )}
+        {wasPasskey && !loading && <LastUsedBadge />}
       </Button>
     </AnimateIcon>
   );
