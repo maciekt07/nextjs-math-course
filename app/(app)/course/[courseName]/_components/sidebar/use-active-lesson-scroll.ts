@@ -49,20 +49,14 @@ export function useActiveLessonScroll({
     if (!activeLessonPath || (!didJustOpen && !shouldRunInitialScroll)) return;
     if (activeChapterId && !expandedChapters.includes(activeChapterId)) return;
 
-    let firstFrame = 0;
-    let secondFrame = 0;
-
-    firstFrame = window.requestAnimationFrame(() => {
-      secondFrame = window.requestAnimationFrame(() => {
-        if (scrollLessonIntoView(activeLessonPath)) {
-          hasInitialScrollRun.current = true;
-        }
-      });
-    });
+    const timer = window.setTimeout(() => {
+      if (scrollLessonIntoView(activeLessonPath)) {
+        hasInitialScrollRun.current = true;
+      }
+    }, 500);
 
     return () => {
-      window.cancelAnimationFrame(firstFrame);
-      window.cancelAnimationFrame(secondFrame);
+      window.clearTimeout(timer);
     };
   }, [
     activeChapterId,

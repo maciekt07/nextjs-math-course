@@ -9,6 +9,8 @@ export const LIMITS = {
     passwordMaxLength: 72,
     passwordMinLength: 8,
     maxSessions: 2,
+    passkeyNameMaxLength: 32,
+    maxPasskeys: 16,
 
     /** 2 hours in seconds */
     verificationTokenTTL: 2 * 60 * 60,

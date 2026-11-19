@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "nextjs-toploader/app";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -24,6 +23,8 @@ import { useMounted } from "@/hooks/use-mounted";
 import { authClient } from "@/lib/auth/auth-client";
 import { type SignInSchema, signInSchema } from "@/lib/auth/auth-validation";
 import { GoogleAuthButton } from "../_components/google-auth-button";
+import { LastUsedBadge } from "../_components/last-used-badge";
+import { PasskeyAuthButton } from "../_components/passkey-auth-button";
 
 export function SignInForm({ returnTo }: { returnTo?: string }) {
   const router = useRouter();
@@ -64,6 +65,7 @@ export function SignInForm({ returnTo }: { returnTo?: string }) {
   return (
     <Form {...form}>
       <GoogleAuthButton title="Sign in with Google" returnTo={returnTo} />
+      <PasskeyAuthButton className="mt-3" returnTo={returnTo} />
 
       <div className="relative my-7">
         <Separator />
@@ -79,21 +81,14 @@ export function SignInForm({ returnTo }: { returnTo?: string }) {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="relative">
-                E-mail{" "}
-                {wasEmail && (
-                  <Badge
-                    variant="outline"
-                    className="absolute right-0 animate-in zoom-in duration-200"
-                  >
-                    Last used
-                  </Badge>
-                )}
+                E-mail {wasEmail && <LastUsedBadge variant="inline" />}
               </FormLabel>
               <FormControl>
                 <Input
                   required
                   type="email"
                   placeholder="Your E-mail"
+                  autoComplete="username"
                   {...field}
                 />
               </FormControl>
@@ -121,6 +116,7 @@ export function SignInForm({ returnTo }: { returnTo?: string }) {
                 <PasswordInput
                   required
                   placeholder="Your Password"
+                  autoComplete="current-password"
                   {...field}
                 />
               </FormControl>
