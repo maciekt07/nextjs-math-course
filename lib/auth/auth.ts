@@ -28,18 +28,31 @@ import { limitUserSessions } from "@/lib/auth/session-limit";
 import { LIMITS } from "@/lib/constants/limits";
 import { APP_NAME, APP_SHORT_NAME } from "@/lib/constants/site";
 
-const isPreview = serverEnv.VERCEL_ENV === "preview" && serverEnv.VERCEL_URL;
+function toOrigin(value: string | undefined) {
+  if (!value) return undefined;
 
-const APP_ORIGIN = new URL(
-  isPreview ? `https://${serverEnv.VERCEL_URL}` : serverEnv.BETTER_AUTH_URL,
-).origin;
+  return new URL(
+    value.startsWith("http://") || value.startsWith("https://")
+      ? value
+      : `https://${value}`,
+  ).origin;
+}
+
+const APP_ORIGIN = toOrigin(serverEnv.BETTER_AUTH_URL)!;
 
 const PASSKEY_RP_ID = new URL(APP_ORIGIN).hostname;
 
 const DEV_ORIGINS = [serverEnv.NGROK_URL, "http://localhost:3000"];
+const VERCEL_ORIGINS = [serverEnv.VERCEL_URL, serverEnv.VERCEL_BRANCH_URL].map(
+  toOrigin,
+);
 
 const TRUSTED_ORIGINS = [
-  ...new Set([APP_ORIGIN, ...DEV_ORIGINS].filter((o): o is string => !!o)),
+  ...new Set(
+    [APP_ORIGIN, ...DEV_ORIGINS, ...VERCEL_ORIGINS].filter(
+      (o): o is string => !!o,
+    ),
+  ),
 ];
 
 // https://www.better-auth.com/docs/reference/options
