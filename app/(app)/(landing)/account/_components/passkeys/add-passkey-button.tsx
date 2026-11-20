@@ -2,6 +2,7 @@
 
 import { AnimateIcon } from "@animate-ui/react/icons";
 import Bowser from "bowser";
+import { UserKey } from "lucide-react";
 import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -100,7 +101,7 @@ export function AddPasskeyButton({ disabled }: { disabled?: boolean }) {
   if (disabled) {
     return (
       <AnimateIcon animateOnHover className="w-full">
-        <Button variant="outline" className="w-full" disabled>
+        <Button variant="outline" className="w-full mt-1" disabled>
           <Fingerprint />
           Add a passkey
         </Button>
@@ -114,7 +115,7 @@ export function AddPasskeyButton({ disabled }: { disabled?: boolean }) {
         <AnimateIcon animateOnHover className="w-full">
           <Button
             variant="outline"
-            className="w-full cursor-pointer"
+            className="w-full cursor-pointer mt-1"
             disabled={disabled}
           >
             <Fingerprint />
@@ -124,7 +125,12 @@ export function AddPasskeyButton({ disabled }: { disabled?: boolean }) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add a passkey</DialogTitle>
+          <DialogTitle>
+            <span className="inline-flex items-center justify-center sm:justify-start gap-2">
+              <UserKey />
+              Add a passkey
+            </span>
+          </DialogTitle>
           <DialogDescription>
             Use Face ID, Touch ID, Windows Hello, or a security key to sign in
             without a password.

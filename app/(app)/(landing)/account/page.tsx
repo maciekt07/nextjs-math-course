@@ -1,12 +1,12 @@
 import {
   CircleUser,
   ClockFading,
-  Fingerprint,
   LockKeyhole,
   Mail,
   MailWarning,
   SettingsIcon,
   Trash2,
+  UserKey,
 } from "lucide-react";
 import { headers } from "next/headers";
 import Link from "next/link";
@@ -237,11 +237,11 @@ export default async function AccountPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-start gap-2">
-            <Fingerprint className="size-5" /> Passkeys
+            <UserKey className="size-5" /> Passkeys
           </CardTitle>
           <CardDescription>
-            Sign in with Face ID, Touch ID, Windows Hello, or a security key
-            instead of your password.
+            Sign in securely using biometrics or a security key, without a
+            password.
           </CardDescription>
         </CardHeader>
         <CardContent>

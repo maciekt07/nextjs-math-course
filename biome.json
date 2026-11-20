@@ -14,7 +14,8 @@
       "!dist",
       "!build",
       "!**/payload-types.ts",
-      "!**/importMap.js"
+      "!**/importMap.js",
+      "!lib/auth/data/aaguid.json"
     ]
   },
   "formatter": {

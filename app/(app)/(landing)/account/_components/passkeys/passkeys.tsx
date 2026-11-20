@@ -1,6 +1,7 @@
 import { KeyRound } from "lucide-react";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth/auth";
+import { getPasskeyProviderMetadata } from "@/lib/auth/passkey-provider-metadata";
 import { LIMITS } from "@/lib/constants/limits";
 import { AddPasskeyButton } from "./add-passkey-button";
 import { PasskeyRow } from "./passkey-row";
@@ -27,20 +28,26 @@ export async function Passkeys() {
         </div>
       ) : (
         <div className="flex flex-col gap-2">
-          {passkeys.map((passkey) => (
-            <PasskeyRow
-              key={passkey.id}
-              id={passkey.id}
-              name={passkey.name || "Passkey"}
-              createdAtLabel={
-                passkey.createdAt
-                  ? CREATED_AT_FORMATTER.format(new Date(passkey.createdAt))
-                  : ""
-              }
-              deviceType={passkey.deviceType}
-              backedUp={passkey.backedUp}
-            />
-          ))}
+          {passkeys.map((passkey) => {
+            const provider = getPasskeyProviderMetadata(passkey.aaguid);
+
+            return (
+              <PasskeyRow
+                key={passkey.id}
+                id={passkey.id}
+                name={passkey.name || "Passkey"}
+                createdAtLabel={
+                  passkey.createdAt
+                    ? CREATED_AT_FORMATTER.format(new Date(passkey.createdAt))
+                    : ""
+                }
+                deviceType={passkey.deviceType}
+                backedUp={passkey.backedUp}
+                providerName={provider?.name}
+                providerIcon={provider?.icon}
+              />
+            );
+          })}
         </div>
       )}
 

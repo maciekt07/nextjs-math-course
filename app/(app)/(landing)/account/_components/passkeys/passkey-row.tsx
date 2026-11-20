@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimateIcon } from "@animate-ui/react/icons";
-import { KeyRound, ShieldCheck } from "lucide-react";
+import { Ellipsis, ShieldCheck } from "lucide-react";
 import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -17,8 +17,13 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LoadingSwap } from "@/components/ui/loading-swap";
@@ -27,6 +32,7 @@ import {
   updatePasskeyAction,
 } from "@/lib/actions/passkeys";
 import { LIMITS } from "@/lib/constants/limits";
+import { PasskeyProviderIcon } from "./passkey-provider-icon";
 
 interface PasskeyRowProps {
   id: string;
@@ -34,6 +40,8 @@ interface PasskeyRowProps {
   createdAtLabel: string;
   deviceType: string;
   backedUp: boolean;
+  providerName?: string;
+  providerIcon?: string;
 }
 
 export function PasskeyRow({
@@ -42,6 +50,8 @@ export function PasskeyRow({
   createdAtLabel,
   deviceType,
   backedUp,
+  providerName,
+  providerIcon,
 }: PasskeyRowProps) {
   const router = useRouter();
   const [renameOpen, setRenameOpen] = useState<boolean>(false);
@@ -84,7 +94,7 @@ export function PasskeyRow({
   return (
     <div className="rounded-lg border bg-card shadow-xs">
       <div className="flex items-center gap-3 p-4">
-        <KeyRound className="size-6 shrink-0" />
+        <PasskeyProviderIcon icon={providerIcon} providerName={providerName} />
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-1.5">
@@ -102,6 +112,12 @@ export function PasskeyRow({
             )}
           </div>
           <p className="mt-1.5 text-xs text-muted-foreground">
+            {providerName && (
+              <span className="font-medium text-foreground/70">
+                {providerName}
+              </span>
+            )}
+            {providerName && " · "}
             {deviceType === "multiDevice"
               ? "Synced passkey"
               : "Device-bound passkey"}
@@ -110,19 +126,47 @@ export function PasskeyRow({
         </div>
 
         <div className="flex shrink-0 items-center gap-1">
-          <Dialog open={renameOpen} onOpenChange={setRenameOpen}>
-            <DialogTrigger asChild>
-              <AnimateIcon animateOnHover>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="size-8 cursor-pointer"
-                  aria-label={`Rename ${name}`}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-8 cursor-pointer"
+                aria-label={`Actions for ${name}`}
+              >
+                <Ellipsis className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                className="cursor-pointer p-0"
+                onSelect={() => setRenameOpen(true)}
+              >
+                <AnimateIcon
+                  animateOnHover
+                  className="flex w-full items-center gap-2 px-2 py-1.5"
                 >
-                  <Pencil className="size-4" />
-                </Button>
-              </AnimateIcon>
-            </DialogTrigger>
+                  <Pencil />
+                  Rename
+                </AnimateIcon>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                variant="destructive"
+                className="cursor-pointer p-0"
+                onSelect={() => setDeleteOpen(true)}
+              >
+                <AnimateIcon
+                  animateOnHover
+                  className="flex w-full items-center gap-2 px-2 py-1.5"
+                >
+                  <Trash2 className="text-destructive" />
+                  Remove
+                </AnimateIcon>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <Dialog open={renameOpen} onOpenChange={setRenameOpen}>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Rename passkey</DialogTitle>
@@ -170,21 +214,14 @@ export function PasskeyRow({
           </Dialog>
 
           <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-            <DialogTrigger asChild>
-              <AnimateIcon animateOnHover>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="size-8 cursor-pointer hover:text-destructive"
-                  aria-label={`Remove ${name}`}
-                >
-                  <Trash2 className="size-4" />
-                </Button>
-              </AnimateIcon>
-            </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Remove passkey?</DialogTitle>
+                <DialogTitle>
+                  <span className="inline-flex items-center justify-center sm:justify-start gap-2">
+                    <Trash2 className="size-5 text-destructive" />
+                    Remove passkey?
+                  </span>
+                </DialogTitle>
                 <DialogDescription>
                   You will no longer be able to use &ldquo;{name}&rdquo; to sign
                   in. Other sign-in methods on your account still work.
