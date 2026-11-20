@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimateIcon } from "@animate-ui/react/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Session } from "better-auth";
 import { CircleCheck } from "lucide-react";
@@ -8,7 +9,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { LogIn } from "@/components/animate-ui/icons/log-in";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";

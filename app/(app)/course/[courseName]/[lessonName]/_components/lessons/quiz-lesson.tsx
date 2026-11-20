@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimateIcon } from "@animate-ui/react/icons";
 import {
   ArrowLeft,
   ArrowRight,
@@ -15,7 +16,6 @@ import { motion } from "motion/react";
 import { useState } from "react";
 import { defaultPatterns } from "web-haptics";
 import { useWebHaptics } from "web-haptics/react";
-import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { Lightbulb } from "@/components/animate-ui/icons/lightbulb";
 import { MarkdownRenderer } from "@/components/markdown";
 import { Button } from "@/components/ui/button";

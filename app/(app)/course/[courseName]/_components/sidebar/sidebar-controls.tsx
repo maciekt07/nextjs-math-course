@@ -1,10 +1,10 @@
 "use client";
 
+import { AnimateIcon } from "@animate-ui/react/icons";
 import { ChevronLeft, PanelLeft, PanelLeftClose } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { startTransition } from "react";
-import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { Settings } from "@/components/animate-ui/icons/settings";
 import { ThemeSelect } from "@/components/theme-select";
 import { Button } from "@/components/ui/button";

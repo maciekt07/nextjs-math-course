@@ -1,7 +1,7 @@
-import { BookOpen } from "lucide-react";
+import { AnimateIcon } from "@animate-ui/react/icons";
 import Link from "next/link";
+import { BookOpen } from "@/components/animate-ui/icons/book-open";
 import { Compass } from "@/components/animate-ui/icons/compass";
-import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { CourseCard } from "@/components/course-card";
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,7 @@ export default async function CoursesPage() {
   if (courses.length === 0) {
     return (
       <EmptyState
-        icon={<BookOpen />}
+        icon={<BookOpen animate animation="reverse" />}
         title="No courses yet"
         description="Start learning by exploring available courses. Once you purchase one, it will appear here in your library."
         className="mb-24"

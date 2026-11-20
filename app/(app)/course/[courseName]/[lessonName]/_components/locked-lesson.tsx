@@ -1,11 +1,8 @@
 "use client";
 
+import { AnimateIcon, type staticAnimations } from "@animate-ui/react/icons";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import {
-  AnimateIcon,
-  type StaticAnimations,
-} from "@/components/animate-ui/icons/icon";
 import {
   Lock,
   animations as lockAnimations,
@@ -18,7 +15,9 @@ import { useMounted } from "@/hooks/use-mounted";
 import { cn } from "@/lib/ui";
 import type { Lesson } from "@/types/payload-types";
 
-type LockAnimation = keyof typeof lockAnimations | StaticAnimations;
+type LockAnimation =
+  | keyof typeof lockAnimations
+  | keyof typeof staticAnimations;
 type LockState = "locked" | "unlocked";
 
 const UNLOCK_DURATION =

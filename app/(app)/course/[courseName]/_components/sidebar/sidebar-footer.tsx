@@ -1,7 +1,7 @@
 "use client";
 
+import { AnimateIcon } from "@animate-ui/react/icons";
 import type { User } from "better-auth";
-import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { Settings } from "@/components/animate-ui/icons/settings";
 import { Button } from "@/components/ui/button";
 import { SidebarAccount } from "./sidebar-account";

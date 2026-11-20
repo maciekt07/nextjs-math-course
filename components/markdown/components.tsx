@@ -1,8 +1,8 @@
+import { AnimateIcon } from "@animate-ui/react/icons";
 import Image from "next/image";
 import Link from "next/link";
 import type { Components as MarkdownComponents } from "react-markdown";
 import { ExternalLink } from "@/components/animate-ui/icons/external-link";
-import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { getText } from "@/lib/markdown/get-text";
 import { stripBasicMarkdown } from "@/lib/markdown/strip-markdown";
 import { slug } from "@/lib/slugify";

@@ -1,11 +1,14 @@
 "use client";
 
 import { AnimateIcon } from "@animate-ui/react/icons";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Bowser from "bowser";
 import { UserKey } from "lucide-react";
 import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import z from "zod";
 import { Fingerprint } from "@/components/animate-ui/icons/fingerprint";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,12 +21,25 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 import { authClient } from "@/lib/auth/auth-client";
 import { passkeyNameSchema } from "@/lib/auth/auth-validation";
 import { LIMITS } from "@/lib/constants/limits";
+
+const addPasskeySchema = z.object({
+  name: passkeyNameSchema,
+});
+
+type AddPasskeySchema = z.infer<typeof addPasskeySchema>;
 
 function getDefaultPasskeyName() {
   if (typeof window === "undefined") return "Passkey";
@@ -53,33 +69,25 @@ function getErrorMessage(error: { message?: unknown }) {
 export function AddPasskeyButton({ disabled }: { disabled?: boolean }) {
   const router = useRouter();
   const [open, setOpen] = useState<boolean>(false);
-  const [name, setName] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | undefined>();
+
+  const form = useForm<AddPasskeySchema>({
+    resolver: zodResolver(addPasskeySchema),
+    defaultValues: { name: "" },
+  });
+
+  const { isSubmitting, errors } = form.formState;
 
   function handleOpenChange(nextOpen: boolean) {
     setOpen(nextOpen);
     if (nextOpen) {
-      setName(getDefaultPasskeyName());
-      setError(undefined);
+      form.reset({ name: getDefaultPasskeyName() });
     }
   }
 
-  async function handleAddPasskey() {
-    const parsedName = passkeyNameSchema.safeParse(name);
-    if (!parsedName.success) {
-      setError(parsedName.error.issues[0]?.message ?? "Invalid passkey name");
-      return;
-    }
-
-    setError(undefined);
-    setIsLoading(true);
-
+  async function handleAddPasskey(values: AddPasskeySchema) {
     const { error: addError } = await authClient.passkey.addPasskey({
-      name: parsedName.data,
+      name: values.name,
     });
-
-    setIsLoading(false);
 
     if (addError) {
       const code = "code" in addError ? addError.code : undefined;
@@ -89,7 +97,10 @@ export function AddPasskeyButton({ disabled }: { disabled?: boolean }) {
       ) {
         return;
       }
-      toast.error(getErrorMessage(addError) ?? "Failed to add passkey");
+
+      form.setError("name", {
+        message: getErrorMessage(addError) ?? "Failed to add passkey",
+      });
       return;
     }
 
@@ -137,56 +148,64 @@ export function AddPasskeyButton({ disabled }: { disabled?: boolean }) {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-2">
-          <Label htmlFor="passkey-name">Passkey name</Label>
-          <Input
-            id="passkey-name"
-            value={name}
-            maxLength={LIMITS.auth.passkeyNameMaxLength}
-            onChange={(event) => {
-              setName(event.target.value);
-              setError(undefined);
-            }}
-            placeholder="My passkey"
-            disabled={isLoading}
-          />
-          {error ? (
-            <p className="text-sm text-destructive">{error}</p>
-          ) : (
-            <p className="text-xs text-muted-foreground">
-              A name helps you identify this passkey later.
-            </p>
-          )}
-        </div>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleAddPasskey)}
+            className="space-y-4"
+          >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Passkey name</FormLabel>
+                  <FormControl>
+                    <Input
+                      maxLength={LIMITS.auth.passkeyNameMaxLength}
+                      placeholder="My passkey"
+                      disabled={isSubmitting}
+                      {...field}
+                    />
+                  </FormControl>
+                  {!errors.name && (
+                    <p className="text-xs text-muted-foreground">
+                      A name helps you identify this passkey later.
+                    </p>
+                  )}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button
-              type="button"
-              variant="outline"
-              className="cursor-pointer"
-              disabled={isLoading}
-            >
-              Cancel
-            </Button>
-          </DialogClose>
-          <AnimateIcon animateOnHover>
-            <Button
-              type="button"
-              onClick={handleAddPasskey}
-              disabled={isLoading}
-              className="cursor-pointer w-full"
-            >
-              <LoadingSwap
-                isLoading={isLoading}
-                className="flex items-center gap-2"
-              >
-                <Fingerprint />
-                Add passkey
-              </LoadingSwap>
-            </Button>
-          </AnimateIcon>
-        </DialogFooter>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="cursor-pointer"
+                  disabled={isSubmitting}
+                >
+                  Cancel
+                </Button>
+              </DialogClose>
+              <AnimateIcon animateOnHover>
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="cursor-pointer w-full"
+                >
+                  <LoadingSwap
+                    isLoading={isSubmitting}
+                    className="flex items-center gap-2"
+                  >
+                    <Fingerprint />
+                    Add passkey
+                  </LoadingSwap>
+                </Button>
+              </AnimateIcon>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

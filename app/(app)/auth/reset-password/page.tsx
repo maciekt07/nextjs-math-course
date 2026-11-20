@@ -1,6 +1,6 @@
+import { AnimateIcon } from "@animate-ui/react/icons";
 import { AlertCircle } from "lucide-react";
 import Link from "next/link";
-import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { LogIn } from "@/components/animate-ui/icons/log-in";
 import { Button } from "@/components/ui/button";
 import { getServerSession } from "@/lib/auth/get-session";

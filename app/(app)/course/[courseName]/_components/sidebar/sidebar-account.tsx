@@ -1,8 +1,7 @@
+import { AnimateIcon } from "@animate-ui/react/icons";
 import type { User } from "better-auth";
-
 import Link from "next/link";
 import { memo } from "react";
-import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { LogIn } from "@/components/animate-ui/icons/log-in";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";

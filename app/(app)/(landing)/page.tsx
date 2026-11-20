@@ -1,7 +1,7 @@
+import { AnimateIcon } from "@animate-ui/react/icons";
 import Link from "next/link";
 import { BookOpen } from "@/components/animate-ui/icons/book-open";
 import { Compass } from "@/components/animate-ui/icons/compass";
-import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { CourseCard } from "@/components/course-card";
 import { OneTap } from "@/components/one-tap";
 import { OwnedCoursesProvider } from "@/components/ownership-provider";

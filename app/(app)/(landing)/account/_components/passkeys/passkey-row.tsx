@@ -1,10 +1,13 @@
 "use client";
 
 import { AnimateIcon } from "@animate-ui/react/icons";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Ellipsis, ShieldCheck } from "lucide-react";
 import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import z from "zod";
 import { Pencil } from "@/components/animate-ui/icons/pencil";
 import { Trash2 } from "@/components/animate-ui/icons/trash-2";
 import { Badge } from "@/components/ui/badge";
@@ -24,15 +27,29 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 import {
   deletePasskeyAction,
   updatePasskeyAction,
 } from "@/lib/actions/passkeys";
+import { passkeyNameSchema } from "@/lib/auth/auth-validation";
 import { LIMITS } from "@/lib/constants/limits";
 import { PasskeyProviderIcon } from "./passkey-provider-icon";
+
+const renamePasskeySchema = z.object({
+  name: passkeyNameSchema,
+});
+
+type RenamePasskeySchema = z.infer<typeof renamePasskeySchema>;
 
 interface PasskeyRowProps {
   id: string;
@@ -56,18 +73,27 @@ export function PasskeyRow({
   const router = useRouter();
   const [renameOpen, setRenameOpen] = useState<boolean>(false);
   const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
-  const [newName, setNewName] = useState<string>(name);
-  const [isRenaming, setIsRenaming] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
-  const [renameError, setRenameError] = useState<string | undefined>();
 
-  async function handleRename() {
-    setIsRenaming(true);
-    const result = await updatePasskeyAction(id, newName);
-    setIsRenaming(false);
+  const renameForm = useForm<RenamePasskeySchema>({
+    resolver: zodResolver(renamePasskeySchema),
+    defaultValues: { name },
+  });
+
+  const { isSubmitting: isRenaming } = renameForm.formState;
+
+  function handleRenameOpenChange(nextOpen: boolean) {
+    setRenameOpen(nextOpen);
+    if (nextOpen) {
+      renameForm.reset({ name });
+    }
+  }
+
+  async function handleRename(values: RenamePasskeySchema) {
+    const result = await updatePasskeyAction(id, values.name);
 
     if (!result.success) {
-      setRenameError(result.error);
+      renameForm.setError("name", { message: result.error });
       return;
     }
 
@@ -166,7 +192,7 @@ export function PasskeyRow({
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Dialog open={renameOpen} onOpenChange={setRenameOpen}>
+          <Dialog open={renameOpen} onOpenChange={handleRenameOpenChange}>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Rename passkey</DialogTitle>
@@ -174,42 +200,49 @@ export function PasskeyRow({
                   Choose a name that helps you recognize this passkey.
                 </DialogDescription>
               </DialogHeader>
-              <div className="space-y-2">
-                <Label htmlFor={`passkey-name-${id}`}>Passkey name</Label>
-                <Input
-                  id={`passkey-name-${id}`}
-                  value={newName}
-                  maxLength={LIMITS.auth.passkeyNameMaxLength}
-                  disabled={isRenaming}
-                  onChange={(event) => {
-                    setNewName(event.target.value);
-                    setRenameError(undefined);
-                  }}
-                />
-                {renameError && (
-                  <p className="text-sm text-destructive">{renameError}</p>
-                )}
-              </div>
-              <DialogFooter>
-                <DialogClose asChild>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="cursor-pointer"
-                    disabled={isRenaming}
-                  >
-                    Cancel
-                  </Button>
-                </DialogClose>
-                <Button
-                  type="button"
-                  onClick={handleRename}
-                  disabled={isRenaming}
-                  className="cursor-pointer"
+              <Form {...renameForm}>
+                <form
+                  onSubmit={renameForm.handleSubmit(handleRename)}
+                  className="space-y-4"
                 >
-                  <LoadingSwap isLoading={isRenaming}>Save</LoadingSwap>
-                </Button>
-              </DialogFooter>
+                  <FormField
+                    control={renameForm.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Passkey name</FormLabel>
+                        <FormControl>
+                          <Input
+                            maxLength={LIMITS.auth.passkeyNameMaxLength}
+                            disabled={isRenaming}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="cursor-pointer"
+                        disabled={isRenaming}
+                      >
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                    <Button
+                      type="submit"
+                      disabled={isRenaming}
+                      className="cursor-pointer"
+                    >
+                      <LoadingSwap isLoading={isRenaming}>Save</LoadingSwap>
+                    </Button>
+                  </DialogFooter>
+                </form>
+              </Form>
             </DialogContent>
           </Dialog>
 

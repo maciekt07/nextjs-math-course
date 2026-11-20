@@ -1,8 +1,8 @@
 "use client";
 
+import { AnimateIcon } from "@animate-ui/react/icons";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { Send } from "@/components/animate-ui/icons/send";
 import { Button } from "@/components/ui/button";
 import { LoadingSwap } from "@/components/ui/loading-swap";

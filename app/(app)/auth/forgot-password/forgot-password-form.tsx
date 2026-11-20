@@ -1,12 +1,12 @@
 "use client";
 
+import { AnimateIcon } from "@animate-ui/react/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Mail } from "lucide-react";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { Send } from "@/components/animate-ui/icons/send";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";

@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimateIcon } from "@animate-ui/react/icons";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -8,7 +9,6 @@ import { toast } from "sonner";
 import { defaultPatterns } from "web-haptics";
 import { useWebHaptics } from "web-haptics/react";
 import { Check } from "@/components/animate-ui/icons/check";
-import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { Lock } from "@/components/animate-ui/icons/lock";
 import { LogIn } from "@/components/animate-ui/icons/log-in";
 import { Send } from "@/components/animate-ui/icons/send";

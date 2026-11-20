@@ -1,8 +1,8 @@
 "use client";
 
+import { AnimateIcon } from "@animate-ui/react/icons";
 import { useEffect, useRef, useState } from "react";
 import { ExternalLink } from "@/components/animate-ui/icons/external-link";
-import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/ui";
 import { useSettingsStore } from "@/stores/settings-store";

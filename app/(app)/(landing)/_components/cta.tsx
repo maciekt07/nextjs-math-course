@@ -1,7 +1,7 @@
+import { AnimateIcon } from "@animate-ui/react/icons";
 import { CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { ArrowRight } from "@/components/animate-ui/icons/arrow-right";
-import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { Button } from "@/components/ui/button";
 
 interface CTASectionProps {

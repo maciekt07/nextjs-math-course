@@ -1,10 +1,10 @@
 "use client";
 
+import { AnimateIcon } from "@animate-ui/react/icons";
 import { X } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { toast } from "sonner";
 import { Download } from "@/components/animate-ui/icons/download";
-import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { useInstallPrompt } from "@/hooks/use-install-prompt";
 
 export function InstallBanner() {

@@ -1,10 +1,10 @@
 "use client";
 
+import { AnimateIcon } from "@animate-ui/react/icons";
 import { ChevronLeft, ChevronRight, Clock3, List, Video } from "lucide-react";
 import { type HTMLMotionProps, motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { Play } from "@/components/animate-ui/icons/play";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

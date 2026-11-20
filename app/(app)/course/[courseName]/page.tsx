@@ -1,3 +1,4 @@
+import { AnimateIcon } from "@animate-ui/react/icons";
 import { BanknoteX, BookX, ChevronLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -7,7 +8,6 @@ import {
   publishedStatusWhere,
 } from "@/cms/access/contentAccess";
 import { ArrowRight } from "@/components/animate-ui/icons/arrow-right";
-import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { PartyPopper } from "@/components/animate-ui/icons/party-popper";
 import BuyCourseButton from "@/components/buy-course-button";
 import { EmptyState, EmptyStateCenterWrapper } from "@/components/empty-state";

@@ -1,3 +1,4 @@
+import { AnimateIcon } from "@animate-ui/react/icons";
 import {
   CircleUser,
   ClockFading,
@@ -12,7 +13,6 @@ import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
-import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { Send } from "@/components/animate-ui/icons/send";
 import { Settings } from "@/components/settings";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";

@@ -1,7 +1,7 @@
 "use client";
 
+import { AnimateIcon } from "@animate-ui/react/icons";
 import { useWebHaptics } from "web-haptics/react";
-import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { Link } from "@/components/animate-ui/icons/link";
 import { scrollToHeader } from "@/lib/markdown/scroll-to-header";
 import { cn } from "@/lib/ui";
