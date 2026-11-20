@@ -9,6 +9,7 @@ import { mcpPlugin } from "@payloadcms/plugin-mcp";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { s3Storage } from "@payloadcms/storage-s3";
 import { buildConfig, type PayloadRequest } from "payload";
+import { payloadTotp } from "payload-totp";
 import sharp from "sharp";
 import { isAdmin, isAdminOrEditor } from "@/cms/access/roles";
 import { Chapters } from "@/cms/collections/Chapters";
@@ -216,6 +217,19 @@ export default buildConfig({
           },
         },
       ],
+    }),
+
+    // needs to be last plugin
+    payloadTotp({
+      collection: "users",
+      forceSetup: false,
+      disableAccessWrapper: true,
+      totp: {
+        issuer: `${APP_NAME} Admin`,
+        algorithm: "SHA1",
+        digits: 6,
+        period: 30,
+      },
     }),
   ],
   //  onInit: async (payload) => {
