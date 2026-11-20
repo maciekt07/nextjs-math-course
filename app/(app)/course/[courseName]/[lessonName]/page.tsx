@@ -52,6 +52,7 @@ async function getLesson({
           title: true,
           slug: true,
           id: true,
+          course: true,
           type: true,
           free: true,
           content: true,

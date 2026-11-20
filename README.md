@@ -38,7 +38,7 @@ A modern full-stack Next.js 16 platform with CMS, auth, and Stripe integration -
 ## Features
 
 - **Full Authentication** - powered by **BetterAuth**, featuring Google OAuth, Google One Tap, Passkeys, email verification & password reset via **Resend**. Includes **Cloudflare Turnstile** bot protection, block for disposable emails, last used method badge, session limits and rate limiting with **Redis** to prevent account sharing and abuse.
-- **Admin CMS Dashboard** - manage courses, lessons, and media directly through an integrated headless **Payload CMS** interface with drafts, version history, and scheduled publishing via **QStash** job queues.
+- **Admin CMS Dashboard** - manage courses, lessons, and media directly through an integrated headless **Payload CMS** interface with drafts, version history, scheduled publishing via **QStash** job queues, and **TOTP two-factor authentication**.
 - **Scheduled Course Publishing** — automatically publish courses on schedule with failure detection and admin email alerts.
 - **AI Feedback Classification** — automatically classify lesson feedback by category, importance, sentiment, and spam using **Jev** by [TypeSafe AI](https://typesafe.ai/), with automatic retries.
 - **MCP integration** - a Model Context Protocol server lets AI clients like Claude draft, edit, and review lesson content directly against the CMS.
